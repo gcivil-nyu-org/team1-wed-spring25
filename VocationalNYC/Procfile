@@ -1,0 +1,1 @@
+web: gunicorn vocationalnyc_dev.wsgi:application
