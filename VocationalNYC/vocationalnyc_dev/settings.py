@@ -38,7 +38,8 @@ ADMINS = env.list('ADMINS', default=[('admin', 'admin@example.com')] if DEBUG el
 
 MANAGERS = ADMINS
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend' if DEBUG else "django.core.mail.backends.console.EmailBackend"
+EMAIL_FILE_PATH = BASE_DIR / 'logs/emails'
 # Application definition
 
 INSTALLED_APPS = [
@@ -77,8 +78,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / "templates",
-            BASE_DIR / "users" / "templates",
+            BASE_DIR / 'templates',
+            BASE_DIR / 'users' / 'templates' / 'users',
             ],
         'APP_DIRS': True,
         'OPTIONS': {
