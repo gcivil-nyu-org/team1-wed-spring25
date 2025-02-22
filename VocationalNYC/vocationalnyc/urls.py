@@ -21,6 +21,7 @@ from django.views.generic.base import TemplateView
 from allauth.account.decorators import secure_admin_login
 
 
+
 admin.autodiscover()
 admin.site.login = secure_admin_login(admin.site.login)
 
@@ -34,4 +35,5 @@ urlpatterns = [
     # Admin and internationalization URLs
     path("admin/", admin.site.urls),
     path("i18n/", include("django.conf.urls.i18n")),
+
 ]

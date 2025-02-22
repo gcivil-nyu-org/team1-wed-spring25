@@ -5,4 +5,3 @@ urlpatterns = [
     path("", include("allauth.urls")),
     path("profile/", TemplateView.as_view(template_name="profile.html"), name="profile"),
 ]
-
