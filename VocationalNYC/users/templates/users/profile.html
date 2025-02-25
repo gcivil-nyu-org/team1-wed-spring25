@@ -1,6 +1,51 @@
-# TODO: Placeholder template for profile page {% extends
-"allauth/layouts/manage.html" %} {% load allauth %} {% block head_title
-%}Profile{% endblock %} {% block content %} {% element h1 %} Profile {%
-endelement %}
-<p>Your profile</p>
+<!-- # TODO: Placeholder template for profile page  -->
+<!-- Temporary Demo for Display -->
+{% extends "allauth/layouts/manage.html" %}
+{% load allauth %}
+
+{% block head_title %}
+    Profile
+{% endblock head_title %}
+
+{% block content %}
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f9;
+        color: #333;
+        line-height: 1.6;
+    }
+    .container {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+        color: #0056b3;
+    }
+    p {
+        margin: 10px 0;
+    }
+    .strong {
+        color: #333;
+        font-weight: bold;
+    }
+</style>
+
+<div class="container">
+    <h1>Profile Page</h1>
+
+    <!-- Example: Display basic user info -->
+    <p><span class="strong">Username:</span> {{ user.username }}</p>
+    <p><span class="strong">Email:</span> {{ user.email }}</p>
+
+    <!-- Example: user.get_role_display shows the human-readable choice label -->
+    {% if user.role %}
+        <p><span class="strong">Role:</span> {{ user.get_role_display }}</p>
+    {% endif %}
+
+    <p>Welcome to your profile page!</p>
+</div>
 {% endblock content %}
