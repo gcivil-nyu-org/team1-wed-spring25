@@ -62,7 +62,7 @@ git status
 ## Committing Changes
 Commit the staged changes with a descriptive message.
 ```sh
-git commit -m "Asher changed front end"
+git commit -m "Asher added a README file"
 ```
 
 ## Pushing Changes
