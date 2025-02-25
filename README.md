@@ -36,9 +36,9 @@ git pull
 ```
 
 ## Switching to Your Feature Branch
-Switch back to your working branch (replace `asher` with your branch name).
+Switch back to your working branch (replace `Asher` with your branch name).
 ```sh
-git checkout asher
+git checkout Asher
 ```
 
 ## Merging `develop` into Your Branch
