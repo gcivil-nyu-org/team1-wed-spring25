@@ -102,7 +102,8 @@ background: linear-gradient(to right, #a2ccb6 0%, #fceeb5 50%, #ee786e 100%);
             <p><strong>Explore Your Opportunities:</strong></p>
             <a href="/accounts/login/" class="btn btn-custom">🚀 Sign In</a>
             <a href="/accounts/signup/" class="btn btn-custom">✨ Sign Up</a>
-            <a href="/courses" class="btn btn-custom">📚 Browse Courses</a>
+            <a href="{% url 'course_list' %}" class="btn btn-custom">📚 Browse Courses</a>
+            <a href="{% url 'provider_list' %}" class="btn btn-custom">🔍 View All Providers</a>
             <a href="/contact" class="btn btn-custom">📩 Contact Us</a>
         </div>
     </div>
