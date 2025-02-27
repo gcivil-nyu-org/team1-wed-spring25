@@ -1,0 +1,17 @@
+# This file is only for development purpose
+# Warning: Should not be included in the repository in production settings
+services:
+  db:
+    image: postgres:16
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+volumes:
+  postgres_data:
+  logs:
