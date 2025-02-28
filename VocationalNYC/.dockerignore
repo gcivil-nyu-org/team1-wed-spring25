@@ -21,6 +21,8 @@ __pycache__/
 
 logs/
 
+docker-compose.override.yml
+
 .DS_Store
 Thumbs.db
 

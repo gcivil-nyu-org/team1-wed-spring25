@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ course.name }} - Course Details{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h1>{{ course.name }}</h1>
+    <p><strong>Provider:</strong> <a href="{% url 'provider_detail' course.provider.provider_id %}">{{ course.provider.name }}</a></p>
+    <p><strong>Time:</strong> {{ course.time }}</p>
+    <p><strong>Location:</strong> {{ course.location }}</p>
+    <p><strong>Description:</strong> {{ course.course_desc }}</p>
+</div>
+{% endblock %}
