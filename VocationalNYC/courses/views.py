@@ -36,9 +36,9 @@ class CourseListView(generic.ListView):
                         name=provider_name,
                         defaults={
                             "phone_num": course.get("phone1", "0000000000"),
-                            "address": course.get("address1", "Unknown"),
-                            "open_time": course.get("open_time", "N/A"),
-                            "provider_desc": course.get("provider_description", "No description"),
+                            "address": course.get("address1", ""),
+                            "open_time": course.get("open_time", ""),
+                            "provider_desc": course.get("provider_description", ""),
                             "website": course.get("website", ""),
                         }
                     )
@@ -48,9 +48,10 @@ class CourseListView(generic.ListView):
                         Course.objects.create(
                             name=course_name,
                             provider=provider,
-                            course_desc=course.get("coursedescription", "No description"),
+                            keywords=course.get("keywords", ""),
+                            course_desc=course.get("coursedescription", ""),
                             time=course.get("time", "N/A"),
-                            location=course.get("address1", "Unknown")
+                            location=course.get("address1", " ")
                         )
             except requests.RequestException as e:
                 logger.error("External API call failed: %s", e)
@@ -64,3 +65,4 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
     context_object_name = "course"
     login_url = reverse_lazy('account_login')
     redirect_field_name = 'next'
+
