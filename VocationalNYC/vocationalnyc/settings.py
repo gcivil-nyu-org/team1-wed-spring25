@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import environ
-import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,15 +22,18 @@ environ.Env.read_env(BASE_DIR / '.env')
 
 DEBUG = env('DEBUG')
 
+DJANGO_ENV =  env('DJANGO_ENV', default='production')
+
 SECRET_KEY = env('SECRET_KEY', default='insecure' if DEBUG else environ.Env.NOTSET)
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['vocationalnyc-env.eba-uurzafst.us-east-1.elasticbeanstalk.com','localhost', '127.0.0.1'] if DEBUG else [])
+
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'] if DEBUG else [])
 
 ADMINS = env.list('ADMINS', default=[('admin', 'admin@example.com')] if DEBUG else [])
 MANAGERS = ADMINS
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend' if DEBUG else "django.core.mail.backends.console.EmailBackend"
-EMAIL_FILE_PATH = BASE_DIR / 'logs/emails'
+EMAIL_FILE_PATH = BASE_DIR / 'logs' / 'emails'
 
 # Application definition
 INSTALLED_APPS = [
@@ -90,12 +92,24 @@ TEMPLATES = [
 WSGI_APPLICATION = 'vocationalnyc.wsgi.application'
 
 # Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'database' / 'db.sqlite3',
+if env('DATABASE'=='postgres', default='sqlite3'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': env('POSTGRES_DB'),
+            'USER': env('POSTGRES_USER'),
+            'PASSWORD': env('POSTGRES_PASSWORD'),
+            'HOST': env('POSTGRES_HOST', default='db'),
+            'PORT': env.int('POSTGRES_PORT', default=5432),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -111,7 +125,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # Django Allauth Config
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_LOGIN_BY_CODE_ENABLED = True
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'none' if DEBUG else 'mandatory'
 ACCOUNT_EMAIL_VERIFICATION_BY_CODE_ENABLED = False
 ACCOUNT_LOGIN_METHODS = {'username','email'}
 ACCOUNT_PASSWORD_RESET_BY_CODE_ENABLED = True
@@ -143,3 +157,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Favicon Handling (Ensure favicon.ico is inside static/)
 FAVICON_PATH = STATIC_URL + 'favicon.ico'
+
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'

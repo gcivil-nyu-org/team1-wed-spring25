@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,16 +12,16 @@
     </style>
 </head>
 <body>
+
     <h1>Providers</h1>
     {% for provider in all_provider %}
-        <div class="provider">
-            <h2>{{ provider.name }}</h2>
-            <p><strong>Phone Number:</strong> {{ provider.phone_num}}</a></p>
-            <p><strong>Address:</strong> {{ provider.address }}</p>
-            <p><strong>Website:</strong>{{ provider.website }}</p>
-        </div>
+    <div class="provider">
+        <h2>{{ provider.name }}</h2>
+        <p><strong>Phone Number:</strong> {{ provider.phone_num}}</a></p>
+        <p><strong>Address:</strong> {{ provider.address }}</p>
+        <p><strong>Website:</strong>{{ provider.website }}</p>
+    </div>
     {% empty %}
-        <p>No providers available.</p>
+    <p>No providers available.</p>
     {% endfor %}
-</body>
-</html>
+{% endblock %}
