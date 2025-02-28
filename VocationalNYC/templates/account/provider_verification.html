@@ -13,8 +13,7 @@
             --green: #a2ccb6;
             --light-peach: #ffecd9;
             --peach: #ee786e;
-            /*--sand: #fceeb5;*/
-            --sand: #ffffff;
+            --sand: #fceeb5;
             --white: #fff;
         }
 
@@ -25,14 +24,14 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            font-family: 'Raleway', sans-serif;
+            font-family: system-ui!important;
             padding: 2rem;
         }
 
         .verification-container {
             width: 600px;
             padding: 40px;
-            border-radius: 20px;
+            border-radius: 18px;/*main card*/
             box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.2);
             text-align: center;
             background: var(--white);
@@ -41,7 +40,7 @@
         .verification-container h2 {
             color: var(--green);
             font-weight: 600;
-            font-size: 2rem;
+            font-size: 2.4rem;
             margin-bottom: 1.5rem;
         }
 
@@ -54,8 +53,8 @@
         .form-control {
             font-size: 1rem;
             padding: 12px;
-            border-radius: 10px;
-            background: var(--sand);
+            border-radius: 12px;/*input field*/
+            background: white;
             border: 2px solid var(--green);
             color: #333;
             margin-bottom: 1rem;
@@ -64,13 +63,14 @@
         .btn-custom {
             display: block;
             width: 100%;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             padding: 14px;
-            border-radius: 50px;
+            border-radius: 12px;/*button*/
             border: none;
             color: var(--white);
             background: linear-gradient(to right, var(--green), var(--sand), var(--peach));
             background-size: 500%;
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.15);
             transition: all 0.3s ease;
             margin-top: 1rem;
         }
@@ -78,22 +78,32 @@
         .btn-custom:hover {
             animation: gradient 2s forwards;
         }
+
+                @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100%;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="verification-container">
         <h2>Provider Verification</h2>
         <p>Please provide the required details for verification.</p>
+        <hr>
         <form method="post" enctype="multipart/form-data">
 
 
             <div class="mb-3">
-                <label for="business_name" class="form-label">Business Name</label>
+                <label for="business_name" class="form-label">Business Name <span style="color: red;">*</span></label>
                 <input type="text" class="form-control" name="business_name" id="business_name" placeholder="Enter your business name" required>
             </div>
 
             <div class="mb-3">
-                <label for="business_address" class="form-label">Business Address</label>
+                <label for="business_address" class="form-label">Business Address <span style="color: red;">*</span></label>
                 <input type="text" class="form-control" name="business_address" id="business_address" placeholder="Enter business address" required>
             </div>
 
@@ -103,17 +113,17 @@
             </div>
 
             <div class="mb-3">
-                <label for="contact_person" class="form-label">Contact Person</label>
+                <label for="contact_person" class="form-label">Contact Person <span style="color: red;">*</span></label>
                 <input type="text" class="form-control" name="contact_person" id="contact_person" placeholder="Enter contact person name" required>
             </div>
 
             <div class="mb-3">
-                <label for="contact_number" class="form-label">Contact Number</label>
+                <label for="contact_number" class="form-label">Contact Number <span style="color: red;">*</span></label>
                 <input type="tel" class="form-control" name="contact_number" id="contact_number" placeholder="Enter contact number" required>
             </div>
 
             <div class="mb-3">
-                <label for="certificate" class="form-label">Upload Business Certificate</label>
+                <label for="certificate" class="form-label">Upload Business Certificate <span style="color: red;">*</span></label>
                 <input type="file" class="form-control" name="certificate" id="certificate" accept=".pdf,.jpg,.png" required>
             </div>
 

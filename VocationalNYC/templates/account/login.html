@@ -15,8 +15,8 @@
             --green: #a2ccb6;
             --light-peach: #ffecd9;
             --peach: #ee786e;
-            /*--sand: #fceeb5;*/
-            --sand: #ffffff;
+            --sand: #fceeb5;
+            /*--sand: #ffffff;*/
             --white: #fff;
         }
 
@@ -27,17 +27,19 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            font-family: 'Raleway', sans-serif;
+            font-family: system-ui!important;
             padding: 2rem;
         }
 
         .login-container {
-            width: 500px;
+            width: 600px;
             padding: 50px;
-            border-radius: 20px;
+            border-radius: 18px;/*main card*/
             box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.2);
             text-align: center;
             background: var(--white);
+            backdrop-filter: blur(10px);
+
         }
 
         .login-container h2 {
@@ -58,8 +60,8 @@
         .form-control, .form-select {
             font-size: 1rem;
             padding: 14px;
-            border-radius: 10px;
-            background: var(--sand);
+            border-radius: 12px;/*input field*/
+            background: white;
             border: 2px solid var(--green);
             color: #333;
             cursor: pointer;
@@ -77,7 +79,7 @@
             width: 100%;
             font-size: 1.4rem;
             padding: 14px;
-            border-radius: 50px;
+            border-radius: 12px;/*button*/
             border: none;
             color: var(--white);
             background: linear-gradient(to right, var(--green), var(--sand), var(--peach));
@@ -114,7 +116,11 @@
 <body>
     <div class="login-container">
         <h2>Login</h2>
-        <form method="post">
+<p>Log in to find the right training program or manage your course listings. Whether you're a career changer seeking new opportunities or a training provider connecting with students, start here.</p>
+
+                       <hr>
+
+ <form method="post">
             {% csrf_token %}
             {{ form.non_field_errors }}
 
@@ -128,14 +134,14 @@
                 <input type="password" class="form-control" name="password" id="id_password" placeholder="Enter your password" required />
             </div>
 
-            <div class="mb-3">
-                <label for="user_type" class="form-label">User Type <span style="color: red;">*</span></label>
-                <select class="form-select" id="user_type" name="user_type" required>
-                    <option value="" disabled selected>Choose your user type</option>
-                    <option value="career_changer">Career Changer (i.e., Student)</option>
-                    <option value="training_provider">Training Provider (i.e., School Representative)</option>
-                </select>
-            </div>
+<!--            <div class="mb-3">-->
+<!--                <label for="user_type" class="form-label">User Type <span style="color: red;">*</span></label>-->
+<!--                <select class="form-select" id="user_type" name="user_type" required>-->
+<!--                    <option value="" disabled selected>Choose your user type</option>-->
+<!--                    <option value="career_changer">Career Changer (i.e., Student)</option>-->
+<!--                    <option value="training_provider">Training Provider (i.e., School Representative)</option>-->
+<!--                </select>-->
+<!--            </div>-->
 
             <button type="submit" class="btn btn-custom">Login</button>
 

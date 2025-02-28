@@ -1,55 +1,30 @@
-{% extends "base.html" %}
-{% load static %}
 
-{% block title %}Course List - VocationalNYC{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course List</title>
+    <style>
+        body { font-family: system-ui!important; margin: 20px; }
+        .course { border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 5px; }
+        .course h2 { margin: 0 0 10px; }
+    </style>
+</head>
+<body>
+    <h1>Available Courses</h1>
+    {% for course in courses %}
+        <div class="course">
+            <h2>{{ course.name }}</h2>
+            <p><strong>Provider:</strong> 
+                <a href="{% url 'provider_detail' course.provider.provider_id %}">{{ course.provider.name }}</a>
+            </p>
+            <p><strong>Time:</strong> {{ course.time }}</p>
+            <p><strong>Location:</strong> {{ course.location }}</p>
+            <p><strong>Description:</strong>{{ course.course_desc }}</p>
+        </div>
+    {% empty %}
 
-{% block extra_head %}
-
-<style>
-    .courses {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        grid-gap: 20px;
-        padding: 10px;
-        width: 100%;
-        margin: 0 auto;
-    }
-
-    @media (min-width: 992px) {
-        .courses {
-            grid-template-columns: repeat(4, 1fr);
-        }
-    }
-    
-    @media (max-width: 991px) {
-        .courses {
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        }
-    }    
-  
-    .courses a {
-        text-decoration: none;
-        color: inherit;
-    }
-</style>
-
-{% endblock %}
-
-{% block content %}
-<div class="courses">
-    {% if courses %}
-        {% for course in courses %}
-            <a href="{% url 'course_detail' course.pk %}" style="text-decoration: none; color: inherit;">
-                <div class="card">
-                    <h2>{{ course.name }}</h2>
-                    <p><strong>Provider:</strong> {{ course.provider.name }}</p>
-                    <p><strong>Time:</strong> {{ course.time }}</p>
-                    <p><strong>Location:</strong> {{ course.location }}</p>
-                    <p><strong>Description:</strong> {{ course.course_desc|truncatewords:20 }}</p>
-                </div>
-            </a>
-        {% endfor %}
-    {% else %}
         <p>No courses available.</p>
     {% endif %}
 </div>
