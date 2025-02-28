@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provider List</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .provider { border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 5px; }
+        .provider h2 { margin: 0 0 10px; }
+    </style>
+</head>
+<body>
+    <h1>Providers</h1>
+    {% for provider in all_provider %}
+        <div class="provider">
+            <h2>{{ provider.name }}</h2>
+            <p><strong>Phone Number:</strong> {{ provider.phone_num}}</a></p>
+            <p><strong>Address:</strong> {{ provider.address }}</p>
+            <p><strong>Website:</strong>{{ provider.website }}</p>
+        </div>
+    {% empty %}
+        <p>No providers available.</p>
+    {% endfor %}
+</body>
+</html>

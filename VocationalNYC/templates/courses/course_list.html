@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course List</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .course { border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 5px; }
+        .course h2 { margin: 0 0 10px; }
+    </style>
+</head>
+<body>
+    <h1>Available Courses</h1>
+    {% for course in courses %}
+        <div class="course">
+            <h2>{{ course.name }}</h2>
+            <p><strong>Provider:</strong> 
+                <a href="{% url 'provider_detail' course.provider.provider_id %}">{{ course.provider.name }}</a>
+            </p>
+            <p><strong>Time:</strong> {{ course.time }}</p>
+            <p><strong>Location:</strong> {{ course.location }}</p>
+            <p><strong>Description:</strong>{{ course.course_desc }}</p>
+        </div>
+    {% empty %}
+        <p>No courses available.</p>
+    {% endfor %}
+</body>
+</html>
