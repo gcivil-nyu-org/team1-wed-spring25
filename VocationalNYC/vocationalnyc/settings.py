@@ -32,7 +32,7 @@ ADMINS = env.list('ADMINS', default=[('admin', 'admin@example.com')] if DEBUG el
 MANAGERS = ADMINS
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend' if DEBUG else "django.core.mail.backends.console.EmailBackend"
-EMAIL_FILE_PATH = BASE_DIR / 'volumes' / 'logs' / 'emails'
+EMAIL_FILE_PATH = BASE_DIR / 'logs' / 'emails'
 
 # Application definition
 INSTALLED_APPS = [
@@ -91,7 +91,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'vocationalnyc.wsgi.application'
 
 # Database
-if env('DATABASE_URL', default=None):
+if env('DATABASE'=='postgres', default='sqlite3'):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -124,7 +124,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # Django Allauth Config
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_LOGIN_BY_CODE_ENABLED = True
-ACCOUNT_EMAIL_VERIFICATION = 'none' if DJANGO_ENV == 'development' else 'mandatory'
+ACCOUNT_EMAIL_VERIFICATION = 'none' if DEBUG else 'mandatory'
 ACCOUNT_EMAIL_VERIFICATION_BY_CODE_ENABLED = False
 ACCOUNT_LOGIN_METHODS = {'username','email'}
 ACCOUNT_PASSWORD_RESET_BY_CODE_ENABLED = True
@@ -156,3 +156,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Favicon Handling (Ensure favicon.ico is inside static/)
 FAVICON_PATH = STATIC_URL + 'favicon.ico'
+
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'
