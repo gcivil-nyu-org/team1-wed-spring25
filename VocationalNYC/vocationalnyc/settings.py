@@ -26,7 +26,8 @@ DJANGO_ENV =  env('DJANGO_ENV', default='production')
 
 SECRET_KEY = env('SECRET_KEY', default='insecure' if DEBUG else environ.Env.NOTSET)
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1'] if DEBUG else [])
+
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'] if DEBUG else [])
 
 ADMINS = env.list('ADMINS', default=[('admin', 'admin@example.com')] if DEBUG else [])
 MANAGERS = ADMINS
