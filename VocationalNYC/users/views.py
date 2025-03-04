@@ -6,7 +6,6 @@ from .forms import CustomSignupForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
 
-from .forms import CustomSignupForm
 from users.models import Provider
 
 def login(request):
