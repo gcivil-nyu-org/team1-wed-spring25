@@ -1,15 +1,50 @@
 import requests
-from django.shortcuts import render
-from django.http import HttpResponse
-
+from django.shortcuts import render,redirect
 from django.views import generic
+from allauth.account.views import SignupView
+from .forms import CustomSignupForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login as auth_login
 
+from .forms import CustomSignupForm
 from users.models import Provider
 
-
-# Create your views here.
 def login(request):
     return render(request, 'users/login.html')
+class CustomSignupView(SignupView):
+    form_class = CustomSignupForm
+    template_name = 'account/signup.html'
+
+    def form_valid(self, form):
+        # 1. Create the user via the form
+        user = form.save(self.request)
+
+        # 2. Log the user in
+        auth_login(self.request, user, backend='allauth.account.auth_backends.AuthenticationBackend')
+
+        # Redirect based on role:
+        if user.role == "training_provider":
+            return redirect('provider_verification')
+        else:
+            return redirect('profile')
+
+
+@login_required
+def profile_view(request):
+    return render(request, 'users/profile.html', {'user': request.user})
+
+@login_required
+def provider_verification_view(request):
+    # Only allow access if user is a logged-in provider
+    if request.user.role != 'training_provider':
+        return redirect('profile')
+
+    if request.method == 'POST':
+        # TODO: handle or verify the provider info here
+        return render(request, 'account/provider_verification_success.html')
+    else:
+        return render(request, 'account/provider_verification.html')
+
 
 
 class ProviderDetailView(generic.DetailView):

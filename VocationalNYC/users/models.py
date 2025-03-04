@@ -17,9 +17,17 @@ class Provider(models.Model):
 
 from django.contrib.auth.models import AbstractUser
 class CustomUser(AbstractUser):
-    role = models.CharField(max_length=20, choices=(("S", "Student"), ("P", "Provider")))
+    ROLE_CHOICES = (
+        ("career_changer", "Career Changer"),
+        ("training_provider", "Training Provider"),
+    )
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES,
+        default="career_changer"
+    )
     time_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"({self.get_role_display()}: {self.username} "
+        return f"{self.role.capitalize()}: {self.username}"
 

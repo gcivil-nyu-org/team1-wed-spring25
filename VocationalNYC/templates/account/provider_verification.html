@@ -97,7 +97,7 @@
         <p>Please provide the required details for verification.</p>
         <hr>
         <form method="post" enctype="multipart/form-data">
-
+            {% csrf_token %}
 
             <div class="mb-3">
                 <label for="business_name" class="form-label">Business Name <span style="color: red;">*</span></label>
