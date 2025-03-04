@@ -1,6 +1,6 @@
 from django.db import models
+from .managers import CustomUserManager
 
-# Create your models here.
 class Provider(models.Model):
     provider_id = models.AutoField(primary_key=True)  
     # user_id = models.ForeignKey(User, on_delete=models.CASCADE) 
@@ -20,6 +20,7 @@ class CustomUser(AbstractUser):
     ROLE_CHOICES = (
         ("career_changer", "Career Changer"),
         ("training_provider", "Training Provider"),
+        ("administrator", "Administrator"), 
     )
     role = models.CharField(
         max_length=20,
@@ -27,6 +28,7 @@ class CustomUser(AbstractUser):
         default="career_changer"
     )
     time_created = models.DateTimeField(auto_now_add=True)
+    objects = CustomUserManager()
 
     def __str__(self):
         return f"{self.role.capitalize()}: {self.username}"
