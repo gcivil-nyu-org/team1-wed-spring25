@@ -136,6 +136,7 @@
             {% if user.is_authenticated %}
                 <div class="btn-custom"><a href="{% url 'profile' %}">Profile</a></div>
                 <div class="btn-custom"><a href="{% url 'account_logout' %}">Logout</a></div>
+                <div class="btn-custom"><a href="{{ change_password_url_ }}">Change Password</a></div>
             {% else %}
                 <div class="btn-custom"><a href="{% url 'account_login' %}">Login</a></div>
             {% endif %}

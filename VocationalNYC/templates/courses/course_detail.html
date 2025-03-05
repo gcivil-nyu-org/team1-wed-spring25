@@ -7,8 +7,19 @@
 <div class="content">
     <h1>{{ course.name }}</h1>
     <p><strong>Provider:</strong> <a href="{% url 'provider_detail' course.provider.provider_id %}">{{ course.provider.name }}</a></p>
-    <p><strong>Time:</strong> {{ course.time }}</p>
+    <p><strong>Cost:</strong> {{ course.cost }}</p>
     <p><strong>Location:</strong> {{ course.location }}</p>
     <p><strong>Description:</strong> {{ course.course_desc }}</p>
+    <p><strong>Duration:</strong></p>
+    {% if course_duration %}
+        <ul>
+            <li>Classroom Hours: {{ course_duration.classroom_hours }}</li>
+            <li>Lab Hours: {{ course_duration.lab_hours }}</li>
+            <li>Internship Hours: {{ course_duration.internship_hours }}</li>
+            <li>Practical Hours: {{ course_duration.practical_hours }}</li>
+        </ul>
+    {% else %}
+        <p>No duration details available.</p>
+    {% endif %}
 </div>
 {% endblock %}

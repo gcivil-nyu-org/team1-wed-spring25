@@ -1,7 +1,13 @@
 # Elastic Beanstalk Files
-# .elasticbeanstalk/*
-# !.elasticbeanstalk/*.cfg.yml
-# !.elasticbeanstalk/*.global.yml
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+.idea
+.idea/
+
+=======
+
 
 .idea
 .idea/
@@ -15,7 +21,8 @@
 .venv/
 venv/
 env/
-# .env
+
+.env
 
 __pycache__/
 *.pyc
