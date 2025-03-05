@@ -3,6 +3,11 @@
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 
+.idea
+.idea/
+
+=======
+
 
 .git
 .gitignore
@@ -27,4 +32,3 @@ logs/
 Thumbs.db
 
 node_modules/
-
