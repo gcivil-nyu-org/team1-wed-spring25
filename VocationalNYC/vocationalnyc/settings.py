@@ -26,8 +26,7 @@ DJANGO_ENV =  env('DJANGO_ENV', default='production')
 
 SECRET_KEY = env('SECRET_KEY', default='insecure' if DEBUG else environ.Env.NOTSET)
 
-
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'] if DEBUG else [])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['127.0.0.1','localhost','vocationalnyc-env.eba-uurzafst.us-east-1.elasticbeanstalk.com'] if DEBUG else [])
 
 ADMINS = env.list('ADMINS', default=[('admin', 'admin@example.com')] if DEBUG else [])
 MANAGERS = ADMINS
@@ -91,6 +90,17 @@ WSGI_APPLICATION = 'vocationalnyc.wsgi.application'
 
 # Database
 if env('DATABASE'=='postgres', default='sqlite3'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': env('POSTGRES_DB'),
+            'USER': env('POSTGRES_USER'),
+            'PASSWORD': env('POSTGRES_PASSWORD'),
+            'HOST': env('POSTGRES_HOST', default='db'),
+            'PORT': env.int('POSTGRES_PORT', default=5432),
+        }
+    }
+elif env('DATABASE'=='rds', default='sqlite3'):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
