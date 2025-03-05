@@ -1,23 +1,19 @@
-# users/forms.py
 from allauth.account.forms import SignupForm
 from django import forms
 
-class StudentSignupForm(SignupForm):
-    """
-    A custom signup form that automatically assigns role='S' (Student).
-    """
+class CustomSignupForm(SignupForm):
+    ROLE_CHOICES = (
+        ("career_changer", "Career Changer"),
+        ("training_provider", "Training Provider"),
+    )
+    role = forms.ChoiceField(choices=ROLE_CHOICES, required=True)
+
     def save(self, request):
         user = super().save(request)
-        user.role = 'S'
+        user.role = self.cleaned_data['role']
         user.save()
         return user
 
-class ProviderSignupForm(SignupForm):
-    """
-    A custom signup form that automatically assigns role='P' (Provider).
-    """
-    def save(self, request):
-        user = super().save(request)
-        user.role = 'P'
-        user.save()
-        return user
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].required = True
