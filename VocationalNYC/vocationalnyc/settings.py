@@ -92,7 +92,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'vocationalnyc.wsgi.application'
 
 # Database
-if env('DATABASE'=='postgres', default='sqlite3'):
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+env = environ.Env(DEBUG=(bool, False))
+environ.Env.read_env(BASE_DIR / '.env')
+
+if env('DATABASE_URL', default=None):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
