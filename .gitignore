@@ -32,3 +32,5 @@ logs/
 Thumbs.db
 
 node_modules/
+
+db_script.sh

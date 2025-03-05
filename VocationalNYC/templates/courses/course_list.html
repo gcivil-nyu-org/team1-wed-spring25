@@ -4,7 +4,6 @@
 {% block title %}Course List - VocationalNYC{% endblock %}
 
 {% block extra_head %}
-
 <style>
     .courses {
         display: grid;
@@ -32,25 +31,38 @@
         color: inherit;
     }
 </style>
-
 {% endblock %}
 
 {% block content %}
-<div class="courses">
+  <div class="container">
+    <h2>Filter</h2>
+    <form method="GET" action="{% url 'search_result' %}">
+        <input type="text" name="q" value="{{ query }}" placeholder="Enter keyword">
+        
+        <input type="number" name="min_cost" value="{{ min_cost }}" placeholder="Min cost">
+        <input type="number" name="max_cost" value="{{ max_cost }}" placeholder="Max cost">
+        <input type="text" name="location" value="{{ location }}" placeholder="Location">
+        <input type="number" name="min_classroom_hours" value="{{ min_classroom_hours }}" placeholder="Min hours">
+        
+        <button type="submit">Search</button>
+      </form>
+  </div>
+
+  <div class="courses">
     {% if courses %}
-        {% for course in courses %}
-            <a href="{% url 'course_detail' course.pk %}" style="text-decoration: none; color: inherit;">
-                <div class="card">
-                    <h2>{{ course.name }}</h2>
-                    <p><strong>Provider:</strong> {{ course.provider.name }}</p>
-                    <p><strong>Time:</strong> {{ course.time }}</p>
-                    <p><strong>Location:</strong> {{ course.location }}</p>
-                    <p><strong>Keywords:</strong> {{ course.keywords|truncatewords:20 }}</p>
-                </div>
-            </a>
-        {% endfor %}
+      {% for course in courses %}
+        <a href="{% url 'course_detail' course.pk %}" style="text-decoration: none; color: inherit;">
+          <div class="card">
+            <h2>{{ course.name }}</h2>
+            <p><strong>Provider:</strong> {{ course.provider.name }}</p>
+            <p><strong>Cost:</strong> {{ course.cost }}</p>
+            <p><strong>Location:</strong> {{ course.location }}</p>
+            <p><strong>Keywords:</strong> {{ course.keywords|truncatewords:20 }}</p>
+          </div>
+        </a>
+      {% endfor %}
     {% else %}
-        <p>No courses available.</p>
+      <p>No courses available.</p>
     {% endif %}
-</div>
+  </div>
 {% endblock %}
