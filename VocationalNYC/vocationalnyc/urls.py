@@ -16,28 +16,25 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic.base import TemplateView
-
-from allauth.account.decorators import secure_admin_login
-
-
+from django.views.generic.base import RedirectView
+from django.contrib.auth import views as auth_views
+# from allauth.account.decorators import secure_admin_login
 
 admin.autodiscover()
-admin.site.login = secure_admin_login(admin.site.login)
+# admin.site.login = secure_admin_login(admin.site.login)
 
 urlpatterns = [
-    # Main landing page
-    path("", TemplateView.as_view(template_name="index.html")),
-    
-    # Delegate account-related URLs to the users app
+    # Redirect the root URL to the courses homepage
+    path("", RedirectView.as_view(url="/courses/", permanent=False), name="home"),
+
+    # Account-related URLs
     path("accounts/", include("users.urls")),
-    
-    # Admin and internationalization URLs
+
+    # Admin URLs
+    path('admin/login/', auth_views.LoginView.as_view(template_name='admin/login.html', next_page="/admin/"), name='admin_login'),
     path("admin/", admin.site.urls),
     path("i18n/", include("django.conf.urls.i18n")),
 
-    #course app
-    path("courses/", include("courses.urls")), 
-
-
+    # Course app URLs
+    path("courses/", include("courses.urls")),
 ]

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load allauth %}
+
+{% block title %}Profile | VocationalNYC{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="title">Profile Page</h2>
+
+    <p><span class="strong">Username:</span> {{ user.username }}</p>
+    <p><span class="strong">Email:</span> {{ user.email }}</p>
+
+    {% if user.role %}
+        <p><span class="strong">Role:</span> {{ user.get_role_display }}</p>
+    {% endif %}
+
+    <p>Welcome to your profile page!</p>
+
+
+    <div class="btn-container mt-4">
+        <a href="{% url 'account_change_password' %}" class="btn btn-custom">Change Password</a>
+        <a href="{% url 'account_logout' %}" class="btn btn-custom">Sign Out</a>
+    </div>
+</div>
+{% endblock content %}

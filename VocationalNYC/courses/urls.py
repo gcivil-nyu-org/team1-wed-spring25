@@ -1,8 +1,7 @@
-from django.urls import path, include
-from django.views.generic import TemplateView
-
+from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('courses/', views.CourseListView.as_view(), name='course_list'),
+    path('', views.CourseListView.as_view(), name='course_list'),
+    path('<int:pk>/', views.CourseDetailView.as_view(), name='course_detail'),
 ]
