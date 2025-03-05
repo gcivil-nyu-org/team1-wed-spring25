@@ -3,6 +3,11 @@
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 
+.idea
+.idea/
+
+=======
+
 
 .git
 .gitignore
@@ -10,6 +15,7 @@
 .venv/
 venv/
 env/
+.env
 
 __pycache__/
 *.pyc
@@ -27,3 +33,4 @@ Thumbs.db
 
 node_modules/
 
+db_script.sh

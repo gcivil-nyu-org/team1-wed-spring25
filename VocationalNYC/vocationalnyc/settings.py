@@ -49,8 +49,6 @@ INSTALLED_APPS = [
     'courses',
 ]
 
-AUTH_USER_MODEL = 'users.CustomUser'
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -135,6 +133,15 @@ ACCOUNT_EMAIL_VERIFICATION_BY_CODE_ENABLED = False
 ACCOUNT_LOGIN_METHODS = {'username','email'}
 ACCOUNT_PASSWORD_RESET_BY_CODE_ENABLED = True
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
+ACCOUNT_SESSION_REMEMBER = True
+ACCOUNT_UNIQUE_EMAIL = True
+
+AUTH_USER_MODEL = 'users.CustomUser'
+ACCOUNT_FORMS = {
+    'signup': 'users.forms.CustomSignupForm',
+}
 
 # Multi-Factor Authentication (MFA)
 MFA_SUPPORTED_TYPES = ['webauthn', 'totp', 'recovery_codes']
