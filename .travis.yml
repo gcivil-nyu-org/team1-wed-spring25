@@ -7,17 +7,16 @@ cache: pip
 
 env:
   global:
-    - DJANGO_SETTINGS_MODULE=mysite.settings
+    - DJANGO_SETTINGS_MODULE=VocationalNYC.settings
 
 install:
-  - pip install -r requirements.txt
+  - pip install -r VocationalNYC/requirements.txt
 
 script:
   - python VocationalNYC/manage.py test
-  - black --check .
-  - flake8 .
-  - coverage run --source=mysite manage.py test
+  - black --check VocationalNYC
+  - flake8 VocationalNYC
+  - coverage run --source=VocationalNYC VocationalNYC/manage.py test
 
 after_success:
   - coveralls
-
