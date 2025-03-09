@@ -4,11 +4,6 @@ python:
   - "3.12"
 cache: pip
 
-branches:
-  only:
-    - develop
-    - main
-    
 services:
   - postgresql
 
