@@ -1,6 +1,6 @@
 language: python
 python:
-  - "3.12"
+  - "3.11"
 cache: pip
 
 env:
@@ -9,6 +9,7 @@ env:
 
 install:
   - pip install -r VocationalNYC/requirements.txt
+  - pip install black flake8 coverage coveralls
 
 script:
   - python VocationalNYC/manage.py test
