@@ -9,23 +9,23 @@ services:
 
 env:
   global:
-    - DJANGO_SETTINGS_MODULE=vocationalnyc.settings
-    - PYTHONPATH=$PYTHONPATH:$(pwd)/VocationalNYC
+    - DJANGO_SETTINGS_MODULE=Vocational.vocational.settings
+    - PYTHONPATH=$PYTHONPATH:$(pwd)
 
 install:
-  - pip install -r requirements.txt
+  - pip install -r Vocational/requirements.txt
   - pip install black flake8 coverage coveralls
 
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
-  - python manage.py migrate
-  - python manage.py collectstatic --noinput
+  - python Vocational/manage.py migrate
+  - python Vocational/manage.py collectstatic --noinput
 
 script:
-  - python manage.py test
-  - black --check 
-  - flake8 
-  - coverage run --source=vocationalnyc manage.py test
+  - python Vocational/manage.py test
+  - black --check Vocational
+  - flake8 Vocational
+  - coverage run --source=Vocational/vocationalnyc Vocational/manage.py test
 
 after_success:
   - coveralls
