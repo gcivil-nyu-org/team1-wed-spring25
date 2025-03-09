@@ -1,6 +1,6 @@
 from django.db import models
 from .managers import CustomUserManager
-
+from django.contrib.auth.models import AbstractUser
 
 class Provider(models.Model):
     provider_id = models.AutoField(primary_key=True)
@@ -15,9 +15,6 @@ class Provider(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.website}"
-
-
-from django.contrib.auth.models import AbstractUser
 
 
 class CustomUser(AbstractUser):
