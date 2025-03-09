@@ -37,4 +37,6 @@ urlpatterns = [
 
     # Course app URLs
     path("courses/", include("courses.urls")),
+
+    path('reviews/', include('review.urls')),
 ]

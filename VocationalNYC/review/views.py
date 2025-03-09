@@ -1,8 +1,11 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views import View
-from .models import Review, ReviewReply
-from django.core.serializers import serialize
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from .models import Review
+from courses.models import Course
+from django.urls import reverse
 
 class ReviewListView(View):
     def get(self, request):
@@ -41,3 +44,35 @@ class ReviewReplyDetailView(View):
             'created_at': reply.created_at
         }
         return JsonResponse(data)
+    
+@method_decorator(login_required, name='dispatch')
+class ReviewCreateView(View):
+    def post(self, request, pk):
+        course = get_object_or_404(Course, pk=pk)
+        content = request.POST.get('content')
+        score_rating = request.POST.get('score_rating')
+
+        if not content or not score_rating:
+            return JsonResponse({'error': 'All fields are required.'}, status=400)
+
+        Review.objects.create(
+            course=course,
+            user=request.user,
+            content=content,
+            score_rating=int(score_rating)
+        )
+
+        return redirect('course-detail', pk=pk)
+    
+@method_decorator(login_required, name='dispatch')
+class ReviewDeleteView(View):
+    def post(self, request, pk):
+        review = get_object_or_404(Review, pk=pk)
+
+        if request.user != review.user:
+            return JsonResponse({'error': 'You do not have permission to delete this review'}, status=403)
+
+        course_id = review.course.pk  
+        review.delete()
+
+        return redirect('course-detail', pk=pk)

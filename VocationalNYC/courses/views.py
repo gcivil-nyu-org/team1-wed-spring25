@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import generic
 from django.db.models import Q
+from review.models import Review
 
 from users.models import Provider
 from .models import Course, CourseDuration
@@ -104,7 +105,9 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         course_duration = CourseDuration.objects.filter(course=self.object).first()
+        reviews = Review.objects.filter(course=self.object).order_by('-created_at')
         context['course_duration'] = course_duration
+        context['reviews'] = reviews
         return context
 
 def search_result(request):
