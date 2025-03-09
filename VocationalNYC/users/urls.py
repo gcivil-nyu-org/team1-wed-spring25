@@ -1,4 +1,5 @@
 from django.urls import path, include
+
 # from django.views.generic import TemplateView
 # from allauth.account.views import SignupView
 
