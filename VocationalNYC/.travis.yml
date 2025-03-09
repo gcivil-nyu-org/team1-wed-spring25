@@ -1,0 +1,23 @@
+language: python
+python:
+  - "3.8"
+  - "3.9"
+  - "3.10-dev"
+cache: pip
+
+env:
+  global:
+    - DJANGO_SETTINGS_MODULE=mysite.settings
+
+install:
+  - pip install -r requirements.txt
+
+script:
+  - python manage.py test
+  - black --check .
+  - flake8 .
+  - coverage run --source=mysite manage.py test
+
+after_success:
+  - coveralls
+
