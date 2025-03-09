@@ -1,0 +1,23 @@
+language: python
+python:
+  - "3.8"
+  - "3.9"
+  - "3.10-dev"
+cache: pip
+
+env:
+  global:
+    - DJANGO_SETTINGS_MODULE=VOcationalNYC.settings
+
+install:
+  - pip install -r VocationalNYC/requirements.txt
+
+script:
+  - python VocationalNYC/manage.py test
+  - black --check VocationalNYC
+  - flake8 VocationalNYC
+  - coverage run --source=VocationalNYC VocationalNYC/manage.py test
+
+after_success:
+  - coveralls
+
