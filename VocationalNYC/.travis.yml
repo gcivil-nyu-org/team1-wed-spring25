@@ -1,13 +1,11 @@
 language: python
 python:
-  - "3.8"
-  - "3.9"
-  - "3.10-dev"
+  - "3.12"
 cache: pip
 
 env:
   global:
-    - DJANGO_SETTINGS_MODULE=VOcationalNYC.settings
+    - DJANGO_SETTINGS_MODULE=VocationalNYC.settings
 
 install:
   - pip install -r VocationalNYC/requirements.txt
@@ -20,4 +18,3 @@ script:
 
 after_success:
   - coveralls
-
