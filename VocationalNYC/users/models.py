@@ -2,6 +2,7 @@ from django.db import models
 from .managers import CustomUserManager
 from django.contrib.auth.models import AbstractUser
 
+
 class Provider(models.Model):
     provider_id = models.AutoField(primary_key=True)
     # user_id = models.ForeignKey(User, on_delete=models.CASCADE)

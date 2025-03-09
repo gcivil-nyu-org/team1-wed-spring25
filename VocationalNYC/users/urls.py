@@ -3,7 +3,7 @@ from django.urls import path, include
 # from allauth.account.views import SignupView
 
 # from .forms import StudentSignupForm, ProviderSignupForm
-from .views import CustomSignupView, provider_verification_view, profile_view
+from .views import CustomSignupView, provider_verification_view
 from . import views
 
 urlpatterns = [
