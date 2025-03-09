@@ -1,5 +1,5 @@
 import requests
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from django.views import generic
 from allauth.account.views import SignupView
 from .forms import CustomSignupForm
@@ -8,60 +8,67 @@ from django.contrib.auth import login as auth_login
 
 from users.models import Provider
 
+
 def login(request):
-    return render(request, 'users/login.html')
+    return render(request, "users/login.html")
+
+
 class CustomSignupView(SignupView):
     form_class = CustomSignupForm
-    template_name = 'account/signup.html'
+    template_name = "account/signup.html"
 
     def form_valid(self, form):
         # 1. Create the user via the form
         user = form.save(self.request)
 
         # 2. Log the user in
-        auth_login(self.request, user, backend='allauth.account.auth_backends.AuthenticationBackend')
+        auth_login(
+            self.request,
+            user,
+            backend="allauth.account.auth_backends.AuthenticationBackend",
+        )
 
         # Redirect based on role:
         if user.role == "training_provider":
-            return redirect('provider_verification')
+            return redirect("provider_verification")
         else:
-            return redirect('profile')
+            return redirect("profile")
 
 
 @login_required
 def profile_view(request):
-    return render(request, 'users/profile.html', {'user': request.user})
+    return render(request, "users/profile.html", {"user": request.user})
+
 
 @login_required
 def provider_verification_view(request):
     # Only allow access if user is a logged-in provider
-    if request.user.role != 'training_provider':
-        return redirect('profile')
+    if request.user.role != "training_provider":
+        return redirect("profile")
 
-    if request.method == 'POST':
+    if request.method == "POST":
         # TODO: handle or verify the provider info here
-        return render(request, 'account/provider_verification_success.html')
+        return render(request, "account/provider_verification_success.html")
     else:
-        return render(request, 'account/provider_verification.html')
-
+        return render(request, "account/provider_verification.html")
 
 
 class ProviderDetailView(generic.DetailView):
     model = Provider
-    template_name = "profile/provider_detail.html" 
+    template_name = "profile/provider_detail.html"
     context_object_name = "provider"
-    
+
 
 class ProviderListView(generic.ListView):
     model = Provider
-    template_name = "profile/provider_list.html" 
+    template_name = "profile/provider_list.html"
     context_object_name = "all_provider"
 
     def get_queryset(self):
-        API_URL = 'https://data.cityofnewyork.us/resource/fgq8-am2v.json'
+        API_URL = "https://data.cityofnewyork.us/resource/fgq8-am2v.json"
         response = requests.get(API_URL)
         if response.status_code == 200:
-            all_data = response.json()  
+            all_data = response.json()
 
             for data in all_data:
                 provider_name = data.get("organization_name", "").strip()
@@ -70,13 +77,18 @@ class ProviderListView(generic.ListView):
                     continue  # skip invalid data
 
                 # check whether provider exists
-                provider, created = Provider.objects.get_or_create(name=provider_name, defaults={
-                    "phone_num": data.get("phone1", "0000000000"),
-                    "address": data.get("address1", "Unknown"),
-                    "open_time": data.get("open_time", "N/A"),
-                    "provider_desc": data.get("provider_description", "No description"),
-                    "website": data.get("website", ""),
-                })
+                provider, created = Provider.objects.get_or_create(
+                    name=provider_name,
+                    defaults={
+                        "phone_num": data.get("phone1", "0000000000"),
+                        "address": data.get("address1", "Unknown"),
+                        "open_time": data.get("open_time", "N/A"),
+                        "provider_desc": data.get(
+                            "provider_description", "No description"
+                        ),
+                        "website": data.get("website", ""),
+                    },
+                )
 
         else:
             print(f"Call API failed, the status code is: {response.status_code}")
