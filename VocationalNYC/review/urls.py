@@ -9,4 +9,6 @@ urlpatterns = [
     path('replies/<int:pk>/', ReviewReplyDetailView.as_view(), name='review-reply-detail'),
     path('submit/<int:pk>/', ReviewCreateView.as_view(), name='review-create'),
     path('delete/<int:pk>/', ReviewDeleteView.as_view(), name='review-delete'),
+
+
 ]
