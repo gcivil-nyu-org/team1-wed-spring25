@@ -158,4 +158,38 @@ else:
 
 - **Volume Persistence:**  
   PostgreSQL data is persisted via the named volume `postgres_data`. On Linux, this is typically stored at `/var/lib/docker/volumes/postgres_data/_data`.
-  
+
+
+### Reset Database
+- Remove Docker data
+```
+# Stop all running containers
+docker-compose down
+
+# Remove all volumes
+docker-compose down -v
+
+# Remove all containers and images (optional, more thorough cleanup)
+docker system prune -a
+```
+
+- Delete migration files
+
+```
+# Keep __init__.py in each migrations folder
+rm c:\Projects\team1-wed-spring25\VocationalNYC\users\migrations\0*.py
+rm c:\Projects\team1-wed-spring25\VocationalNYC\courses\migrations\0*.py
+rm c:\Projects\team1-wed-spring25\VocationalNYC\review\migrations\0*.py
+rm c:\Projects\team1-wed-spring25\VocationalNYC\bookmarks\migrations\0*.py
+```
+
+- Rebuild and start containers:
+```
+# Build fresh containers
+docker-compose build --no-cache
+
+# Start services
+docker-compose up -d
+docker-compose exec app python manage.py makemigrations
+docker-compose exec app python manage.py migrate
+```
