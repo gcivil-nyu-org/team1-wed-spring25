@@ -69,7 +69,7 @@ class ReviewCreateView(View):
             score_rating=int(score_rating),
         )
 
-        return redirect("course-detail", pk=pk)
+        return redirect("course_detail", pk=pk)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -86,4 +86,4 @@ class ReviewDeleteView(View):
         # course_id = review.course.pk
         review.delete()
 
-        return redirect("course-detail", pk=pk)
+        return redirect("course_detail", pk=pk)
