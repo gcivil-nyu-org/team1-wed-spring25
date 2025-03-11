@@ -1,7 +1,8 @@
 import requests
-import os
-from django.conf import settings
-from django.core.files.storage import default_storage
+
+# import os
+# from django.conf import settings
+# from django.core.files.storage import default_storage
 from django.shortcuts import render, redirect
 from django.views import generic
 from allauth.account.views import SignupView
@@ -40,24 +41,21 @@ class CustomSignupView(SignupView):
 
 @login_required
 def profile_view(request):
-    context = {
-        'user': request.user,
-        'role': request.user.role
-    }
-    
+    context = {"user": request.user, "role": request.user.role}
+
     if request.user.role == "training_provider":
         try:
             provider = Provider.objects.get(user=request.user)
-            context['provider'] = provider
+            context["provider"] = provider
         except Provider.DoesNotExist:
             pass
     elif request.user.role == "career_changer":
         try:
             student = request.user.student_profile
-            context['student'] = student
+            context["student"] = student
         except Student.DoesNotExist:
             pass
-            
+
     return render(request, "users/profile.html", context)
 
 
@@ -73,15 +71,16 @@ def provider_verification_view(request):
             provider.user = request.user
             provider.verification_status = False
             provider.save()
-            
-            return render(request, "account/provider_verification_success.html", {
-                'provider': provider,
-                'is_pending': True
-            })
+
+            return render(
+                request,
+                "account/provider_verification_success.html",
+                {"provider": provider, "is_pending": True},
+            )
     else:
         form = ProviderVerificationForm()
-    
-    return render(request, "account/provider_verification.html", {'form': form})
+
+    return render(request, "account/provider_verification.html", {"form": form})
 
 
 class ProviderDetailView(generic.DetailView):

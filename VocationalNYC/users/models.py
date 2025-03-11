@@ -2,6 +2,7 @@ from django.db import models
 from .managers import CustomUserManager
 from django.contrib.auth.models import AbstractUser
 
+
 class CustomUser(AbstractUser):
     ROLE_CHOICES = (
         ("career_changer", "Career Changer"),
@@ -16,10 +17,13 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f"{self.role.capitalize()}: {self.username}"
-    
+
+
 class Student(models.Model):
     student_id = models.AutoField(primary_key=True)
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='student_profile')
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, related_name="student_profile"
+    )
     bio = models.TextField(blank=True, null=True)
     tag = models.IntegerField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -28,23 +32,24 @@ class Student(models.Model):
     class Meta:
         verbose_name = "Career Changer"
         verbose_name_plural = "Career Changers"
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
 
     def __str__(self):
         return f"Student: {self.user.username}"
 
+
 class Provider(models.Model):
     provider_id = models.AutoField(primary_key=True)
     user = models.OneToOneField(
-        CustomUser, 
+        CustomUser,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name='provider_profile'
+        related_name="provider_profile",
     )
     name = models.CharField(max_length=255)
-    contact_firstname = models.CharField(max_length=255,blank=True, null=True)
-    contact_lastname = models.CharField(max_length=255,blank=True, null=True)
+    contact_firstname = models.CharField(max_length=255, blank=True, null=True)
+    contact_lastname = models.CharField(max_length=255, blank=True, null=True)
     phone_num = models.CharField(max_length=15)
     address = models.CharField(max_length=255)
     open_time = models.CharField(max_length=100, null=True, blank=True)
@@ -53,10 +58,10 @@ class Provider(models.Model):
     verification_status = models.BooleanField(default=False)
     verification_file_url = models.URLField(blank=True, null=True)
     verification_file = models.FileField(
-        upload_to='provider_certificates/',
+        upload_to="provider_certificates/",
         null=True,
         blank=True,
-        help_text="Upload your business certificate (PDF, JPG, PNG)"
+        help_text="Upload your business certificate (PDF, JPG, PNG)",
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -64,7 +69,7 @@ class Provider(models.Model):
     class Meta:
         verbose_name = "Training Provider"
         verbose_name_plural = "Training Providers"
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
 
     def __str__(self):
         return f"{self.name} - {self.website}"
