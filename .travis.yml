@@ -18,6 +18,8 @@ install:
 
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
+  - echo "Database setting:"
+  - python -c "import django; from django.conf import settings; django.setup(); print(settings.DATABASES)"
   - python VocationalNYC/manage.py migrate
   - python VocationalNYC/manage.py collectstatic --noinput
 
