@@ -3,9 +3,12 @@ from django.http import JsonResponse
 from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.core.serializers import serialize
+from .models import ReviewReply
 from .models import Review
 from courses.models import Course
-from django.urls import reverse
+
+# from django.urls import reverse
 
 
 class ReviewListView(View):
@@ -66,8 +69,7 @@ class ReviewCreateView(View):
             content=content,
             score_rating=int(score_rating),
         )
-
-        return redirect("course-detail", pk=pk)
+        return redirect("course_detail", pk=pk)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -81,7 +83,6 @@ class ReviewDeleteView(View):
                 status=403,
             )
 
-        course_id = review.course.pk
+        # course_id = review.course.pk
         review.delete()
-
-        return redirect("course-detail", pk=pk)
+        return redirect("course_detail", pk=pk)

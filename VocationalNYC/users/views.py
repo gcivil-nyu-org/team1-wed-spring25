@@ -1,12 +1,16 @@
 import requests
+
+# import os
+# from django.conf import settings
+# from django.core.files.storage import default_storage
 from django.shortcuts import render, redirect
 from django.views import generic
 from allauth.account.views import SignupView
-from .forms import CustomSignupForm
+from .forms import CustomSignupForm, ProviderVerificationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
 
-from users.models import Provider
+from users.models import Provider, Student
 
 
 def login(request):
@@ -37,20 +41,46 @@ class CustomSignupView(SignupView):
 
 @login_required
 def profile_view(request):
-    return render(request, "users/profile.html", {"user": request.user})
+    context = {"user": request.user, "role": request.user.role}
+
+    if request.user.role == "training_provider":
+        try:
+            provider = Provider.objects.get(user=request.user)
+            context["provider"] = provider
+        except Provider.DoesNotExist:
+            pass
+    elif request.user.role == "career_changer":
+        try:
+            student = request.user.student_profile
+            context["student"] = student
+        except Student.DoesNotExist:
+            pass
+
+    return render(request, "users/profile.html", context)
 
 
 @login_required
 def provider_verification_view(request):
-    # Only allow access if user is a logged-in provider
     if request.user.role != "training_provider":
         return redirect("profile")
 
     if request.method == "POST":
-        # TODO: handle or verify the provider info here
-        return render(request, "account/provider_verification_success.html")
+        form = ProviderVerificationForm(request.POST, request.FILES)
+        if form.is_valid():
+            provider = form.save(commit=False)
+            provider.user = request.user
+            provider.verification_status = False
+            provider.save()
+
+            return render(
+                request,
+                "account/provider_verification_success.html",
+                {"provider": provider, "is_pending": True},
+            )
     else:
-        return render(request, "account/provider_verification.html")
+        form = ProviderVerificationForm()
+
+    return render(request, "account/provider_verification.html", {"form": form})
 
 
 class ProviderDetailView(generic.DetailView):
