@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.db.models import Q
 from django.contrib.auth import get_user_model
-from .models import Chat, Message
+from .models import Chat
 from .forms import MessageForm
 
 

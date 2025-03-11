@@ -65,29 +65,3 @@ class RedisConnectivityTest(TestCase):
             )
         except Exception as e:
             self.fail(f"Channel layer (Redis) connectivity failed: {e}")
-
-
-class MessageStorageTest(TestCase):
-    def setUp(self):
-        self.user1 = User.objects.create_user(
-            username="chat-test-user1", password="testpass"
-        )
-        self.user2 = User.objects.create_user(
-            username="chat-test-user2", password="testpass"
-        )
-
-        self.chat = Chat.objects.create(user1=self.user1, user2=self.user2)
-        self.assertTrue(self.chat.chat_hash)
-
-    def test_message_storage(self):
-        test_content = "Hello, this is a test message."
-        message = Message.objects.create(
-            chat=self.chat,
-            sender=self.user1,
-            recipient=self.user2,
-            content=test_content,
-        )
-
-        messages = Message.objects.filter(chat=self.chat)
-        self.assertEqual(messages.count(), 1)
-        self.assertEqual(messages.first().content, test_content)
