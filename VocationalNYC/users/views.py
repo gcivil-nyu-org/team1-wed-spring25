@@ -9,7 +9,7 @@ from .forms import CustomSignupForm, ProviderVerificationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
 
-from users.models import Provider
+from users.models import Provider, Student
 
 
 def login(request):
@@ -40,7 +40,25 @@ class CustomSignupView(SignupView):
 
 @login_required
 def profile_view(request):
-    return render(request, "users/profile.html", {"user": request.user})
+    context = {
+        'user': request.user,
+        'role': request.user.role
+    }
+    
+    if request.user.role == "training_provider":
+        try:
+            provider = Provider.objects.get(user=request.user)
+            context['provider'] = provider
+        except Provider.DoesNotExist:
+            pass
+    elif request.user.role == "career_changer":
+        try:
+            student = request.user.student_profile
+            context['student'] = student
+        except Student.DoesNotExist:
+            pass
+            
+    return render(request, "users/profile.html", context)
 
 
 @login_required
