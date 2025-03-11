@@ -180,6 +180,7 @@ docker system prune -a
 rm c:\Projects\team1-wed-spring25\VocationalNYC\users\migrations\0*.py
 rm c:\Projects\team1-wed-spring25\VocationalNYC\courses\migrations\0*.py
 rm c:\Projects\team1-wed-spring25\VocationalNYC\review\migrations\0*.py
+rm c:\Projects\team1-wed-spring25\VocationalNYC\bookmarks\migrations\0*.py
 ```
 
 - Rebuild and start containers:
