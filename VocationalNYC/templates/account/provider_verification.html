@@ -95,46 +95,48 @@
                 background-position: 100%;
             }
         }
+
+        .error-feedback {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
     </style>
 </head>
 <body>
     <div class="verification-container">
         <h2>Provider Verification</h2>
         <p>Please provide the required details for verification.</p>
+        {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+            Please correct the errors below.
+        </div>
+        {% endif %}
         <hr>
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data" novalidate>
             {% csrf_token %}
-
+            {% for field in form %}
             <div class="mb-3">
-                <label for="business_name" class="form-label">Business Name <span style="color: red;">*</span></label>
-                <input type="text" class="form-control" name="business_name" id="business_name" placeholder="Enter your business name" required>
+                <label for="{{ field.id_for_label }}" class="form-label">
+                    {{ field.label }} {% if field.field.required %}<span style="color: red;">*</span>{% endif %}
+                </label>
+                {{ field }}
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                        <div class="error-feedback">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+                {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
             </div>
-
-            <div class="mb-3">
-                <label for="business_address" class="form-label">Business Address <span style="color: red;">*</span></label>
-                <input type="text" class="form-control" name="business_address" id="business_address" placeholder="Enter business address" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="website" class="form-label">Business Website (Optional)</label>
-                <input type="url" class="form-control" name="website" id="website" placeholder="Enter website URL">
-            </div>
-
-            <div class="mb-3">
-                <label for="contact_person" class="form-label">Contact Person <span style="color: red;">*</span></label>
-                <input type="text" class="form-control" name="contact_person" id="contact_person" placeholder="Enter contact person name" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="contact_number" class="form-label">Contact Number <span style="color: red;">*</span></label>
-                <input type="tel" class="form-control" name="contact_number" id="contact_number" placeholder="Enter contact number" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="certificate" class="form-label">Upload Business Certificate <span style="color: red;">*</span></label>
-                <input type="file" class="form-control" name="certificate" id="certificate" accept=".pdf,.jpg,.png" required>
-            </div>
-
+            {% endfor %}
             <button type="submit" class="btn btn-custom">Submit for Verification</button>
         </form>
     </div>
