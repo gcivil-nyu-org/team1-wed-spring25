@@ -8,9 +8,7 @@ class Course(models.Model):
     name = models.CharField(max_length=255)
     provider = models.ForeignKey(
         'users.Provider',
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True
+        on_delete=models.CASCADE
     )
     keywords = models.CharField(max_length=255, null=True, blank=True)
     course_desc = models.TextField()
