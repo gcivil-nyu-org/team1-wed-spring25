@@ -10,16 +10,9 @@
     <p><strong>Cost:</strong> {{ course.cost }}</p>
     <p><strong>Location:</strong> {{ course.location }}</p>
     <p><strong>Description:</strong> {{ course.course_desc }}</p>
-    <p><strong>Duration:</strong></p>
-    {% if course_duration %}
-        <ul>
-            <li>Classroom Hours: {{ course_duration.classroom_hours }}</li>
-            <li>Lab Hours: {{ course_duration.lab_hours }}</li>
-            <li>Internship Hours: {{ course_duration.internship_hours }}</li>
-            <li>Practical Hours: {{ course_duration.practical_hours }}</li>
-        </ul>
-    {% else %}
-        <p>No duration details available.</p>
-    {% endif %}
+    <p><strong>Classroom Hours:</strong> {{ course.classroom_hours }}</p>
+    <p><strong>Lab Hours:</strong> {{ course.lab_hours }}</p>
+    <p><strong>Internship Hours:</strong> {{ course.internship_hours }}</p>
+    <p><strong>Practical Hours:</strong> {{ course.practical_hours }}</p>
 </div>
 {% endblock %}
