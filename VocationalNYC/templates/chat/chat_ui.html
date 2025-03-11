@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container">
+    <h2>Chat with {{ other_user.username }}</h2>
+    <!-- Chat Messages -->
+    <div id="chat-window" style="border:1px solid #ccc; padding: 15px; height: 300px; overflow-y: scroll;">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="message" style="margin-bottom: 10px;">
+            <strong>{{ message.sender.username }}:</strong> {{ message.content }}<br>
+            <small class="text-muted">{{ message.send_time|date:"Y-m-d H:i" }}</small>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>No messages yet. Start the conversation!</p>
+      {% endif %}
+    </div>
+    
+    <!-- Message Form -->
+    <form method="post" id="chat-form" style="margin-top: 15px;">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+
+    <a href="{% url 'delete_chat' chat.chat_hash %}" class="btn btn-danger" style="margin-top: 15px;">Delete Chat</a>
+
+    <script>
+        // Determine the correct WebSocket protocol based on HTTP protocol.
+        const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
+      
+        // Build the WebSocket URL using the chat hash passed from the server.
+        const chatSocket = new WebSocket(
+            wsScheme + '://' + window.location.host + '/ws/chat/{{ chat.chat_hash }}/'
+        );
+      
+        // Called when the WebSocket connection is successfully opened.
+        chatSocket.onopen = function(e) {
+            console.log("WebSocket connection established.");
+        };
+      
+        // Called when a message is received from the server.
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            // Assume the received data includes 'sender' and 'message' keys.
+            const messageContainer = document.getElementById('chat-window');
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            // Construct the message HTML. Adjust the markup as needed.
+            messageDiv.innerHTML = '<strong>' + data.sender + ':</strong> ' + data.message +
+                                   '<br><small class="text-muted">' + new Date().toLocaleString() + '</small>';
+            messageContainer.appendChild(messageDiv);
+            // Auto-scroll to the bottom of the chat window.
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+        };
+      
+        // Log any errors that occur.
+        chatSocket.onerror = function(e) {
+            console.error('WebSocket error:', e);
+        };
+      
+        // Log when the WebSocket connection is closed.
+        chatSocket.onclose = function(e) {
+            console.log('WebSocket connection closed.');
+        };
+      
+        // Handle sending a message when the form is submitted.
+        const chatForm = document.getElementById('chat-form');
+        chatForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Get the message text from the form's input/textarea with the name "content".
+            const messageInput = document.querySelector('[name="content"]');
+            const message = messageInput.value;
+            if (message.trim() === '') {
+                return false;
+            }
+            // Send the message data as JSON.
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'sender': "{{ request.user.username }}"
+            }));
+            // Clear the input field after sending.
+            messageInput.value = '';
+        });
+      </script>
+  </div>
+{% endblock %}

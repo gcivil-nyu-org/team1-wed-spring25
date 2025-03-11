@@ -63,10 +63,13 @@ INSTALLED_APPS = [
     "users",
     "allauth",
     "allauth.account",
+    "channels",
     "courses",
     "review",
+    "message",
     "bookmarks",
 ]
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -84,6 +87,15 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",  # Django admin login
     "allauth.account.auth_backends.AuthenticationBackend",  # allauth authentication
 ]
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}
 
 ROOT_URLCONF = "vocationalnyc.urls"
 
@@ -106,7 +118,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "vocationalnyc.wsgi.application"
+# WSGI_APPLICATION = "vocationalnyc.wsgi.application"
+ASGI_APPLICATION = "vocationalnyc.asgi.application"
 
 # Database
 BASE_DIR = Path(__file__).resolve().parent.parent

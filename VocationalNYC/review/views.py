@@ -69,7 +69,6 @@ class ReviewCreateView(View):
             content=content,
             score_rating=int(score_rating),
         )
-
         return redirect("course_detail", pk=pk)
 
 
@@ -86,5 +85,4 @@ class ReviewDeleteView(View):
 
         # course_id = review.course.pk
         review.delete()
-
         return redirect("course_detail", pk=pk)
