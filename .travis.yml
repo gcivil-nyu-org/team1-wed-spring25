@@ -1,0 +1,43 @@
+dist: focal
+language: python
+python:
+  - "3.12"
+cache: pip
+
+services:
+  - postgresql
+
+env:
+  global:
+    - DJANGO_SETTINGS_MODULE=VocationalNYC.vocationalnyc.settings
+    - PYTHONPATH=$PYTHONPATH:$(pwd)
+
+install:
+  - pip install -r VocationalNYC/requirements.txt
+  - pip install black flake8 coverage coveralls
+
+before_script:
+  - psql -c 'create database travis_ci_test;' -U postgres
+  - python VocationalNYC/manage.py migrate
+  - python VocationalNYC/manage.py collectstatic --noinput
+
+script:
+  - python VocationalNYC/manage.py test
+  - black --check VocationalNYC
+  - flake8 VocationalNYC
+  - coverage run --source=VocationalNYC/vocationalnyc VocationalNYC/manage.py test
+
+after_success:
+  - coveralls
+
+deploy:
+  provider: elasticbeanstalk
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
+  region: "us-east-1"
+  app: "djangoTutorial"
+  env: "django-env"
+  bucket_name: "elasticbeanstalk-us-east-1-982534395285"
+  skip_cleanup: true
+  on:
+    branch: main
