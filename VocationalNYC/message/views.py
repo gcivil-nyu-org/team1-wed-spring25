@@ -31,11 +31,9 @@ def chat_list(request):
 def chat_detail(request, chat_hash):
     chat = get_object_or_404(Chat, chat_hash=chat_hash)
 
-    # Ensure the logged-in user is one of the participants.
     if request.user not in [chat.user1, chat.user2]:
         return HttpResponseForbidden("You do not have permission to view this chat.")
 
-    # Determine the other user for display.
     other_user = chat.user2 if request.user == chat.user1 else chat.user1
 
     if request.method == "POST":
@@ -44,7 +42,6 @@ def chat_detail(request, chat_hash):
             message = form.save(commit=False)
             message.chat = chat
             message.sender = request.user
-            # Automatically determine the recipient.
             message.recipient = other_user
             message.save()
             return redirect("chat_detail", chat_hash=chat.chat_hash)
@@ -92,16 +89,14 @@ def select_chat_partner(request):
 @login_required
 def delete_chat(request, chat_hash):
     chat = get_object_or_404(Chat, chat_hash=chat_hash)
-    # Verify the user is a participant.
     if request.user not in [chat.user1, chat.user2]:
         return HttpResponseForbidden("You do not have permission to delete this chat.")
 
-    # Optional: Determine the other user to show in the confirmation.
     other_user = chat.user2 if request.user == chat.user1 else chat.user1
 
     if request.method == "POST":
         chat.delete()
-        return redirect("chat_list")  # Redirect to a page that lists chats
+        return redirect("chat_list")
     return render(
         request, "chat/delete_chat.html", {"chat": chat, "other_user": other_user}
     )

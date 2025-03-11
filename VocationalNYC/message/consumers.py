@@ -21,7 +21,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = data.get("message", "")
         sender = data.get("sender", "")
 
-        # Broadcast the message to the group
         await self.channel_layer.group_send(
             self.room_group_name,
             {

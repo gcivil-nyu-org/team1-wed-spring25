@@ -16,19 +16,15 @@ class Chat(models.Model):
         ordering = ["-created_at"]
 
     def clean(self):
-        # Prevent a chat between the same user.
         if self.user1 == self.user2:
             raise ValidationError("A chat must be between two distinct users.")
 
     def save(self, *args, **kwargs):
-        # Run validations.
         self.full_clean()
 
-        # Ensure consistent ordering so that (user1, user2) and (user2, user1) are equivalent.
         if self.user1.id > self.user2.id:
             self.user1, self.user2 = self.user2, self.user1
 
-        # Generate a consistent hash for the chat.
         sorted_ids = sorted([str(self.user1.id), str(self.user2.id)])
         hash_input = "-".join(sorted_ids)
         self.chat_hash = hashlib.sha256(hash_input.encode("utf-8")).hexdigest()
@@ -52,11 +48,9 @@ class Message(models.Model):
     read_time = models.DateTimeField(null=True, blank=True)
 
     def clean(self):
-        # Ensure the sender and recipient are not the same.
         if self.sender == self.recipient:
             raise ValidationError("Sender and recipient cannot be the same.")
 
-        # Both sender and recipient must be part of the chat.
         if self.sender not in [
             self.chat.user1,
             self.chat.user2,
@@ -66,11 +60,7 @@ class Message(models.Model):
             )
 
     def save(self, *args, **kwargs):
-        # Run validations.
         self.full_clean()
-        raise ValidationError(
-            "Both sender and recipient must be participants of this chat."
-        )
         super().save(*args, **kwargs)
 
     def __str__(self):
