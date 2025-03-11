@@ -42,6 +42,5 @@ urlpatterns = [
     path("i18n/", include("django.conf.urls.i18n")),
     # Course app URLs
     path("courses/", include("courses.urls")),
-
-    path('reviews/', include('review.urls')),
+    path("reviews/", include("review.urls")),
 ]
