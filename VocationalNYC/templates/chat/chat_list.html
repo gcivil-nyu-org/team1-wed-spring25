@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container">
+    <h2>Your Chats</h2>
+    {% if chats %}
+      {% for chat in chats %}
+        <div class="card">
+          <h3>
+            <a href="{% url 'chat_detail' chat.chat_hash %}" style="text-decoration: none; color: inherit;">
+              Chat between {{ chat.user1.username }} and {{ chat.user2.username }}
+            </a>
+          </h3>
+          <p>
+            <small>Started on {{ chat.created_at|date:"Y-m-d H:i" }}</small>
+          </p>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No chats found. Start a new chat!</p>
+    {% endif %}
+  </div>
+{% endblock %}

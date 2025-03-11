@@ -122,9 +122,9 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         course_duration = CourseDuration.objects.filter(course=self.object).first()
-        reviews = Review.objects.filter(course=self.object).order_by('-created_at')
-        context['course_duration'] = course_duration
-        context['reviews'] = reviews
+        reviews = Review.objects.filter(course=self.object).order_by("-created_at")
+        context["course_duration"] = course_duration
+        context["reviews"] = reviews
         return context
 
 

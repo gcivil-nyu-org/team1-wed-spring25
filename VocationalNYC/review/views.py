@@ -48,35 +48,40 @@ class ReviewReplyDetailView(View):
             "created_at": reply.created_at,
         }
         return JsonResponse(data)
-    
-@method_decorator(login_required, name='dispatch')
+
+
+@method_decorator(login_required, name="dispatch")
 class ReviewCreateView(View):
     def post(self, request, pk):
         course = get_object_or_404(Course, pk=pk)
-        content = request.POST.get('content')
-        score_rating = request.POST.get('score_rating')
+        content = request.POST.get("content")
+        score_rating = request.POST.get("score_rating")
 
         if not content or not score_rating:
-            return JsonResponse({'error': 'All fields are required.'}, status=400)
+            return JsonResponse({"error": "All fields are required."}, status=400)
 
         Review.objects.create(
             course=course,
             user=request.user,
             content=content,
-            score_rating=int(score_rating)
+            score_rating=int(score_rating),
         )
 
-        return redirect('course-detail', pk=pk)
-    
-@method_decorator(login_required, name='dispatch')
+        return redirect("course-detail", pk=pk)
+
+
+@method_decorator(login_required, name="dispatch")
 class ReviewDeleteView(View):
     def post(self, request, pk):
         review = get_object_or_404(Review, pk=pk)
 
         if request.user != review.user:
-            return JsonResponse({'error': 'You do not have permission to delete this review'}, status=403)
+            return JsonResponse(
+                {"error": "You do not have permission to delete this review"},
+                status=403,
+            )
 
-        course_id = review.course.pk  
+        course_id = review.course.pk
         review.delete()
 
-        return redirect('course-detail', pk=pk)
+        return redirect("course-detail", pk=pk)
