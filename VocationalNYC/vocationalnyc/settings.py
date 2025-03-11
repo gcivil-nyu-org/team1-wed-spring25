@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "courses",
     "review",
+    "bookmarks",
 ]
 
 MIDDLEWARE = [

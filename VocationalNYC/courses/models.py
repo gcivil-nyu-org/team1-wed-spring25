@@ -7,24 +7,16 @@ class Course(models.Model):
     course_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     provider = models.ForeignKey(
-        'users.Provider',
-        on_delete=models.CASCADE
+        Provider, on_delete=models.CASCADE, related_name="course"
     )
     keywords = models.CharField(max_length=255, null=True, blank=True)
     course_desc = models.TextField()
     cost = models.IntegerField(default=0)
     location = models.CharField(max_length=255)
+    classroom_hours = models.IntegerField(default=0)
+    lab_hours = models.IntegerField(default=0)
+    internship_hours = models.IntegerField(default=0)
+    practical_hours = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.name}"
-
-
-class CourseDuration(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    classroom_hours = models.IntegerField()
-    lab_hours = models.IntegerField()
-    internship_hours = models.IntegerField()
-    practical_hours = models.IntegerField()
-
-    def __str__(self):
-        return f"Classroom Hours {self.classroom_hours}, Lab Hours {self.lab_hours}, Internship Hours {self.internship_hours}, Practical Hours {self.practical_hours}."
