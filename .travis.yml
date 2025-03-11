@@ -10,7 +10,7 @@ services:
 env:
   global:
     - DJANGO_SETTINGS_MODULE=VocationalNYC.vocationalnyc.settings
-    - PYTHONPATH=$PYTHONPATH:$(pwd)
+    - PYTHONPATH=$PYTHONPATH:$(pwd)/VocationalNYC
 
 install:
   - pip install -r VocationalNYC/requirements.txt
