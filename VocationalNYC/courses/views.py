@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import generic
 from django.db.models import Q
+from review.models import Review
 
 from users.models import Provider
 from .models import Course
@@ -90,23 +91,6 @@ class CourseListView(generic.ListView):
                     name=course_name, provider=provider, defaults=course_defaults
                 )
 
-                # # check whether course exists
-                # if not Course.objects.filter(
-                #     name=course_name, provider=provider
-                # ).exists():
-                #     Course.objects.create(
-                #         name=course_name,
-                #         provider=provider,
-                #         keywords=course.get("keywords", ""),
-                #         course_desc=course.get("coursedescription", ""),
-                #         cost=course.get("cost_total", 0),
-                #         location=location,
-                #         classroom_hours=classroom_hours,
-                #         lab_hours=lab_hours,
-                #         internship_hours=internship_hours,
-                #         practical_hours=practical_hours,
-                #     )
-
         except requests.RequestException as e:
             logger.error("External API call failed: %s", e)
 
@@ -120,6 +104,11 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
     login_url = reverse_lazy("account_login")
     redirect_field_name = "next"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        reviews = Review.objects.filter(course=self.object).order_by('-created_at')
+        context['reviews'] = reviews
+        return context
 
 def search_result(request):
     query = request.GET.get("q", "").strip()
