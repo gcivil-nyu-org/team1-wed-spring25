@@ -1,8 +1,11 @@
 import requests
+import os
+from django.conf import settings
+from django.core.files.storage import default_storage
 from django.shortcuts import render, redirect
 from django.views import generic
 from allauth.account.views import SignupView
-from .forms import CustomSignupForm
+from .forms import CustomSignupForm, ProviderVerificationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
 
@@ -42,15 +45,25 @@ def profile_view(request):
 
 @login_required
 def provider_verification_view(request):
-    # Only allow access if user is a logged-in provider
     if request.user.role != "training_provider":
         return redirect("profile")
 
     if request.method == "POST":
-        # TODO: handle or verify the provider info here
-        return render(request, "account/provider_verification_success.html")
+        form = ProviderVerificationForm(request.POST, request.FILES)
+        if form.is_valid():
+            provider = form.save(commit=False)
+            provider.user = request.user
+            provider.verification_status = False
+            provider.save()
+            
+            return render(request, "account/provider_verification_success.html", {
+                'provider': provider,
+                'is_pending': True
+            })
     else:
-        return render(request, "account/provider_verification.html")
+        form = ProviderVerificationForm()
+    
+    return render(request, "account/provider_verification.html", {'form': form})
 
 
 class ProviderDetailView(generic.DetailView):

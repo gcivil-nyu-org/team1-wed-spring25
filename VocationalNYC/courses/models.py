@@ -6,7 +6,12 @@ from users.models import Provider
 class Course(models.Model):
     course_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
+    provider = models.ForeignKey(
+        'users.Provider',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
     keywords = models.CharField(max_length=255, null=True, blank=True)
     course_desc = models.TextField()
     cost = models.IntegerField(default=0)
