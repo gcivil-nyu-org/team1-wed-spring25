@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import environ
 import sys
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -120,7 +121,19 @@ environ.Env.read_env(BASE_DIR / ".env")
 #         }
 #     }
 # elif env("DATABASE_URL", default=None):
-if env("DATABASE_URL", default=None):
+
+if os.environ.get('TRAVIS'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'travis_ci_test',
+            'USER': 'postgres',
+            'PASSWORD': '',
+            'HOST': 'localhost',
+            'PORT': 5432,
+        }
+    }
+elif env("DATABASE_URL", default=None):
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
