@@ -95,7 +95,9 @@ class CourseListView(generic.ListView):
             logger.error("External API call failed: %s", e)
 
         # return Course.objects.all()
-        courses = Course.objects.all().annotate(avg_rating=Avg('reviews__score_rating'), reviews_count=Count('reviews'))
+        courses = Course.objects.all().annotate(
+            avg_rating=Avg("reviews__score_rating"), reviews_count=Count("reviews")
+        )
         for course in courses:
             avg = course.avg_rating if course.avg_rating is not None else 0
             course.rating = round(avg, 1)
@@ -152,8 +154,9 @@ def search_result(request):
 
     if min_classroom_hours is not None and min_classroom_hours.isdigit():
         courses = courses.filter(classroom_hours__gte=int(min_classroom_hours))
-    
-    courses = courses.annotate(avg_rating=Avg('reviews__score_rating'), reviews_count=Count('reviews'))
+    courses = courses.annotate(
+        avg_rating=Avg("reviews__score_rating"), reviews_count=Count("reviews")
+    )
     for course in courses:
         avg = course.avg_rating if course.avg_rating is not None else 0
         course.rating = round(avg, 1)
@@ -164,8 +167,6 @@ def search_result(request):
         else:
             course.rating_partial_star_position = 0
             course.rating_partial_percentage = 0
-
-
     context = {
         "courses": courses,
         "query": query,
