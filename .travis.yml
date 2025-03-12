@@ -9,7 +9,8 @@ services:
 
 env:
   global:
-    - DJANGO_SETTINGS_MODULE=VocationalNYC.vocationalnyc.settings
+    # - DJANGO_SETTINGS_MODULE=VocationalNYC.vocationalnyc.settings
+    DJANGO_SETTINGS_MODULE=vocationalnyc.settings
     - PYTHONPATH=$PYTHONPATH:$(pwd)/VocationalNYC
 
 install:
@@ -30,7 +31,7 @@ script:
   # - coverage run --source=VocationalNYC/vocationalnyc VocationalNYC/manage.py test
   - cd VocationalNYC
   - python manage.py test
-  - black --check
+  - black --check .
   - flake8
   - coverage run --source=vocationalnyc manage.py test
 
