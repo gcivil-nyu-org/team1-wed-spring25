@@ -1,14 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
-    <title>??????</title>
+    <title>Discover Courses</title>
+      <link rel="icon"
+        href="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/favicon.png"
+        type="image/png">
     <style>
-
-
 
         :root {
             font-family: system-ui;
+            --color1: #ffecd9;
+            --color2: #ffecd9;
+            --color3: #ffecd9;
+            --color4: #ffecd9;
+            --color5: #ffecd9;
+            --color6: #ffecd9;
+            --color7: #ffecd9;
+                        --color8: #ffecd9;
+
+
             --black-90: #1A1D26;
             --black-80: #2C303C;
             --black-70: #3F4451;
@@ -66,12 +78,17 @@
             --violet-10: #C7D4FA;
             --violet-05: #E9EEFC;
             --muted: #515767;
-            --font-primary: "Roboto", Helvetica Neue, Helvetica, sans-serif;
-            --font-secondary: "Montserrat", Helvetica Neue, Helvetica, sans-serif;
+            --light-peach: #ffecd9;
+
             -webkit-font-smoothing: antialiased;
             text-rendering: optimizelegibility;
             text-size-adjust: none;
             color: var(--black-90)
+
+            --primary-color: #007bff;  /* Blue */
+    --secondary-color: #6c757d; /* Gray */
+    --background-light: #f8f9fa; /* Light gray */
+    --text-color: #212529; /* Dark gray */
         }
 
         a {
@@ -84,13 +101,18 @@
             color: var(--blue-90)
         }
 
-        .csitLg {
+        .Small-Icon {
             display: inline-block;
             vertical-align: middle;
-            margin: 0
+            margin: 0;
+
         }
 
-        .bGXiGV {
+        select {
+    cursor: pointer;
+}
+
+        .BookmarkButton {
             --color: var(--white-00);
             --bg-color: var(--red-50);
             --bg-color-hover: rgba(166, 28, 30, 1);
@@ -130,47 +152,30 @@
             transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1)
         }
 
-        .bGXiGV.type-secondary {
-            --color: var(--blue-50);
-            --bg-color: var(--white-00);
-            --bg-color-hover: var(--blue-05);
-            --bg-color-active: var(--blue-10);
-            --border-color: var(--blue-50);
-            --bs: inset 0px 0px 0px 1px #115abf, rgb(51 51 51/30%) 0px 1px 3px;
-            --bs-hover: inset 0px 0px 0px 1px #115abf, rgb(255 255 255) 0px 0px 0px 1px, #115abf 0px 0px 0px 3px;
-            --bs-active: inset 0px 0px 0px 1px #115abf
-        }
-
         @media (hover: hover) {
-            .bGXiGV:hover:not(:disabled):not(:active) {
+            .BookmarkButton:hover:not(:disabled):not(:active) {
                 color: var(--color);
                 background: var(--bg-color-hover);
                 box-shadow: var(--bs-hover)
             }
         }
 
-        .bGXiGV:focus-visible {
+        .BookmarkButton:focus-visible {
             background: var(--bg-color-hover);
             box-shadow: var(--bs-hover)
         }
 
-        .bGXiGV:active {
+        .BookmarkButton:active {
             background: var(--bg-color-hover);
             box-shadow: var(--bs-active)
         }
 
-        .bGXiGV.size-large {
-            font-size: 1rem;
-            line-height: 1.5;
-            height: 50px
-        }
-
-        .bGXiGV.size-small {
+        .BookmarkButton.size-small {
             --horizontal-spacing: 0.75rem;
             height: 30px
         }
 
-        .bGXiGV:disabled {
+        .BookmarkButton:disabled {
             background: rgba(170, 170, 170, 0.9);
             color: var(--gray-50);
             border-color: var(--gray-30);
@@ -178,7 +183,12 @@
             cursor: not-allowed
         }
 
-        .nRSJe {
+        .Filters {
+            padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-weight: 500;
+    transition: box-shadow 0.3s ease;
+
             --color: var(--blue-50);
             --bg-color: var(--white-00);
             --bg-color-hover: var(--white-00);
@@ -200,48 +210,50 @@
             max-width: 100%;
             height: 1.5rem;
             margin: 0px;
-            padding: 0px 0.625rem;
+
             appearance: none;
             color: var(--color);
             background: var(--bg-color);
             box-shadow: var(--bs);
             border: none;
-            border-radius: 50px;
+
             outline: none;
             cursor: pointer;
             font-size: 0.75rem;
-            font-weight: 700;
+
             transition-property: color, background, box-shadow;
             transition-duration: var(--transition-duration);
             transition-timing-function: var(--transition-timing-function)
         }
 
         @media (hover: hover) {
-            .nRSJe:hover {
+            .Filters:hover {
                 background: var(--bg-color-hover);
-                box-shadow: var(--bs-hover)
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+
             }
         }
 
-        .nRSJe:focus-visible {
+        .Filters:focus-visible {
             background: var(--bg-color-hover);
             box-shadow: var(--bs-hover);
             outline: none
         }
 
-        .nRSJe:active {
+        .Filters:active {
             background: var(--bg-color-active);
             box-shadow: var(--bs-active)
         }
 
-        .nRSJe[disabled] {
+        .Filters[disabled] {
             --color: var(--gray-50);
             background: rgba(211, 215, 220, 0.9);
             cursor: not-allowed;
             box-shadow: none
         }
 
-        .iWqOZw {
+        .Filters-Inside {
+
             flex: 1 1 auto;
             box-sizing: border-box;
             min-width: 0px;
@@ -251,7 +263,8 @@
             text-align: center
         }
 
-        .boikQY {
+        .Applied-Filters-Icon {
+
             flex: 0 0 1rem;
             display: inline-flex;
             -webkit-box-pack: center;
@@ -267,7 +280,13 @@
             transition: background var(--transition-duration) var(--transition-timing-function)
         }
 
-        .isySSG {
+        .Applied-Filters {
+
+            padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-weight: 500;
+    transition: box-shadow 0.3s ease;
+
             --bg-color: var(--blue-10);
             --bg-color-hover: var(--blue-10);
             --bg-color-active: var(--blue-15);
@@ -275,48 +294,54 @@
             --bs-active: none
         }
 
-        .kjZuzh {
+        .All-Distances-Inner-Frame {
+
             position: relative;
             box-sizing: border-box;
             width: 100%;
             appearance: none;
-            outline: none
+            outline: none;
+
         }
 
-        .dqUGML {
+        .All-Distances-Content-Box {
+
             --border-color: var(--black-70);
             width: 100%;
             height: 40px;
             appearance: none;
-            padding: 0px 1.75rem 0px 0.5rem;
+    padding: 0.5rem 1rem;
             margin: 0px;
             background: var(--white-00);
-            border-radius: 0.25rem;
-            border: 1px solid var(--border-color);
+    border-radius: 6px;
+    border: 1px solid var(--gray-15);
             outline: none;
             color: var(--black-90);
             font-size: 0.875rem;
             line-height: 1.4;
             text-overflow: ellipsis;
+                transition: border-color 0.3s ease;
+
             transition-property: color, border, box-shadow, background;
             transition-duration: 600ms;
             transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
             --bs: var(--white-00) 0px 0px 0px 1px, var(--border-color) 0px 0px 0px 3px
         }
 
-        .dqUGML:hover:not(:disabled), .dqUGML:focus:not(:disabled), .dqUGML.has-error, .dqUGML.touched:invalid:not(:focus) {
+        .All-Distances-Content-Box:hover:not(:disabled), .All-Distances-Content-Box:focus:not(:disabled), .All-Distances-Content-Box.has-error, .All-Distances-Content-Box.touched:invalid:not(:focus) {
             cursor: pointer;
             box-shadow: var(--bs)
         }
 
-        .dqUGML:disabled {
+        .All-Distances-Content-Box:disabled {
             color: var(--gray-50);
             --border-color: var(--gray-30);
             background: rgba(211, 215, 220, 0.9);
             cursor: not-allowed
         }
 
-        .iIYihU {
+        .All-Distances-Outer-Frame {
+
             display: inline-flex;
             flex-direction: column;
             box-sizing: border-box;
@@ -324,7 +349,8 @@
             color: var(--black-90)
         }
 
-        .eQfdNz {
+        .Dropdown-Icon {
+
             position: absolute;
             width: 20px;
             height: 20px;
@@ -333,275 +359,83 @@
             pointer-events: none
         }
 
-        select:disabled ~ .select__CaretStyled-sc-i9bbt3-4 {
-            fill: var(--gray-20)
-        }
+        .Little-Icons {
 
-        .fuNHPY {
             vertical-align: initial;
             display: inline-block
-        }
-
-        .rcbMe {
-            vertical-align: initial;
-            display: inline-block;
-            transform: rotate(90deg)
-        }
-
-        .eJAyFO {
-            position: fixed;
-            left: 1rem;
-            bottom: 68px;
-            max-width: calc(100% - 2rem);
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            z-index: 10000
-        }
-
-        @media (min-width: 640px) {
-            .eJAyFO {
-                max-width: 415px
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .eJAyFO {
-                bottom: 125px
-            }
         }
 
         html {
             background-color: var(--black-90);
             scroll-padding-top: 4rem
-        }
 
-        @media (prefers-reduced-motion: reduce) {
-            html {
-                scroll-behavior: auto !important
-            }
         }
 
         body {
             font-family: system-ui;
-            background-color: var(--white-00);
             min-height: 100vh;
             margin: 0px;
-            overflow-x: hidden
+            overflow-x: hidden;
+            background-color: var(--color1);
         }
 
         div {
             box-sizing: border-box
         }
 
-        @media (max-width: 639px) {
-            .sm-hide {
-                display: none !important
-            }
-        }
-
-        @media (min-width: 640px) and (max-width: 1023px) {
-            .md-hide {
-                display: none !important
-            }
-        }
-
-        @media (min-width: 1024px) {
-        }
-
-        @media (min-width: 640px) and (max-width: 767px) {
-        }
-
-        @media (min-width: 768px) and (max-width: 1023px) {
-        }
-
         .flex {
             display: flex
         }
 
-        @media (min-width: 640px) and (max-width: 1023px) {
-        }
-
-        @media (min-width: 768px) and (max-width: 1023px) {
-        }
-
-        @media (min-width: 1024px) {
-        }
-
-        @media (min-width: 640px) and (max-width: 1023px) {
-        }
-
-        @media (min-width: 768px) and (max-width: 1023px) {
-        }
-
-        @media (min-width: 1024px) {
-        }
-
-        .ml2 {
+        .Reviews {
             margin-left: 0.25rem !important
-        }
-
-        .mr3 {
-            margin-right: 0.5rem !important
-        }
-
-        .mb3 {
-            margin-bottom: 0.5rem !important
-        }
-
-        .ml3 {
-            margin-left: 0.5rem !important
-        }
-
-        .mt4 {
-            margin-top: 1rem !important
-        }
-
-        .mb4 {
-            margin-bottom: 1rem !important
-        }
-
-        .mb5 {
-            margin-bottom: 2rem !important
-        }
-
-        @media (min-width: 640px) and (max-width: 1023px) {
-            .md-mb4 {
-                margin-bottom: 1rem !important
-            }
-        }
-
-        @media (min-width: 768px) and (max-width: 1023px) {
-        }
-
-        @media (min-width: 1024px) {
-            .lg-mb0 {
-                margin-bottom: 0px !important
-            }
-
-            .lg-mb2 {
-                margin-bottom: 0.25rem !important
-            }
-
-            .lg-mb4 {
-                margin-bottom: 1rem !important
-            }
-        }
-
-        @media (min-width: 640px) and (max-width: 1023px) {
-        }
-
-        @media (min-width: 768px) and (max-width: 1023px) {
-        }
-
-        @media (min-width: 1024px) {
-        }
-
-        @media (min-width: 640px) and (max-width: 1023px) {
-        }
-
-        @media (min-width: 768px) and (max-width: 1023px) {
-        }
-
-        @media (min-width: 1024px) {
         }
 
         :focus, a:focus, button:focus {
             outline-color: rgb(26, 29, 38)
         }
 
-        @media (min-width: 1024px) {
-        }
+.Introduction {
+                            background: var(--color4);
 
-        @media (min-width: 0) and (max-width: 1023px) {
-            .fjAwZI {
-                display: none !important
-            }
-        }
+    padding: 0px 0rem;
+    max-width: 1212px;
+    margin-left: auto;
+    margin-right: auto;
+}
 
-        @media (min-width: 0) and (max-width: 639px) {
-            .hWOBmI {
-                display: none !important
-            }
-        }
+        .Course-Card-Inner-Container {
 
-        .kkKJUL {
-            padding: 0px 1rem;
-            max-width: 100vw;
-            margin-left: auto;
-            margin-right: auto
-        }
-
-        @media (min-width: 1212px) {
-            .kkKJUL {
-                width: 1180px;
-                box-sizing: content-box
-            }
-        }
-
-        .bcZeaE {
             box-sizing: border-box;
         }
 
-        .egPJfu {
+        .Course-Card-Outer-Container {
+
             box-sizing: border-box;
             margin-bottom: 1rem
         }
 
-        .cSmlXw {
-            box-sizing: border-box;
-        }
+        .Course-Name-Inner-Container-And-Provider {
 
-        .fixRc {
-            box-sizing: border-box;
-        }
-
-        .dJqzJE {
-            box-sizing: border-box;
-            margin-bottom: 1rem
-        }
-
-        @media (min-width: 1024px) {
-            .dJqzJE {
-                margin-bottom: 2rem
-            }
-        }
-
-        .fVeiXB {
             box-sizing: border-box;
             margin-bottom: 0.25rem
         }
 
-        @media (min-width: 640px) {
-            .fVeiXB {
-                margin-bottom: 0.5rem
-            }
-        }
+        .Course-Address-And-Reviews {
 
-        @media (min-width: 1024px) {
-            .fVeiXB {
-                margin-bottom: 1rem
-            }
-        }
-
-        .pbOnV {
             box-sizing: border-box;
             margin-bottom: 0.5rem
         }
 
-        @media (min-width: 1024px) {
-            .pbOnV {
-                margin-bottom: 1rem
-            }
-        }
+        .Course-Reviews-Inner-Container {
 
-        .inhQCv {
             box-sizing: border-box;
             margin-bottom: 0rem;
             display: flex
         }
 
-        .fkVkIY {
+        .Introduction-Title {
+
             margin: 0px 0px 0rem;
             padding: 0px;
             font-size: 1.5rem;
@@ -609,56 +443,8 @@
             font-weight: 700;
         }
 
-        @media (min-width: 1024px) {
-            .fkVkIY {
-                font-size: 2.625rem;
-                line-height: 1.14
-            }
-        }
+        .Course-Name-Inner-Container {
 
-        .jLJSQF {
-            margin: 0px 0px 0rem;
-            padding: 0px;
-            font-size: 1.125rem;
-            line-height: 1.33;
-            font-weight: 700;
-            color: rgb(81, 87, 103)
-        }
-
-        @media (min-width: 1024px) {
-            .jLJSQF {
-                font-size: 1.5rem;
-                line-height: 1.33
-            }
-        }
-
-        .cjKUcV {
-            margin: 0px 0px 0rem;
-            padding: 0px;
-            font-size: 0.875rem;
-            line-height: 1.42;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.25px;
-            color: rgb(26, 29, 38)
-        }
-
-        .dQGiaL {
-            margin: 1rem 0px;
-            padding: 0px;
-            font-size: 1.125rem;
-            line-height: 1.33;
-            font-weight: 700;
-        }
-
-        .RyNSR {
-            margin: 0px 0px 0rem;
-            padding: 0px;
-            font-size: 0.875rem;
-            font-weight: 700;
-        }
-
-        .kGxvYx {
             margin: 0px 0px 0.5rem;
             padding: 0px;
             font-size: 1rem;
@@ -666,263 +452,31 @@
             font-weight: 700;
         }
 
-        @media (min-width: 640px) {
-            .kGxvYx {
-                font-size: 1.125rem;
-                line-height: 1.33
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .kGxvYx {
-                font-size: 1.5rem;
-                line-height: 1.33
-            }
-        }
-
-        .iedmlF {
-            margin: 0px 0px 0.25rem;
-            padding: 0px;
-            font-weight: 700;
-            color: rgb(81, 87, 103)
-        }
-
-        @media (min-width: 640px) {
-        }
-
-        @media (min-width: 1024px) {
-        }
-
-        .gwrVSw {
+        .Introduction-Content {
             margin: 0px 0px 0rem;
             font-size: 1rem;
             line-height: 1.5;
             font-weight: 400
         }
 
-        @media (min-width: 1024px) {
-            .gwrVSw {
-                font-size: 1.125rem;
-                line-height: 1.5
-            }
-        }
+        .Course-Provider {
 
-        .LplZR {
-            margin: 0px 0px 2rem;
-            font-size: 0.875rem;
-            line-height: 1.4;
-            font-weight: 700
-        }
-
-        @media (min-width: 1024px) {
-            .LplZR {
-                margin-bottom: 1rem
-            }
-        }
-
-        .fbFZrE {
             margin: 0px 0px 0.25rem;
             font-size: 0.75rem;
             line-height: 1.3;
             font-weight: 400
         }
 
-        @media (min-width: 640px) {
-            .fbFZrE {
-                font-size: 0.875rem;
-                line-height: 1.4
-            }
-        }
+        .Course-Description {
 
-        @media (min-width: 640px) {
-            .fbFZrE {
-                margin-bottom: 0.5rem
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .fbFZrE {
-                margin-bottom: 1rem
-            }
-        }
-
-        .fBaaRL {
             margin: 0px 0px 0rem;
             font-size: 0.875rem;
             line-height: 1.4;
             font-weight: 400
         }
 
-        .bJVBow {
-            margin: 0px 0px 0rem;
-            font-size: 0.75rem;
-            line-height: 1.3
-        }
+        .Course-Name-Outer-Container {
 
-        @media (max-width: 352px) {
-        }
-
-        @media (max-width: 352px) {
-        }
-
-        @media (max-width: 352px) {
-        }
-
-        @media (max-width: 352px) {
-        }
-
-        @media (max-width: 352px) {
-        }
-
-        @media (max-width: 352px) {
-        }
-
-        @media (max-width: 352px) {
-        }
-
-        @media (max-width: 352px) {
-        }
-
-        .ionWMY {
-            fill: rgb(81, 87, 103);
-            position: absolute;
-            top: 53%;
-            left: 50%;
-            margin-left: -0.5rem;
-            margin-top: -0.5rem
-        }
-
-        .ionWMY:hover {
-            fill: rgb(111, 116, 128)
-        }
-
-        .gsfvSy {
-            cursor: pointer;
-            display: inline-block;
-            height: 24px;
-            width: 24px;
-            background: none;
-            transform: translateX(0px);
-            top: 5px;
-            left: auto;
-            right: 2rem;
-            border: none;
-            border-radius: 50%;
-            position: absolute;
-            box-shadow: rgba(17, 17, 17, 0.8) 0px 0px 2px;
-            z-index: 610
-        }
-
-        .hcMMbj {
-            position: fixed;
-            left: auto;
-            right: auto;
-            width: inherit;
-            background: rgba(255, 255, 255, 0.85);
-            border-top: 1px solid rgb(221, 221, 221);
-            height: auto;
-            transition: bottom 1s;
-            z-index: 600
-        }
-
-        .bkRhCN {
-            text-decoration: none;
-            cursor: pointer;
-            margin: 0px;
-            text-transform: uppercase;
-            letter-spacing: 1.25px;
-            font-weight: bold;
-            color: rgb(255, 255, 255)
-        }
-
-        a.bkRhCN {
-            transition: color 0.5s
-        }
-
-        .bkRhCN a:focus, a.bkRhCN:focus, .bkRhCN a:hover, a.bkRhCN:hover, .bkRhCN a:active, a.bkRhCN:active, .bkRhCN a.active, a.bkRhCN.active {
-            color: rgb(211, 215, 220) !important
-        }
-
-        .bkRhCN:hover {
-            color: var(--blue-90)
-        }
-
-        .bkRhCN::after {
-            content: ""
-        }
-
-        .bkRhCN:hover {
-            transition: 0.5s
-        }
-
-        .gNjjJT {
-            text-decoration: none;
-            cursor: pointer;
-            margin: 0px;
-            font-size: 0.75rem;
-            line-height: 1.3;
-            font-weight: 700;
-            color: rgb(81, 87, 103)
-        }
-
-        a.gNjjJT {
-            transition: color 0.5s
-        }
-
-        .gNjjJT a:focus, a.gNjjJT:focus, .gNjjJT a:hover, a.gNjjJT:hover, .gNjjJT a:active, a.gNjjJT:active, .gNjjJT a.active, a.gNjjJT.active {
-            color: rgb(63, 68, 81) !important
-        }
-
-        .gNjjJT:hover {
-            color: rgb(26, 29, 38) !important
-        }
-
-        .gNjjJT:hover {
-            transition: 0.5s
-        }
-
-        .rvuVB {
-            text-decoration: none;
-            cursor: pointer;
-            transition: color 0.5s;
-            margin: 0px;
-            color: rgb(18, 99, 211)
-        }
-
-        .rvuVB:hover {
-            color: rgb(0, 32, 107) !important
-        }
-
-        .rvuVB:hover {
-            transition: 0.5s
-        }
-
-        .fLEtbq {
-            text-decoration: none;
-            cursor: pointer;
-            transition: color 0.5s;
-            margin: 0px;
-            font-size: 0.875rem;
-            line-height: 1.4;
-            text-transform: uppercase;
-            letter-spacing: 1.25px;
-            font-weight: bold;
-            color: var(--blue-50)
-        }
-
-        .fLEtbq:hover {
-            color: var(--blue-90)
-        }
-
-        .fLEtbq::after {
-            content: " »"
-        }
-
-        .fLEtbq:hover {
-            transition: 0.5s
-        }
-
-        .gzdPVF {
             text-decoration: none;
             color: inherit;
             cursor: pointer;
@@ -930,72 +484,12 @@
             margin: 0px
         }
 
-        .gzdPVF:hover {
+        .Course-Name-Outer-Container:hover {
             transition: 0.5s
         }
 
-        .gqwla-D {
-            text-decoration: none;
-            color: inherit;
-            cursor: pointer;
-            margin: 0px
-        }
+        .Read-More {
 
-        .gqwla-D:hover {
-            transition: 0.5s
-        }
-
-        .fgStsS {
-            text-decoration: none;
-            cursor: pointer;
-            margin: 0px;
-            font-size: 0.875rem;
-            line-height: 1.4;
-            font-weight: 400;
-            color: rgb(228, 231, 235)
-        }
-
-        .fgStsS a:focus, a.fgStsS:focus, .fgStsS a:hover, a.fgStsS:hover, .fgStsS a:active, a.fgStsS:active, .fgStsS a.active, a.fgStsS.active {
-            color: rgb(211, 215, 220) !important
-        }
-
-        .fgStsS:hover {
-            transition: 0.5s
-        }
-
-        .cnqkrO {
-            text-decoration: none;
-            cursor: pointer;
-            margin: 0px;
-            font-size: 0.75rem;
-            line-height: 1.3;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            color: rgb(228, 231, 235)
-        }
-
-        .cnqkrO a:focus, a.cnqkrO:focus, .cnqkrO a:hover, a.cnqkrO:hover, .cnqkrO a:active, a.cnqkrO:active, .cnqkrO a.active, a.cnqkrO.active {
-            color: rgb(211, 215, 220) !important
-        }
-
-        .cnqkrO:hover {
-            transition: 0.5s
-        }
-
-        .lhrHOS {
-            text-decoration: none;
-            cursor: pointer;
-            margin: 0px;
-            font-size: 0.875rem;
-            line-height: 1.4
-        }
-
-        .lhrHOS:hover {
-            transition: 0.5s
-        }
-
-        .kdDKia {
             text-decoration: none;
             color: inherit;
             cursor: pointer;
@@ -1007,18 +501,12 @@
             letter-spacing: 1.25px
         }
 
-        @media (min-width: 640px) {
-            .kdDKia {
-                font-size: 0.75rem;
-                line-height: 1.3
-            }
-        }
-
-        .kdDKia:hover {
+        .Read-More:hover {
             transition: 0.5s
         }
 
-        .ixLwSd {
+        .Course-Reviews-Outer-Container {
+
             text-decoration: none;
             cursor: pointer;
             margin: 0px;
@@ -1028,107 +516,67 @@
             color: rgb(18, 99, 211)
         }
 
-        @media (min-width: 640px) {
-            .ixLwSd {
-                font-size: 0.875rem;
-                line-height: 1.4
-            }
-        }
-
-        a.ixLwSd {
+        a.Course-Reviews-Outer-Container {
             transition: color 0.5s
         }
 
-        .ixLwSd a:focus, a.ixLwSd:focus, .ixLwSd a:hover, a.ixLwSd:hover, .ixLwSd a:active, a.ixLwSd:active, .ixLwSd a.active, a.ixLwSd.active {
+        .Course-Reviews-Outer-Container a:focus, a.Course-Reviews-Outer-Container:focus, .Course-Reviews-Outer-Container a:hover, a.Course-Reviews-Outer-Container:hover, .Course-Reviews-Outer-Container a:active, a.Course-Reviews-Outer-Container:active, .Course-Reviews-Outer-Container a.active, a.Course-Reviews-Outer-Container.active {
             color: rgb(0, 32, 107) !important
         }
 
-        .ixLwSd:hover {
+        .Course-Reviews-Outer-Container:hover {
             color: rgb(0, 32, 107) !important
         }
 
-        .ixLwSd:hover {
+        .Course-Reviews-Outer-Container:hover {
             transition: 0.5s
         }
 
-        .hRvayO {
-            width: 100%
-        }
+        .Verification-Icon {
 
-        .bCZvqW {
             display: block;
             object-fit: cover
         }
 
-        .bBgODV {
-            display: block;
-            object-fit: cover
-        }
+        .Add-To-Compare {
 
-        .etBkBk {
-            margin: 0px;
-            font-size: 0.75rem;
-            line-height: 1.3;
-            font-weight: 400;
-            color: rgb(81, 87, 103)
-        }
-
-        .lmLXYM {
-            margin: 0px;
-            font-size: 0.75rem;
-            line-height: 1.3;
-            font-weight: 400
-        }
-
-        .eFHPpz {
-            margin: 0px;
-            font-size: 1rem;
-            line-height: 1.5;
-            font-weight: 400
-        }
-
-        .gNMPsQ {
             margin: 0px;
             font-size: 0.875rem;
             line-height: 1.4;
-            font-weight: 700
+            font-weight: 700;
         }
 
-        @media (min-width: 1024px) {
-        }
-
-        .gsThaJ {
+        .Input-Field {
             margin: 0px;
             min-width: 0px;
-            border: 1px solid rgb(146, 151, 161);
-            border-radius: 0px;
+    border: 1px solid var(--gray-15);
+    border-radius: 6px;
             box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 1px inset;
             box-sizing: border-box;
             display: block;
             font-size: 0.875rem;
             height: 40px;
-            padding: 0px 0.75rem;
+    padding: 0.5rem 1rem;
             color: rgb(26, 29, 38);
-            transition: 0.5s
+    transition: border-color 0.3s ease;
         }
 
-        .gsThaJ:hover {
+        .Input-Field:hover {
             border-color: rgb(111, 116, 128);
             box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 1px inset;
             cursor: text
         }
 
-        .gsThaJ:focus {
+        .Input-Field:focus {
             outline: none;
             box-shadow: rgba(17, 17, 17, 0.4) 0px 0px 2px
         }
 
-        .gsThaJ:active {
+        .Input-Field:active {
             color: rgb(26, 29, 38)
         }
 
-
-        .gsThaJ:disabled {
+        .Input-Field:disabled {
             cursor: not-allowed;
             border-color: rgb(211, 215, 220);
             color: rgb(211, 215, 220);
@@ -1136,113 +584,16 @@
             box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 1px inset
         }
 
-        .gsThaJ:disabled::-webkit-input-placeholder {
+        .Input-Field:disabled::-webkit-input-placeholder {
             color: rgb(211, 215, 220)
         }
 
-        .gsThaJ:disabled::placeholder {
+        .Input-Field:disabled::placeholder {
             color: rgb(211, 215, 220)
         }
 
-        @media (hover: hover) {
-        }
+        .Apply-Filters-Button {
 
-        @media (hover: hover) {
-        }
-
-        @media (hover: hover) {
-        }
-
-        @media (hover: hover) {
-        }
-
-        .fghKaF {
-            display: inline-flex;
-            -webkit-box-pack: center;
-            justify-content: center;
-            -webkit-box-align: center;
-            align-items: center;
-            flex-wrap: nowrap;
-            width: 2.5rem;
-            height: 2.5rem;
-            appearance: none;
-            background: none;
-            border: none rgb(255, 255, 255);
-            border-radius: 5px;
-            padding: 0px;
-            margin: 0px;
-            outline: 0px;
-            cursor: pointer;
-            text-decoration: none;
-            transition-property: background, transform;
-            transition-duration: 600ms;
-            transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
-            color: rgb(255, 255, 255) !important
-        }
-
-        .fghKaF svg {
-            fill: rgb(255, 255, 255)
-        }
-
-        @media (hover: hover) {
-            .fghKaF:hover {
-                background: rgba(255, 255, 255, 0.3)
-            }
-        }
-
-        .fghKaF:active {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(0.9)
-        }
-
-        .fghKaF:focus-visible {
-            background: rgba(255, 255, 255, 0.3)
-        }
-
-        .ffMiFy {
-            display: inline-flex;
-            -webkit-box-pack: center;
-            justify-content: center;
-            -webkit-box-align: center;
-            align-items: center;
-            flex-wrap: nowrap;
-            width: 44px;
-            height: 2.5rem;
-            appearance: none;
-            background: none;
-            border: none rgb(255, 255, 255);
-            border-radius: 5px;
-            padding: 0px;
-            margin: 0px;
-            outline: 0px;
-            cursor: pointer;
-            text-decoration: none;
-            transition-property: background, transform;
-            transition-duration: 600ms;
-            transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
-            color: rgb(255, 255, 255) !important
-        }
-
-        .ffMiFy svg {
-            fill: rgb(255, 255, 255)
-        }
-
-        @media (hover: hover) {
-            .ffMiFy:hover {
-                background: rgba(255, 255, 255, 0.3)
-            }
-        }
-
-        .ffMiFy:active {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(0.9)
-        }
-
-        .ffMiFy:focus-visible {
-            background: rgba(255, 255, 255, 0.3)
-        }
-
-        .eSxYRF {
             position: relative;
             display: flex;
             background-color: white;
@@ -1255,12 +606,12 @@
             border: 1px solid rgb(170, 170, 170)
         }
 
-        .eSxYRF:hover {
+        .Apply-Filters-Button:hover {
             box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 1px inset;
             border: 1px solid rgb(111, 116, 128)
         }
 
-        .eSxYRF input[type="text"] {
+        .Apply-Filters-Button input[type="text"] {
             width: 100%;
             height: 90%;
             border-radius: 0px;
@@ -1274,172 +625,25 @@
             background-color: transparent !important
         }
 
-        .eSxYRF input[type="text"]::-webkit-input-placeholder {
+        .Apply-Filters-Button input[type="text"]::-webkit-input-placeholder {
             color: rgb(81, 87, 103)
         }
 
-        .eSxYRF input[type="text"]::placeholder {
+        .Apply-Filters-Button input[type="text"]::placeholder {
             color: rgb(81, 87, 103)
         }
 
-        .eSxYRF .react-autosuggest__container {
+        .Apply-Filters-Button .react-autosuggest__container {
             width: 100%
         }
 
-        .jjUMEm {
+        .Profile-Icons {
             display: inline-flex;
             position: relative
         }
 
-        .fccHiY {
-            height: 1.2rem;
-            overflow: hidden;
-            direction: rtl;
-            text-align: left
-        }
+        .Main-Area {
 
-        .dAyaU {
-            margin: 0px;
-            padding: 0px;
-            list-style: none
-        }
-
-        .guQdKV {
-            margin: 0px;
-            padding: 0px;
-            display: inline-block;
-            font-size: 0.75rem
-        }
-
-        .guQdKV:not(:first-child)::before {
-            color: rgb(81, 87, 103);
-            content: "/";
-            font-weight: 700;
-            padding: 0px 0.5rem
-        }
-
-        .jZJdyq {
-            direction: ltr;
-            display: inline-block;
-            max-width: 10.625rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            vertical-align: text-top
-        }
-
-        .joGUSh {
-            direction: ltr;
-            display: inline-block;
-            max-width: 10.625rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            vertical-align: top
-        }
-
-        .iJrPyn {
-            padding: 0rem;
-            margin-bottom: 0rem;
-            columns: 1;
-            break-inside: avoid;
-            margin-top: 0px;
-            width: 100%;
-            list-style: outside none
-        }
-
-        .iJrPyn li {
-            line-height: 1.5;
-            margin-bottom: 1rem;
-            width: 100%
-        }
-
-        @media (min-width: 0px) and (max-width: 479px) {
-            .iJrPyn {
-                columns: 1;
-                grid-template-columns:repeat(1, minmax(0px, 1fr))
-            }
-        }
-
-        @media (min-width: 480px) {
-            .iJrPyn {
-                columns: 1;
-                grid-template-columns:repeat(1, minmax(0px, 1fr))
-            }
-        }
-
-        @media (min-width: 640px) {
-            .iJrPyn {
-                columns: 2;
-                grid-template-columns:repeat(2, minmax(0px, 1fr))
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .iJrPyn {
-                columns: 3;
-                grid-template-columns:repeat(3, minmax(0px, 1fr))
-            }
-        }
-
-        .iJrPyn li {
-            margin-left: 0px
-        }
-
-        .jYdEtR {
-            break-inside: avoid;
-            color: rgb(26, 29, 38)
-        }
-
-        .jYdEtR a {
-            display: block;
-            text-decoration: none;
-            color: rgb(26, 29, 38);
-            transition: color 0.5s ease-in
-        }
-
-        .gFPwwu {
-            margin-bottom: 0rem;
-            border-top: 1px solid rgb(63, 68, 81)
-        }
-
-        .jricHk {
-            margin-bottom: 0rem;
-            border-top: 1px solid rgb(211, 215, 220)
-        }
-
-        @media (min-width: 1024px) {
-        }
-
-        @media (min-width: 1024px) {
-        }
-
-        .jlGEWV {
-            position: sticky;
-            top: 0px;
-            left: 0px;
-            right: 0px;
-            height: 4px;
-            overflow: hidden;
-            z-index: 330;
-            pointer-events: none;
-            margin-bottom: -4px;
-            background: var(--blue-50);
-            transition: opacity 500ms;
-            opacity: 0
-        }
-
-        .jlGEWV::before {
-            content: "";
-            position: absolute;
-            top: 0px;
-            left: -300px;
-            width: 300px;
-            height: 4px;
-            background: linear-gradient(to right, var(--blue-50), white, var(--blue-50))
-        }
-
-        .fWZKDg {
             box-sizing: border-box;
             padding: 0px 1rem;
             width: 100%;
@@ -1448,7 +652,8 @@
             margin-right: auto
         }
 
-        .iFiRxM {
+        .Horizontal-Filters-Area-Outer-Container {
+
             position: relative;
             display: flex;
             flex: 1 1 auto;
@@ -1456,37 +661,39 @@
             min-width: 0px
         }
 
-        .cbocVJ {
+        .Horizontal-Filters-Area-Inner-Container {
             overflow: hidden;
             max-height: none;
             margin-bottom: 0px
         }
 
-        .beyWcp {
+        .Horizontal-Filter-Bar-Outer-Container {
+
             display: flex;
             flex-direction: column;
             position: sticky;
             top: -1px;
             z-index: 300;
             background: white;
-            box-sizing: border-box
+            box-sizing: border-box;
+
+
+
+
         }
 
-        @media (min-width: 1024px) {
-        }
+        .Horizontal-Filter-Bar-Inner-Container {
+padding-top: 0.8rem;
+padding-bottom: 0.8rem;
 
-        .bBsraF {
+            margin: 0px;
+background-color: var(--color5);
             border-top: 1px solid var(--gray-15);
             border-bottom: 1px solid var(--gray-15)
         }
 
-        @media (max-width: 1023px) {
-            .bBsraF {
-                margin-top: -1px
-            }
-        }
+        .Horizontal-Filter-Bar-Content-Area {
 
-        .daRoON {
             display: flex;
             flex-wrap: nowrap;
             -webkit-box-pack: justify;
@@ -1495,29 +702,16 @@
             align-items: center
         }
 
-        @media (min-width: 1024px) {
-            .daRoON {
-                min-height: 50px
-            }
-        }
+        .Number-Of-Results {
 
-        .kDkmXW {
             flex: 0 0 auto;
             font-weight: bold;
             white-space: nowrap;
             margin-right: 1rem
         }
 
-        @media (max-width: 1023px) {
-            .kDkmXW {
-                display: none
-            }
-        }
+        .Applied-Filters-Border {
 
-        @media (min-width: 1024px) {
-        }
-
-        .bfutrg {
             flex: 1 1 100%;
             align-self: stretch;
             display: flex;
@@ -1529,13 +723,15 @@
             padding: 0.25rem 1px
         }
 
-        .fLQsAo {
+        .Applied-Filters-Outline {
+
             min-width: 0px;
             margin: 0.25rem 0.5rem 0.25rem 0px;
             animation: 300ms ease-in-out 0s 1 normal none running ldNTQW
         }
 
-        .kVUdB {
+        .Sorting {
+
             flex: 0 0 auto;
             align-self: stretch;
             display: flex;
@@ -1543,137 +739,56 @@
             -webkit-box-align: center;
             align-items: center;
             padding-left: 1rem;
-            border-left: 1px solid var(--gray-15)
+            border-left: 1px solid var(--gray-15);
+margin-top: -0.8rem;  /* Negative margin to counteract padding */
+    margin-bottom: -0.8rem; /* Negative margin to stretch it fully */
         }
 
-        @media (max-width: 1023px) {
-            .kVUdB {
-                display: none
-            }
-        }
+        .Sorting-Text {
 
-        .koJbQO {
             font-size: 0.75rem;
             font-weight: bold;
             text-transform: uppercase;
             white-space: nowrap
         }
 
-        .eKHKNv {
-            font-size: 0.875rem;
-            appearance: none;
-            margin: 0px;
-            padding: 0.5rem 1rem 0.5rem 0.5rem;
-            border: none;
-            border-radius: 0px;
-            outline: none;
-            cursor: pointer;
-            transition: background 300ms;
-            background-color: white;
-            background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB2aWV3Qm94PSIwIDAgMTEzLjIgNjMuMSIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTEzLjIgNjMuMTsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8cGF0aCBkPSJNNi43LDBDMi45LDAsMCwyLjksMCw2LjdjMCwxLjksMSwzLjgsMS45LDQuOGw0OS43LDQ5LjdjMSwxLDIuOSwxLjksNC44LDEuOXMzLjgtMSw0LjgtMS45bDUwLjEtNDkuN2MxLTEsMS45LTIuOSwxLjktNC44CgljMC0zLjgtMi45LTYuNy02LjctNi43Ii8+Cjwvc3ZnPgo=);
-            background-position: right center;
-            background-repeat: no-repeat;
-            background-size: 0.5rem 0.5rem
-        }
-
-        @media (hover: hover) {
-            .eKHKNv:hover {
-                background-color: var(--gray-05)
-            }
-        }
-
-        .eKHKNv:focus-visible {
-            background-color: var(--gray-05)
-        }
-
-        .hqeWub {
-            display: flex;
-            position: relative;
-            -webkit-box-pack: center;
-            justify-content: center
-        }
-
-        .hqeWub::before {
-            content: "";
-            position: absolute;
-            left: 0px;
-            width: 100%;
-            top: calc(50% - 1px);
-            height: 1px;
-            background: var(--gray-15)
-        }
-
-        .dypUdv {
-            position: relative
-        }
-
-        .gMhOrK {
-            display: flex;
-            flex-wrap: nowrap;
-            -webkit-box-pack: center;
-            justify-content: center;
-            -webkit-box-align: center;
-            align-items: center
-        }
-
-        .fjtYBp {
-            position: relative;
-            box-sizing: border-box;
-            height: 100%
-        }
-
-        .hIsAhd {
-            box-sizing: border-box;
-            width: 100%;
-            position: sticky
-        }
-
         html {
             scroll-behavior: auto !important
         }
 
-        .dsZFNJ {
+        .Main-Body-Area {
             display: flex;
             flex-direction: column;
-            min-height: 100vh
+            min-height: 100vh;
+
         }
 
-        .eyiqwV {
-            background-color: var(--gray-05);
+        .Lower-Main-Body-Area {
+            background-color:var(--color6);
+
             -webkit-box-flex: 1;
             flex-grow: 1
         }
 
-        .kIWqwM {
+        .Lower-Main-Body-Area-Border {
+
             display: flex;
             flex-wrap: nowrap
         }
 
-        .bBrzxo {
+        .Lower-Main-Body-Area-Inner {
+
             flex: 1 1 100%;
             min-width: 0px
         }
 
-        .eEsHDv {
+        .Lower-Main-Body-Area-Content {
             display: flex;
             flex-wrap: nowrap
         }
 
-        .eXyLuI {
-            box-sizing: border-box;
-            flex: 0 0 200px;
-            min-width: 0px;
-            padding: 0px 2rem 0px 0px;
-            margin: 2rem 0px
-        }
+        .All-Course-Container {
 
-        @media (max-width: 1023px) {
-            .eXyLuI {
-                display: none
-            }
-        }
-
-        .iHfXbS {
             flex: 1 1 100%;
             min-width: 0px;
             display: flex;
@@ -1681,21 +796,18 @@
             -webkit-box-align: stretch;
             align-items: stretch;
             gap: 1rem;
-            margin: 1rem 0px
+            margin: 1rem 0px;
+                margin-left: 1.5rem; /* Add this line to create a gap */
+
         }
 
-        @media (min-width: 640px) {
-            .iHfXbS {
-                gap: 2rem;
-                margin: 2rem 0px
-            }
-        }
+        .Input {
 
-        .eAJdjQ {
             position: relative
         }
 
-        .gxqGFi {
+        .Filter-Section {
+
             appearance: none;
             margin: 0px;
             padding: 0px;
@@ -1706,14 +818,15 @@
             border-bottom: 1px solid var(--gray-15)
         }
 
-        .cJponW {
+        .Filter-Section-Title-Outer {
+
             appearance: none;
             width: 100%;
             margin: 0px;
             padding: 0px
         }
 
-        .hpUyNf {
+        .Filter-Section-Title-Inner {
             display: flex;
             flex-wrap: nowrap;
             -webkit-box-pack: justify;
@@ -1726,13 +839,7 @@
             transition: color 500ms
         }
 
-        @media (hover: hover) {
-            .hpUyNf:hover {
-                color: var(--gray-50)
-            }
-        }
-
-        .hpUyNf::after {
+        .Filter-Section-Title-Inner::after {
             content: "";
             width: 0.8rem;
             height: 0.8rem;
@@ -1744,92 +851,65 @@
             transform: rotate(180deg)
         }
 
-        .fiXdkJ {
+        .Filter-Section-Action-Outer {
             margin: 1rem 0px 0px;
             transition: max-height 300ms ease-in-out
         }
 
-        .gdVrLb {
+        .Filter-Section-Action-Inner {
+
             padding: 0px 0px 1rem
         }
+      .Main-New-Header {
+    width: 1212px;
+    min-height: 60px;
 
-        @media (min-width: 640px) {
-        }
+    padding: 0 1rem;
+    background-color: var(--color3);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
 
-        .icFFld {
             display: flex;
+    flex-direction: row;
+              justify-content: space-between;
+
             -webkit-box-align: center;
-            align-items: center
-        }
+            align-items: center;
 
-        .icFFld a:hover {
-            opacity: 0.6;
-            transition: 0.5s
         }
+        .Main-Footer {
+    width: 1212px;
 
-        .hSdiep {
-            margin-right: 0.75rem;
-            width: 1.875rem;
-            height: 1.875rem
-        }
+padding: 2rem 0;
+    background-color: var(--color7);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
 
-        .fBiLxn {
-            margin-right: 0.75rem;
-            height: 2rem;
-            width: 2rem
-        }
-
-        .grQneG {
             display: flex;
             flex-direction: column;
             -webkit-box-align: center;
             align-items: center;
-            padding: 2rem 0rem
-        }
 
-        @media (min-width: 1024px) {
-            .grQneG {
-                align-items: flex-start;
-                flex-direction: row
-            }
         }
+.Main-Footer-Content-Link a {
+    color: var(--gray-50);
+    margin: 0 1rem;
+}
 
-        .eFGqdH {
+.Main-Footer-Content-Link a:hover {
+    color: var(--blue-50);
+}
+        .Main-Footer-Content {
+
             -webkit-box-flex: 1;
             flex-grow: 1;
             padding: 0rem 1rem;
-            max-width: 539px;
             display: flex;
             flex-flow: column wrap;
             -webkit-box-align: center;
             align-items: center
         }
 
-        @media (min-width: 640px) {
-            .eFGqdH {
-                max-width: none
-            }
-        }
+        .Main-Footer-Content-Links {
 
-        @media (min-width: 1024px) {
-            .eFGqdH {
-                flex-flow: row;
-                -webkit-box-pack: justify;
-                justify-content: space-between
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .jXuJkM {
-                align-self: flex-start
-            }
-        }
-
-        .fzQSBo {
-            align-self: flex-end
-        }
-
-        .elzsCr {
             display: flex;
             flex-wrap: wrap;
             -webkit-box-pack: center;
@@ -1837,72 +917,30 @@
             margin-bottom: 0.5rem
         }
 
-        @media (min-width: 1024px) {
-            .elzsCr {
-                margin-bottom: 0rem
-            }
-        }
+            .Main-Footer-Content-Link:first-child {
 
-        @media (min-width: 1024px) {
-            .elzsCr {
-                -webkit-box-pack: start;
-                justify-content: flex-start;
-                margin-bottom: 0.5rem
-            }
-        }
-
-        @media (min-width: 0px) and (max-width: 1023px) {
-            .klDsYN {
-                margin: 0rem 0.5rem 0.5rem
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .klDsYN {
-                margin: 0rem 0.5rem
-            }
-
-            .klDsYN:first-child {
                 margin-left: 0rem
             }
 
-            .klDsYN:last-child {
+            .Main-Footer-Content-Link:last-child {
+
                 margin-right: 0rem
             }
-        }
 
-        .hsuboz {
-            color: white;
-            font-weight: 400
-        }
+        .Copyright-Outer {
 
-        .dmmajP {
             line-height: 1.33;
             display: flex;
             flex-flow: wrap;
             justify-content: space-around
         }
 
-        @media (min-width: 640px) {
-            .dmmajP {
-                -webkit-box-pack: center;
-                justify-content: center
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .dmmajP {
-                margin-bottom: 0rem;
-                -webkit-box-pack: start;
-                justify-content: flex-start
-            }
-
-            .dmmajP span {
+            .Copyright-Outer span {
                 margin-bottom: 0px
             }
-        }
 
-        .jAudCl {
+        .Copyright-Inner {
+
             color: rgb(211, 215, 220);
             line-height: unset;
             text-align: center;
@@ -1910,156 +948,91 @@
             margin-right: 0rem
         }
 
-        @media (min-width: 640px) {
-            .jAudCl {
-                margin-right: 1rem;
-                text-align: left
-            }
-        }
+.Entire-New-Header {
 
-        .fXTuRU {
-            color: white;
-            text-align: center
-        }
+        background: var(--color2);
 
-        .ifFuKH {
-            display: flex;
-            flex-flow: wrap;
-            margin-left: auto;
-            margin-right: auto;
-            padding: 1rem 0px 0px;
-            height: auto;
-            max-width: none;
-            text-align: left;
-            width: 100%;
-            margin-bottom: 1rem;
-            -webkit-box-pack: justify;
-            justify-content: space-between
-        }
+    color: rgb(255, 255, 255)
+}
 
-        .eBAVoM {
-            text-align: left;
-            display: block;
-            -webkit-box-flex: 0;
-            flex-grow: 0;
-            width: 100%;
-            height: auto
-        }
+.Entire-New-Header a {
+    transition: color 0.5s
+}
 
-        .gtptbF {
-            margin-bottom: 0.5rem
-        }
+.Entire-New-Header a:focus, a.Entire-New-Header:focus, .Entire-New-Header a:hover, a.Entire-New-Header:hover, .Entire-New-Header a:active, a.Entire-New-Header:active, .Entire-New-Header a.active, a.Entire-New-Header.active {
+    color: rgb(211, 215, 220) !important
+}
 
-        .iSItOL {
-            text-transform: uppercase;
-            text-align: left;
-            letter-spacing: 0.75px;
-            margin-top: 1rem
-        }
+.Entire-New-Header svg {
+    fill: rgb(255, 255, 255)
+}
 
-        .dBslrX {
-            display: flex;
-            flex-direction: column;
-            width: 16.6667%;
-            padding-right: 1rem
-        }
+.Entire-New-Header svg:focus, .Entire-New-Header svg:hover, .Entire-New-Header svg:active, .Entire-New-Header svg.active {
+    fill: rgb(211, 215, 220)
+}
 
-        .XLfAG {
-            background: rgb(26, 29, 38);
+.Entire-New-Header:focus, .Entire-New-Header a:focus, .Entire-New-Header button:focus {
+    outline-color: rgb(255, 255, 255)
+}
+
+
+
+        .Entire-Footer {
+
+                background: var(--color8);
+
             color: rgb(255, 255, 255)
         }
 
-        .XLfAG a {
+        .Entire-Footer a {
             transition: color 0.5s
         }
 
-        .XLfAG a:focus, a.XLfAG:focus, .XLfAG a:hover, a.XLfAG:hover, .XLfAG a:active, a.XLfAG:active, .XLfAG a.active, a.XLfAG.active {
+        .Entire-Footer a:focus, a.Entire-Footer:focus, .Entire-Footer a:hover, a.Entire-Footer:hover, .Entire-Footer a:active, a.Entire-Footer:active, .Entire-Footer a.active, a.Entire-Footer.active {
             color: rgb(211, 215, 220) !important
         }
 
-        .XLfAG svg {
+        .Entire-Footer svg {
             fill: rgb(255, 255, 255)
         }
 
-        .XLfAG svg:focus, .XLfAG svg:hover, .XLfAG svg:active, .XLfAG svg.active {
+        .Entire-Footer svg:focus, .Entire-Footer svg:hover, .Entire-Footer svg:active, .Entire-Footer svg.active {
             fill: rgb(211, 215, 220)
         }
 
-        .XLfAG:focus, .XLfAG a:focus, .XLfAG button:focus {
+        .Entire-Footer:focus, .Entire-Footer a:focus, .Entire-Footer button:focus {
             outline-color: rgb(255, 255, 255)
         }
 
-        .jtHA-Dx {
-            position: relative;
-            background: rgb(26, 29, 38);
-            display: flex;
-            flex-wrap: wrap;
-            -webkit-box-pack: justify;
-            justify-content: space-between;
-            -webkit-box-align: center;
-            align-items: center;
-            box-sizing: border-box;
-            width: 100%;
-            min-height: 60px;
-        }
 
-        @media (min-width: 768px) {
-            .jtHA-Dx {
-                flex-wrap: nowrap;
-                height: 60px
-            }
-        }
-
-        .aBmO {
-            display: flex;
-            margin: 1rem 0px 1rem 0.5rem
-        }
-
-        @media (min-width: 480px) {
-            .aBmO {
-                margin-left: 1rem
-            }
-        }
-
-        .haVHpk {
+        .Top-Right-Corner {
+/*border: 1px solid red!important;*/
             display: flex;
             -webkit-box-align: center;
             align-items: center;
             flex-wrap: nowrap;
             flex: 0 0 auto;
-            height: 60px;
-            margin-right: 0px;
-            box-sizing: border-box
-        }
-
-        @media (min-width: 480px) {
-            .haVHpk {
-                margin-right: 10px
-            }
-        }
-
-        .fGbzNM {
-            position: relative;
-            display: flex;
-            -webkit-box-pack: justify;
-            justify-content: space-between;
-            -webkit-box-align: center;
-            align-items: center;
+margin-left: auto;
+    margin-right: 0;
+            padding-right: 0;
+    position: absolute;
             box-sizing: border-box;
-            flex: 0 0 auto;
-            width: 100%;
-            order: 10
+
         }
 
-        @media (min-width: 768px) {
-            .fGbzNM {
-                order: 0;
-                flex: 1 1 100%;
-                height: 60px
-            }
-        }
+     .Tabs {
+    position: relative;
+    display: flex;
+    justify-content: flex-start; /* Align tabs next to the logo */
+    align-items: center;
+    box-sizing: border-box;
+    flex: 1;
+    max-width: fit-content;
+    margin-left: 20px;
+}
 
-        .hYkXSw {
+        .Tabs-Content-Outer {
+
             display: block;
             z-index: 402;
             overflow: hidden;
@@ -2071,68 +1044,8 @@
             animation-duration: 200ms
         }
 
-        @media (min-width: 0px) and (max-width: 1023px) {
-            .hYkXSw {
-                display: none
-            }
-        }
+        .Tabs-Content-Middle {
 
-        .cCokZL {
-            flex: 1 1 0px;
-            margin-left: 0.5rem
-        }
-
-        @media (max-width: 359px) {
-            .cCokZL {
-                display: none
-            }
-        }
-
-        .dtsmDg {
-            line-height: 1.25;
-            font-size: 0.875rem;
-            padding: 0.5rem 0px 0.5rem 0.5rem;
-            border-radius: 0.25rem;
-            transition-property: color, background;
-            transition-duration: 200ms
-        }
-
-        @media (min-width: 375px) {
-            .dtsmDg {
-                font-size: 1rem
-            }
-        }
-
-        @media (min-width: 480px) {
-            .dtsmDg {
-                padding: 0.5rem
-            }
-
-            @media (hover: hover) {
-                .dtsmDg:hover {
-                    background: rgb(63, 68, 81);
-                    color: rgb(255, 255, 255) !important
-                }
-            }.dtsmDg:focus-visible {
-                 background: rgb(63, 68, 81);
-                 color: rgb(255, 255, 255) !important
-             }
-        }
-
-        @media (min-width: 768px) {
-            .dtsmDg {
-                flex: 0 0 auto;
-                white-space: nowrap
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .dtsmDg::after {
-                content: " »"
-            }
-        }
-
-        .inENeF {
             position: relative;
             display: flex;
             flex-wrap: nowrap;
@@ -2150,7 +1063,8 @@
             transition: color 200ms
         }
 
-        .iOxWLu {
+        .Tabs-Content-Inner {
+
             float: left;
             display: inline-block;
             box-sizing: border-box;
@@ -2160,11 +1074,11 @@
             color: rgb(255, 255, 255)
         }
 
-        .iOxWLu.is-active > .header__RootNavAnchor-sc-1geadoy-8, .iOxWLu:hover > .header__RootNavAnchor-sc-1geadoy-8 {
+        .Tabs-Content-Inner.is-active > .header__RootNavAnchor-sc-1geadoy-8, .Tabs-Content-Inner:hover > .header__RootNavAnchor-sc-1geadoy-8 {
             color: rgb(211, 215, 220) !important
         }
 
-        .iOxWLu.is-active > .header__RootNavAnchor-sc-1geadoy-8::after, .iOxWLu:hover > .header__RootNavAnchor-sc-1geadoy-8::after {
+        .Tabs-Content-Inner.is-active > .header__RootNavAnchor-sc-1geadoy-8::after, .Tabs-Content-Inner:hover > .header__RootNavAnchor-sc-1geadoy-8::after {
             content: "";
             position: absolute;
             bottom: 0px;
@@ -2174,11 +1088,11 @@
             background: rgb(206, 41, 39)
         }
 
-        .iOxWLu > .header__RootNavAnchor-sc-1geadoy-8:focus-visible {
+        .Tabs-Content-Inner > .header__RootNavAnchor-sc-1geadoy-8:focus-visible {
             color: rgb(211, 215, 220) !important
         }
 
-        .iOxWLu > .header__RootNavAnchor-sc-1geadoy-8:focus-visible::after {
+        .Tabs-Content-Inner > .header__RootNavAnchor-sc-1geadoy-8:focus-visible::after {
             content: "";
             position: absolute;
             bottom: 0px;
@@ -2188,673 +1102,52 @@
             background: rgb(206, 41, 39)
         }
 
-        .comXJl {
+        .Introduction-Text-Outer {
+
             display: flex;
             flex-wrap: wrap;
             margin-top: 1rem
         }
 
-        @media (min-width: 1024px) {
-            .comXJl {
-                flex-wrap: nowrap;
-                margin-top: 2rem
-            }
-        }
+        .Introduction-Text-Inner {
 
-        @media screen and (prefers-reduced-motion: no-preference) {
-            .comXJl {
-                animation: 500ms ease-out 0s 1 normal both running jHEoae
-            }
-        }
-
-        .gwrUrw {
-            display: flex;
-            flex-wrap: nowrap;
-            flex: 1 1 auto
-        }
-
-        .cohqLo {
             flex: 1 1 auto;
             width: 100%;
             position: relative
         }
 
-        .efWxFv {
-            height: auto;
-            width: 100px;
-            float: right;
-            margin: 0px 0px 1rem 1rem
-        }
+        .Introduction-Text-Title {
 
-        .efWxFv .Image-sc-412cjc-2 {
-            width: 100%
-        }
-
-        @media (min-width: 640px) {
-            .efWxFv {
-                width: 120px
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .efWxFv {
-                width: 185px
-            }
-        }
-
-        .knjdTo {
             margin-bottom: 1rem
         }
 
-        .fRLyKE {
-            margin-top: 1rem
+        .Filter-Section-Outline {
+            margin-bottom: 1rem;
+                padding-bottom: 1rem;
+
         }
 
-        .iyNOBC {
-            -webkit-box-align: center;
-            align-items: center;
-            display: flex;
-            position: relative
-        }
+        .Filter-Section-Outline-Input {
 
-        .hKoPbn {
-            background: none;
-            border-radius: 100%;
-            cursor: pointer;
-            height: 32px;
-            margin: 0px 8px 0px 0px;
-            padding: 0px;
-            width: 32px;
-            transition: 0.5s;
-            border: 2px solid rgb(60, 90, 153)
-        }
-
-        .hKoPbn:focus {
-            outline: 0px
-        }
-
-        .hKoPbn:focus, .hKoPbn:hover, .hKoPbn:active, .hKoPbn.active {
-            opacity: 0.6
-        }
-
-        .hKoPbn svg {
-            display: block
-        }
-
-        @media screen and (prefers-reduced-motion: no-preference) {
-            .hKoPbn {
-                animation: 500ms ease 0s 1 normal both running jBcSpD
-            }
-        }
-
-        .iPhqNj {
-            background: none;
-            border-radius: 100%;
-            cursor: pointer;
-            height: 32px;
-            margin: 0px 8px 0px 0px;
-            padding: 0px;
-            width: 32px;
-            transition: 0.5s;
-            border: 2px solid rgb(0, 0, 0)
-        }
-
-        .iPhqNj:focus {
-            outline: 0px
-        }
-
-        .iPhqNj:focus, .iPhqNj:hover, .iPhqNj:active, .iPhqNj.active {
-            opacity: 0.6
-        }
-
-        .iPhqNj svg {
-            display: block
-        }
-
-        @media screen and (prefers-reduced-motion: no-preference) {
-            .iPhqNj {
-                animation: 500ms ease 0s 1 normal both running jBcSpD
-            }
-        }
-
-        .cdnNqs {
-            background: none;
-            border-radius: 100%;
-            cursor: pointer;
-            height: 32px;
-            margin: 0px 8px 0px 0px;
-            padding: 0px;
-            width: 32px;
-            transition: 0.5s;
-            border: 2px solid rgb(0, 119, 181)
-        }
-
-        .cdnNqs:focus {
-            outline: 0px
-        }
-
-        .cdnNqs:focus, .cdnNqs:hover, .cdnNqs:active, .cdnNqs.active {
-            opacity: 0.6
-        }
-
-        .cdnNqs svg {
-            display: block
-        }
-
-        @media screen and (prefers-reduced-motion: no-preference) {
-            .cdnNqs {
-                animation: 500ms ease 0s 1 normal both running jBcSpD
-            }
-        }
-
-        .bSHAeg {
-            background: none;
-            border-radius: 100%;
-            cursor: pointer;
-            height: 32px;
-            margin: 0px 8px 0px 0px;
-            padding: 0px;
-            width: 32px;
-            transition: 0.5s;
-            border: 2px solid rgb(63, 68, 81);
-            display: block
-        }
-
-        .bSHAeg:focus {
-            outline: 0px
-        }
-
-        .bSHAeg:focus, .bSHAeg:hover, .bSHAeg:active, .bSHAeg.active {
-            opacity: 0.6
-        }
-
-        .bSHAeg svg {
-            display: block
-        }
-
-        @media screen and (prefers-reduced-motion: no-preference) {
-            .bSHAeg {
-                animation: 500ms ease 0s 1 normal both running jBcSpD
-            }
-        }
-
-        .hneOPA {
-            background: none;
-            border-radius: 100%;
-            cursor: pointer;
-            height: 32px;
-            margin: 0px 8px 0px 0px;
-            padding: 0px;
-            width: 32px;
-            transition: 0.5s;
-            border: 2px solid rgb(111, 116, 128)
-        }
-
-        .hneOPA:focus {
-            outline: 0px
-        }
-
-        .hneOPA:focus, .hneOPA:hover, .hneOPA:active, .hneOPA.active {
-            opacity: 0.6
-        }
-
-        @media screen and (prefers-reduced-motion: no-preference) {
-            .hneOPA {
-                animation: 500ms ease 0s 1 normal both running jBcSpD
-            }
-        }
-
-        .dSCHNP {
-            display: flex;
-            -webkit-box-pack: center;
-            justify-content: center;
-            -webkit-box-align: center;
-            align-items: center
-        }
-
-        .hNonBN {
-            height: 1.4rem;
-            width: 1.4rem
-        }
-
-        .kYOtuN {
-            height: 1.5rem;
-            width: 1.5rem
-        }
-
-        .fxgYmk {
-            height: 1.125rem;
-            width: 1.75rem
-        }
-
-        .bnriqg {
-            display: inline-block;
-            position: relative
-        }
-
-        .gxSIVh {
-            display: flex;
-            width: 1rem
-        }
-
-        .gxSIVh::after, .gxSIVh::before {
-            content: ""
-        }
-
-        .gxSIVh i {
-            text-indent: -9999px;
-            margin: auto
-        }
-
-        .gxSIVh i, .gxSIVh::after, .gxSIVh::before {
-            display: block;
-            height: 4px;
-            width: 4px;
-            border-radius: 1px;
-            background: rgb(111, 116, 128)
-        }
-
-        .dNIJpA {
-            width: 1px;
-            height: 12px;
-            background: rgb(211, 215, 220)
-        }
-
-        .hbiOir {
-            height: 25px;
-            max-height: 25px
-        }
-
-        .ifHThU {
-            padding: 0px 20px;
-            cursor: pointer
-        }
-
-        .ifHThU button {
-            cursor: pointer
-        }
-
-        .ifHThU button:focus {
-            border: 3px solid rgb(0, 32, 107)
-        }
-
-        @media (min-width: 0px) and (max-width: 639px) {
-            .ifHThU {
-                padding: 0px 1rem
-            }
-        }
-
-        .ifHThU .rheostat {
-            overflow: visible;
-            z-index: 0
-        }
-
-        .ifHThU .rheostat-background {
-            background-color: rgb(211, 215, 220);
-            position: relative;
-            z-index: 1
-        }
-
-        .ifHThU .rheostat-progress {
-            background-color: rgb(53, 140, 231);
-            position: absolute;
-            z-index: 1
-        }
-
-        .ifHThU .rheostat-handle {
-            background-color: rgb(255, 255, 255);
-            border: none;
-            border-radius: 100%;
-            height: 1.5rem;
-            outline: none;
-            z-index: 2;
-            width: 1.5rem;
-            padding: 0px;
-            box-shadow: rgb(18, 99, 211) 0px 0px 0px 1px inset, rgba(63, 68, 81, 0.3) 1px 1px 3px;
-            transition: 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)
-        }
-
-        .ifHThU .rheostat-handle:hover {
-            outline: none;
-            box-shadow: rgb(18, 99, 211) 0px 0px 0px 1px inset, rgba(63, 68, 81, 0.3) 1px 1px 3px, rgba(178, 220, 255, 0.6) 0px 0px 0px 6px !important
-        }
-
-        .ifHThU .rheostat-handle:focus {
-            outline: none;
-            border: none;
-            box-shadow: rgb(18, 99, 211) 0px 0px 0px 1px inset, rgba(63, 68, 81, 0.3) 1px 1px 3px, rgba(178, 220, 255, 0.6) 0px 0px 0px 6px !important
-        }
-
-        .ifHThU .rheostat-handle:active {
-            outline: none;
-            box-shadow: rgb(18, 99, 211) 0px 0px 0px 1px inset, rgba(63, 68, 81, 0.3) 1px 1px 3px, rgba(178, 220, 255, 0.6) 0px 0px 0px 8px !important
-        }
-
-        .ifHThU .rheostat-horizontal {
-            height: 20px
-        }
-
-        .ifHThU .rheostat-horizontal .rheostat-background {
-            height: 4px;
-            top: 8px;
             width: 100%
         }
 
-        .ifHThU .rheostat-horizontal .rheostat-progress {
-            height: 4px;
-            top: 8px
-        }
+        .Introduction-Title-And-Content {
 
-        .ifHThU .rheostat-horizontal .rheostat-handle {
-            margin-left: -12px;
-            top: -2px
-        }
-
-        @-webkit-keyframes jBcSpD {
-            0% {
-                opacity: 0
-            }
-            100% {
-                opacity: 1
-            }
-        }
-
-        @keyframes jBcSpD {
-            0% {
-                opacity: 0
-            }
-            100% {
-                opacity: 1
-            }
-        }
-
-        @-webkit-keyframes fEWSpJ {
-            0% {
-            }
-            100% {
-                transform: translateX(calc(300px + 100vw))
-            }
-        }
-
-        @keyframes fEWSpJ {
-            0% {
-            }
-            100% {
-                transform: translateX(calc(300px + 100vw))
-            }
-        }
-
-        @-webkit-keyframes jHEoae {
-            0% {
-                transform: translateY(-8px);
-                opacity: 0
-            }
-            100% {
-                transform: translateY(0px);
-                opacity: 1
-            }
-        }
-
-        @keyframes jHEoae {
-            0% {
-                transform: translateY(-8px);
-                opacity: 0
-            }
-            100% {
-                transform: translateY(0px);
-                opacity: 1
-            }
-        }
-
-        @-webkit-keyframes ldNTQW {
-            0% {
-                transform: scale(0);
-                opacity: 0
-            }
-            100% {
-                transform: scale(1);
-                opacity: 1
-            }
-        }
-
-        @keyframes ldNTQW {
-            0% {
-                transform: scale(0);
-                opacity: 0
-            }
-            100% {
-                transform: scale(1);
-                opacity: 1
-            }
-        }
-
-        .cOLiYC {
-            display: inline;
-            white-space: nowrap;
-            margin-left: 0px !important
-        }
-
-        .kboyVi {
-            vertical-align: middle;
-            margin-right: 0.25rem
-        }
-
-        .bugiJd {
-            text-transform: uppercase
-        }
-
-        svg + .ChipButton__TextStyled-n7bsw7-1 {
-            vertical-align: middle
-        }
-
-        .hfpEpE {
-            position: relative;
-            display: inline-block;
-            width: 100%;
-            padding: 1rem 0px;
-            border-bottom: 1px solid rgb(211, 215, 220)
-        }
-
-        .cIjovz {
-            margin: 0px;
-            padding: 0px;
-            border: none
-        }
-
-        .hQVxLa {
-            display: flex;
-            cursor: pointer;
-            -webkit-box-pack: justify;
-            justify-content: space-between;
-            position: relative;
-            color: rgb(111, 116, 128);
-            padding-bottom: 0rem;
-            transition: 0.5s
-        }
-
-        .hQVxLa a {
-            color: rgb(81, 87, 103);
-            width: 100%;
-            display: flex;
-            -webkit-box-pack: justify;
-            justify-content: space-between;
-            -webkit-box-align: center;
-            align-items: center
-        }
-
-        .hQVxLa a:hover * {
-            transition: 0.5s;
-            color: rgb(26, 29, 38) !important;
-            fill: rgb(26, 29, 38) !important
-        }
-
-        @media (min-width: 1024px) {
-            .hQVxLa:hover, .hQVxLa:focus, .hQVxLa:active * {
-                color: rgb(111, 116, 128);
-                fill: rgb(111, 116, 128)
-            }
-        }
-
-        .XNlaN {
-            line-height: normal;
-            transition: 0.5s;
-            white-space: pre-line
-        }
-
-        .enmLxw {
-            flex-shrink: 0;
-            padding: 0px;
-            position: relative;
-            top: -2px;
-            transition-duration: 0.3s;
-            fill: rgb(111, 116, 128);
-            width: 1.125rem;
-            height: 1.125rem;
-            transform: rotate(0deg)
-        }
-
-        .enmLxw:hover {
-            fill: rgb(111, 116, 128);
-            transition: 0.5s
-        }
-
-        .dQkFOK {
-            display: flex;
-            -webkit-box-align: center;
-            align-items: center;
-            cursor: pointer;
-            transition: 0.5s
-        }
-
-        .dQkFOK:hover {
-            color: rgb(81, 87, 103);
-            fill: rgb(81, 87, 103)
-        }
-
-        .cTskHQ {
-            margin-left: 0.25rem
-        }
-
-        .cWYMBe {
-            overflow: hidden;
-            max-height: 0px;
-            transition: max-height 0.5s cubic-bezier(0, 1, 0, 1)
-        }
-
-        .ifOMLd li {
-            font-size: 0.875rem
-        }
-
-        @media (min-width: 1024px) {
-            .ifOMLd li {
-                font-size: 1rem
-            }
-        }
-
-        .ifOMLd li:last-child {
-            margin-bottom: 0px
-        }
-
-        .kSukcL {
-            display: block;
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-            margin-bottom: 0.5rem
-        }
-
-        .jmtpIn {
-            margin-top: -0.2rem
-        }
-
-        .kaTcsR {
-            display: inline-block;
-            position: relative;
-            top: 0.25rem
-        }
-
-        .tMLtn {
-            padding-bottom: 5rem
-        }
-
-        .hAmwzM {
-            margin-bottom: 1rem
-        }
-
-        .BosaO {
-            width: 100%
-        }
-
-        .bSZiuM {
             position: relative;
             z-index: 301;
             margin-bottom: 2rem
         }
 
-        @media (min-width: 0px) and (max-width: 639px) {
-            .bSZiuM {
-                margin-bottom: 1rem
-            }
-        }
+        .Add-To-Compare-Border {
 
-        .fwMFBC {
-            align-self: stretch;
-            min-width: 0px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis
-        }
-
-        .dcvZaC {
-            position: relative;
-            display: inline-flex;
-            flex-wrap: nowrap;
-            -webkit-box-align: center;
-            align-items: center;
-            box-sizing: border-box;
-            max-width: 100%;
-            appearance: none;
-            border: none rgb(170, 170, 170);
-            outline: none;
-            padding: 0px;
-            margin: 0px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: box-shadow 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-            height: 2.25rem;
-            border-radius: calc(1.125rem);
-            font-size: 0.875rem;
-            line-height: 2.25rem;
-            background: var(--white-00);
-            box-shadow: rgb(170, 170, 170) 0px 0px 0px 1px inset;
-            color: var(--black-90) !important
-        }
-
-        .dcvZaC .nugget__Label-sc-31qcwb-0 {
-            padding: 0px 1rem
-        }
-
-        @media (hover: hover) {
-            .dcvZaC:not(.is-disabled):not(:active):hover {
-                box-shadow: rgb(170, 170, 170) 0px 0px 0px 1px inset, rgb(255, 255, 255) 0px 0px 0px 1px, rgb(170, 170, 170) 0px 0px 0px 3px
-            }
-        }
-
-        .dcvZaC:focus-visible:not(:active):not(.is-disabled):not(.is-selected) {
-            box-shadow: rgb(170, 170, 170) 0px 0px 0px 1px inset, rgb(255, 255, 255) 0px 0px 0px 1px, rgb(170, 170, 170) 0px 0px 0px 3px
-        }
-
-        .dcvZaC:active:not(.is-disabled):not(.is-selected), .dcvZaC.is-pressed:not(.is-disabled):not(.is-selected) {
-            background: rgb(248, 252, 255);
-            box-shadow: rgb(204, 204, 204) 0px 0px 0px 1px inset
-        }
-
-        .cUXzSP {
             display: inline-flex;
             flex-direction: column;
             color: var(--black-90)
         }
 
-        .cJxiOx {
+        .Add-To-Compare-Check {
+
             flex: 0 0 auto;
             position: relative;
             display: flex;
@@ -2873,23 +1166,25 @@
             transition: 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)
         }
 
-        .cJxiOx > svg {
+        .Add-To-Compare-Check > svg {
             width: 0.875rem;
             height: 0.875rem
         }
 
-        .cJxiOx > svg path {
+        .Add-To-Compare-Check > svg path {
             stroke-dashoffset: 111.46px;
             stroke-dasharray: 111.46px;
             transition: 0.35s ease-out
         }
 
-        .kDEaWM {
+
+        .Add-To-Compare-Outline {
+
             display: flex;
             flex-direction: column
         }
 
-        .btFngc {
+        .Add-To-Compare-Outer {
             --color: var(--blue-70);
             position: relative;
             display: flex;
@@ -2899,59 +1194,40 @@
             outline: none
         }
 
-        .btFngc.size-small {
+        .Add-To-Compare-Outer.size-small {
             font-size: 0.875rem;
             line-height: 1.4
         }
 
-        @media (hover: hover) {
-            .btFngc:hover:not(.is-disabled) > .input__Control-sc-1ie8rf0-1 {
-                box-shadow: 0px 0px 0px 1px #fff, 0px 0px 0px 3px var(--gray-30)
-            }
-        }
-
-        .btFngc:focus-visible:not(.is-disabled) > .input__Control-sc-1ie8rf0-1, .btFngc:not(.is-disabled) > input:focus-visible + .input__Control-sc-1ie8rf0-1 {
+        .Add-To-Compare-Outer:focus-visible:not(.is-disabled) > .input__Control-sc-1ie8rf0-1, .Add-To-Compare-Outer:not(.is-disabled) > input:focus-visible + .input__Control-sc-1ie8rf0-1 {
             box-shadow: 0px 0px 0px 1px #fff, 0px 0px 0px 3px var(--gray-30)
         }
 
-        .btFngc > .input__Control-sc-1ie8rf0-1 path {
+        .Add-To-Compare-Outer > .input__Control-sc-1ie8rf0-1 path {
             stroke: var(--color)
         }
 
-        .btFngc.size-small > .input__Control-sc-1ie8rf0-1 {
+        .Add-To-Compare-Outer.size-small > .input__Control-sc-1ie8rf0-1 {
             top: -1px
         }
 
-        .btFngc > input:checked + .input__Control-sc-1ie8rf0-1 {
+        .Add-To-Compare-Outer > input:checked + .input__Control-sc-1ie8rf0-1 {
             background: var(--color);
             border-color: var(--color)
         }
 
-        .btFngc > input:checked + .input__Control-sc-1ie8rf0-1 path {
+        .Add-To-Compare-Outer > input:checked + .input__Control-sc-1ie8rf0-1 path {
             stroke: var(--white-00);
             stroke-dashoffset: 0
         }
 
-        .btFngc > input:disabled + .input__Control-sc-1ie8rf0-1 {
+        .Add-To-Compare-Outer > input:disabled + .input__Control-sc-1ie8rf0-1 {
             background: rgba(170, 170, 170, 0.2);
             border-color: rgba(170, 170, 170, 0.9)
         }
 
-        .dwcSGY {
-            appearance: none;
-            position: absolute;
-            top: 0px;
-            left: 0px;
-            width: 1px;
-            height: 1px;
-            margin: 0px;
-            padding: 0px;
-            opacity: 0;
-            z-index: -1;
-            pointer-events: none
-        }
+        .CourseList {
 
-        .SchoolList {
             display: flex;
             flex-direction: column;
             -webkit-box-align: stretch;
@@ -2963,208 +1239,22 @@
             padding: 0px
         }
 
-        @media (min-width: 640px) {
-            .SchoolList {
-                gap: 2rem
-            }
-        }
-
-        .SchoolCard {
+        .CourseCard {
             margin: 0px;
             padding: 0px;
             animation: 500ms ease-in-out 0s 1 normal both running iBevsA
         }
 
-        @media (min-width: 640px) {
-        }
-
-        .cvNjzM {
-            display: flex;
-            -webkit-box-align: center;
-            align-items: center;
-            padding: 0px 1rem;
-            border-right: 1px solid rgb(6, 74, 183)
-        }
-
-        .ewTTUd {
-            margin: 0px;
-            border-radius: 5px;
-            transition: 0.25s;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            -webkit-font-smoothing: antialiased;
-            text-rendering: optimizelegibility;
-            text-align: center;
-            display: inline-flex;
-            box-sizing: border-box;
-            -webkit-box-align: stretch;
-            align-items: stretch;
-            padding: 0px;
-            background: rgb(18, 99, 211);
-            border-width: 1px 1px 0px;
-            border-style: solid;
-            border-color: rgb(18, 99, 211);
-            border-image: initial;
-            box-shadow: rgb(6, 74, 183) 0px -3px 0px inset;
-            color: white;
-            line-height: 1.5;
-            height: 40px
-        }
-
-        .ewTTUd:focus {
-            outline: none
-        }
-
-        .ewTTUd .button-content {
-            display: flex;
-            -webkit-box-align: center;
-            align-items: center;
-            -webkit-box-pack: center;
-            justify-content: center;
-            margin: auto
-        }
-
-        .ewTTUd:hover, .ewTTUd:active, .ewTTUd.active {
-            background-color: rgb(185, 37, 35)
-        }
-
-        .ewTTUd .Button__Sub-suns4m-0 {
-            margin-top: -1px
-        }
-
-        .ewTTUd .Button__Sub-suns4m-0 {
-            height: 40px
-        }
-
-        .ewTTUd .button-content {
-            padding: 0rem 1rem 0.125rem
-        }
-
-        .ewTTUd:hover, .ewTTUd:active, .ewTTUd.active {
-            background-color: rgb(6, 74, 183)
-        }
-
-        .jMqcKt {
-            display: flex;
-            text-align: center;
-            transition: transform 0.5s;
-            position: fixed;
-            right: 0px;
-            opacity: 1;
-            z-index: 950;
-            bottom: 8rem;
-            transform: translateX(100%) translateX(-2rem);
-            box-shadow: rgba(17, 17, 17, 0.3) 0px 0px 3px
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .jMqcKt {
-                transition: visibility 0.5s, opacity 0.5s
-            }
-        }
-
-        .fFJGyx {
-            display: flex;
-            -webkit-box-align: center;
-            align-items: center;
-            -webkit-box-pack: center;
-            justify-content: center;
-            position: relative;
-            width: 2rem;
-            background: rgb(6, 74, 183);
-            color: rgb(255, 255, 255);
-            transition: background 0.5s;
-            cursor: pointer;
-            padding-top: 2.5rem;
-            padding-bottom: 0.5rem
-        }
-
-        .fFJGyx:hover {
-            background: rgb(0, 32, 107)
-        }
-
-        .fFJGyx:focus {
-            outline: rgb(26, 29, 38) inset 2px;
-            outline-offset: 0px
-        }
-
-        .gRKbtZ {
-            position: absolute;
-            top: 0.5rem;
-            left: 0px;
-            right: unset;
-            width: 2rem;
-            transition: 0.5s
-        }
-
-        .gRKbtZ:hover {
-            fill: rgb(255, 255, 255)
-        }
-
-        .dbHqIf {
-            font-size: 1rem;
-            font-weight: 700;
-            line-height: 2rem;
-            transition: 0.5s;
-            -webkit-writing-mode: vertical-lr;
-            writing-mode: vertical-lr;
-            transform: rotate(180deg);
-            -webkit-font-smoothing: antialiased;
-            text-rendering: optimizelegibility;
-            text-size-adjust: none;
-            opacity: 1
-        }
-
-        @media (min-width: 0px) and (max-width: 639px) {
-            .dbHqIf {
-                font-size: 0.875rem;
-                text-transform: uppercase
-            }
-        }
-
-        .llPwvi {
-            padding: 0px 0px 0.5rem;
-            background: rgb(255, 255, 255);
-            border: 1px solid rgb(211, 215, 220);
-            transform: scale(0);
-            transition: transform 0.5s
-        }
-
-        .bkoHjE {
-            height: 200px;
-            width: 330px;
-            padding-top: 0.25rem;
-            margin: 0rem 0.5rem 0.5rem;
-            overflow-y: auto
-        }
-
-        .wVMJo {
-            margin-top: 0.5rem
-        }
-
-        .fYrKRu {
+        .Course-Title {
             white-space: nowrap
         }
 
-        .mmMeU {
-            display: inline-block;
-            position: relative;
-            top: -1px;
-            left: 2px;
-            width: 1.1rem;
-            height: 1.1rem
-        }
+        .Course-Rating-And-Reviews {
 
-        .mmMeU:hover {
-            cursor: pointer
-        }
-
-        .eRZspG {
             align-items: flex-end
         }
 
-        .kDMHYY {
+        .Course-Rating {
             height: 1.125rem;
             width: 1.125rem;
             align-self: center;
@@ -3174,53 +1264,26 @@
             stroke-width: 4px
         }
 
-        @media (min-width: 640px) {
-            .kDMHYY {
-                height: 1.25rem;
-                width: 1.25rem
-            }
-        }
+        .Course-Review-Quantity {
 
-        @media (min-width: 1024px) {
-        }
-
-        .gxbbKL {
             display: inline
         }
 
-        .fkvuin {
+        .Cost-Hours-Keywords {
+
             font-weight: bold;
             padding: 0px
         }
 
-        @media (min-width: 640px) {
-            .fkvuin {
-                padding: 0px;
-                max-width: 235px
-            }
-        }
-
-        .fkvuin dl {
+        .Cost-Hours-Keywords dl {
             margin: 0px 0px 0.25rem
         }
 
-        @media (min-width: 640px) {
-            .fkvuin dl {
-                margin-bottom: 1rem
-            }
-        }
-
-        .fkvuin dd {
+        .Cost-Hours-Keywords dd {
             display: inline
         }
 
-        @media (min-width: 640px) {
-            .fkvuin dt, .fkvuin dd {
-                display: block
-            }
-        }
-
-        .fkvuin dt {
+        .Cost-Hours-Keywords dt {
             text-transform: capitalize;
             color: rgb(81, 87, 103);
             vertical-align: middle;
@@ -3228,156 +1291,48 @@
             font-weight: 400
         }
 
-        @media (min-width: 640px) {
-            .fkvuin dt {
-                line-height: 1.2;
-                margin-bottom: 0.25rem
-            }
-        }
-
-        @media (min-width: 640px) {
-        }
-
-        @media (min-width: 640px) {
-        }
-
-        .fkvuin .subtext-wrapper {
+        .Cost-Hours-Keywords .subtext-wrapper {
             color: rgb(81, 87, 103);
             font-weight: 400;
             display: inline-block;
             margin-left: 0.25rem
         }
 
-        .fkvuin .label-wrapper {
+        .Cost-Hours-Keywords .label-wrapper {
             display: none
         }
 
-        @media (min-width: 640px) {
-            .fkvuin .label-wrapper {
-                display: inline-block
-            }
-        }
+        .Cost-Hours-Keywords-Text {
 
-        .bnQTJo {
             color: rgb(26, 29, 38);
             margin: 0px 0.25rem 0px 0px;
             font-size: 1rem
         }
 
-        @media (min-width: 640px) {
-            .bnQTJo {
-                font-size: 1rem;
-                margin-left: 0rem;
-                line-height: 1.5
-            }
-        }
+        .Course-Location-Outer {
 
-        @media (min-width: 1024px) {
-            .bnQTJo {
-                font-size: 1.125rem;
-                margin-left: 0rem;
-                line-height: 1.5
-            }
-        }
-
-        .hwJofw {
-            font-size: 0.625rem;
-            letter-spacing: 1.25px;
-            line-height: 1.33;
-            text-transform: uppercase;
-            -webkit-font-smoothing: unset
-        }
-
-        .fXdpYl {
-            position: relative;
-            left: -4px;
-            white-space: nowrap
-        }
-
-        @media (min-width: 640px) {
-            .fXdpYl {
-                left: -3px;
-                display: flex
-            }
-        }
-
-        .domQkS {
-            position: relative;
-            top: 3px;
-            height: 1rem;
-            width: 1rem;
-            margin-right: 0.25rem;
-            margin-top: -2px;
-            transition: fill 0.5s
-        }
-
-        .LockedQuickStatHug__UnlockLink-l5tgdb-1:hover .LockedQuickStatHug__UnlockIcon-l5tgdb-2 {
-            fill: rgb(111, 116, 128)
-        }
-
-        @media (min-width: 640px) {
-            .domQkS {
-                height: 1.15rem;
-                width: 1.15rem
-            }
-        }
-
-        @media (min-width: 640px) {
-        }
-
-        @media (min-width: 640px) {
-        }
-
-        .bIUppT {
-            text-transform: uppercase;
-            letter-spacing: 1.25px;
-            font-weight: bold;
-            white-space: nowrap;
-            -webkit-font-smoothing: unset;
-            display: none;
-            font-size: 0.625rem !important
-        }
-
-        @media (min-width: 640px) {
-            .bIUppT {
-                text-transform: none;
-                letter-spacing: normal;
-                display: inline-block;
-                overflow-wrap: break-word;
-                white-space: normal;
-                max-width: 130px;
-                font-size: 1rem !important
-            }
-        }
-
-        @media (min-width: 640px) {
-            .bIUppT {
-                display: inline
-            }
-        }
-
-        .ciVlaM {
             list-style: none;
             padding: 0px;
-            margin-bottom: 0rem
+            margin-bottom: 0rem;
+
+
+
+            margin: 0px 0px 1rem;
         }
 
-        .dofuo {
-            margin: 0px 0px 1rem
-        }
-
-        .dofuo span {
+        .Course-Location-Outer span {
             color: rgb(81, 87, 103)
         }
 
-        .ieuiBj {
+        .Course-Location-Outer-Icon {
+
             display: flex;
             left: auto;
             position: relative;
             top: auto
         }
 
-        .ieuiBj.has-badge::before {
+        .Course-Location-Outer-Icon.has-badge::before {
             background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxOS4xLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiDQoJIHZpZXdCb3g9IjAgMCA2NCA2NCIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgNjQgNjQiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPGc+DQoJPHBvbHlnb24gZmlsbD0iI0QwQjE1MiIgcG9pbnRzPSI1OSwxMCA1LDEwIDUsNDMuMyAzMiw1NiA1OSw0My4zIAkiLz4NCgk8Zz4NCgkJPHBvbHlnb24gZmlsbD0iI0Y5QzE0RiIgcG9pbnRzPSI1NywxMiA3LDEyIDcsNDIuNSAzMiw1NCA1Nyw0Mi41IAkJIi8+DQoJCTxwb2x5Z29uIGZpbGw9IiNGREQ4OTUiIHBvaW50cz0iNTcsMTIgNywxMiA3LDQyLjUgCQkiLz4NCgk8L2c+DQo8L2c+DQo8L3N2Zz4NCg==);
             background-size: cover;
             content: "";
@@ -3387,7 +1342,8 @@
             margin-right: 3px
         }
 
-        .kPpAgE {
+        .Course-Location-Inner {
+
             color: rgb(26, 29, 38);
             transition: color 0.5s;
             display: flex;
@@ -3396,225 +1352,80 @@
             padding: 0px
         }
 
-        .kPpAgE:hover .RankList__Rank-sc-2xewen-2 {
-            color: rgb(26, 29, 38)
-        }
-
-        .kPpAgE span.in {
+        .Course-Location-Inner span.in {
             color: rgb(26, 29, 38);
             display: block;
             padding-right: 4px
         }
 
-        .kPpAgE strong span {
+        .Course-Location-Inner strong span {
             font-weight: 400
         }
 
-        .kPpAgE strong {
+        .Course-Location-Inner strong {
             padding: 0px 4px 0px 0px
         }
 
-        .kPpAgE > strong {
+        .Course-Location-Inner > strong {
             padding: 0px
         }
 
-        .JzQgR {
+        .READ-MORE {
+
             display: inline-block;
             vertical-align: text-bottom
         }
 
-        .bTPBIi {
-            position: absolute;
-            visibility: hidden;
-            top: 0px
-        }
+        .Course-Description-Content {
 
-        .cEYJIw {
             margin-bottom: 0rem;
             overflow: hidden;
             position: relative
         }
 
-        .kCkftk {
+        .Course-Description-Outer {
             margin-bottom: 0rem;
             overflow: hidden
         }
 
-        @media (min-width: 640px) {
-            .kCkftk {
-                max-height: calc(-5px + 4.9rem)
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .kCkftk {
-                max-height: calc(-5px + 2.45rem)
-            }
-        }
-
-        .cEohUC {
+        .Course-Description-Inner {
             position: relative
         }
 
-        .iWBUzw {
-            -webkit-box-align: center;
-            align-items: center;
-            width: fit-content;
-            margin: auto
-        }
+.Course-Cards {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    background-color: var(--white-00);
+}
 
-        .gIbHsJ {
-            height: 1.074em;
-            width: 1.074em
-        }
+.Course-Cards:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
 
-        .hzlmGg {
-            display: flex;
-            flex-wrap: wrap;
-            background: white;
-            box-shadow: rgba(61, 56, 85, 0.2) 0px 0px 10px;
-            border-radius: 0.5rem;
-            position: relative;
-            overflow: hidden;
-            width: 100%;
-            transition: box-shadow 0.5s
-        }
+        .ReadMore {
 
-        .hzlmGg:hover {
-            box-shadow: rgba(61, 56, 85, 0.5) 0px 4px 8px
-        }
-
-        .kRHKsu {
             margin: 0px
         }
 
-        .gCkpcV {
+        .Verification-Icon-Outer {
+
             display: inline-flex
         }
 
-        .iDtYJT {
+        .Verification-Icon-Inner {
+
             height: 1.25rem;
             width: 1.25rem;
             margin-left: 0.5rem;
             margin-bottom: -4px
         }
 
-        @media (min-width: 1024px) {
-            .iDtYJT {
-                height: 1.5rem;
-                width: 1.5rem;
-                margin-bottom: -3px
-            }
-        }
+        .Course-Information {
 
-        .DMeXz {
-            position: relative;
-            box-sizing: content-box;
-            order: 2;
-            align-self: flex-start;
-            flex-shrink: 0;
-            -webkit-box-flex: 0;
-            flex-grow: 0;
-            padding: 0.5rem;
-            width: 98px;
-            height: 98px
-        }
-
-        .DMeXz::before {
-            content: "";
-            display: block;
-            position: absolute;
-            z-index: 1;
-            top: 0.5rem;
-            left: 0.5rem;
-            width: 98px;
-            height: 98px;
-            background-color: rgba(17, 17, 17, 0.3);
-            opacity: 0;
-            transition: opacity 0.5s
-        }
-
-        .DMeXz:hover::before {
-            opacity: 1
-        }
-
-        @media (min-width: 640px) {
-            .DMeXz {
-                order: 1;
-                padding: 1rem;
-                width: 168px;
-                height: 168px
-            }
-
-            .DMeXz::before {
-                top: 1rem;
-                left: 1rem;
-                width: 168px;
-                height: 168px
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .DMeXz {
-                align-self: stretch;
-                padding: 0rem;
-                width: 210px;
-                height: auto;
-                border-right: 1px solid transparent
-            }
-
-            .DMeXz::before {
-                top: 0rem;
-                left: 0rem;
-                width: 210px;
-                height: 100%
-            }
-        }
-
-        .kGqYoh {
-            border: 1px solid rgb(211, 215, 220);
-            object-fit: cover;
-            width: 100%;
-            height: 100%
-        }
-
-        @media (min-width: 1024px) {
-            .kGqYoh {
-                border-top: none;
-                border-left: none
-            }
-        }
-
-        .bvkcOt {
-            display: none
-        }
-
-        @media (min-width: 640px) {
-            .bvkcOt {
-                display: block;
-                position: absolute;
-                z-index: 2;
-                top: 1.5rem;
-                left: 1.5rem;
-                padding: 0.125rem 0.5rem;
-                color: rgb(255, 255, 255);
-                font-size: 0.75rem;
-                line-height: 1.33;
-                font-weight: 700;
-                text-align: center;
-                background: rgba(17, 17, 17, 0.6);
-                border-radius: 5px
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .bvkcOt {
-                top: 0.5rem;
-                left: 0.5rem
-            }
-        }
-
-        .jmJBmF {
             display: flex;
             order: 1;
             flex: 1 0 0px;
@@ -3623,127 +1434,66 @@
             padding: 0.75rem 0.5rem
         }
 
-        @media (min-width: 640px) {
-            .jmJBmF {
-                order: 2;
-                flex-direction: row;
-                padding: 0px
-            }
-        }
+        .Course-Overview {
 
-        .hiISvu {
             order: 1;
             padding: 0px
         }
 
-        @media (min-width: 640px) {
-            .hiISvu {
-                flex: 1 0 0px;
-                -webkit-box-flex: 1;
-                padding: 1rem 1rem 1rem 0px
-            }
-        }
+        .CourseName {
 
-        @media (min-width: 1024px) {
-            .hiISvu {
-                padding-left: 1rem
-            }
-        }
-
-        .exfxTA {
             display: inline-block
         }
 
-        .exfxTA h3 {
+        .CourseName h3 {
             text-shadow: none !important;
             margin-bottom: 0rem !important
         }
 
-        .exfxTA h3:hover {
+        .CourseName h3:hover {
             color: rgb(81, 87, 103) !important
         }
 
-        .bwKLgl {
+        .CourseLocation {
             margin-top: 0px
         }
 
-        .bwKLgl li {
+        .CourseLocation li {
             font-size: 0.75rem;
             line-height: 1.33;
             margin-bottom: 0.25rem !important
         }
 
-        .bwKLgl li:first-child > a, .bwKLgl li:first-child > a:hover {
+        .CourseLocation li:first-child > a, .CourseLocation li:first-child > a:hover {
             color: rgb(26, 29, 38)
         }
 
-        .bwKLgl li > a > div::before {
+        .CourseLocation li > a > div::before {
             position: relative;
             margin-right: 0.25rem !important;
             height: 15px !important;
             width: 15px !important
         }
 
-        @media (min-width: 640px) {
-            .bwKLgl li {
-                font-size: 1rem;
-                line-height: 1.5;
-                margin-bottom: 0.5rem !important
-            }
-
-            .bwKLgl li > a > div::before {
-                top: 1px;
-                margin-right: 0.5rem !important;
-                height: 20px !important;
-                width: 20px !important
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .bwKLgl li {
-                margin-bottom: 0.5rem !important
-            }
-        }
-
-        .bwKLgl div > strong {
+        .CourseLocation div > strong {
             white-space: nowrap
         }
 
-        .jIfNQD {
+        .Cost-And-Hours-And-Keywords {
+
             order: 2
         }
 
-        .jIfNQD span {
+        .Cost-And-Hours-And-Keywords span {
             font-size: 0.875rem
         }
 
-        .jIfNQD .QuickStatHug-hb1bl8-2:last-child dl {
+        .Cost-And-Hours-And-Keywords .QuickStatHug-hb1bl8-2:last-child dl {
             margin-bottom: 0rem
         }
 
-        @media (min-width: 640px) {
-            .jIfNQD {
-                align-items: flex-start;
-                -webkit-box-pack: center;
-                justify-content: center;
-                flex-basis: 202px;
-                border-left: 1px solid rgb(211, 215, 220);
-                padding: 1rem;
-                width: 170px
-            }
+        .Course-Actions {
 
-            .jIfNQD span {
-                font-size: 1rem
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .jIfNQD {
-                flex-basis: 215px
-            }
-        }
-
-        .htGfTp {
             display: flex;
             order: 3;
             -webkit-box-align: center;
@@ -3755,233 +1505,32 @@
             padding: 0.5rem
         }
 
-        @media (min-width: 640px) {
-            .htGfTp {
-                padding: 0.5rem 1rem
-            }
+
+        .Hidden-Input {
+            display: none;
         }
 
-        @media (min-width: 0px) and (max-width: 1023px) {
-        }
-
-        @media (min-width: 0px) and (max-width: 767px) {
-        }
-
-        @media (min-width: 768px) {
-        }
-
-        @media (min-width: 768px) {
-        }
-
-        @media (min-width: 0px) and (max-width: 767px) {
-        }
-
-        @media (min-width: 768px) {
-        }
-
-        @media (min-width: 768px) {
-        }
-
-        @media (min-width: 768px) {
-        }
-
-        @media (min-width: 768px) {
-        }
-
-        @media (min-width: 768px) {
-        }
-
-        @media (min-width: 0px) and (max-width: 639px) {
-        }
-
-        @media (min-width: 768px) {
-        }
-
-        @media (min-width: 0px) and (max-width: 639px) {
-        }
-
-        @media (min-width: 768px) {
-        }
-
-        @media (min-width: 0px) and (max-width: 639px) {
-        }
-
-        @media (min-width: 768px) {
-        }
-
-        @media (min-width: 768px) {
-        }
-
-        @media (min-width: 768px) {
-        }
-
-        @media (min-width: 768px) {
-        }
-
-        .kmYGcL {
-            display: flex;
-            flex-wrap: nowrap;
-            overflow: hidden;
-            padding: 3px;
-            margin: -3px
-        }
-
-        .fVfhZM {
-            flex-shrink: 0;
-            max-width: 100%
-        }
-
-        .MDDIO {
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem
-        }
-
-        .djoLiw {
-            margin-bottom: 0.5rem;
-            border-color: rgb(18, 99, 211);
-            color: rgb(18, 99, 211);
-            font-weight: bold;
-            margin-right: 0px
-        }
-
-        .djoLiw:hover {
-            box-shadow: rgb(18, 99, 211) 0px 0px 3px
-        }
-
-        @-webkit-keyframes fnaYvJ {
-            0% {
-                transform: rotate(0deg)
-            }
-            100% {
-                transform: rotate(359deg)
-            }
-        }
-
-        @keyframes fnaYvJ {
-            0% {
-                transform: rotate(0deg)
-            }
-            100% {
-                transform: rotate(359deg)
-            }
-        }
-
-        @-webkit-keyframes iBevsA {
-            0% {
-                opacity: 0;
-                transform: translateY(1rem)
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0px)
-            }
-        }
-
-        @keyframes iBevsA {
-            0% {
-                opacity: 0;
-                transform: translateY(1rem)
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0px)
-            }
-        }
+        form {
+margin-top: 1em;
+}
 
 
-        @media screen and (max-width: 650px) {
-        }
+        #account-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    min-width: 150px;
+    padding: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease-in-out;
+                z-index: 9999; /* Ensure it's on top of everything */
 
-        @keyframes pn-spinner {
-            0% {
-                opacity: 1
-            }
-            to {
-                opacity: 0
-            }
-        }
-
-
-        @supports selector(:focus-visible) {
-            .fc-ab-root button:focus p:not(.fc-button-text), .fc-ab-root button:focus, .fc-ab-root .fc-button:focus, .fc-ab-root a:focus, .fc-ab-root .fc-toggle input:focus, .fc-ab-root .fc-dropdown-selection:focus, .fc-ab-root .fc-dropdown-menu-item:focus {
-                box-shadow: none !important;
-                outline: none !important
-            }
-
-            .fc-ab-root button:focus-visible::before, .fc-ab-root a:focus-visible::before, .fc-ab-root input:focus-visible::before, .fc-ab-root .fc-dropdown-selection-container:focus-visible::before, .fc-ab-root .fc-dropdown-menu-item:focus::before {
-                border: 2px solid rgb(23, 78, 166) !important;
-                border-radius: 6px !important;
-                content: "" !important;
-                inset: -4px !important;
-                position: absolute !important
-            }
-
-            .fc-ab-root button:focus-visible::after, .fc-ab-root a:focus-visible::after, .fc-ab-root input:focus-visible::after, .fc-ab-root .fc-dropdown-selection-container:focus-visible::after, .fc-ab-root .fc-dropdown-menu-item:focus::after {
-                border: 2px solid rgb(232, 240, 254) !important;
-                border-radius: 8px !important;
-                content: "" !important;
-                inset: -6px !important;
-                position: absolute !important
-            }
-
-            .fc-ab-root button.fc-icon-button:focus-visible::before {
-                inset: -2px !important
-            }
-
-            .fc-ab-root button.fc-icon-button:focus-visible::after {
-                inset: -4px !important
-            }
-
-            .fc-ab-root button.fc-list-item-button:focus-visible::before {
-                left: 2px !important;
-                width: calc(100% - 8px) !important
-            }
-
-            .fc-ab-root button.fc-list-item-button:focus-visible::after {
-                left: 0px !important;
-                width: calc(100% - 4px) !important
-            }
-        }
-
-        @media screen and (max-width: 479px) {
-        }
-
-        @media screen and (min-width: 480px) {
-        }
-
-        @supports (flex-wrap:wrap) and (gap:16px) {
-            @media screen and (min-width: 480px) {
-            }
-        }
-
-        @media screen and (max-width: 480px) {
-        }
-
-        @media screen and (min-width: 481px) {
-        }
-
-        @supports (flex-wrap:wrap) {
-            .fc-ab-root .fc-buttons-section {
-                flex-direction: unset !important;
-                flex-wrap: wrap !important
-            }
-        }
-
-        @supports (flex-wrap:wrap) and (gap:16px) and selector(::first-letter) {
-            .fc-ab-root .fc-buttons-section {
-                gap: 16px !important
-            }
-
-            .fc-ab-root .fc-buttons-section > :not(:last-child) {
-                margin-bottom: 0px !important
-            }
-        }
-
-
-        .sf-hidden {
-            display: none !important
-        }
-
+}
     </style>
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" data-rh=true
           name=viewport>
@@ -4005,15 +1554,20 @@
     </symbol>
 </svg>
 
-
 <main id=app style=display:block;width:100%;position:relative>
 
     <div style=width:inherit>
 
-        <!--top horizontal header-->
-        <nav class="header__Container-sc-1geadoy-0 jtHA-Dx">
 
-            <a style="margin-left: 10px;"
+
+
+        <!--top horizontal header-->
+
+            <footer class="Entire-New-Header">
+                <div class="Introduction content" style="display: flex; justify-content: center;">
+                    <div class="Main-New-Header">
+
+          <a style="margin-left: 0;"
 
                href=#><img
                     alt=""
@@ -4021,54 +1575,59 @@
                     src=https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/favicon.png
                     width=28></a>
 
+            <div class="Tabs">
+                <ul class="Tabs-Content-Outer">
 
-
-
-            <div class="header__SwapContainer-sc-1geadoy-3 fGbzNM">
-                <ul class="header__RootNavList-sc-1geadoy-4 hYkXSw">
-
-                    <li class="iOxWLu is-active">
+                    <li class="Tabs-Content-Inner is-active">
                         <a
-                            class="header__RootNavAnchor-sc-1geadoy-8 inENeF"
+                            class="header__RootNavAnchor-sc-1geadoy-8 Tabs-Content-Middle"
                             data-tracking-id=top_nav href=#>
                             Discover Courses
                         </a>
                     </li>
 
-                    <li class="iOxWLu">
+                    <li class="Tabs-Content-Inner">
                         <a
-                                class="header__RootNavAnchor-sc-1geadoy-8 inENeF"
+                                class="header__RootNavAnchor-sc-1geadoy-8 Tabs-Content-Middle"
                                 data-tracking-id=top_nav href=#>
                             Bookmarks
                         </a>
                     </li>
 
-
                 </ul>
             </div>
 
-            <div class="header__ButtonsContainer-sc-1geadoy-2 haVHpk" style="display: flex; align-items: center; gap: 10px; position: relative;">
+            <div class="header__ButtonsContainer-sc-1geadoy-2 Top-Right-Corner" style="display: flex; align-items: center; gap: 10px; position: relative;">
 
                 <!-- User Info -->
                 <span class="user-info" style="font-size: 14px; color: #333; font-weight: bold;">
                     Username: <span id="username" style="color: #007bff;">{{ user.username }}</span> |
-                    Role: <span id="user-role" style="color: #28a745;">{{ user.role }}</span>
-                </span>
+                    Role: <span id="user-role" style="color: #28a745;">
+                        {% if user.role == "training_provider" %}
+                            Training Provider (i.e., School Representative)
+                        {% elif user.role == "career_changer" %}
+                            Career Changer (i.e., Student)
+                        {% elif user.role == "administrator" %}
+                            Platform Administrator (i.e., Site Manager)
+                        {% else %}
+                            {{ user.role }}
+                        {% endif %}
+                    </span>                </span>
 
                 <!-- Account Button -->
-                <span class="account-button__Container-sc-5e0gts-0 jjUMEm" style="position: relative;">
+                <span class="account-button__Container-sc-5e0gts-0 Profile-Icons" style="position: relative;">
         <button id="account-button"
                 aria-controls="account-dropdown-menu"
                 aria-expanded="false"
                 aria-haspopup="menu"
-                class="menu__HeaderIconButton-emw2de-0 ffMiFy"
+                class="menu__HeaderIconButton-emw2de-0"
                 title="My Account"
                 width="44px"
                 style="background: none; border: none; cursor: pointer;">
-            <svg aria-hidden="true" class="Icon-sc-9wq8ul-0 fuNHPY" height="20px" role="img" width="20px">
+            <svg aria-hidden="true" class="Icon-sc-9wq8ul-0 Little-Icons" height="20px" role="img" width="20px">
                 <use filter="0" xlink:href="#user-circle"></use>
             </svg>
-            <svg aria-hidden="true" class="Icon-sc-9wq8ul-0 fuNHPY ml2" height="6px" role="img" width="6px">
+            <svg aria-hidden="true" class="Icon-sc-9wq8ul-0 Little-Icons Reviews" height="6px" role="img" width="6px">
                 <use filter="0" xlink:href="#caret"></use>
             </svg>
         </button>
@@ -4109,39 +1668,46 @@
                     }
                 });
             </script>
+                    </div>
+                </div>
 
-        </nav>
+
+            </footer>
 
 
+
+
+
+
+
+
+
+
+        <!--main content-->
         <article compass="[object Object]">
 
-            <div class="dsZFNJ">
-
+            <div class="Main-Body-Area">
 
                 <!--title and paragraph-->
-                <div class="kkKJUL content">
+                <div class="Introduction content">
 
-                    <header class="bSZiuM">
+                    <header class="Introduction-Title-And-Content">
 
+                        <div class="Introduction-Text-Outer">
+                            <div class="Introduction-Text-Inner">
 
-                        <div class="comXJl">
-                            <div class="cohqLo">
-
-
-                                <div class="Villain__TitleContainer-sc-1y12ps5-6 knjdTo">
-                                    <h1 class="Heading-sc-1w5xk2o-0 fkVkIY sm-hide">
+                                <div class="Villain__TitleContainer-sc-1y12ps5-6 Introduction-Text-Title">
+                                    <h1 class="Heading-sc-1w5xk2o-0 Introduction-Title sm-hide">
                                         Discover Vocational Training in NYC
                                     </h1>
                                 </div>
 
-                                <p class="Paragraph-sc-1iyax29-0 gwrVSw mt4">Vocational NYC helps you find and enroll in vocational training courses across New York City.
+                                <p class="Introduction-Content" style="margin-top: 1rem !important;">Vocational NYC helps you find and enroll in vocational training courses across New York City.
                                     Whether you're looking to switch careers, gain new skills, or find financial aid-supported programs,
                                     our platform makes it easy to explore options tailored to your goals.
                                     Browse courses, read reviews, and connect with training providers all in one place.</p>
 
-
                             </div>
-
 
                         </div>
 
@@ -4149,29 +1715,36 @@
 
                 </div>
 
-
                 <!--horizontal-filter-bar-->
-                <div class="filter-bar__Container-sc-1glfoa-0 beyWcp" data-ad-sticky=filterbar>
-                    <div class="filter-bar__ButtonRow-sc-1glfoa-1 evMnwK sf-hidden"></div>
-                    <div class="filter-bar__FilterRow-sc-1glfoa-3 bBsraF">
-                        <div class="center-column__CenterColumn-sc-syyxsq-0 filter-bar__FilterRowLayout-sc-1glfoa-4 fWZKDg daRoON">
-                            <div class="filter-bar__CountContainer-sc-1glfoa-5 kDkmXW"><span
-                                    data-tracking-id=search-results-count> {{courses.count}} </span><span> results</span></div>
-                            <div class="collapsible__Container-sc-1sc41e4-0 iFiRxM">
-                                <div class="collapsible__InnerContainer-sc-1sc41e4-1 cbocVJ">
+                <div class="Horizontal-Filter-Bar-Outer-Container" data-ad-sticky=filterbar>
+
+                    <div class="Horizontal-Filter-Bar-Inner-Container">
+                        <div class=" Main-Area Horizontal-Filter-Bar-Content-Area">
+
+                            <div class="Number-Of-Results">
+                                <span
+                                    data-tracking-id=search-results-count>
+                                    {{courses.count}}
+                                </span>
+                                <span>
+                                    results
+                                </span>
+                            </div>
+                            <div class="Horizontal-Filters-Area-Outer-Container">
+                                <div class="Horizontal-Filters-Area-Inner-Container">
                                     <div>
-                                        <ul class="filter-bar__ChipListStyled-sc-1glfoa-7 bfutrg">
-                                            <li class="filter-bar__ChipListItemStyled-sc-1glfoa-8 fLQsAo">
+                                        <ul class="filter-bar__ChipListStyled-sc-1glfoa-7 Applied-Filters-Border">
+                                            <li class="filter-bar__ChipListItemStyled-sc-1glfoa-8 Applied-Filters-Outline">
                                                 <button aria-label="Clear all filters"
-                                                        class="chip-button__ChipButtonStyled-sc-rhcqgz-0 nRSJe"><span
-                                                        class="chip-button__ChipLabel-sc-rhcqgz-1 iWqOZw">Clear Filters</span>
+                                                        class="chip-button__ChipButtonStyled-sc-rhcqgz-0 Filters"><span
+                                                        class="chip-button__ChipLabel-sc-rhcqgz-1 Filters-Inside">Clear Filters</span>
                                                 </button>
-                                            <li class="filter-bar__ChipListItemStyled-sc-1glfoa-8 fLQsAo">
+                                            <li class="filter-bar__ChipListItemStyled-sc-1glfoa-8 Applied-Filters-Outline">
                                                 <button aria-label="Clear Ranking filter."
-                                                        class="chip-button__ChipButtonStyled-sc-rhcqgz-0 chip__ButtonStyled-sc-mc0uv4-2 nRSJe isySSG">
-                                                    <span class="chip-button__ChipLabel-sc-rhcqgz-1 iWqOZw">filter 1</span><span
-                                                        class="chip__IconContainer-sc-mc0uv4-1 boikQY"><svg
-                                                        aria-hidden=true class="icon__SvgStyled-sc-q5hntj-0 csitLg"
+                                                        class="chip-button__ChipButtonStyled-sc-rhcqgz-0 chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
+                                                    <span class="chip-button__ChipLabel-sc-rhcqgz-1 Filters-Inside">filter 1</span><span
+                                                        class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon"><svg
+                                                        aria-hidden=true class="icon__SvgStyled-sc-q5hntj-0 Small-Icon"
                                                         fill=var(--color) height=8px
                                                         viewBox="0 0 38 38" width=8px><g
                                                         fill-rule=evenodd stroke=none stroke-width=1><polygon
@@ -4182,51 +1755,53 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="filter-bar__SortContainer-sc-1glfoa-9 kVUdB">
-                                <div class="filter-bar__SortLabel-sc-1glfoa-10 koJbQO" id=_atlas-search_sort-label>Sort
+                            <div class="Sorting">
+                                <div class="Sorting-Text" id=_atlas-search_sort-label>Sort
                                     by:
                                 </div>
                                 <select aria-labelledby=_atlas-search_sort-label
-                                        class="filter-bar__SelectStyled-sc-1glfoa-11 eKHKNv">
-                                    <option selected value=??asc>111
-                                    <option value=??dsc>222
-                                    <option value=??asc>333
-                                    <option value=??dsc>444
-                                    <option value=??asc>555
-                                    <option value=??dsc>666
-                                    <option value=??asc>777
-                                    <option value=??dsc>888
+                                        class="filter-bar__SelectStyled-sc-1glfoa-11">
+                                    <option selected value=??asc>AAA
+                                    <option value=??dsc>BBB
+                                    <option value=??asc>CCC
+                                    <option value=??dsc>DDD
+                                    <option value=??asc>EEE
+                                    <option value=??dsc>FFF
+                                    <option value=??asc>GGG
+                                    <option value=??dsc>HHH
                                 </select></div>
                         </div>
                     </div>
                 </div>
 
-                <div class="eyiqwV">
-                    <div class="fWZKDg kIWqwM">
-                        <div class="bBrzxo">
-                            <div class="eEsHDv">
+                <div class="Lower-Main-Body-Area">
+
+                    <div class="Main-Area Lower-Main-Body-Area-Border">
+                        <div class="Lower-Main-Body-Area-Inner">
+                            <div class="Lower-Main-Body-Area-Content">
 
                                 <!--left-side filters-->
                                 <form action="{% url 'search_result' %}" method="GET" id="searchForm">
+
                                     <fieldset
-                                            class="field-set__FieldSetStyled-sc-b2ie46-0 gxqGFi form__ConnectedFieldSetStyled-sr2rn8-1 hAmwzM"
+                                            class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
                                             name="schoolName">
-                                        <legend class="field-set__LegendStyled-sc-b2ie46-1 cJponW">
-                                            <div class="field-set__LegendContent-sc-b2ie46-2 hpUyNf">
+                                        <legend class="field-set__LegendStyled-sc-b2ie46-1 Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
                                                 Keywords
                                             </div>
                                         </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 fiXdkJ"
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer"
                                              style="max-height:none;overflow:visible">
-                                            <div class="field-set__ContentContainer-sc-b2ie46-5 gdVrLb">
-                                                <div class="autosuggest__Container-sc-hb0rq-0 eAJdjQ">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
                                                     <div aria-expanded=false aria-haspopup=listbox
                                                          aria-owns=react-autowhatever-schoolName
                                                          class=react-autosuggest__container
                                                          role=combobox><input aria-autocomplete=list
                                                                       aria-controls=react-autowhatever-schoolName
                                                                       autocomplete=off
-                                                                      class="TextInput__TextInputDeprecated-ob7d2g-2 gsThaJ form__TextInputStyled-sr2rn8-2 BosaO react-autosuggest__input"
+                                                                      class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
                                                                       placeholder="Keywords"
                                                                       name="query"
                                                                       type=text
@@ -4239,101 +1814,90 @@
                                             </div>
                                         </div>
                                     </fieldset>
-                                    <fieldset
-                                            class="field-set__FieldSetStyled-sc-b2ie46-0 gxqGFi form__ConnectedFieldSetStyled-sr2rn8-1 hAmwzM"
-                                            name=majors>
-                                        <legend class="field-set__LegendStyled-sc-b2ie46-1 cJponW">
-                                            <div class="field-set__LegendContent-sc-b2ie46-2 hpUyNf">
-                                                min cost
+
+                                                                        <fieldset
+                                            class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                            name="schoolName">
+                                        <legend class="field-set__LegendStyled-sc-b2ie46-1 Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Min Cost
                                             </div>
                                         </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 fiXdkJ"
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer"
                                              style="max-height:none;overflow:visible">
-                                            <div class="field-set__ContentContainer-sc-b2ie46-5 gdVrLb">
-                                                <div class="MajorsInput__ChipSelectorStyled-sc-1w5hn16-0 bMKNdP">
-                                                    <div>
-                                                        <div class="Autocomplete__InputWrapper-sc-1dfg182-3 eSxYRF"
-                                                             name=major placeholder="Type to Select Majors">
-                                                            <div aria-expanded=false aria-haspopup=listbox
-                                                                 aria-owns=react-autowhatever-1
-                                                                 class=react-autosuggest__container
-                                                                 role=combobox><input
-                                                                    aria-autocomplete=list
-                                                                    aria-controls=react-autowhatever-1
-                                                                    autocomplete=off
-                                                                    class=react-autosuggest__input
-                                                                    fetchdelay=500
-                                                                    name="min_cost"
-                                                                    placeholder="min_cost"
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
+                                                    <div aria-expanded=false aria-haspopup=listbox
+                                                         aria-owns=react-autowhatever-schoolName
+                                                         class=react-autosuggest__container
+                                                         role=combobox><input aria-autocomplete=list
+                                                                      aria-controls=react-autowhatever-schoolName
+                                                                      autocomplete=off
+                                                                      class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
+                                                                     name="min_cost"
+                                                                    placeholder="Min Cost"
                                                                     type="number"
                                                                     step="1"
-                                                                    value>
-                                                                <div class="react-autosuggest__suggestions-container sf-hidden"
-                                                                     role=listbox></div>
-                                                            </div>
-                                                        </div>
+                                                                      value>
+                                                        <div class="react-autosuggest__suggestions-container sf-hidden"
+                                                             role=listbox></div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </fieldset>
-                                    <fieldset
-                                            class="field-set__FieldSetStyled-sc-b2ie46-0 gxqGFi form__ConnectedFieldSetStyled-sr2rn8-1 hAmwzM"
-                                            name=majors>
-                                        <legend class="field-set__LegendStyled-sc-b2ie46-1 cJponW">
-                                            <div class="field-set__LegendContent-sc-b2ie46-2 hpUyNf">
-                                                max cost
+
+                                                                                                            <fieldset
+                                            class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                            name="schoolName">
+                                        <legend class="field-set__LegendStyled-sc-b2ie46-1 Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Max Cost
                                             </div>
                                         </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 fiXdkJ"
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer"
                                              style="max-height:none;overflow:visible">
-                                            <div class="field-set__ContentContainer-sc-b2ie46-5 gdVrLb">
-                                                <div class="MajorsInput__ChipSelectorStyled-sc-1w5hn16-0 bMKNdP">
-                                                    <div>
-                                                        <div class="Autocomplete__InputWrapper-sc-1dfg182-3 eSxYRF"
-                                                             name=major placeholder="Type to Select Majors">
-                                                            <div aria-expanded=false aria-haspopup=listbox
-                                                                 aria-owns=react-autowhatever-1
-                                                                 class=react-autosuggest__container
-                                                                 role=combobox><input
-                                                                    aria-autocomplete=list
-                                                                    aria-controls=react-autowhatever-1
-                                                                    autocomplete=off
-                                                                    class=react-autosuggest__input
-                                                                    fetchdelay=500
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
+                                                    <div aria-expanded=false aria-haspopup=listbox
+                                                         aria-owns=react-autowhatever-schoolName
+                                                         class=react-autosuggest__container
+                                                         role=combobox><input aria-autocomplete=list
+                                                                      aria-controls=react-autowhatever-schoolName
+                                                                      autocomplete=off
+                                                                      class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
                                                                     name="max_cost"
-                                                                    placeholder="max_cost"
+                                                                    placeholder="Max Cost"
                                                                     type="number"
                                                                     step="1"
-                                                                    value>
-                                                                <div class="react-autosuggest__suggestions-container sf-hidden"
-                                                                     role=listbox></div>
-                                                            </div>
-                                                        </div>
+                                                                      value>
+                                                        <div class="react-autosuggest__suggestions-container sf-hidden"
+                                                             role=listbox></div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </fieldset>
+
                                     <fieldset
-                                            class="field-set__FieldSetStyled-sc-b2ie46-0 gxqGFi form__ConnectedFieldSetStyled-sr2rn8-1 hAmwzM"
+                                            class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
                                             name=location>
-                                        <legend class="field-set__LegendStyled-sc-b2ie46-1 cJponW">
-                                            <div class="field-set__LegendContent-sc-b2ie46-2 hpUyNf">
+                                        <legend class="field-set__LegendStyled-sc-b2ie46-1 Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
                                                 Location
                                             </div>
                                         </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 fiXdkJ"
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer"
                                              style="max-height:none;overflow:visible">
-                                            <div class="field-set__ContentContainer-sc-b2ie46-5 gdVrLb">
-                                                <div class="autosuggest__Container-sc-hb0rq-0 eAJdjQ">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
                                                     <div aria-expanded=false aria-haspopup=listbox
                                                          aria-owns=react-autowhatever-location-input
                                                          class=react-autosuggest__container
                                                          role=combobox><input aria-autocomplete=list
                                                                       aria-controls=react-autowhatever-location-input
                                                                       autocomplete=off
-                                                                      class="TextInput__TextInputDeprecated-ob7d2g-2 gsThaJ form__TextInputStyled-sr2rn8-2 BosaO react-autosuggest__input"
+                                                                      class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
                                                                       name="location"
                                                                       placeholder="City, State or ZIP"
                                                                       type=text
@@ -4343,12 +1907,11 @@
                                                              role=listbox></div>
                                                     </div>
                                                 </div>
-                                                {% comment %}
-                                                <div class="mb3"></div>
-                                                <span class="select__Container-sc-i9bbt3-3 iIYihU"
+                                                <div style="margin-bottom: 0.5rem !important;"></div>
+                                                <span class="select__Container-sc-i9bbt3-3 All-Distances-Outer-Frame"
                                                       style="--width:100%"><label
-                                                        class="select__LabelStyled-sc-i9bbt3-0 kjZuzh"><select
-                                                        class="select__SelectStyled-sc-i9bbt3-1 dqUGML"
+                                                        class="select__LabelStyled-sc-i9bbt3-0 All-Distances-Inner-Frame"><select
+                                                        class="select__SelectStyled-sc-i9bbt3-1 All-Distances-Content-Box"
                                                         name="distance"><option
                                                         selected value>All Distances
                                                     <option value=25>Within 25 miles
@@ -4356,30 +1919,30 @@
                                                     <option value=100>Within 100 miles
                                                     <option value=250>Within 250 miles
                                                 </select><svg
-                                                        class="icon__SvgStyled-sc-q5hntj-0 csitLg select__CaretStyled-sc-i9bbt3-4 eQfdNz"
+                                                        class="icon__SvgStyled-sc-q5hntj-0 Small-Icon Dropdown-Icon"
                                                         fill=var(--gray-30)
                                                         viewBox="0 0 64 64"><path
                                                         d="M33.3,39.8l13.1-13.1c0.4-0.4,0.6-0.8,0.6-1.3c0-1-0.9-1.9-1.9-1.9H18.8c-1,0-1.9,0.8-1.9,1.9  c0,0.5,0.2,1,0.6,1.3l13.1,13.1c0.4,0.4,0.8,0.6,1.3,0.6S33,40.2,33.3,39.8"></path></svg></label></span>
-                                                {% endcomment %}
                                             </div>
                                         </div>
                                     </fieldset>
+
                                     {% comment %}
                                     <fieldset
-                                            class="field-set__FieldSetStyled-sc-b2ie46-0 gxqGFi form__ConnectedFieldSetStyled-sr2rn8-1 hAmwzM"
+                                            class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
                                             name=area-of-study>
-                                        <legend class="field-set__LegendStyled-sc-b2ie46-1 cJponW">
-                                            <div class="field-set__LegendContent-sc-b2ie46-2 hpUyNf">
+                                        <legend class="field-set__LegendStyled-sc-b2ie46-1 Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
                                                 Area of Study
                                             </div>
                                         </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 fiXdkJ"
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer"
                                                 style=max-height:none;overflow:visible>
-                                            <div class="field-set__ContentContainer-sc-b2ie46-5 gdVrLb">
-                                                <span class="select__Container-sc-i9bbt3-3 iIYihU"
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <span class="select__Container-sc-i9bbt3-3 All-Distances-Outer-Frame"
                                                         style=--width:100%><label
-                                                        class="select__LabelStyled-sc-i9bbt3-0 kjZuzh"><select
-                                                        class="select__SelectStyled-sc-i9bbt3-1 dqUGML"
+                                                        class="select__LabelStyled-sc-i9bbt3-0 All-Distances-Inner-Frame"><select
+                                                        class="select__SelectStyled-sc-i9bbt3-1 All-Distances-Content-Box"
                                                         name=study><option
                                                         selected value>All Areas of Study<option
                                                         value="Agriculture, Agriculture Operations, and Related Sciences">Agriculture<option
@@ -4426,7 +1989,7 @@
                                                         value="Social Sciences">Social Sciences<option
                                                         value="Theology and Religious Vocations">Theology and Religious Vocations<option
                                                         value="Transportation and Materials Moving">Transportation and Materials Moving</select><svg
-                                                        class="icon__SvgStyled-sc-q5hntj-0 csitLg select__CaretStyled-sc-i9bbt3-4 eQfdNz"
+                                                        class="icon__SvgStyled-sc-q5hntj-0 Small-Icon Dropdown-Icon"
                                                         fill=var(--gray-30)
                                                         viewBox="0 0 64 64"><path
                                                         d="M33.3,39.8l13.1-13.1c0.4-0.4,0.6-0.8,0.6-1.3c0-1-0.9-1.9-1.9-1.9H18.8c-1,0-1.9,0.8-1.9,1.9  c0,0.5,0.2,1,0.6,1.3l13.1,13.1c0.4,0.4,0.8,0.6,1.3,0.6S33,40.2,33.3,39.8"></path></svg></label></span>
@@ -4434,59 +1997,52 @@
                                         </div>
                                     </fieldset>
                                     {% endcomment %}
-                                    <fieldset
-                                            class="field-set__FieldSetStyled-sc-b2ie46-0 gxqGFi form__ConnectedFieldSetStyled-sr2rn8-1 hAmwzM"
-                                            name=majors>
-                                        <legend class="field-set__LegendStyled-sc-b2ie46-1 cJponW">
-                                            <div class="field-set__LegendContent-sc-b2ie46-2 hpUyNf">
-                                                min hours
+
+                                                                                                            <fieldset
+                                            class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                            name="schoolName">
+                                        <legend class="field-set__LegendStyled-sc-b2ie46-1 Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Min Hours
                                             </div>
                                         </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 fiXdkJ"
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer"
                                              style="max-height:none;overflow:visible">
-                                            <div class="field-set__ContentContainer-sc-b2ie46-5 gdVrLb">
-                                                <div class="MajorsInput__ChipSelectorStyled-sc-1w5hn16-0 bMKNdP">
-                                                    <div>
-                                                        <div class="Autocomplete__InputWrapper-sc-1dfg182-3 eSxYRF"
-                                                             name=major placeholder="Type to Select Majors">
-                                                            <div aria-expanded=false aria-haspopup=listbox
-                                                                 aria-owns=react-autowhatever-1
-                                                                 class=react-autosuggest__container
-                                                                 role=combobox><input
-                                                                    aria-autocomplete=list
-                                                                    aria-controls=react-autowhatever-1
-                                                                    autocomplete=off
-                                                                    class=react-autosuggest__input
-                                                                    fetchdelay=500
-                                                                    name="min_classroom_hours"
-                                                                    placeholder="min_classroom_hours"
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
+                                                    <div aria-expanded=false aria-haspopup=listbox
+                                                         aria-owns=react-autowhatever-schoolName
+                                                         class=react-autosuggest__container
+                                                         role=combobox><input aria-autocomplete=list
+                                                                      aria-controls=react-autowhatever-schoolName
+                                                                      autocomplete=off
+                                                                      class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
+                                                                     name="min_classroom_hours"
+                                                                    placeholder="Min Classroom Hours"
                                                                     type="number"
                                                                     step="1"
-                                                                    value>
-                                                                <div class="react-autosuggest__suggestions-container sf-hidden"
-                                                                     role=listbox></div>
-                                                            </div>
-                                                        </div>
+                                                                      value>
+                                                        <div class="react-autosuggest__suggestions-container sf-hidden"
+                                                             role=listbox></div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </fieldset>
-                                    {% comment %}
-                                    <legend class="field-set__LegendStyled-sc-b2ie46-1 cJponW">
-                                        <div class="field-set__LegendContent-sc-b2ie46-2 hpUyNf">
+
+                                    <legend class="field-set__LegendStyled-sc-b2ie46-1 Filter-Section-Title-Outer">
+                                        <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
                                             Apply Filters
                                         </div>
                                     </legend>
-                                    {% endcomment %}
                                     <fieldset
-                                        class="field-set_FieldSetStyled-sc-b2ie46-0 gxqGFi form_ConnectedFieldSetStyled-sr2rn8-1 hAmwzM"
+                                        class="field-set_FieldSetStyled-sc-b2ie46-0 Filter-Section form_ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
                                         name=majors>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 fiXdkJ"
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer"
                                              style="max-height:none;overflow:visible">
-                                            <div class="field-set__ContentContainer-sc-b2ie46-5 gdVrLb">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
                                                 <div class="MajorsInput__ChipSelectorStyled-sc-1w5hn16-0 bMKNdP">
-                                                    <button type="submit" class="Autocomplete__InputWrapper-sc-1dfg182-3 eSxYRF" style="display: flex; justify-content: center; align-items: center; width: 100%; text-align: center;">
+                                                    <button type="submit" class="Autocomplete__InputWrapper-sc-1dfg182-3 Apply-Filters-Button" style="display: flex; justify-content: center; align-items: center; width: 100%; text-align: center;">
                                                         Apply Filters
                                                     </button>
                                                 </div>
@@ -4496,80 +2052,67 @@
                                 </form>
                                             <!-- </form> -->
 
-                                <!--schools-->
-                                <div class="iHfXbS">
-                                    <ol class="SchoolList">
+                                <!--courses-->
+                                <div class="All-Course-Container">
+                                    <ol class="CourseList">
                                         {% for course in courses %}
-                                        <li class="SchoolCard" style="animation-delay:0ms">
-                                            <div class="dJqzJE hzlmGg" spacing=4>
-                                                <!--School Image-->
-                                                <a class="Anchor-byh49a-0 gzdPVF DMeXz" href="{% url 'course_detail' course.pk %}">
-                                                    <picture class=Image__Picture-sc-412cjc-0>
-                                                        <img
-                                                            alt="School Image"
-                                                            class="bBgODV Image-sc-412cjc-2 kGqYoh"
-                                                            loading=lazy
-                                                            src=https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/favicon.png
-                                                            srcset>
-                                                    </picture>
-                                                </a>
+                                        <li class="CourseCard" style="animation-delay:0ms">
+                                            <div class="Course-Card-Outer-Container Course-Cards" spacing=4>
 
-                                                <div class="Card__TextContainer-sc-1ra20i5-8 bcZeaE jmJBmF">
-                                                    <div class="Card__CardOverview-sc-1ra20i5-9 bcZeaE hiISvu">
-                                                        <div class="fVeiXB" spacing=2>
+
+                                                <div class="Card__TextContainer-sc-1ra20i5-8 Course-Card-Inner-Container Course-Information">
+                                                    <div class="Card__CardOverview-sc-1ra20i5-9 Course-Card-Inner-Container Course-Overview">
+                                                        <div class="Course-Name-Inner-Container-And-Provider" spacing=2>
                                                             <div>
-                                                                <a class="Anchor-byh49a-0 Card__StyledAnchor-sc-1ra20i5-10 gzdPVF exfxTA card-name"
+                                                                <a class="Anchor-byh49a-0 Card__StyledAnchor-sc-1ra20i5-10 Course-Name-Outer-Container CourseName card-name"
                                                                    href="{% url 'course_detail' course.pk %}">
-                                                                    <h3 class="Heading-sc-1w5xk2o-0 Wakanda__Title-rzha8s-10 kGxvYx gtkLHO">
-                                                                        <span class="HeadingWithIcon__NoWrap-sc-1kfmde2-1 fYrKRu">
+                                                                    <h3 class="Heading-sc-1w5xk2o-0 Wakanda__Title-rzha8s-10 Course-Name-Inner-Container gtkLHO">
+                                                                        <span class="HeadingWithIcon__NoWrap-sc-1kfmde2-1 Course-Title">
                                                                             {{ course.name }}
-                                                                            {% comment %}
-                                                                            <div class="Card__IconWrapper-sc-1ra20i5-2 gCkpcV">
+
+                                                                            <div class="Card__IconWrapper-sc-1ra20i5-2 Verification-Icon-Outer">
                                                                                 <picture class=Image__Picture-sc-412cjc-0>
-                                                                                    <img class="Image__PictureImage-sc-412cjc-1 bBgODV Image-sc-412cjc-2 Card__Claimed-sc-1ra20i5-3 kQDDcT iDtYJT"
+                                                                                    <img class="Image__PictureImage-sc-412cjc-1 Verification-Icon Image-sc-412cjc-2 Card__Claimed-sc-1ra20i5-3 kQDDcT Verification-Icon-Inner"
                                                                                          src="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/verified.png"
                                                                                          srcset
                                                                                          alt="">
                                                                                 </picture>
                                                                             </div>
-                                                                            {% endcomment %}
+
                                                                         </span>
                                                                     </h3>
                                                                 </a>
                                                             </div>
-                                                            <p class="Paragraph-sc-1iyax29-0 fbFZrE">{{ course.provider.name }}</p>
+                                                            <p class="Course-Provider">{{ course.provider.name }}</p>
                                                         </div>
-                                                        <div class="pbOnV" spacing=3>
-                                                            {% comment %}
-                                                            <!-- <ul class="RankList__List-sc-2xewen-0 ciVlaM Card__StyledRankList-sc-1ra20i5-11 bwKLgl"
+                                                        <div class="Course-Address-And-Reviews" spacing=3>
+
+                                                          <ul class="RankList__List-sc-2xewen-0 Course-Location-Outer Card__StyledRankList-sc-1ra20i5-11 CourseLocation"
                                                                 font-size=4 spacing=0>
-                                                                <li class="RankList__ListItem-sc-2xewen-1 dofuo rank-list-item">
-                                                                    <a class="RankList__RankLink-sc-2xewen-3 kPpAgE has-badge">
-                                                                        <div class="RankList__Rank-sc-2xewen-2 ieuiBj ranked has-badge">
-                                                                            <strong>#</strong>
-                                                                            <strong>{{ course.rank }}</strong>
+                                                                <li class="RankList__ListItem-sc-2xewen-1 Course-Location-Outer rank-list-item">
+                                                                    <a class="RankList__RankLink-sc-2xewen-3 Course-Location-Inner has-badge">
+                                                                        <div class="RankList__Rank-sc-2xewen-2 Course-Location-Outer-Icon ranked has-badge">
                                                                         </div>
-                                                                        <span class=in>in </span><strong>{{ course.rank_category }}</strong></a>
+                                                                        <span class=in>{{ course.provider.address }}</span></a>
                                                                 </li>
-                                                            </ul> -->
-                                                            {% endcomment %}
+                                                            </ul>
+
                                                             <div class=flex>
-                                                                {% comment %}
-                                                                <a class="Anchor-byh49a-0 ixLwSd"
-                                                                    href="{% url 'course_reviews' course.id %}">
-                                                                {% endcomment %}
+                                                                <a class="Anchor-byh49a-0 Course-Reviews-Outer-Container"
+                                                                    href="#">
+
                                                                 <div aria-label="{{ course.rating }} out of 5"
-                                                                     class="Rating__Container-sc-1naeqqj-0 inhQCv eRZspG Rating-sc-1naeqqj-2 kiGUEr"
+                                                                     class="Rating__Container-sc-1naeqqj-0 Course-Reviews-Inner-Container Course-Rating-And-Reviews Rating-sc-1naeqqj-2 kiGUEr"
                                                                      spacing=0>
                                                                     {% for i in "12345"|make_list %}
                                                                         {% if forloop.counter <= course.rating_full_stars %}
-                                                                        <svg class="Rating__IconSvg-sc-1naeqqj-1 kDMHYY"
+                                                                        <svg class="Rating__IconSvg-sc-1naeqqj-1 Course-Rating"
                                                                              fill=#1263D3
                                                                              stroke=#1263D3>
                                                                             <use xlink:href=#star></use>
                                                                         </svg>
                                                                         {% elif forloop.counter == course.rating_partial_star_position %}
-                                                                        <svg class="Rating__IconSvg-sc-1naeqqj-1 kDMHYY"
+                                                                        <svg class="Rating__IconSvg-sc-1naeqqj-1 Course-Rating"
                                                                              fill=url(#5dbdf6c0-ad66-40a1-bc8d-5393e4ca83b2)
                                                                              stroke=#1263D3>
                                                                             <use xlink:href=#star></use>
@@ -4589,87 +2132,79 @@
                                                                             </defs>
                                                                         </svg>
                                                                         {% else %}
-                                                                        <svg class="Rating__IconSvg-sc-1naeqqj-1 kDMHYY"
+                                                                        <svg class="Rating__IconSvg-sc-1naeqqj-1 Course-Rating"
                                                                              fill=#ffffff
                                                                              stroke=#1263D3>
                                                                             <use xlink:href=#star></use>
                                                                         </svg>
                                                                         {% endif %}
                                                                     {% endfor %}
-                                                                    <span class="ReviewSnapshot__StyledSpan-sc-702mfw-0 gxbbKL ml2">{{ course.reviews_count }} reviews</span>
+                                                                    <span class="ReviewSnapshot__StyledSpan-sc-702mfw-0 Course-Review-Quantity Reviews">{{ course.reviews_count }} reviews</span>
                                                                 </div>
                                                             </a>
-                                                            <span class="Span-sc-19wk4id-0 eFHPpz" size=4
-                                                                  style=line-height:0;cursor:pointer
-                                                                  tabindex=0><svg
-                                                                class="Icon-sc-9wq8ul-0 Tooltip__TooltipIcon-gfkrkc-0 fuNHPY mmMeU"
-                                                                fill=#6F7480
-                                                                height=1.5rem
-                                                                role=img
-                                                                width=1.5rem><use
-                                                                filter=0 xlink:href=#help></use></svg></span></div>
+                                                            </div>
                                                         </div>
-                                                        <div class="MultilineEllipsis__Container-sc-1hoyc1r-5 cEYJIw Hide-kg09cx-0 hWOBmI"
+                                                        <div class="MultilineEllipsis__Container-sc-1hoyc1r-5 Course-Description-Content Hide-kg09cx-0 hWOBmI"
                                                              size=3
                                                              spacing=0>
-                                                            <div class="MultilineEllipsis__HeightRestriction-sc-1hoyc1r-6 kCkftk"
+                                                            <div class="MultilineEllipsis__HeightRestriction-sc-1hoyc1r-6 Course-Description-Outer"
                                                                  size=3
                                                                  spacing=0>
-                                                                <div class="MultilineEllipsis__ContentSizedContainer-sc-1hoyc1r-7 cEohUC">
-                                                                    <p class="Paragraph-sc-1iyax29-0 fBaaRL">{{ course.course_desc }}
-                                                                    <div class="MultilineEllipsis__FullHeightReferenceWrapper-sc-1hoyc1r-4 bTPBIi">
+                                                                <div class="MultilineEllipsis__ContentSizedContainer-sc-1hoyc1r-7 Course-Description-Inner">
+                                                                    <p class="Course-Description">{{ course.course_desc }}
+                                                                    <div class="MultilineEllipsis__FullHeightReferenceWrapper-sc-1hoyc1r-4">
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div>
-                                                                <a class="Anchor-byh49a-0 kdDKia MultilineEllipsis__ReadMore-sc-1hoyc1r-3 JzQgR Card__ReadMore-sc-1ra20i5-1 kRHKsu card-more"
+                                                                <a class="Anchor-byh49a-0 Read-More MultilineEllipsis__ReadMore-sc-1hoyc1r-3 READ-MORE Card__ReadMore-sc-1ra20i5-1 ReadMore card-more"
                                                                    href="{% url 'course_detail' course.pk %}">Read
                                                                     More »</a></div>
                                                         </div>
                                                     </div>
-                                                    <div class="bcZeaE jIfNQD">
-                                                        <div class="bcZeaE fkvuin QuickStatHug-hb1bl8-2">
+                                                    <div class="Course-Card-Inner-Container Cost-And-Hours-And-Keywords">
+                                                        <div class="Course-Card-Inner-Container Cost-Hours-Keywords QuickStatHug-hb1bl8-2">
                                                             <dl>
                                                                 <div>
                                                                     <dt class=label-wrapper>Cost
-                                                                    <dd class="bnQTJo">
+                                                                    <dd class="Cost-Hours-Keywords-Text">
                                                                         ${{ course.cost }}
                                                                 </div>
                                                             </dl>
                                                         </div>
 
-                                                        <div class="bcZeaE fkvuin QuickStatHug-hb1bl8-2">
+                                                        <div class="Course-Card-Inner-Container Cost-Hours-Keywords QuickStatHug-hb1bl8-2">
                                                             <dl>
                                                                 <div>
                                                                     <dt class=label-wrapper>Classroom Hours
-                                                                    <dd class="bnQTJo">
+                                                                    <dd class="Cost-Hours-Keywords-Text">
                                                                         {{ course.classroom_hours }}
                                                                 </div>
                                                             </dl>
                                                         </div>
 
-                                                        <div class="bcZeaE fkvuin QuickStatHug-hb1bl8-2">
+                                                        <div class="Course-Card-Inner-Container Cost-Hours-Keywords QuickStatHug-hb1bl8-2">
                                                             <dl>
                                                                 <div>
                                                                     <dt class=label-wrapper>Keywords
-                                                                    <dd class="bnQTJo">
+                                                                    <dd class="Cost-Hours-Keywords-Text">
                                                                         {{ course.keywords }}
                                                                 </div>
                                                             </dl>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
-                                                <div class="Card__ActionContainer-sc-1ra20i5-13 bcZeaE htGfTp">
-                                                    {% comment %}
-                                                    <div class="bcZeaE Card__CompareCheckbox-sc-1ra20i5-14 gjqtrd card-compare">
-                                                        <span class="input__Container-sc-1ie8rf0-0 cUXzSP">
-                                                            <label class="input__Label-sc-1ie8rf0-5 btFngc size-small">
-                                                                <input class="input__InputHidden-sc-1ie8rf0-6 dwcSGY"
+
+                                                <div class="Card__ActionContainer-sc-1ra20i5-13 Course-Card-Inner-Container Course-Actions">
+
+                                                    <div class="Course-Card-Inner-Container Card__CompareCheckbox-sc-1ra20i5-14 gjqtrd card-compare">
+                                                        <span class="input__Container-sc-1ie8rf0-0 Add-To-Compare-Border">
+                                                            <label class="input__Label-sc-1ie8rf0-5 Add-To-Compare-Outer size-small">
+                                                                <input class="Hidden-Input"
                                                                     name="compare-{{ course.id }}"
                                                                     type=checkbox
                                                                     value="{{ course.id }}">
-                                                                <span class="input__Control-sc-1ie8rf0-1 cJxiOx">
+                                                                <span class="input__Control-sc-1ie8rf0-1 Add-To-Compare-Check">
                                                                     <svg viewBox="0 0 100 100">
                                                                         <path d="M12.1 52.1l24.4 24.4 53-53" fill=none
                                                                             stroke-linecap=round
@@ -4679,28 +2214,23 @@
                                                                         </path>
                                                                     </svg>
                                                                 </span>
-                                                                <span class="input__LabelSpan-sc-1ie8rf0-2 kDEaWM">
+                                                                <span class="input__LabelSpan-sc-1ie8rf0-2 Add-To-Compare-Outline">
                                                                     <span>
-                                                                        <span class="Span-sc-19wk4id-0 gNMPsQ sm-hide" size=3>Add To Compare</span>
-                                                                        <span class="Span-sc-19wk4id-0 gNMPsQ md-hide lg-hide sf-hidden" size=3>Compare</span>
+                                                                        <span class="Span-sc-19wk4id-0 Add-To-Compare sm-hide" size=3>Add To Compare</span>
                                                                     </span>
                                                                 </span>
                                                             </label>
                                                         </span>
                                                     </div>
-                                                    {% endcomment %}
-                                                    <button class="button__ButtonStyled-sc-1vhaw8r-1 bGXiGV type-primary size-small"
+
+                                                    <button class="button__ButtonStyled-sc-1vhaw8r-1 BookmarkButton type-primary size-small"
                                                             data-course-id="{{ course.id }}"
                                                             data-tracking-apply-int-code=false
                                                             data-tracking-campaign=edu_save_cta_click
                                                             data-tracking-id=edu_save_tracking
                                                             data-tracking-placement=edu_save_cta_rankingcard
                                                             data-tracking-trigger-utag-link-event=true>
-                                                        <svg class="Icon-sc-9wq8ul-0 fuNHPY mr3" fill=#ffffff
-                                                             height=0.75rem role=img
-                                                             width=0.75rem>
-                                                            <use filter=0 xlink:href=#heart></use>
-                                                        </svg>
+
                                                         Add Bookmark
                                                     </button>
                                                 </div>
@@ -4709,52 +2239,56 @@
                                         {% endfor %}
                                     </ol>
                                 </div>
+
                             </div>
                         </div>
                     </div>
+
                 </div>
-            </article>
+
+            </div>
+        </article>
 
             <!--footer-->
-            <footer class="XLfAG">
-                <div class=" kkKJUL content" style="display: flex; justify-content: center;">
-                    <div class="grQneG">
+            <footer class="Entire-Footer">
+                <div class=" Introduction content" style="display: flex; justify-content: center;">
+                    <div class="Main-Footer">
                         <a href="{% url 'home' %}">
-                            <img class="mb4 lg-mb0" height=40px
+                            <img style="margin-bottom: 1rem !important;" height=40px
                             src=https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/favicon.png
                             width=40px>
                         </a>
-                        <div class="eFGqdH">
+                        <div class="Main-Footer-Content">
                             <div class="jXuJkM">
-                                {% comment %}
+
                                 <!--About, Contact, and Advertise-->
-                                <div class="Info__Links-sc-1vdhah7-5 elzsCr" spacing=3>
-                                    <div class="Info__LinkContainer-sc-1vdhah7-6 klDsYN">
-                                        <a class="Anchor-byh49a-0 Info__Link-sc-1vdhah7-7 lhrHOS hsuboz"
-                                           href="{% url 'about' %}">
+                                <div class="Info__Links-sc-1vdhah7-5 Main-Footer-Content-Links" spacing=3>
+                                    <div class="Info__LinkContainer-sc-1vdhah7-6 Main-Footer-Content-Link">
+                                        <a class="Anchor-byh49a-0 Info__Link-sc-1vdhah7-7"
+                                           href="#">
                                             About Us
                                         </a>
                                     </div>
-                                    <div class="Info__LinkContainer-sc-1vdhah7-6 klDsYN">
-                                        <a class="Anchor-byh49a-0 Info__Link-sc-1vdhah7-7 lhrHOS hsuboz"
-                                           href="{% url 'contact' %}">
+                                    <div class="Info__LinkContainer-sc-1vdhah7-6 Main-Footer-Content-Link">
+                                        <a class="Anchor-byh49a-0 Info__Link-sc-1vdhah7-7"
+                                           href="#">
                                             Contact
                                         </a>
                                     </div>
-                                    <div class="Info__LinkContainer-sc-1vdhah7-6 klDsYN">
-                                        <a class="Anchor-byh49a-0 Info__Link-sc-1vdhah7-7 lhrHOS hsuboz"
-                                           href="{% url 'advertise' %}">
+                                    <div class="Info__LinkContainer-sc-1vdhah7-6 Main-Footer-Content-Link">
+                                        <a class="Anchor-byh49a-0 Info__Link-sc-1vdhah7-7"
+                                           href="#">
                                             Advertise
                                         </a>
                                     </div>
                                 </div>
                                 <!--Copyright-->
-                                <div class="Info__Bottom-sc-1vdhah7-8 dmmajP">
-                                    <span class="lmLXYM jAudCl" size=2>
+                                <div class="Info__Bottom-sc-1vdhah7-8 Copyright-Outer">
+                                    <span class="Copyright-Inner" size=2>
                                         Copyright {% now "Y" %} © VocationalNYC
                                     </span>
                                 </div>
-                                {% endcomment %}
+
                             </div>
                         </div>
                     </div>
@@ -4762,5 +2296,7 @@
             </footer>
         </div>
     </main>
+
+
 </body>
 </html>
