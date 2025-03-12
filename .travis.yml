@@ -4,13 +4,18 @@ python:
   - "3.12"
 cache: pip
 
+branches:
+  push:
+    - develop
+    - main
+
 services:
   - postgresql
   - redis-server
 
 env:
   global:
-    - DJANGO_SETTINGS_MODULE=VocationalNYC.vocationalnyc.settings
+    - DJANGO_SETTINGS_MODULE=vocationalnyc.settings
     - PYTHONPATH=$PYTHONPATH:$(pwd)/VocationalNYC
     - SECRETKEY=wY1TzmnmJVK4ccHfb79nhtu7fI1_YHLhyOHV9Gund_uTArNVplsYcAkkAJPyz0O-fuA
 
@@ -26,10 +31,11 @@ before_script:
   - python VocationalNYC/manage.py collectstatic --noinput
 
 script:
-  - python VocationalNYC/manage.py test
-  - black --check VocationalNYC
-  - flake8 VocationalNYC
-  - coverage run --source=VocationalNYC/vocationalnyc VocationalNYC/manage.py test
+  - cd VocationalNYC
+  - python manage.py test
+  - black --check .
+  - flake8
+  - coverage run --source=vocationalnyc manage.py test
 
 after_success:
   - coveralls
