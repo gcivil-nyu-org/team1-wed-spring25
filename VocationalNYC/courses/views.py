@@ -154,7 +154,6 @@ def search_result(request):
 
     if min_classroom_hours is not None and min_classroom_hours.isdigit():
         courses = courses.filter(classroom_hours__gte=int(min_classroom_hours))
-
     courses = courses.annotate(
         avg_rating=Avg("reviews__score_rating"), reviews_count=Count("reviews")
     )
@@ -168,7 +167,6 @@ def search_result(request):
         else:
             course.rating_partial_star_position = 0
             course.rating_partial_percentage = 0
-
     context = {
         "courses": courses,
         "query": query,
