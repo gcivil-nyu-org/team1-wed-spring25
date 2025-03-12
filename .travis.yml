@@ -12,6 +12,7 @@ env:
   global:
     - DJANGO_SETTINGS_MODULE=VocationalNYC.vocationalnyc.settings
     - PYTHONPATH=$PYTHONPATH:$(pwd)/VocationalNYC
+    - SECRETKEY=wY1TzmnmJVK4ccHfb79nhtu7fI1_YHLhyOHV9Gund_uTArNVplsYcAkkAJPyz0O-fuA
 
 install:
   - pip install -r VocationalNYC/requirements.txt
