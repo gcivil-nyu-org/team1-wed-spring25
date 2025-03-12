@@ -6,6 +6,7 @@ cache: pip
 
 services:
   - postgresql
+  - redis-server
 
 env:
   global:
