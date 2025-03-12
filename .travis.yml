@@ -45,7 +45,7 @@ deploy:
   secret_access_key: $AWS_SECRET_ACCESS_KEY
   region: "us-east-1"
   app: "vocationalnyc"
-  env: "production"
+  env: "vocationalnyc-env"
   bucket_name: "elasticbeanstalk-us-east-1-982534395285"
   skip_cleanup: true
   on:
