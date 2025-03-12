@@ -6,10 +6,10 @@ cache: pip
 
 services:
   - postgresql
+  - redis-server
 
 env:
   global:
-    # - DJANGO_SETTINGS_MODULE=VocationalNYC.vocationalnyc.settings
     DJANGO_SETTINGS_MODULE=vocationalnyc.settings
     - PYTHONPATH=$PYTHONPATH:$(pwd)/VocationalNYC
 
@@ -25,10 +25,6 @@ before_script:
   - python VocationalNYC/manage.py collectstatic --noinput
 
 script:
-  # - python VocationalNYC/manage.py test
-  # - black --check VocationalNYC
-  # - flake8 VocationalNYC
-  # - coverage run --source=VocationalNYC/vocationalnyc VocationalNYC/manage.py test
   - cd VocationalNYC
   - python manage.py test
   - black --check .
