@@ -4762,55 +4762,5 @@
             </footer>
         </div>
     </main>
-    <!-- JavaScript for dynamic functionality -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add event listeners for bookmark buttons
-            const bookmarkButtons = document.querySelectorAll('.button__ButtonStyled');
-            bookmarkButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const courseId = this.getAttribute('data-course-id');
-                    bookmarkCourse(courseId);
-                });
-            });
-        });
-
-        function bookmarkCourse(courseId) {
-            fetch('/api/bookmark/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({
-                    course_id: courseId
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.success) {
-                    alert('Course bookmarked successfully!');
-                } else {
-                    alert('Error bookmarking course.');
-                }
-            });
-        }
-
-        // Function to get CSRF token
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-    </script>
 </body>
 </html>
