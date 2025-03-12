@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import environ
 
-# import sys
+import sys
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -127,15 +127,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(DEBUG=(bool, False))
 environ.Env.read_env(BASE_DIR / ".env")
 
-# if 'test' in sys.argv:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': ':memory:',
-#         }
-#     }
-# elif env("DATABASE_URL", default=None):
-
 if os.environ.get("TRAVIS"):
     DATABASES = {
         "default": {
@@ -145,6 +136,13 @@ if os.environ.get("TRAVIS"):
             "PASSWORD": "",
             "HOST": "localhost",
             "PORT": 5432,
+        }
+    }
+elif 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
         }
     }
 elif env("DATABASE_URL", default=None):
