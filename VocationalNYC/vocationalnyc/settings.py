@@ -159,7 +159,7 @@ elif env("DATABASE_URL", default=None):
         }
     }
 elif env("DATABASE" == "rds", default="sqlite3"):
-    # elif env("DATABASE", default="sqlite3") == "rds":
+# elif env("DATABASE", default="sqlite3") == "rds":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
