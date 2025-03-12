@@ -92,7 +92,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("redis", 6379)],
+            "hosts": [("vocationalnyc-redis-gkfpnu.serverless.use1.cache.amazonaws.com:6379", 6379)],
         },
     },
 }
