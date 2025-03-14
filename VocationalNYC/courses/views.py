@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import generic
-from django.db.models import Q
+from django.db.models import Q, Avg, Count
 from review.models import Review
 
 from users.models import Provider
@@ -95,7 +95,22 @@ class CourseListView(generic.ListView):
         except requests.RequestException as e:
             logger.error("External API call failed: %s", e)
 
-        return Course.objects.all()
+        # return Course.objects.all()
+        courses = Course.objects.all().annotate(
+            avg_rating=Avg("reviews__score_rating"), reviews_count=Count("reviews")
+        )
+        for course in courses:
+            avg = course.avg_rating if course.avg_rating is not None else 0
+            course.rating = round(avg, 1)
+            course.rating_full_stars = int(avg)
+            if avg - int(avg) > 0:
+                course.rating_partial_star_position = course.rating_full_stars + 1
+                course.rating_partial_percentage = int((avg - int(avg)) * 100)
+            else:
+                course.rating_partial_star_position = 0
+                course.rating_partial_percentage = 0
+
+        return courses
 
 
 class CourseDetailView(LoginRequiredMixin, generic.DetailView):
@@ -113,7 +128,7 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
 
 
 def search_result(request):
-    query = request.GET.get("q", "").strip()
+    query = request.GET.get("query", "").strip()
 
     min_cost = request.GET.get("min_cost", None)
     max_cost = request.GET.get("max_cost", None)
@@ -137,7 +152,19 @@ def search_result(request):
 
     if min_classroom_hours is not None and min_classroom_hours.isdigit():
         courses = courses.filter(classroom_hours__gte=int(min_classroom_hours))
-
+    courses = courses.annotate(
+        avg_rating=Avg("reviews__score_rating"), reviews_count=Count("reviews")
+    )
+    for course in courses:
+        avg = course.avg_rating if course.avg_rating is not None else 0
+        course.rating = round(avg, 1)
+        course.rating_full_stars = int(avg)
+        if avg - int(avg) > 0:
+            course.rating_partial_star_position = course.rating_full_stars + 1
+            course.rating_partial_percentage = int((avg - int(avg)) * 100)
+        else:
+            course.rating_partial_star_position = 0
+            course.rating_partial_percentage = 0
     context = {
         "courses": courses,
         "query": query,

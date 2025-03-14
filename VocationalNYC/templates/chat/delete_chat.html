@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container">
+    <h2>Confirm Delete Chat</h2>
+    <p>Are you sure you want to delete the chat with {{ other_user.username }}? This action cannot be undone.</p>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Yes, delete chat</button>
+      <a href="{% url 'chat_detail' chat.chat_hash %}" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+{% endblock %}

@@ -7,6 +7,7 @@ from django.core.serializers import serialize
 from .models import ReviewReply
 from .models import Review
 from courses.models import Course
+
 # from django.urls import reverse
 
 
@@ -68,7 +69,6 @@ class ReviewCreateView(View):
             content=content,
             score_rating=int(score_rating),
         )
-
         return redirect("course_detail", pk=pk)
 
 
@@ -85,5 +85,4 @@ class ReviewDeleteView(View):
 
         # course_id = review.course.pk
         review.delete()
-
         return redirect("course_detail", pk=pk)

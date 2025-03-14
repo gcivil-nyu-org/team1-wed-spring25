@@ -9,18 +9,18 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ("bookmarks", "0001_initial"),
         ("courses", "0001_initial"),
-        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="course",
-            name="provider",
+            model_name="bookmark",
+            name="course",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="course",
-                to="users.provider",
+                related_name="bookmark",
+                to="courses.course",
             ),
         ),
     ]
