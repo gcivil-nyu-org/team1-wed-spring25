@@ -12,6 +12,8 @@ from review.models import Review
 from users.models import Provider
 from .models import Course
 from django.http import JsonResponse
+import requests
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -175,4 +177,39 @@ def search_result(request):
     }
 
     return render(request, "courses/course_list.html", context)
+
+GOOGLE_MAPS_API_KEY = "AIzaSyBf9qUyF04HrgQ9iX_TGV35nGxbb9omF1Y"  
+
+def get_coordinates(address):
+    """ Convert an address to latitude and longitude using Google Maps API """
+    url = f"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={GOOGLE_MAPS_API_KEY}"
+    response = requests.get(url)
+    data = response.json()
+
+    if data["status"] == "OK":
+        location = data["results"][0]["geometry"]["location"]
+        return location["lat"], location["lng"]
+    return None, None
+
+def course_map(request):
+    """ Render the course map page """
+    return render(request, "courses/course_map.html")
+
+def course_data(request):
+    """ Fetch course data and get lat/lng dynamically """
+    courses = Course.objects.all().values("name", "course_desc", "location")
+    course_list = []
+
+    for course in courses:
+        lat, lng = get_coordinates(course["location"])  # Convert location to coordinates
+        if lat and lng:
+            course_list.append({
+                "name": course["name"],
+                "course_desc": course["course_desc"],
+                "latitude": lat,
+                "longitude": lng
+            })
+
+    return JsonResponse(course_list, safe=False)
+
 

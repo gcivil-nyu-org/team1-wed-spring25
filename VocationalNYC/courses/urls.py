@@ -1,10 +1,11 @@
 from django.urls import path
 from . import views
+from .views import course_map, course_data
 
 urlpatterns = [
     path("", views.CourseListView.as_view(), name="course_list"),
     path("<int:pk>/", views.CourseDetailView.as_view(), name="course_detail"),
     path("search_result/", views.search_result, name="search_result"),
-    # path('api/course_data/', views.course_data, name='course_data'),
-    # path('map/', views.map_view, name='map_view'),
+    path("map/", course_map, name="course_map"),
+    path("api/course_data/", course_data, name="course_data"),
 ]
