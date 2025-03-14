@@ -11,6 +11,7 @@ from review.models import Review
 
 from users.models import Provider
 from .models import Course
+from django.http import JsonResponse
 
 logger = logging.getLogger(__name__)
 
@@ -131,9 +132,6 @@ def search_result(request):
     if min_cost is not None and min_cost.isdigit():
         courses = courses.filter(cost__gte=int(min_cost))
 
-    if max_cost is not None and max_cost.isdigit():
-        courses = courses.filter(cost__lte=int(max_cost))
-
     if location:
         courses = courses.filter(location__icontains=location)
 
@@ -150,3 +148,4 @@ def search_result(request):
     }
 
     return render(request, "courses/course_list.html", context)
+
