@@ -47,7 +47,7 @@ class Provider(models.Model):
         blank=True,
         related_name="provider_profile",
     )
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     contact_firstname = models.CharField(max_length=255, blank=True, null=True)
     contact_lastname = models.CharField(max_length=255, blank=True, null=True)
     phone_num = models.CharField(max_length=15)
