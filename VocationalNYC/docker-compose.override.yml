@@ -1,14 +1,14 @@
 # This file is used to override the docker-compose.yml file for local development and testing purposes.
 services:
-  # db:
-  #   image: postgres:16
-  #   restart: always
-  #   environment:
-  #     - POSTGRES_DB=vocationalnyc
-  #     - POSTGRES_USER=vocationalnyc
-  #     - POSTGRES_PASSWORD=vocationalnyc
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      - POSTGRES_DB=vocationalnyc
+      - POSTGRES_USER=vocationalnyc
+      - POSTGRES_PASSWORD=vocationalnyc
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
   redis:
     image: redis:7
