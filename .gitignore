@@ -40,4 +40,6 @@ Thumbs.db
 
 node_modules/
 
+**/migrations/
+
 db_script.sh
