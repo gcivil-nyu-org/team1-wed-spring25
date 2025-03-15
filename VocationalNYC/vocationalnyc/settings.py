@@ -13,9 +13,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import environ
 
-# import sys
-import os
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -88,6 +85,33 @@ AUTHENTICATION_BACKENDS = [
     "allauth.account.auth_backends.AuthenticationBackend",  # allauth authentication
 ]
 
+ROOT_URLCONF = "vocationalnyc.urls"
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [
+            BASE_DIR / "templates",
+            BASE_DIR / "users" / "templates" / "users",
+        ],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
+
+# WSGI_APPLICATION = "vocationalnyc.wsgi.application"
+ASGI_APPLICATION = "vocationalnyc.asgi.application"
+
+IS_TRAVIS = env.bool("TRAVIS", default=False)
+
+# Redis Configuration
 if IS_TRAVIS:
     CHANNEL_LAYERS = {
         "default": {
@@ -116,46 +140,8 @@ else:
         },
     }
 
-ROOT_URLCONF = "vocationalnyc.urls"
-
-TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [
-            BASE_DIR / "templates",
-            BASE_DIR / "users" / "templates" / "users",
-        ],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ],
-        },
-    },
-]
-
-# WSGI_APPLICATION = "vocationalnyc.wsgi.application"
-ASGI_APPLICATION = "vocationalnyc.asgi.application"
-
-# Database
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-env = environ.Env(DEBUG=(bool, False))
-environ.Env.read_env(BASE_DIR / ".env")
-
-# if 'test' in sys.argv:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': ':memory:',
-#         }
-#     }
-# elif env("DATABASE_URL", default=None):
-
-if os.environ.get("TRAVIS"):
+# Database Configuration
+if IS_TRAVIS:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -166,19 +152,18 @@ if os.environ.get("TRAVIS"):
             "PORT": 5432,
         }
     }
-elif env("DATABASE_URL", default=None):
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": env("POSTGRES_DB"),
-            "USER": env("POSTGRES_USER"),
-            "PASSWORD": env("POSTGRES_PASSWORD"),
-            "HOST": env("POSTGRES_HOST", default="db"),
-            "PORT": env.int("POSTGRES_PORT", default=5432),
-        }
-    }
-elif env("DATABASE" == "rds", default="sqlite3"):
-    # elif env("DATABASE", default="sqlite3") == "rds":
+# elif DJANGO_ENV == "postgres-test":
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.postgresql",
+#             "NAME": env("POSTGRES_DB", default="vocationalnyc_local"),
+#             "USER": env("POSTGRES_USER", default="postgres"),
+#             "PASSWORD": env("POSTGRES_PASSWORD", default=""),
+#             "HOST": env("POSTGRES_HOST", default="localhost"),
+#             "PORT": env.int("POSTGRES_PORT", default=5432),
+#         }
+#     }
+elif DJANGO_ENV == "production":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
