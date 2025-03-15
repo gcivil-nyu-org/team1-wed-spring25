@@ -4,12 +4,18 @@ python:
   - "3.12"
 cache: pip
 
+branches:
+  only:
+    - develop
+    - main
+
 services:
   - postgresql
+  - redis-server
 
 env:
   global:
-    - DJANGO_SETTINGS_MODULE=VocationalNYC.vocationalnyc.settings
+    - DJANGO_SETTINGS_MODULE=vocationalnyc.settings
     - PYTHONPATH=$PYTHONPATH:$(pwd)/VocationalNYC
 
 install:
@@ -20,14 +26,16 @@ before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
   - echo "Database setting:"
   - python -c "import os; os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'VocationalNYC.vocationalnyc.settings'); import django; django.setup(); from django.conf import settings; print(settings.DATABASES)"
+  - python VocationalNYC/manage.py makemigrations
   - python VocationalNYC/manage.py migrate
   - python VocationalNYC/manage.py collectstatic --noinput
 
 script:
-  - python VocationalNYC/manage.py test
-  - black --check VocationalNYC
-  - flake8 VocationalNYC
-  - coverage run --source=VocationalNYC/vocationalnyc VocationalNYC/manage.py test
+  - cd VocationalNYC
+  - python manage.py test
+  - black --check .
+  - flake8
+  - coverage run --source=vocationalnyc manage.py test
 
 after_success:
   - coveralls
@@ -37,8 +45,8 @@ deploy:
   access_key_id: $AWS_ACCESS_KEY_ID
   secret_access_key: $AWS_SECRET_ACCESS_KEY
   region: "us-east-1"
-  app: "djangoTutorial"
-  env: "django-env"
+  app: "vocationalnyc"
+  env: "vocationalnyc-env"
   bucket_name: "elasticbeanstalk-us-east-1-982534395285"
   skip_cleanup: true
   on:

@@ -1,68 +1,2302 @@
-{% extends "base.html" %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
 
-{% block title %}Course List - VocationalNYC{% endblock %}
+    <meta charset="UTF-8">
+    <title>Discover Courses</title>
+      <link rel="icon"
+        href="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/favicon.png"
+        type="image/png">
+    <style>
 
-{% block extra_head %}
-<style>
-    .courses {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        grid-gap: 20px;
-        padding: 10px;
-        width: 100%;
-        margin: 0 auto;
-    }
+        :root {
+            font-family: system-ui;
+            --color1: #ffecd9;
+            --color2: #ffecd9;
+            --color3: #ffecd9;
+            --color4: #ffecd9;
+            --color5: #ffecd9;
+            --color6: #ffecd9;
+            --color7: #ffecd9;
+                        --color8: #ffecd9;
 
-    @media (min-width: 992px) {
-        .courses {
-            grid-template-columns: repeat(4, 1fr);
+
+            --black-90: #1A1D26;
+            --black-80: #2C303C;
+            --black-70: #3F4451;
+            --gray-50: #515767;
+            --gray-30: #6F7480;
+            --gray-20: #9297A1;
+            --gray-15: #D3D7DC;
+            --gray-10: #E4E7EB;
+            --gray-05: #F4F7F9;
+            --white-00: #ffffff;
+            --red-90: #871A18;
+            --red-80: #A4211F;
+            --red-70: #B92523;
+            --red-50: #CE2927;
+            --red-30: #EB625F;
+            --red-20: #F58987;
+            --red-15: #FCBAB9;
+            --red-10: #FDD5D4;
+            --red-05: #FFF0EF;
+            --orange-90: #C94D00;
+            --orange-80: #DD7E00;
+            --orange-70: #E89A00;
+            --yellow-50: #F1B303;
+            --yellow-30: #F7CE27;
+            --yellow-20: #FBE25C;
+            --yellow-15: #FEF2A0;
+            --yellow-10: #FEF8C6;
+            --yellow-05: #FFFDEB;
+            --green-90: #024024;
+            --green-80: #005E31;
+            --green-70: #06844B;
+            --green-50: #24BB80;
+            --green-30: #38D38D;
+            --green-20: #97EFB2;
+            --green-15: #C4F9D6;
+            --green-10: #DBFBE8;
+            --green-05: #F0FFEF;
+            --blue-90: #00206B;
+            --blue-80: #033493;
+            --blue-70: #064AB7;
+            --blue-50: #1263D3;
+            --blue-30: #358CE7;
+            --blue-20: #6AB4F4;
+            --blue-15: #B1DCFB;
+            --blue-10: #D6EEFD;
+            --blue-05: #EFF8FF;
+            --blue-01: #F8FCFF;
+            --violet-90: #240C33;
+            --violet-80: #3D1455;
+            --violet-70: #512386;
+            --violet-50: #5A37AE;
+            --violet-30: #624FCC;
+            --violet-20: #7D79DF;
+            --violet-15: #97A3F1;
+            --violet-10: #C7D4FA;
+            --violet-05: #E9EEFC;
+            --muted: #515767;
+            --light-peach: #ffecd9;
+
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizelegibility;
+            text-size-adjust: none;
+            color: var(--black-90)
+
+            --primary-color: #007bff;  /* Blue */
+    --secondary-color: #6c757d; /* Gray */
+    --background-light: #f8f9fa; /* Light gray */
+    --text-color: #212529; /* Dark gray */
         }
-    }
-    
-    @media (max-width: 991px) {
-        .courses {
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+
+        a {
+            text-decoration: none;
+            color: var(--blue-50);
+            transition: color 0.5s
         }
-    }    
-  
-    .courses a {
-        text-decoration: none;
-        color: inherit;
-    }
-</style>
-{% endblock %}
 
-{% block content %}
-  <div class="container">
-    <h2>Filter</h2>
-    <form method="GET" action="{% url 'search_result' %}">
-        <input type="text" name="q" value="{{ query }}" placeholder="Enter keyword">
-        
-        <input type="number" name="min_cost" value="{{ min_cost }}" placeholder="Min cost">
-        <input type="number" name="max_cost" value="{{ max_cost }}" placeholder="Max cost">
-        <input type="text" name="location" value="{{ location }}" placeholder="Location">
-        <input type="number" name="min_classroom_hours" value="{{ min_classroom_hours }}" placeholder="Min hours">
-        
-        <button type="submit">Search</button>
-      </form>
-  </div>
+        a:hover, a:active {
+            color: var(--blue-90)
+        }
 
-  <div class="courses">
-    {% if courses %}
-      {% for course in courses %}
-        <a href="{% url 'course_detail' course.pk %}" style="text-decoration: none; color: inherit;">
-          <div class="card">
-            <h2>{{ course.name }}</h2>
-            <p><strong>Provider:</strong> {{ course.provider.name }}</p>
-            <p><strong>Cost:</strong> {{ course.cost }}</p>
-            <p><strong>Location:</strong> {{ course.location }}</p>
-            <p><strong>Keywords:</strong> {{ course.keywords|truncatewords:20 }}</p>
-          </div>
-        </a>
-      {% endfor %}
-    {% else %}
-      <p>No courses available.</p>
-    {% endif %}
-  </div>
-{% endblock %}
+        .Small-Icon {
+            display: inline-block;
+            vertical-align: middle;
+            margin: 0;
+
+        }
+
+        select {
+    cursor: pointer;
+}
+
+        .BookmarkButton {
+            --color: var(--white-00);
+            --bg-color: var(--red-50);
+            --bg-color-hover: rgba(166, 28, 30, 1);
+            --bg-color-active: var(--bg-color-hover);
+            --border-color: var(--red-90);
+            --bs: rgb(51 51 51/50%) 0px 1px 3px;
+            --bs-hover: rgb(255 255 255) 0px 0px 0px 1px, rgb(196 33 42) 0px 0px 0px 3px;
+            --bs-active: rgb(51 51 51/20%) 1px 1px 0px;
+            --horizontal-spacing: 1rem;
+            display: inline-flex;
+            flex-wrap: nowrap;
+            -webkit-box-pack: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            align-items: center;
+            white-space: nowrap;
+            appearance: none;
+            color: var(--color);
+            background: var(--bg-color);
+            cursor: pointer;
+            box-sizing: border-box;
+            margin: 0px;
+            padding: 0 var(--horizontal-spacing);
+            font-size: 0.875rem;
+            font-weight: 700;
+            line-height: 1.4;
+            text-decoration: none;
+            outline: none;
+            border-width: initial;
+            border-style: none;
+            border-image: initial;
+            border-color: var(--border-color);
+            border-radius: 0.25rem;
+            box-shadow: var(--bs);
+            transition-property: background, color, box-shadow, border;
+            transition-duration: 0.6s;
+            transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1)
+        }
+
+        @media (hover: hover) {
+            .BookmarkButton:hover:not(:disabled):not(:active) {
+                color: var(--color);
+                background: var(--bg-color-hover);
+                box-shadow: var(--bs-hover)
+            }
+        }
+
+        .BookmarkButton:focus-visible {
+            background: var(--bg-color-hover);
+            box-shadow: var(--bs-hover)
+        }
+
+        .BookmarkButton:active {
+            background: var(--bg-color-hover);
+            box-shadow: var(--bs-active)
+        }
+
+        .BookmarkButton.size-small {
+            --horizontal-spacing: 0.75rem;
+            height: 30px
+        }
+
+        .BookmarkButton:disabled {
+            background: rgba(170, 170, 170, 0.9);
+            color: var(--gray-50);
+            border-color: var(--gray-30);
+            box-shadow: none;
+            cursor: not-allowed
+        }
+
+        .Filters {
+            padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-weight: 500;
+    transition: box-shadow 0.3s ease;
+
+            --color: var(--blue-50);
+            --bg-color: var(--white-00);
+            --bg-color-hover: var(--white-00);
+            --bg-color-active: var(--blue-10);
+            --border-color: var(--gray-15);
+            --border-color-hover: rgb(18 99 211/50%);
+            --bs: inset 0px 0px 0px 1px var(--border-color);
+            --bs-hover: inset 0px 0px 0px 1px var(--border-color-hover), 0px 0px 0px 1px var(--border-color-hover);
+            --bs-active: inset 0px 0px 0px 1px var(--border-color);
+            --transition-duration: 600ms;
+            --transition-timing-function: cubic-bezier(.2, .8, .2, 1);
+            display: inline-flex;
+            -webkit-box-pack: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            align-items: center;
+            flex-wrap: nowrap;
+            box-sizing: border-box;
+            max-width: 100%;
+            height: 1.5rem;
+            margin: 0px;
+
+            appearance: none;
+            color: var(--color);
+            background: var(--bg-color);
+            box-shadow: var(--bs);
+            border: none;
+
+            outline: none;
+            cursor: pointer;
+            font-size: 0.75rem;
+
+            transition-property: color, background, box-shadow;
+            transition-duration: var(--transition-duration);
+            transition-timing-function: var(--transition-timing-function)
+        }
+
+        @media (hover: hover) {
+            .Filters:hover {
+                background: var(--bg-color-hover);
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+
+            }
+        }
+
+        .Filters:focus-visible {
+            background: var(--bg-color-hover);
+            box-shadow: var(--bs-hover);
+            outline: none
+        }
+
+        .Filters:active {
+            background: var(--bg-color-active);
+            box-shadow: var(--bs-active)
+        }
+
+        .Filters[disabled] {
+            --color: var(--gray-50);
+            background: rgba(211, 215, 220, 0.9);
+            cursor: not-allowed;
+            box-shadow: none
+        }
+
+        .Filters-Inside {
+
+            flex: 1 1 auto;
+            box-sizing: border-box;
+            min-width: 0px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center
+        }
+
+        .Applied-Filters-Icon {
+
+            flex: 0 0 1rem;
+            display: inline-flex;
+            -webkit-box-pack: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            align-items: center;
+            box-sizing: border-box;
+            width: 1rem;
+            height: 1rem;
+            margin: 0px -0.375rem 0px 0.5rem;
+            border-radius: 50px;
+            background: rgba(178, 220, 255, 0.6);
+            transition: background var(--transition-duration) var(--transition-timing-function)
+        }
+
+        .Applied-Filters {
+
+            padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-weight: 500;
+    transition: box-shadow 0.3s ease;
+
+            --bg-color: var(--blue-10);
+            --bg-color-hover: var(--blue-10);
+            --bg-color-active: var(--blue-15);
+            --border-color: rgb(18 99 211/15%);
+            --bs-active: none
+        }
+
+        .All-Distances-Inner-Frame {
+
+            position: relative;
+            box-sizing: border-box;
+            width: 100%;
+            appearance: none;
+            outline: none;
+
+        }
+
+        .All-Distances-Content-Box {
+
+            --border-color: var(--black-70);
+            width: 100%;
+            height: 40px;
+            appearance: none;
+    padding: 0.5rem 1rem;
+            margin: 0px;
+            background: var(--white-00);
+    border-radius: 6px;
+    border: 1px solid var(--gray-15);
+            outline: none;
+            color: var(--black-90);
+            font-size: 0.875rem;
+            line-height: 1.4;
+            text-overflow: ellipsis;
+                transition: border-color 0.3s ease;
+
+            transition-property: color, border, box-shadow, background;
+            transition-duration: 600ms;
+            transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+            --bs: var(--white-00) 0px 0px 0px 1px, var(--border-color) 0px 0px 0px 3px
+        }
+
+        .All-Distances-Content-Box:hover:not(:disabled), .All-Distances-Content-Box:focus:not(:disabled), .All-Distances-Content-Box.has-error, .All-Distances-Content-Box.touched:invalid:not(:focus) {
+            cursor: pointer;
+            box-shadow: var(--bs)
+        }
+
+        .All-Distances-Content-Box:disabled {
+            color: var(--gray-50);
+            --border-color: var(--gray-30);
+            background: rgba(211, 215, 220, 0.9);
+            cursor: not-allowed
+        }
+
+        .All-Distances-Outer-Frame {
+
+            display: inline-flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            max-width: 100%;
+            color: var(--black-90)
+        }
+
+        .Dropdown-Icon {
+
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 11px;
+            right: 0.5rem;
+            pointer-events: none
+        }
+
+        .Little-Icons {
+
+            vertical-align: initial;
+            display: inline-block
+        }
+
+        html {
+            background-color: var(--black-90);
+            scroll-padding-top: 4rem
+
+        }
+
+        body {
+            font-family: system-ui;
+            min-height: 100vh;
+            margin: 0px;
+            overflow-x: hidden;
+            background-color: var(--color1);
+        }
+
+        div {
+            box-sizing: border-box
+        }
+
+        .flex {
+            display: flex
+        }
+
+        .Reviews {
+            margin-left: 0.25rem !important
+        }
+
+        :focus, a:focus, button:focus {
+            outline-color: rgb(26, 29, 38)
+        }
+
+.Introduction {
+                            background: var(--color4);
+
+    padding: 0px 0rem;
+    max-width: 1212px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+        .Course-Card-Inner-Container {
+
+            box-sizing: border-box;
+        }
+
+        .Course-Card-Outer-Container {
+
+            box-sizing: border-box;
+            margin-bottom: 1rem
+        }
+
+        .Course-Name-Inner-Container-And-Provider {
+
+            box-sizing: border-box;
+            margin-bottom: 0.25rem
+        }
+
+        .Course-Address-And-Reviews {
+
+            box-sizing: border-box;
+            margin-bottom: 0.5rem
+        }
+
+        .Course-Reviews-Inner-Container {
+
+            box-sizing: border-box;
+            margin-bottom: 0rem;
+            display: flex
+        }
+
+        .Introduction-Title {
+
+            margin: 0px 0px 0rem;
+            padding: 0px;
+            font-size: 1.5rem;
+            line-height: 1.33;
+            font-weight: 700;
+        }
+
+        .Course-Name-Inner-Container {
+
+            margin: 0px 0px 0.5rem;
+            padding: 0px;
+            font-size: 1rem;
+            line-height: 1.25;
+            font-weight: 700;
+        }
+
+        .Introduction-Content {
+            margin: 0px 0px 0rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            font-weight: 400
+        }
+
+        .Course-Provider {
+
+            margin: 0px 0px 0.25rem;
+            font-size: 0.75rem;
+            line-height: 1.3;
+            font-weight: 400
+        }
+
+        .Course-Description {
+
+            margin: 0px 0px 0rem;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            font-weight: 400
+        }
+
+        .Course-Name-Outer-Container {
+
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+            transition: color 0.5s;
+            margin: 0px
+        }
+
+        .Course-Name-Outer-Container:hover {
+            transition: 0.5s
+        }
+
+        .Read-More {
+
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+            transition: color 0.5s;
+            font-size: 0.625rem;
+            line-height: 1.2;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.25px
+        }
+
+        .Read-More:hover {
+            transition: 0.5s
+        }
+
+        .Course-Reviews-Outer-Container {
+
+            text-decoration: none;
+            cursor: pointer;
+            margin: 0px;
+            font-size: 0.75rem;
+            line-height: 1.3;
+            font-weight: 700;
+            color: rgb(18, 99, 211)
+        }
+
+        a.Course-Reviews-Outer-Container {
+            transition: color 0.5s
+        }
+
+        .Course-Reviews-Outer-Container a:focus, a.Course-Reviews-Outer-Container:focus, .Course-Reviews-Outer-Container a:hover, a.Course-Reviews-Outer-Container:hover, .Course-Reviews-Outer-Container a:active, a.Course-Reviews-Outer-Container:active, .Course-Reviews-Outer-Container a.active, a.Course-Reviews-Outer-Container.active {
+            color: rgb(0, 32, 107) !important
+        }
+
+        .Course-Reviews-Outer-Container:hover {
+            color: rgb(0, 32, 107) !important
+        }
+
+        .Course-Reviews-Outer-Container:hover {
+            transition: 0.5s
+        }
+
+        .Verification-Icon {
+
+            display: block;
+            object-fit: cover
+        }
+
+        .Add-To-Compare {
+
+            margin: 0px;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            font-weight: 700;
+        }
+
+        .Input-Field {
+            margin: 0px;
+            min-width: 0px;
+    border: 1px solid var(--gray-15);
+    border-radius: 6px;
+            box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 1px inset;
+            box-sizing: border-box;
+            display: block;
+            font-size: 0.875rem;
+            height: 40px;
+    padding: 0.5rem 1rem;
+            color: rgb(26, 29, 38);
+    transition: border-color 0.3s ease;
+        }
+
+        .Input-Field:hover {
+            border-color: rgb(111, 116, 128);
+            box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 1px inset;
+            cursor: text
+        }
+
+        .Input-Field:focus {
+            outline: none;
+            box-shadow: rgba(17, 17, 17, 0.4) 0px 0px 2px
+        }
+
+        .Input-Field:active {
+            color: rgb(26, 29, 38)
+        }
+
+        .Input-Field:disabled {
+            cursor: not-allowed;
+            border-color: rgb(211, 215, 220);
+            color: rgb(211, 215, 220);
+            background-color: rgb(255, 255, 255);
+            box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 1px inset
+        }
+
+        .Input-Field:disabled::-webkit-input-placeholder {
+            color: rgb(211, 215, 220)
+        }
+
+        .Input-Field:disabled::placeholder {
+            color: rgb(211, 215, 220)
+        }
+
+        .Apply-Filters-Button {
+
+            position: relative;
+            display: flex;
+            background-color: white;
+            -webkit-box-align: center;
+            align-items: center;
+            width: 100%;
+            height: 40px;
+            transition: 0.5s;
+            padding: 0px 0.75rem;
+            border: 1px solid rgb(170, 170, 170)
+        }
+
+        .Apply-Filters-Button:hover {
+            box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 1px inset;
+            border: 1px solid rgb(111, 116, 128)
+        }
+
+        .Apply-Filters-Button input[type="text"] {
+            width: 100%;
+            height: 90%;
+            border-radius: 0px;
+            outline: none;
+            box-sizing: border-box;
+            color: rgb(81, 87, 103);
+            display: block;
+            font-size: 0.75rem;
+            box-shadow: none !important;
+            border: none !important;
+            background-color: transparent !important
+        }
+
+        .Apply-Filters-Button input[type="text"]::-webkit-input-placeholder {
+            color: rgb(81, 87, 103)
+        }
+
+        .Apply-Filters-Button input[type="text"]::placeholder {
+            color: rgb(81, 87, 103)
+        }
+
+        .Apply-Filters-Button .react-autosuggest__container {
+            width: 100%
+        }
+
+        .Profile-Icons {
+            display: inline-flex;
+            position: relative
+        }
+
+        .Main-Area {
+
+            box-sizing: border-box;
+            padding: 0px 1rem;
+            width: 100%;
+            max-width: 1212px;
+            margin-left: auto;
+            margin-right: auto
+        }
+
+        .Horizontal-Filters-Area-Outer-Container {
+
+            position: relative;
+            display: flex;
+            flex: 1 1 auto;
+            flex-direction: column;
+            min-width: 0px
+        }
+
+        .Horizontal-Filters-Area-Inner-Container {
+            overflow: hidden;
+            max-height: none;
+            margin-bottom: 0px
+        }
+
+        .Horizontal-Filter-Bar-Outer-Container {
+
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: -1px;
+            z-index: 300;
+            background: white;
+            box-sizing: border-box;
+
+
+
+
+        }
+
+        .Horizontal-Filter-Bar-Inner-Container {
+padding-top: 0.8rem;
+padding-bottom: 0.8rem;
+
+            margin: 0px;
+background-color: var(--color5);
+            border-top: 1px solid var(--gray-15);
+            border-bottom: 1px solid var(--gray-15)
+        }
+
+        .Horizontal-Filter-Bar-Content-Area {
+
+            display: flex;
+            flex-wrap: nowrap;
+            -webkit-box-pack: justify;
+            justify-content: space-between;
+            -webkit-box-align: center;
+            align-items: center
+        }
+
+        .Number-Of-Results {
+
+            flex: 0 0 auto;
+            font-weight: bold;
+            white-space: nowrap;
+            margin-right: 1rem
+        }
+
+        .Applied-Filters-Border {
+
+            flex: 1 1 100%;
+            align-self: stretch;
+            display: flex;
+            -webkit-box-align: center;
+            align-items: center;
+            flex-wrap: wrap;
+            list-style: none;
+            margin: 0px;
+            padding: 0.25rem 1px
+        }
+
+        .Applied-Filters-Outline {
+
+            min-width: 0px;
+            margin: 0.25rem 0.5rem 0.25rem 0px;
+            animation: 300ms ease-in-out 0s 1 normal none running ldNTQW
+        }
+
+        .Sorting {
+
+            flex: 0 0 auto;
+            align-self: stretch;
+            display: flex;
+            flex-wrap: nowrap;
+            -webkit-box-align: center;
+            align-items: center;
+            padding-left: 1rem;
+            border-left: 1px solid var(--gray-15);
+margin-top: -0.8rem;  /* Negative margin to counteract padding */
+    margin-bottom: -0.8rem; /* Negative margin to stretch it fully */
+        }
+
+        .Sorting-Text {
+
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            white-space: nowrap
+        }
+
+        html {
+            scroll-behavior: auto !important
+        }
+
+        .Main-Body-Area {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+
+        }
+
+        .Lower-Main-Body-Area {
+            background-color:var(--color6);
+
+            -webkit-box-flex: 1;
+            flex-grow: 1
+        }
+
+        .Lower-Main-Body-Area-Border {
+
+            display: flex;
+            flex-wrap: nowrap
+        }
+
+        .Lower-Main-Body-Area-Inner {
+
+            flex: 1 1 100%;
+            min-width: 0px
+        }
+
+        .Lower-Main-Body-Area-Content {
+            display: flex;
+            flex-wrap: nowrap
+        }
+
+        .All-Course-Container {
+
+            flex: 1 1 100%;
+            min-width: 0px;
+            display: flex;
+            flex-direction: column;
+            -webkit-box-align: stretch;
+            align-items: stretch;
+            gap: 1rem;
+            margin: 1rem 0px;
+                margin-left: 1.5rem; /* Add this line to create a gap */
+
+        }
+
+        .Input {
+
+            position: relative
+        }
+
+        .Filter-Section {
+
+            appearance: none;
+            margin: 0px;
+            padding: 0px;
+            border-top: none;
+            border-right: none;
+            border-left: none;
+            border-image: initial;
+            border-bottom: 1px solid var(--gray-15)
+        }
+
+        .Filter-Section-Title-Outer {
+
+            appearance: none;
+            width: 100%;
+            margin: 0px;
+            padding: 0px
+        }
+
+        .Filter-Section-Title-Inner {
+            display: flex;
+            flex-wrap: nowrap;
+            -webkit-box-pack: justify;
+            justify-content: space-between;
+            -webkit-box-align: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: bold;
+            transition: color 500ms
+        }
+
+        .Filter-Section-Title-Inner::after {
+            content: "";
+            width: 0.8rem;
+            height: 0.8rem;
+            background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjY0cHgiIGhlaWdodD0iNjRweCIgdmlld0JveD0iMCAwIDY0IDY0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCA0NyAoNDUzOTYpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoIC0tPgogICAgPHRpdGxlPmljb25zL2ZsYXQvY2hldnJvbjwvdGl0bGU+CiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4KICAgIDxwYXRoIGQ9Ik01NC40NzY0MTk1LDI1LjY3MjE5OTggQzU1LjE3NDUyNjgsMjQuOTc0MDkyNSA1NS4xNzQ1MjY4LDIzLjgyOTE5NjQgNTQuNDc2NDE5NSwyMy4xMzEwODkgTDQ5Ljg0MDk4NjcsMTguNTIzNTgwNSBDNDkuMTQyODc5MywxNy44MjU0NzMyIDQ4LjAyNTkwNzUsMTcuODI1NDczMiA0Ny4zMjc4MDAyLDE4LjUyMzU4MDUgTDMyLjUsMzMuMzUxMzgwNyBMMTcuNjcyMTk5OCwxOC41MjM1ODA1IEMxNi45NzQwOTI1LDE3LjgyNTQ3MzIgMTUuODU3MTIwNywxNy44MjU0NzMyIDE1LjE1OTAxMzMsMTguNTIzNTgwNSBMMTAuNTIzNTgwNSwyMy4xMzEwODkgQzkuODI1NDczMTYsMjMuODI5MTk2NCA5LjgyNTQ3MzE2LDI0Ljk3NDA5MjUgMTAuNTIzNTgwNSwyNS42NzIxOTk4IEwzMS4yNDM0MDY4LDQ2LjM2NDEwMTggQzMxLjk0MTUxNDEsNDcuMDYyMjA5MSAzMy4wNTg0ODU5LDQ3LjA2MjIwOTEgMzMuNzU2NTkzMiw0Ni4zNjQxMDE4IEw1NC40NzY0MTk1LDI1LjY3MjE5OTggWiIgaWQ9InBhdGgtMSI+PC9wYXRoPgo8L3N2Zz4=);
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            transition: transform 300ms ease-in-out;
+            transform: rotate(180deg)
+        }
+
+        .Filter-Section-Action-Outer {
+            margin: 1rem 0px 0px;
+            transition: max-height 300ms ease-in-out
+        }
+
+        .Filter-Section-Action-Inner {
+
+            padding: 0px 0px 1rem
+        }
+      .Main-New-Header {
+    width: 1212px;
+    min-height: 60px;
+
+    padding: 0 1rem;
+    background-color: var(--color3);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+
+            display: flex;
+    flex-direction: row;
+              justify-content: space-between;
+
+            -webkit-box-align: center;
+            align-items: center;
+
+        }
+        .Main-Footer {
+    width: 1212px;
+
+padding: 2rem 0;
+    background-color: var(--color7);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+
+            display: flex;
+            flex-direction: column;
+            -webkit-box-align: center;
+            align-items: center;
+
+        }
+.Main-Footer-Content-Link a {
+    color: var(--gray-50);
+    margin: 0 1rem;
+}
+
+.Main-Footer-Content-Link a:hover {
+    color: var(--blue-50);
+}
+        .Main-Footer-Content {
+
+            -webkit-box-flex: 1;
+            flex-grow: 1;
+            padding: 0rem 1rem;
+            display: flex;
+            flex-flow: column wrap;
+            -webkit-box-align: center;
+            align-items: center
+        }
+
+        .Main-Footer-Content-Links {
+
+            display: flex;
+            flex-wrap: wrap;
+            -webkit-box-pack: center;
+            justify-content: center;
+            margin-bottom: 0.5rem
+        }
+
+            .Main-Footer-Content-Link:first-child {
+
+                margin-left: 0rem
+            }
+
+            .Main-Footer-Content-Link:last-child {
+
+                margin-right: 0rem
+            }
+
+        .Copyright-Outer {
+
+            line-height: 1.33;
+            display: flex;
+            flex-flow: wrap;
+            justify-content: space-around
+        }
+
+            .Copyright-Outer span {
+                margin-bottom: 0px
+            }
+
+        .Copyright-Inner {
+
+            color: rgb(211, 215, 220);
+            line-height: unset;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            margin-right: 0rem
+        }
+
+.Entire-New-Header {
+
+        background: var(--color2);
+
+    color: rgb(255, 255, 255)
+}
+
+.Entire-New-Header a {
+    transition: color 0.5s
+}
+
+.Entire-New-Header a:focus, a.Entire-New-Header:focus, .Entire-New-Header a:hover, a.Entire-New-Header:hover, .Entire-New-Header a:active, a.Entire-New-Header:active, .Entire-New-Header a.active, a.Entire-New-Header.active {
+    color: rgb(211, 215, 220) !important
+}
+
+.Entire-New-Header svg {
+    fill: rgb(255, 255, 255)
+}
+
+.Entire-New-Header svg:focus, .Entire-New-Header svg:hover, .Entire-New-Header svg:active, .Entire-New-Header svg.active {
+    fill: rgb(211, 215, 220)
+}
+
+.Entire-New-Header:focus, .Entire-New-Header a:focus, .Entire-New-Header button:focus {
+    outline-color: rgb(255, 255, 255)
+}
+
+
+
+        .Entire-Footer {
+
+                background: var(--color8);
+
+            color: rgb(255, 255, 255)
+        }
+
+        .Entire-Footer a {
+            transition: color 0.5s
+        }
+
+        .Entire-Footer a:focus, a.Entire-Footer:focus, .Entire-Footer a:hover, a.Entire-Footer:hover, .Entire-Footer a:active, a.Entire-Footer:active, .Entire-Footer a.active, a.Entire-Footer.active {
+            color: rgb(211, 215, 220) !important
+        }
+
+        .Entire-Footer svg {
+            fill: rgb(255, 255, 255)
+        }
+
+        .Entire-Footer svg:focus, .Entire-Footer svg:hover, .Entire-Footer svg:active, .Entire-Footer svg.active {
+            fill: rgb(211, 215, 220)
+        }
+
+        .Entire-Footer:focus, .Entire-Footer a:focus, .Entire-Footer button:focus {
+            outline-color: rgb(255, 255, 255)
+        }
+
+
+        .Top-Right-Corner {
+/*border: 1px solid red!important;*/
+            display: flex;
+            -webkit-box-align: center;
+            align-items: center;
+            flex-wrap: nowrap;
+            flex: 0 0 auto;
+margin-left: auto;
+    margin-right: 0;
+            padding-right: 0;
+    position: absolute;
+            box-sizing: border-box;
+
+        }
+
+     .Tabs {
+    position: relative;
+    display: flex;
+    justify-content: flex-start; /* Align tabs next to the logo */
+    align-items: center;
+    box-sizing: border-box;
+    flex: 1;
+    max-width: fit-content;
+    margin-left: 20px;
+}
+
+        .Tabs-Content-Outer {
+
+            display: block;
+            z-index: 402;
+            overflow: hidden;
+            height: 60px;
+            list-style: none;
+            margin: 0px 0px 0px 0.25rem;
+            padding: 0px;
+            animation-fill-mode: both;
+            animation-duration: 200ms
+        }
+
+        .Tabs-Content-Middle {
+
+            position: relative;
+            display: flex;
+            flex-wrap: nowrap;
+            -webkit-box-align: center;
+            align-items: center;
+            height: 100%;
+            text-decoration: none;
+            color: inherit;
+            font-size: 0.875rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            padding: 0px 0.75rem;
+            cursor: pointer;
+            outline: none;
+            transition: color 200ms
+        }
+
+        .Tabs-Content-Inner {
+
+            float: left;
+            display: inline-block;
+            box-sizing: border-box;
+            height: 60px;
+            padding: 0px;
+            margin: 0px;
+            color: rgb(255, 255, 255)
+        }
+
+        .Tabs-Content-Inner.is-active > .header__RootNavAnchor-sc-1geadoy-8, .Tabs-Content-Inner:hover > .header__RootNavAnchor-sc-1geadoy-8 {
+            color: rgb(211, 215, 220) !important
+        }
+
+        .Tabs-Content-Inner.is-active > .header__RootNavAnchor-sc-1geadoy-8::after, .Tabs-Content-Inner:hover > .header__RootNavAnchor-sc-1geadoy-8::after {
+            content: "";
+            position: absolute;
+            bottom: 0px;
+            left: 0.75rem;
+            right: 0.75rem;
+            height: 4px;
+            background: rgb(206, 41, 39)
+        }
+
+        .Tabs-Content-Inner > .header__RootNavAnchor-sc-1geadoy-8:focus-visible {
+            color: rgb(211, 215, 220) !important
+        }
+
+        .Tabs-Content-Inner > .header__RootNavAnchor-sc-1geadoy-8:focus-visible::after {
+            content: "";
+            position: absolute;
+            bottom: 0px;
+            left: 0.75rem;
+            right: 0.75rem;
+            height: 4px;
+            background: rgb(206, 41, 39)
+        }
+
+        .Introduction-Text-Outer {
+
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 1rem
+        }
+
+        .Introduction-Text-Inner {
+
+            flex: 1 1 auto;
+            width: 100%;
+            position: relative
+        }
+
+        .Introduction-Text-Title {
+
+            margin-bottom: 1rem
+        }
+
+        .Filter-Section-Outline {
+            margin-bottom: 1rem;
+                padding-bottom: 1rem;
+
+        }
+
+        .Filter-Section-Outline-Input {
+
+            width: 100%
+        }
+
+        .Introduction-Title-And-Content {
+
+            position: relative;
+            z-index: 301;
+            margin-bottom: 2rem
+        }
+
+        .Add-To-Compare-Border {
+
+            display: inline-flex;
+            flex-direction: column;
+            color: var(--black-90)
+        }
+
+        .Add-To-Compare-Check {
+
+            flex: 0 0 auto;
+            position: relative;
+            display: flex;
+            -webkit-box-pack: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            align-items: center;
+            width: 1.25rem;
+            height: 1.25rem;
+            box-sizing: border-box;
+            border: 2px solid var(--gray-30);
+            border-radius: 0.25rem;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+            background: var(--white-00);
+            transition: 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)
+        }
+
+        .Add-To-Compare-Check > svg {
+            width: 0.875rem;
+            height: 0.875rem
+        }
+
+        .Add-To-Compare-Check > svg path {
+            stroke-dashoffset: 111.46px;
+            stroke-dasharray: 111.46px;
+            transition: 0.35s ease-out
+        }
+
+
+        .Add-To-Compare-Outline {
+
+            display: flex;
+            flex-direction: column
+        }
+
+        .Add-To-Compare-Outer {
+            --color: var(--blue-70);
+            position: relative;
+            display: flex;
+            flex-wrap: nowrap;
+            cursor: pointer;
+            user-select: none;
+            outline: none
+        }
+
+        .Add-To-Compare-Outer.size-small {
+            font-size: 0.875rem;
+            line-height: 1.4
+        }
+
+        .Add-To-Compare-Outer:focus-visible:not(.is-disabled) > .input__Control-sc-1ie8rf0-1, .Add-To-Compare-Outer:not(.is-disabled) > input:focus-visible + .input__Control-sc-1ie8rf0-1 {
+            box-shadow: 0px 0px 0px 1px #fff, 0px 0px 0px 3px var(--gray-30)
+        }
+
+        .Add-To-Compare-Outer > .input__Control-sc-1ie8rf0-1 path {
+            stroke: var(--color)
+        }
+
+        .Add-To-Compare-Outer.size-small > .input__Control-sc-1ie8rf0-1 {
+            top: -1px
+        }
+
+        .Add-To-Compare-Outer > input:checked + .input__Control-sc-1ie8rf0-1 {
+            background: var(--color);
+            border-color: var(--color)
+        }
+
+        .Add-To-Compare-Outer > input:checked + .input__Control-sc-1ie8rf0-1 path {
+            stroke: var(--white-00);
+            stroke-dashoffset: 0
+        }
+
+        .Add-To-Compare-Outer > input:disabled + .input__Control-sc-1ie8rf0-1 {
+            background: rgba(170, 170, 170, 0.2);
+            border-color: rgba(170, 170, 170, 0.9)
+        }
+
+        .CourseList {
+
+            display: flex;
+            flex-direction: column;
+            -webkit-box-align: stretch;
+            align-items: stretch;
+            gap: 1rem;
+            min-width: 0px;
+            list-style: none;
+            margin: 0px;
+            padding: 0px
+        }
+
+        .CourseCard {
+            margin: 0px;
+            padding: 0px;
+            animation: 500ms ease-in-out 0s 1 normal both running iBevsA
+        }
+
+        .Course-Title {
+            white-space: nowrap
+        }
+
+        .Course-Rating-And-Reviews {
+
+            align-items: flex-end
+        }
+
+        .Course-Rating {
+            height: 1.125rem;
+            width: 1.125rem;
+            align-self: center;
+            vertical-align: middle;
+            margin-right: 0rem;
+            stroke: rgb(18, 99, 211);
+            stroke-width: 4px
+        }
+
+        .Course-Review-Quantity {
+
+            display: inline
+        }
+
+        .Cost-Hours-Keywords {
+
+            font-weight: bold;
+            padding: 0px
+        }
+
+        .Cost-Hours-Keywords dl {
+            margin: 0px 0px 0.25rem
+        }
+
+        .Cost-Hours-Keywords dd {
+            display: inline
+        }
+
+        .Cost-Hours-Keywords dt {
+            text-transform: capitalize;
+            color: rgb(81, 87, 103);
+            vertical-align: middle;
+            font-size: 0.75rem;
+            font-weight: 400
+        }
+
+        .Cost-Hours-Keywords .subtext-wrapper {
+            color: rgb(81, 87, 103);
+            font-weight: 400;
+            display: inline-block;
+            margin-left: 0.25rem
+        }
+
+        .Cost-Hours-Keywords .label-wrapper {
+            display: none
+        }
+
+        .Cost-Hours-Keywords-Text {
+
+            color: rgb(26, 29, 38);
+            margin: 0px 0.25rem 0px 0px;
+            font-size: 1rem
+        }
+
+        .Course-Location-Outer {
+
+            list-style: none;
+            padding: 0px;
+            margin-bottom: 0rem;
+
+
+
+            margin: 0px 0px 1rem;
+        }
+
+        .Course-Location-Outer span {
+            color: rgb(81, 87, 103)
+        }
+
+        .Course-Location-Outer-Icon {
+
+            display: flex;
+            left: auto;
+            position: relative;
+            top: auto
+        }
+
+        .Course-Location-Outer-Icon.has-badge::before {
+            background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxOS4xLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiDQoJIHZpZXdCb3g9IjAgMCA2NCA2NCIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgNjQgNjQiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPGc+DQoJPHBvbHlnb24gZmlsbD0iI0QwQjE1MiIgcG9pbnRzPSI1OSwxMCA1LDEwIDUsNDMuMyAzMiw1NiA1OSw0My4zIAkiLz4NCgk8Zz4NCgkJPHBvbHlnb24gZmlsbD0iI0Y5QzE0RiIgcG9pbnRzPSI1NywxMiA3LDEyIDcsNDIuNSAzMiw1NCA1Nyw0Mi41IAkJIi8+DQoJCTxwb2x5Z29uIGZpbGw9IiNGREQ4OTUiIHBvaW50cz0iNTcsMTIgNywxMiA3LDQyLjUgCQkiLz4NCgk8L2c+DQo8L2c+DQo8L3N2Zz4NCg==);
+            background-size: cover;
+            content: "";
+            display: block;
+            height: 20px;
+            width: 20px;
+            margin-right: 3px
+        }
+
+        .Course-Location-Inner {
+
+            color: rgb(26, 29, 38);
+            transition: color 0.5s;
+            display: flex;
+            position: relative;
+            text-decoration: none;
+            padding: 0px
+        }
+
+        .Course-Location-Inner span.in {
+            color: rgb(26, 29, 38);
+            display: block;
+            padding-right: 4px
+        }
+
+        .Course-Location-Inner strong span {
+            font-weight: 400
+        }
+
+        .Course-Location-Inner strong {
+            padding: 0px 4px 0px 0px
+        }
+
+        .Course-Location-Inner > strong {
+            padding: 0px
+        }
+
+        .READ-MORE {
+
+            display: inline-block;
+            vertical-align: text-bottom
+        }
+
+        .Course-Description-Content {
+
+            margin-bottom: 0rem;
+            overflow: hidden;
+            position: relative
+        }
+
+        .Course-Description-Outer {
+            margin-bottom: 0rem;
+            overflow: hidden
+        }
+
+        .Course-Description-Inner {
+            position: relative
+        }
+
+.Course-Cards {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    background-color: var(--white-00);
+}
+
+.Course-Cards:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+        .ReadMore {
+
+            margin: 0px
+        }
+
+        .Verification-Icon-Outer {
+
+            display: inline-flex
+        }
+
+        .Verification-Icon-Inner {
+
+            height: 1.25rem;
+            width: 1.25rem;
+            margin-left: 0.5rem;
+            margin-bottom: -4px
+        }
+
+        .Course-Information {
+
+            display: flex;
+            order: 1;
+            flex: 1 0 0px;
+            -webkit-box-flex: 1;
+            flex-direction: column;
+            padding: 0.75rem 0.5rem
+        }
+
+        .Course-Overview {
+
+            order: 1;
+            padding: 0px
+        }
+
+        .CourseName {
+
+            display: inline-block
+        }
+
+        .CourseName h3 {
+            text-shadow: none !important;
+            margin-bottom: 0rem !important
+        }
+
+        .CourseName h3:hover {
+            color: rgb(81, 87, 103) !important
+        }
+
+        .CourseLocation {
+            margin-top: 0px
+        }
+
+        .CourseLocation li {
+            font-size: 0.75rem;
+            line-height: 1.33;
+            margin-bottom: 0.25rem !important
+        }
+
+        .CourseLocation li:first-child > a, .CourseLocation li:first-child > a:hover {
+            color: rgb(26, 29, 38)
+        }
+
+        .CourseLocation li > a > div::before {
+            position: relative;
+            margin-right: 0.25rem !important;
+            height: 15px !important;
+            width: 15px !important
+        }
+
+        .CourseLocation div > strong {
+            white-space: nowrap
+        }
+
+        .Cost-And-Hours-And-Keywords {
+
+            order: 2
+        }
+
+        .Cost-And-Hours-And-Keywords span {
+            font-size: 0.875rem
+        }
+
+        .Cost-And-Hours-And-Keywords .QuickStatHug-hb1bl8-2:last-child dl {
+            margin-bottom: 0rem
+        }
+
+        .Course-Actions {
+
+            display: flex;
+            order: 3;
+            -webkit-box-align: center;
+            align-items: center;
+            -webkit-box-pack: justify;
+            justify-content: space-between;
+            width: 100%;
+            border-top: 1px solid rgb(211, 215, 220);
+            padding: 0.5rem
+        }
+
+
+        .Hidden-Input {
+            display: none;
+        }
+
+        form {
+margin-top: 1em;
+}
+
+
+        #account-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    min-width: 150px;
+    padding: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease-in-out;
+                z-index: 9999; /* Ensure it's on top of everything */
+
+}
+    </style>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" data-rh=true
+          name=viewport>
+</head>
+<body>
+
+<!--svg icons-->
+<svg aria-hidden=true id=__SVG_SPRITE_NODE__ style=position:absolute;width:0;height:0>
+    <symbol id=user-circle viewBox="10 11 44 44">
+        <defs>
+            <path d="M32 11c12.2 0 22 9.9 22 22s-9.9 22-22 22-22-9.9-22-22 9.9-22 22-22zm12.046 34.645c3.349-3.194 5.454-7.681 5.454-12.646 0-9.625-7.795-17.5-17.5-17.5-9.625 0-17.5 7.876-17.5 17.5 0 4.965 2.105 9.453 5.454 12.645.047-1.822.46-5.573.722-6.425.29-.943.652-1.813 1.087-2.465a5.475 5.475 0 011.74-1.667c.726-.436 1.595-.653 2.538-.653 0 0 0 .002.002.002l.026-.002c1.665 1.592 3.618 2.389 5.93 2.393 2.315-.005 4.268-.801 5.932-2.392h.027c.944 0 1.814.216 2.539.651a5.482 5.482 0 011.74 1.668c.435.653.797 1.523 1.087 2.465.262.852.675 4.603.722 6.425zM39.25 28.416a7.25 7.25 0 11-14.5 0 7.25 7.25 0 0114.5 0z"
+                  id=user-circle_a></path>
+        </defs>
+        <use xlink:href=#user-circle_a></use>
+    </symbol>
+    <symbol id=caret viewBox="0 0 113.2 63.1">
+        <path d="M6.7 0C2.9 0 0 2.9 0 6.7c0 1.9 1 3.8 1.9 4.8l49.7 49.7c1 1 2.9 1.9 4.8 1.9s3.8-1 4.8-1.9l50.1-49.7c1-1 1.9-2.9 1.9-4.8 0-3.8-2.9-6.7-6.7-6.7"></path>
+    </symbol>
+    <symbol id=star viewBox="0 0 64 64" xmlns=http://www.w3.org/2000/svg>
+        <path d="M54 27.277c0-.652-.492-1.06-1.48-1.218l-13.275-1.931-5.949-12.042C32.962 11.36 32.529 11 32 11s-.962.361-1.296 1.086l-5.949 12.042-13.275 1.93c-.988.16-1.48.567-1.48 1.219 0 .37.222.793.661 1.27l9.625 9.368-2.274 13.232a4.162 4.162 0 00-.053.53c0 .37.093.683.277.939.186.255.463.384.833.384.318 0 .671-.106 1.058-.317L32 46.437l11.873 6.246c.37.21.724.317 1.058.317.353 0 .621-.13.805-.384.186-.256.279-.569.279-.94 0-.228-.01-.406-.027-.529l-2.274-13.232 9.599-9.368c.458-.46.687-.883.687-1.27"></path>
+    </symbol>
+</svg>
+
+<main id=app style=display:block;width:100%;position:relative>
+
+    <div style=width:inherit>
+
+
+
+
+        <!--top horizontal header-->
+
+            <footer class="Entire-New-Header">
+                <div class="Introduction content" style="display: flex; justify-content: center;">
+                    <div class="Main-New-Header">
+
+          <a style="margin-left: 0;"
+
+               href=#><img
+                    alt=""
+                    height=28
+                    src=https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/favicon.png
+                    width=28></a>
+
+            <div class="Tabs">
+                <ul class="Tabs-Content-Outer">
+
+                    <li class="Tabs-Content-Inner is-active">
+                        <a
+                            class="header__RootNavAnchor-sc-1geadoy-8 Tabs-Content-Middle"
+                            data-tracking-id=top_nav href=#>
+                            Discover Courses
+                        </a>
+                    </li>
+
+                    <li class="Tabs-Content-Inner">
+                        <a
+                                class="header__RootNavAnchor-sc-1geadoy-8 Tabs-Content-Middle"
+                                data-tracking-id=top_nav href=#>
+                            Bookmarks
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+
+            <div class="header__ButtonsContainer-sc-1geadoy-2 Top-Right-Corner" style="display: flex; align-items: center; gap: 10px; position: relative;">
+
+                <!-- User Info -->
+                <span class="user-info" style="font-size: 14px; color: #333; font-weight: bold;">
+                    Username: <span id="username" style="color: #007bff;">{{ user.username }}</span> |
+                    Role: <span id="user-role" style="color: #28a745;">
+                        {% if user.role == "training_provider" %}
+                            Training Provider (i.e., School Representative)
+                        {% elif user.role == "career_changer" %}
+                            Career Changer (i.e., Student)
+                        {% elif user.role == "administrator" %}
+                            Platform Administrator (i.e., Site Manager)
+                        {% else %}
+                            {{ user.role }}
+                        {% endif %}
+                    </span>                </span>
+
+                <!-- Account Button -->
+                <span class="account-button__Container-sc-5e0gts-0 Profile-Icons" style="position: relative;">
+        <button id="account-button"
+                aria-controls="account-dropdown-menu"
+                aria-expanded="false"
+                aria-haspopup="menu"
+                class="menu__HeaderIconButton-emw2de-0"
+                title="My Account"
+                width="44px"
+                style="background: none; border: none; cursor: pointer;">
+            <svg aria-hidden="true" class="Icon-sc-9wq8ul-0 Little-Icons" height="20px" role="img" width="20px">
+                <use filter="0" xlink:href="#user-circle"></use>
+            </svg>
+            <svg aria-hidden="true" class="Icon-sc-9wq8ul-0 Little-Icons Reviews" height="6px" role="img" width="6px">
+                <use filter="0" xlink:href="#caret"></use>
+            </svg>
+        </button>
+
+                    <!-- Dropdown Menu -->
+        <nav id="account-dropdown-menu"
+             class="account-button__DropdownMenu-sc-5e0gts-4 iNdOpO"
+             style="position: absolute; top: 100%; right: 0; background: white; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0px 4px 6px rgba(0,0,0,0.1); min-width: 150px; padding: 10px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease-in-out;">
+            <ul style="list-style: none; margin: 0; padding: 0;">
+                <li><a href="{% url 'profile' %}" style="display: block; padding: 8px 12px; text-decoration: none; color: #333;">Profile</a></li>
+                <li><a href="{{ change_password_url_ }}" style="display: block; padding: 8px 12px; text-decoration: none; color: #333;">Change Password</a></li>
+                <li><a href="{% url 'account_logout' %}" style="display: block; padding: 8px 12px; text-decoration: none; color: red;">Sign Out</a></li>
+            </ul>
+        </nav>
+    </span>
+            </div>
+
+            <!-- JavaScript for Toggle Dropdown -->
+            <script>
+                document.getElementById("account-button").addEventListener("click", function (event) {
+                    event.stopPropagation(); // Prevent click from propagating
+                    var dropdown = document.getElementById("account-dropdown-menu");
+                    if (dropdown.style.opacity === "0") {
+                        dropdown.style.opacity = "1";
+                        dropdown.style.pointerEvents = "auto";
+                    } else {
+                        dropdown.style.opacity = "0";
+                        dropdown.style.pointerEvents = "none";
+                    }
+                });
+
+                // Close dropdown when clicking outside
+                document.addEventListener("click", function (event) {
+                    var dropdown = document.getElementById("account-dropdown-menu");
+                    if (dropdown.style.opacity === "1") {
+                        dropdown.style.opacity = "0";
+                        dropdown.style.pointerEvents = "none";
+                    }
+                });
+            </script>
+                    </div>
+                </div>
+
+
+            </footer>
+
+
+
+
+
+
+
+
+
+
+        <!--main content-->
+        <article compass="[object Object]">
+
+            <div class="Main-Body-Area">
+
+                <!--title and paragraph-->
+                <div class="Introduction content">
+
+                    <header class="Introduction-Title-And-Content">
+
+                        <div class="Introduction-Text-Outer">
+                            <div class="Introduction-Text-Inner">
+
+                                <div class="Villain__TitleContainer-sc-1y12ps5-6 Introduction-Text-Title">
+                                    <h1 class="Heading-sc-1w5xk2o-0 Introduction-Title sm-hide">
+                                        Discover Vocational Training in NYC
+                                    </h1>
+                                </div>
+
+                                <p class="Introduction-Content" style="margin-top: 1rem !important;">Vocational NYC helps you find and enroll in vocational training courses across New York City.
+                                    Whether you're looking to switch careers, gain new skills, or find financial aid-supported programs,
+                                    our platform makes it easy to explore options tailored to your goals.
+                                    Browse courses, read reviews, and connect with training providers all in one place.</p>
+
+                            </div>
+
+                        </div>
+
+                    </header>
+
+                </div>
+
+                <!--horizontal-filter-bar-->
+                <div class="Horizontal-Filter-Bar-Outer-Container" data-ad-sticky=filterbar>
+
+                    <div class="Horizontal-Filter-Bar-Inner-Container">
+                        <div class=" Main-Area Horizontal-Filter-Bar-Content-Area">
+
+                            <div class="Number-Of-Results">
+                                <span
+                                    data-tracking-id=search-results-count>
+                                    {{courses.count}}
+                                </span>
+                                <span>
+                                    results
+                                </span>
+                            </div>
+                            <div class="Horizontal-Filters-Area-Outer-Container">
+                                <div class="Horizontal-Filters-Area-Inner-Container">
+                                    <div>
+                                        <ul class="filter-bar__ChipListStyled-sc-1glfoa-7 Applied-Filters-Border">
+                                            <li class="filter-bar__ChipListItemStyled-sc-1glfoa-8 Applied-Filters-Outline">
+                                                <button aria-label="Clear all filters"
+                                                        class="chip-button__ChipButtonStyled-sc-rhcqgz-0 Filters"><span
+                                                        class="chip-button__ChipLabel-sc-rhcqgz-1 Filters-Inside">Clear Filters</span>
+                                                </button>
+                                            <li class="filter-bar__ChipListItemStyled-sc-1glfoa-8 Applied-Filters-Outline">
+                                                <button aria-label="Clear Ranking filter."
+                                                        class="chip-button__ChipButtonStyled-sc-rhcqgz-0 chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
+                                                    <span class="chip-button__ChipLabel-sc-rhcqgz-1 Filters-Inside">filter 1</span><span
+                                                        class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon"><svg
+                                                        aria-hidden=true class="icon__SvgStyled-sc-q5hntj-0 Small-Icon"
+                                                        fill=var(--color) height=8px
+                                                        viewBox="0 0 38 38" width=8px><g
+                                                        fill-rule=evenodd stroke=none stroke-width=1><polygon
+                                                        fill-rule=nonzero
+                                                        points="33.4 0 19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38 38 33.399 23.6 18.999 38 4.6"></polygon></g></svg></span>
+                                                </button>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="Sorting">
+                                <div class="Sorting-Text" id=_atlas-search_sort-label>Sort
+                                    by:
+                                </div>
+                                <select aria-labelledby=_atlas-search_sort-label
+                                        class="filter-bar__SelectStyled-sc-1glfoa-11">
+                                    <option selected value=??asc>AAA
+                                    <option value=??dsc>BBB
+                                    <option value=??asc>CCC
+                                    <option value=??dsc>DDD
+                                    <option value=??asc>EEE
+                                    <option value=??dsc>FFF
+                                    <option value=??asc>GGG
+                                    <option value=??dsc>HHH
+                                </select></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="Lower-Main-Body-Area">
+
+                    <div class="Main-Area Lower-Main-Body-Area-Border">
+                        <div class="Lower-Main-Body-Area-Inner">
+                            <div class="Lower-Main-Body-Area-Content">
+
+                                <!--left-side filters-->
+                                <form action="{% url 'search_result' %}" method="GET" id="searchForm">
+
+                                    <fieldset
+                                            class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                            name="schoolName">
+                                        <legend class="field-set__LegendStyled-sc-b2ie46-1 Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Keywords
+                                            </div>
+                                        </legend>
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer"
+                                             style="max-height:none;overflow:visible">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
+                                                    <div aria-expanded=false aria-haspopup=listbox
+                                                         aria-owns=react-autowhatever-schoolName
+                                                         class=react-autosuggest__container
+                                                         role=combobox><input aria-autocomplete=list
+                                                                      aria-controls=react-autowhatever-schoolName
+                                                                      autocomplete=off
+                                                                      class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
+                                                                      placeholder="Keywords"
+                                                                      name="query"
+                                                                      type=text
+                                                                      value>
+                                                        <div class="react-autosuggest__suggestions-container sf-hidden"
+                                                             id=react-autowhatever-schoolName
+                                                             role=listbox></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                                                        <fieldset
+                                            class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                            name="schoolName">
+                                        <legend class="field-set__LegendStyled-sc-b2ie46-1 Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Min Cost
+                                            </div>
+                                        </legend>
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer"
+                                             style="max-height:none;overflow:visible">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
+                                                    <div aria-expanded=false aria-haspopup=listbox
+                                                         aria-owns=react-autowhatever-schoolName
+                                                         class=react-autosuggest__container
+                                                         role=combobox><input aria-autocomplete=list
+                                                                      aria-controls=react-autowhatever-schoolName
+                                                                      autocomplete=off
+                                                                      class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
+                                                                     name="min_cost"
+                                                                    placeholder="Min Cost"
+                                                                    type="number"
+                                                                    step="1"
+                                                                      value>
+                                                        <div class="react-autosuggest__suggestions-container sf-hidden"
+                                                             role=listbox></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                                                                                            <fieldset
+                                            class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                            name="schoolName">
+                                        <legend class="field-set__LegendStyled-sc-b2ie46-1 Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Max Cost
+                                            </div>
+                                        </legend>
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer"
+                                             style="max-height:none;overflow:visible">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
+                                                    <div aria-expanded=false aria-haspopup=listbox
+                                                         aria-owns=react-autowhatever-schoolName
+                                                         class=react-autosuggest__container
+                                                         role=combobox><input aria-autocomplete=list
+                                                                      aria-controls=react-autowhatever-schoolName
+                                                                      autocomplete=off
+                                                                      class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
+                                                                    name="max_cost"
+                                                                    placeholder="Max Cost"
+                                                                    type="number"
+                                                                    step="1"
+                                                                      value>
+                                                        <div class="react-autosuggest__suggestions-container sf-hidden"
+                                                             role=listbox></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                    <fieldset
+                                            class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                            name=location>
+                                        <legend class="field-set__LegendStyled-sc-b2ie46-1 Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Location
+                                            </div>
+                                        </legend>
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer"
+                                             style="max-height:none;overflow:visible">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
+                                                    <div aria-expanded=false aria-haspopup=listbox
+                                                         aria-owns=react-autowhatever-location-input
+                                                         class=react-autosuggest__container
+                                                         role=combobox><input aria-autocomplete=list
+                                                                      aria-controls=react-autowhatever-location-input
+                                                                      autocomplete=off
+                                                                      class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
+                                                                      name="location"
+                                                                      placeholder="City, State or ZIP"
+                                                                      type=text
+                                                                      value>
+                                                        <div class="react-autosuggest__suggestions-container sf-hidden"
+                                                             id=react-autowhatever-location-input
+                                                             role=listbox></div>
+                                                    </div>
+                                                </div>
+                                                <div style="margin-bottom: 0.5rem !important;"></div>
+                                                <span class="select__Container-sc-i9bbt3-3 All-Distances-Outer-Frame"
+                                                      style="--width:100%"><label
+                                                        class="select__LabelStyled-sc-i9bbt3-0 All-Distances-Inner-Frame"><select
+                                                        class="select__SelectStyled-sc-i9bbt3-1 All-Distances-Content-Box"
+                                                        name="distance"><option
+                                                        selected value>All Distances
+                                                    <option value=25>Within 25 miles
+                                                    <option value=50>Within 50 miles
+                                                    <option value=100>Within 100 miles
+                                                    <option value=250>Within 250 miles
+                                                </select><svg
+                                                        class="icon__SvgStyled-sc-q5hntj-0 Small-Icon Dropdown-Icon"
+                                                        fill=var(--gray-30)
+                                                        viewBox="0 0 64 64"><path
+                                                        d="M33.3,39.8l13.1-13.1c0.4-0.4,0.6-0.8,0.6-1.3c0-1-0.9-1.9-1.9-1.9H18.8c-1,0-1.9,0.8-1.9,1.9  c0,0.5,0.2,1,0.6,1.3l13.1,13.1c0.4,0.4,0.8,0.6,1.3,0.6S33,40.2,33.3,39.8"></path></svg></label></span>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                    {% comment %}
+                                    <fieldset
+                                            class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                            name=area-of-study>
+                                        <legend class="field-set__LegendStyled-sc-b2ie46-1 Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Area of Study
+                                            </div>
+                                        </legend>
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer"
+                                                style=max-height:none;overflow:visible>
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <span class="select__Container-sc-i9bbt3-3 All-Distances-Outer-Frame"
+                                                        style=--width:100%><label
+                                                        class="select__LabelStyled-sc-i9bbt3-0 All-Distances-Inner-Frame"><select
+                                                        class="select__SelectStyled-sc-i9bbt3-1 All-Distances-Content-Box"
+                                                        name=study><option
+                                                        selected value>All Areas of Study<option
+                                                        value="Agriculture, Agriculture Operations, and Related Sciences">Agriculture<option
+                                                        value="Architecture and Related Services">Architecture<option
+                                                        value="Basic Skills and Developmental/Remedial Education">Basic Skills and Developmental/Remedial Education<option
+                                                        value="Biological and Biomedical Sciences">Biological and Biomedical Sciences<option
+                                                        value="Business, Management, Marketing, and Related Support Services">Business, Management and Marketing<option
+                                                        value="Citizenship Activities">Citizenship Activities<option
+                                                        value="Communication, Journalism, and Related Programs">Communication / Journalism<option
+                                                        value="Communications Technologies/Technicians and Support Services">Communications Technologies/Technicians<option
+                                                        value="Computer and Information Sciences and Support Services">Computer and Information Sciences<option
+                                                        value="Construction Trades">Construction Trades<option
+                                                        value=Education>Education<option value=Engineering>Engineering<option
+                                                        value="Engineering Technologies and Engineering-Related Fields">Engineering Technologies and Related Fields<option
+                                                        value="English Language and Literature/Letters">English Language and Literature<option
+                                                        value="Area, Ethnic, Cultural, Gender, and Group Studies">Ethnic, Cultural, Gender, and Group Studies<option
+                                                        value="Family and Consumer Sciences/Human Sciences">Family, Consumer and Human Sciences<option
+                                                        value="Foreign Languages, Literatures, and Linguistics">Foreign Languages, Literatures, and Linguistics<option
+                                                        value="Health Professions and Related Programs">Health Professions<option
+                                                        value="Health-Related Knowledge and Skills">Health-Related Knowledge and Skills<option
+                                                        value="High School/Secondary Diplomas and Certificates">High School/Secondary Diplomas and Certificates<option
+                                                        value=History>History<option
+                                                        value="Homeland Security, Law Enforcement, Firefighting and Related Protective Services">Homeland Security, Law Enforcement, Firefighting and Related Services<option
+                                                        value="Interpersonal and Social Skills">Interpersonal and Social Skills<option
+                                                        value="Legal Professions and Studies">Legal Professions and Studies<option
+                                                        value="Leisure and Recreational Activities">Leisure and Recreational Activities<option
+                                                        value="Liberal Arts and Sciences, General Studies and Humanities">Liberal Arts and Humanities<option
+                                                        value="Library Science">Library Science<option
+                                                        value="Mathematics and Statistics">Mathematics and Statistics<option
+                                                        value="Mechanic and Repair Technologies/Technicians">Mechanic and Repair Technologies/Technicians<option
+                                                        value="Military Science, Leadership and Operational Art">Military Science, Leadership and Operations<option
+                                                        value="Military Technologies and Applied Sciences">Military Technologies and Applied Sciences<option
+                                                        value="Multi/Interdisciplinary Studies">Multi/Interdisciplinary Studies<option
+                                                        value="Natural Resources and Conservation">Natural Resources and Conservation<option
+                                                        value="Parks, Recreation, Leisure, and Fitness Studies">Parks, Recreation, Leisure, and Fitness Studies<option
+                                                        value="Personal and Culinary Services">Personal and Culinary Services<option
+                                                        value="Philosophy and Religious Studies">Philosophy and Religious Studies<option
+                                                        value="Physical Sciences">Physical Sciences<option
+                                                        value="Precision Production">Precision Production<option
+                                                        value=Psychology>Psychology<option
+                                                        value="Public Administration and Social Service Professions">Public Administration and Social Service Professions<option
+                                                        value="Residency Programs">Residency Programs<option
+                                                        value="Science Technologies/Technicians">Science Technologies/Technicians<option
+                                                        value="Social Sciences">Social Sciences<option
+                                                        value="Theology and Religious Vocations">Theology and Religious Vocations<option
+                                                        value="Transportation and Materials Moving">Transportation and Materials Moving</select><svg
+                                                        class="icon__SvgStyled-sc-q5hntj-0 Small-Icon Dropdown-Icon"
+                                                        fill=var(--gray-30)
+                                                        viewBox="0 0 64 64"><path
+                                                        d="M33.3,39.8l13.1-13.1c0.4-0.4,0.6-0.8,0.6-1.3c0-1-0.9-1.9-1.9-1.9H18.8c-1,0-1.9,0.8-1.9,1.9  c0,0.5,0.2,1,0.6,1.3l13.1,13.1c0.4,0.4,0.8,0.6,1.3,0.6S33,40.2,33.3,39.8"></path></svg></label></span>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    {% endcomment %}
+
+                                                                                                            <fieldset
+                                            class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                            name="schoolName">
+                                        <legend class="field-set__LegendStyled-sc-b2ie46-1 Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Min Hours
+                                            </div>
+                                        </legend>
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer"
+                                             style="max-height:none;overflow:visible">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
+                                                    <div aria-expanded=false aria-haspopup=listbox
+                                                         aria-owns=react-autowhatever-schoolName
+                                                         class=react-autosuggest__container
+                                                         role=combobox><input aria-autocomplete=list
+                                                                      aria-controls=react-autowhatever-schoolName
+                                                                      autocomplete=off
+                                                                      class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
+                                                                     name="min_classroom_hours"
+                                                                    placeholder="Min Classroom Hours"
+                                                                    type="number"
+                                                                    step="1"
+                                                                      value>
+                                                        <div class="react-autosuggest__suggestions-container sf-hidden"
+                                                             role=listbox></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                    <legend class="field-set__LegendStyled-sc-b2ie46-1 Filter-Section-Title-Outer">
+                                        <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                            Apply Filters
+                                        </div>
+                                    </legend>
+                                    <fieldset
+                                        class="field-set_FieldSetStyled-sc-b2ie46-0 Filter-Section form_ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                        name=majors>
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer"
+                                             style="max-height:none;overflow:visible">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="MajorsInput__ChipSelectorStyled-sc-1w5hn16-0 bMKNdP">
+                                                    <button type="submit" class="Autocomplete__InputWrapper-sc-1dfg182-3 Apply-Filters-Button" style="display: flex; justify-content: center; align-items: center; width: 100%; text-align: center;">
+                                                        Apply Filters
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                                            <!-- </form> -->
+
+                                <!--courses-->
+                                <div class="All-Course-Container">
+                                    <ol class="CourseList">
+                                        {% for course in courses %}
+                                        <li class="CourseCard" style="animation-delay:0ms">
+                                            <div class="Course-Card-Outer-Container Course-Cards" spacing=4>
+
+
+                                                <div class="Card__TextContainer-sc-1ra20i5-8 Course-Card-Inner-Container Course-Information">
+                                                    <div class="Card__CardOverview-sc-1ra20i5-9 Course-Card-Inner-Container Course-Overview">
+                                                        <div class="Course-Name-Inner-Container-And-Provider" spacing=2>
+                                                            <div>
+                                                                <a class="Anchor-byh49a-0 Card__StyledAnchor-sc-1ra20i5-10 Course-Name-Outer-Container CourseName card-name"
+                                                                   href="{% url 'course_detail' course.pk %}">
+                                                                    <h3 class="Heading-sc-1w5xk2o-0 Wakanda__Title-rzha8s-10 Course-Name-Inner-Container gtkLHO">
+                                                                        <span class="HeadingWithIcon__NoWrap-sc-1kfmde2-1 Course-Title">
+                                                                            {{ course.name }}
+                                                                            {% comment %}
+                                                                            <div class="Card__IconWrapper-sc-1ra20i5-2 Verification-Icon-Outer">
+                                                                                <picture class=Image__Picture-sc-412cjc-0>
+                                                                                    <img class="Image__PictureImage-sc-412cjc-1 Verification-Icon Image-sc-412cjc-2 Card__Claimed-sc-1ra20i5-3 kQDDcT Verification-Icon-Inner"
+                                                                                         src="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/verified.png"
+                                                                                         srcset
+                                                                                         alt="">
+                                                                                </picture>
+                                                                            </div>
+                                                                            {% endcomment %}
+                                                                        </span>
+                                                                    </h3>
+                                                                </a>
+                                                            </div>
+                                                            <p class="Course-Provider">{{ course.provider.name }}</p>
+                                                        </div>
+                                                        <div class="Course-Address-And-Reviews" spacing=3>
+
+                                                          <ul class="RankList__List-sc-2xewen-0 Course-Location-Outer Card__StyledRankList-sc-1ra20i5-11 CourseLocation"
+                                                                font-size=4 spacing=0>
+                                                                <li class="RankList__ListItem-sc-2xewen-1 Course-Location-Outer rank-list-item">
+                                                                    <a class="RankList__RankLink-sc-2xewen-3 Course-Location-Inner has-badge">
+                                                                        <div class="RankList__Rank-sc-2xewen-2 Course-Location-Outer-Icon ranked has-badge">
+                                                                        </div>
+                                                                        <span class=in>{{ course.provider.address }}</span></a>
+                                                                </li>
+                                                            </ul>
+
+                                                            <div class=flex>
+                                                                <a class="Anchor-byh49a-0 Course-Reviews-Outer-Container"
+                                                                    href="#">
+
+                                                                <div aria-label="{{ course.rating }} out of 5"
+                                                                     class="Rating__Container-sc-1naeqqj-0 Course-Reviews-Inner-Container Course-Rating-And-Reviews Rating-sc-1naeqqj-2 kiGUEr"
+                                                                     spacing=0>
+                                                                    {% for i in "12345"|make_list %}
+                                                                        {% if forloop.counter <= course.rating_full_stars %}
+                                                                        <svg class="Rating__IconSvg-sc-1naeqqj-1 Course-Rating"
+                                                                             fill=#1263D3
+                                                                             stroke=#1263D3>
+                                                                            <use xlink:href=#star></use>
+                                                                        </svg>
+                                                                        {% elif forloop.counter == course.rating_partial_star_position %}
+                                                                        <svg class="Rating__IconSvg-sc-1naeqqj-1 Course-Rating"
+                                                                             fill=url(#5dbdf6c0-ad66-40a1-bc8d-5393e4ca83b2)
+                                                                             stroke=#1263D3>
+                                                                            <use xlink:href=#star></use>
+                                                                            <defs>
+                                                                                <lineargradient
+                                                                                        id=5dbdf6c0-ad66-40a1-bc8d-5393e4ca83b2
+                                                                                        x1=0% x2=100% y1=0% y2=0%>
+                                                                                    <stop offset=0%
+                                                                                          stop-color=#1263D3></stop>
+                                                                                    <stop offset={{ course.rating_partial_percentage }}%
+                                                                                          stop-color=#1263D3></stop>
+                                                                                    <stop offset={{ course.rating_partial_percentage }}%
+                                                                                          stop-color=#ffffff></stop>
+                                                                                    <stop offset=100%
+                                                                                          stop-color=#ffffff></stop>
+                                                                                </lineargradient>
+                                                                            </defs>
+                                                                        </svg>
+                                                                        {% else %}
+                                                                        <svg class="Rating__IconSvg-sc-1naeqqj-1 Course-Rating"
+                                                                             fill=#ffffff
+                                                                             stroke=#1263D3>
+                                                                            <use xlink:href=#star></use>
+                                                                        </svg>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                    <span class="ReviewSnapshot__StyledSpan-sc-702mfw-0 Course-Review-Quantity Reviews">{{ course.reviews_count }} reviews</span>
+                                                                </div>
+                                                            </a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="MultilineEllipsis__Container-sc-1hoyc1r-5 Course-Description-Content Hide-kg09cx-0 hWOBmI"
+                                                             size=3
+                                                             spacing=0>
+                                                            <div class="MultilineEllipsis__HeightRestriction-sc-1hoyc1r-6 Course-Description-Outer"
+                                                                 size=3
+                                                                 spacing=0>
+                                                                <div class="MultilineEllipsis__ContentSizedContainer-sc-1hoyc1r-7 Course-Description-Inner">
+                                                                    <p class="Course-Description">{{ course.course_desc }}
+                                                                    <div class="MultilineEllipsis__FullHeightReferenceWrapper-sc-1hoyc1r-4">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <a class="Anchor-byh49a-0 Read-More MultilineEllipsis__ReadMore-sc-1hoyc1r-3 READ-MORE Card__ReadMore-sc-1ra20i5-1 ReadMore card-more"
+                                                                   href="{% url 'course_detail' course.pk %}">Read
+                                                                    More »</a></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="Course-Card-Inner-Container Cost-And-Hours-And-Keywords">
+                                                        <div class="Course-Card-Inner-Container Cost-Hours-Keywords QuickStatHug-hb1bl8-2">
+                                                            <dl>
+                                                                <div>
+                                                                    <dt class=label-wrapper>Cost
+                                                                    <dd class="Cost-Hours-Keywords-Text">
+                                                                        ${{ course.cost }}
+                                                                </div>
+                                                            </dl>
+                                                        </div>
+
+                                                        <div class="Course-Card-Inner-Container Cost-Hours-Keywords QuickStatHug-hb1bl8-2">
+                                                            <dl>
+                                                                <div>
+                                                                    <dt class=label-wrapper>Classroom Hours
+                                                                    <dd class="Cost-Hours-Keywords-Text">
+                                                                        {{ course.classroom_hours }}
+                                                                </div>
+                                                            </dl>
+                                                        </div>
+
+                                                        <div class="Course-Card-Inner-Container Cost-Hours-Keywords QuickStatHug-hb1bl8-2">
+                                                            <dl>
+                                                                <div>
+                                                                    <dt class=label-wrapper>Keywords
+                                                                    <dd class="Cost-Hours-Keywords-Text">
+                                                                        {{ course.keywords }}
+                                                                </div>
+                                                            </dl>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="Card__ActionContainer-sc-1ra20i5-13 Course-Card-Inner-Container Course-Actions">
+
+                                                    <div class="Course-Card-Inner-Container Card__CompareCheckbox-sc-1ra20i5-14 gjqtrd card-compare">
+                                                        <span class="input__Container-sc-1ie8rf0-0 Add-To-Compare-Border">
+                                                            <label class="input__Label-sc-1ie8rf0-5 Add-To-Compare-Outer size-small">
+                                                                <input class="Hidden-Input"
+                                                                    name="compare-{{ course.id }}"
+                                                                    type=checkbox
+                                                                    value="{{ course.id }}">
+                                                                <span class="input__Control-sc-1ie8rf0-1 Add-To-Compare-Check">
+                                                                    <svg viewBox="0 0 100 100">
+                                                                        <path d="M12.1 52.1l24.4 24.4 53-53" fill=none
+                                                                            stroke-linecap=round
+                                                                            stroke-linejoin=round
+                                                                            stroke-miterlimit=10
+                                                                            stroke-width=13>
+                                                                        </path>
+                                                                    </svg>
+                                                                </span>
+                                                                <span class="input__LabelSpan-sc-1ie8rf0-2 Add-To-Compare-Outline">
+                                                                    <span>
+                                                                        <span class="Span-sc-19wk4id-0 Add-To-Compare sm-hide" size=3>Add To Compare</span>
+                                                                    </span>
+                                                                </span>
+                                                            </label>
+                                                        </span>
+                                                    </div>
+
+                                                    <button class="button__ButtonStyled-sc-1vhaw8r-1 BookmarkButton type-primary size-small"
+                                                            data-course-id="{{ course.id }}"
+                                                            data-tracking-apply-int-code=false
+                                                            data-tracking-campaign=edu_save_cta_click
+                                                            data-tracking-id=edu_save_tracking
+                                                            data-tracking-placement=edu_save_cta_rankingcard
+                                                            data-tracking-trigger-utag-link-event=true>
+
+                                                        Add Bookmark
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        {% endfor %}
+                                    </ol>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </article>
+
+            <!--footer-->
+            <footer class="Entire-Footer">
+                <div class=" Introduction content" style="display: flex; justify-content: center;">
+                    <div class="Main-Footer">
+                        <a href="{% url 'home' %}">
+                            <img style="margin-bottom: 1rem !important;" height=40px
+                            src=https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/favicon.png
+                            width=40px>
+                        </a>
+                        <div class="Main-Footer-Content">
+                            <div class="jXuJkM">
+
+                                <!--About, Contact, and Advertise-->
+                                <div class="Info__Links-sc-1vdhah7-5 Main-Footer-Content-Links" spacing=3>
+                                    <div class="Info__LinkContainer-sc-1vdhah7-6 Main-Footer-Content-Link">
+                                        <a class="Anchor-byh49a-0 Info__Link-sc-1vdhah7-7"
+                                           href="#">
+                                            About Us
+                                        </a>
+                                    </div>
+                                    <div class="Info__LinkContainer-sc-1vdhah7-6 Main-Footer-Content-Link">
+                                        <a class="Anchor-byh49a-0 Info__Link-sc-1vdhah7-7"
+                                           href="#">
+                                            Contact
+                                        </a>
+                                    </div>
+                                    <div class="Info__LinkContainer-sc-1vdhah7-6 Main-Footer-Content-Link">
+                                        <a class="Anchor-byh49a-0 Info__Link-sc-1vdhah7-7"
+                                           href="#">
+                                            Advertise
+                                        </a>
+                                    </div>
+                                </div>
+                                <!--Copyright-->
+                                <div class="Info__Bottom-sc-1vdhah7-8 Copyright-Outer">
+                                    <span class="Copyright-Inner" size=2>
+                                        Copyright {% now "Y" %} © VocationalNYC
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </main>
+
+
+</body>
+</html>
