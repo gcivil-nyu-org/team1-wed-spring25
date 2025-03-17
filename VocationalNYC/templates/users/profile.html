@@ -113,10 +113,77 @@
                                     <p>{{ student.bio }}</p>
                                 {% endif %}
                                 <p><strong>Tag:</strong> {{ student.tag }}</p>
-                                <p><strong>Created At:</strong> {{ student.created_at|date:"F j, Y" }}</p>
-                                <p><strong>Updated At:</strong> {{ student.updated_at|date:"F j, Y" }}</p>
+                                <p><strong>Bio:</strong> {{ student.bio}}</p>
+
                             </div>
                         {% endif %}
+
+                        <div class="bookmark-section mt-4">
+                            <h5>My Bookmarked Courses</h5>
+                            {% if bookmark_lists %}
+                                {% for list in bookmark_lists %}
+                                    <div class="bookmark-list mb-3">
+                                        <h6>{{ list.name }}</h6>
+                                        <ul class="list-group">
+                                            {% for bookmark in list.bookmark.all %}
+                                                <li class="list-group-item">
+                                                    <a href="{% url 'course_detail' bookmark.course.course_id %}">
+                                                        {{ bookmark.course.course_name }}
+                                                    </a>
+                                                    <small class="text-muted d-block">
+                                                        Bookmarked on: {{ bookmark.time|date:"F j, Y" }}
+                                                    </small>
+                                                </li>
+                                            {% empty %}
+                                                <li class="list-group-item text-muted">No courses in this list</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-muted">No bookmark lists found</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="reviews-section mt-4">
+                            <h5>My Reviews</h5>
+                            {% if reviews %}
+                                <div class="reviews-list">
+                                    {% for review in reviews %}
+                                        <div class="review-card card mb-3">
+                                            <div class="card-body">
+                                                <h6 class="card-title">
+                                                    <a href="{% url 'course_detail' review.course.course_id %}">
+                                                        {{ review.course.name }}
+                                                    </a>
+                                                </h6>
+                                                <div class="rating mb-2">
+                                                    {% for i in "12345"|make_list %}
+                                                        {% if forloop.counter <= review.score_rating %}
+                                                            <span class="text-warning">★</span>
+                                                        {% else %}
+                                                            <span class="text-muted">☆</span>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <p class="card-text">{{ review.content }}</p>
+                                                <small class="text-muted">Posted on: {{ review.created_at|date:"F j, Y" }}</small>
+                                                {% if review.attachment_url %}
+                                                    <div class="mt-2">
+                                                        <a href="{{ review.attachment_url }}" target="_blank" class="btn btn-sm btn-outline-secondary">
+                                                            View Attachment
+                                                        </a>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="text-muted">No reviews posted yet</p>
+                            {% endif %}
+                        </div>
+
                         <div class="activity-section mt-4">
                             <h5>Recent Activity</h5>
                             <!-- Add recent activity, saved courses, etc. -->

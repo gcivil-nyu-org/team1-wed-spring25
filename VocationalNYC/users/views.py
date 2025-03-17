@@ -42,8 +42,8 @@ class CustomSignupView(SignupView):
 @login_required
 def profile_view(request):
     if request.method == "POST":
-        if 'provider_form' in request.POST:
-            provider_form = ProviderVerificationForm(request.POST, request.FILES, instance=request.user.provider_profile)
+        if 'provider_form' in request.POST and request.user.role == "training_provider":
+            provider_form = ProviderVerificationForm(request.POST, request.FILES, instance=getattr(request.user, 'provider_profile', None))
             form = ProfileUpdateForm(instance=request.user)
             if provider_form.is_valid():
                 provider = provider_form.save(commit=False)
@@ -52,45 +52,31 @@ def profile_view(request):
                 return redirect("profile")
         else:
             form = ProfileUpdateForm(request.POST, instance=request.user)
-            provider_form = ProviderVerificationForm(instance=request.user.provider_profile)
             if form.is_valid():
                 form.save()
                 return redirect("profile")
-
-        # Get provider data for display regardless of form validity
-        try:
-            provider = Provider.objects.get(user=request.user)
-            context = {
-                "user": request.user,
-                "role": request.user.role,
-                "form": form,
-                "provider_verification_form": provider_form,
-                "provider": provider
-            }
-        except Provider.DoesNotExist:
-            context = {
-                "user": request.user,
-                "role": request.user.role,
-                "form": form,
-                "provider_verification_form": provider_form
-            }
-        return render(request, "users/profile.html", context)
     else:
         form = ProfileUpdateForm(instance=request.user)
-        provider_form = ProviderVerificationForm(instance=request.user.provider_profile)
 
-    context = {"user": request.user, "role": request.user.role, "form": form, "provider_verification_form": provider_form}
+    context = {"user": request.user, "role": request.user.role, "form": form}
 
     if request.user.role == "training_provider":
         try:
             provider = Provider.objects.get(user=request.user)
             context["provider"] = provider
+            context["provider_verification_form"] = ProviderVerificationForm(instance=provider)
         except Provider.DoesNotExist:
-            pass
+            context["provider_verification_form"] = ProviderVerificationForm()
     elif request.user.role == "career_changer":
         try:
             student = request.user.student_profile
             context["student"] = student
+            # Add bookmark lists to context
+            bookmark_lists = request.user.bookmark_list.all().prefetch_related('bookmark__course')
+            context["bookmark_lists"] = bookmark_lists
+            # Add reviews to context
+            reviews = request.user.reviews.select_related('course').order_by('-created_at')
+            context["reviews"] = reviews
         except Student.DoesNotExist:
             pass
 
