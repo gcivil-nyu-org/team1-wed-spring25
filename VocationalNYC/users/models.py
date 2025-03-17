@@ -2,7 +2,6 @@ from django.db import models
 from .managers import CustomUserManager
 from django.contrib.auth.models import AbstractUser
 
-
 class CustomUser(AbstractUser):
     ROLE_CHOICES = (
         ("career_changer", "Career Changer"),
@@ -17,7 +16,6 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f"{self.role.capitalize()}: {self.username}"
-
 
 class Student(models.Model):
     student_id = models.AutoField(primary_key=True)
@@ -36,7 +34,6 @@ class Student(models.Model):
 
     def __str__(self):
         return f"Student: {self.user.username}"
-
 
 class Provider(models.Model):
     provider_id = models.AutoField(primary_key=True)

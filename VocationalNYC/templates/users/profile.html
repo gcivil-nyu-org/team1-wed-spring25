@@ -17,10 +17,28 @@
                         <span class="badge bg-primary">{{ user.role|title }}</span>
                     </div>
                     <hr>
-                    <div class="user-info">
+                    <div id="user-details">
                         <p><strong>Email:</strong> {{ user.email }}</p>
                         <p><strong>Joined:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
+                        <button type="button" id="edit-user-btn" class="btn btn-secondary mt-3">Edit Profile</button>
                     </div>
+                    <form id="user-form" method="post" style="display: none;">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                <ul>
+                                    {% for field in form %}
+                                        {% for error in field.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="button" id="cancel-user-btn" class="btn btn-secondary">Cancel</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -29,6 +47,7 @@
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-body">
+                    <hr>
                     {% if role == "training_provider" %}
                         {% if provider %}
                             <h3>Provider Information</h3>
@@ -40,18 +59,44 @@
                                     <span class="badge bg-warning">Pending Verification</span>
                                 {% endif %}
                             </div>
-                            <div class="provider-details">
-                                <p><strong>Business Name:</strong> {{ provider.name }}</p>
-                                <p><strong>Contact:</strong> {{ provider.contact_firstname }} {{ provider.contact_lastname }}</p>
-                                <p><strong>Phone:</strong> {{ provider.phone_num }}</p>
-                                <p><strong>Address:</strong> {{ provider.address }}</p>
-                                {% if provider.website %}
-                                    <p><strong>Website:</strong> <a href="{{ provider.website }}" target="_blank">{{ provider.website }}</a></p>
-                                {% endif %}
-                                {% if provider.open_time %}
-                                    <p><strong>Business Hours:</strong> {{ provider.open_time }}</p>
-                                {% endif %}
+                            <div id="provider-details">
+                                <div class="provider-details">
+                                    <p><strong>Business Name:</strong> {{ provider.name }}</p>
+                                    <p><strong>Contact:</strong> {{ provider.contact_firstname }} {{ provider.contact_lastname }}</p>
+                                    <p><strong>Phone:</strong> {{ provider.phone_num }}</p>
+                                    <p><strong>Address:</strong> {{ provider.address }}</p>
+                                    {% if provider.website %}
+                                        <p><strong>Website:</strong> <a href="{{ provider.website }}" target="_blank">{{ provider.website }}</a></p>
+                                    {% endif %}
+                                    {% if provider.open_time %}
+                                        <p><strong>Business Hours:</strong> {{ provider.open_time }}</p>
+                                    {% endif %}
+                                    {% if provider.provider_desc %}
+                                    <p><strong>Description:</strong> {{ provider.provider_desc }}</p>
+                                    {% endif %}
+                                </div>
+                                <button id="edit-provider-btn" class="btn btn-secondary mt-3">Edit Provider Details</button>
                             </div>
+                            <form id="provider-form" method="post" enctype="multipart/form-data" style="display: {% if provider_verification_form.errors %}block{% else %}none{% endif %};" onsubmit="return validateProviderForm()">
+                                {% csrf_token %}
+                                <input type="hidden" name="provider_form" value="1">
+                                {% for field in provider_verification_form %}
+                                    <div class="mb-3">
+                                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}{% if field.field.required %}<span style="color: red;">*</span>{% endif %}</label>
+                                        {{ field }}
+                                        <div class="invalid-feedback" id="{{ field.id_for_label }}-error"></div>
+                                        {% if field.errors %}
+                                            <div class="text-danger">
+                                                {% for error in field.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancel-provider-btn" class="btn btn-secondary">Cancel</button>
+                            </form>
                         {% else %}
                             <div class="alert alert-warning">
                                 Please complete your provider verification to access all features.
@@ -67,13 +112,18 @@
                                     <h5>About Me</h5>
                                     <p>{{ student.bio }}</p>
                                 {% endif %}
-                                <!-- Add more student-specific information here -->
+                                <p><strong>Tag:</strong> {{ student.tag }}</p>
+                                <p><strong>Created At:</strong> {{ student.created_at|date:"F j, Y" }}</p>
+                                <p><strong>Updated At:</strong> {{ student.updated_at|date:"F j, Y" }}</p>
                             </div>
                         {% endif %}
                         <div class="activity-section mt-4">
                             <h5>Recent Activity</h5>
                             <!-- Add recent activity, saved courses, etc. -->
                         </div>
+                    {% elif user.role == "administrator" %}
+                        <h3>Administrator Profile</h3>
+                        <p>Check /admin</p>
                     {% endif %}
                 </div>
             </div>
@@ -106,5 +156,93 @@
     .provider-details p {
         margin-bottom: 0.5rem;
     }
+    .is-invalid {
+        border-color: #dc3545 !important;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+    .invalid-feedback {
+        display: none;
+        color: #dc3545;
+        font-size: 0.875em;
+        margin-top: 0.25rem;
+    }
 </style>
+
+<script>
+    document.getElementById('edit-user-btn').addEventListener('click', function() {
+        document.getElementById('user-details').style.display = 'none';
+        document.getElementById('user-form').style.display = 'block';
+    });
+
+    document.getElementById('cancel-user-btn').addEventListener('click', function() {
+        document.getElementById('user-form').style.display = 'none';
+        document.getElementById('user-details').style.display = 'block';
+    });
+
+    document.getElementById('edit-provider-btn').addEventListener('click', function() {
+        document.getElementById('provider-details').style.display = 'none';
+        document.getElementById('provider-form').style.display = 'block';
+    });
+
+    document.getElementById('cancel-provider-btn').addEventListener('click', function() {
+        document.getElementById('provider-form').style.display = 'none';
+        document.getElementById('provider-details').style.display = 'block';
+    });
+
+    function validateProviderForm() {
+        let isValid = true;
+        const form = document.getElementById('provider-form');
+        const requiredFields = form.querySelectorAll('[required]');
+
+        requiredFields.forEach(field => {
+            const errorDiv = document.getElementById(`${field.id}-error`);
+            field.classList.remove('is-invalid');
+            
+            if (!field.value.trim()) {
+                field.classList.add('is-invalid');
+                errorDiv.textContent = 'This field is required';
+                errorDiv.style.display = 'block';
+                isValid = false;
+            } else if (field.type === 'tel') {
+                const phoneRegex = /^\d{10}$/;
+                if (!phoneRegex.test(field.value)) {
+                    field.classList.add('is-invalid');
+                    errorDiv.textContent = 'Please enter a valid 10-digit phone number';
+                    errorDiv.style.display = 'block';
+                    isValid = false;
+                }
+            } else if (field.type === 'url' && field.value) {
+                try {
+                    const url = new URL(field.value);
+                    if (!url.protocol.startsWith('http')) {
+                        throw new Error('Invalid protocol');
+                    }
+                    if (!field.value.includes('.')) {
+                        throw new Error('Invalid domain');
+                    }
+                } catch (e) {
+                    field.classList.add('is-invalid');
+                    errorDiv.textContent = 'Please enter a valid URL starting with http:// or https:// (e.g., https://www.google.com)';
+                    errorDiv.style.display = 'block';
+                    isValid = false;
+                }
+            }
+        });
+
+        if (!isValid) {
+            event.preventDefault();
+        }
+        return isValid;
+    }
+
+    document.querySelectorAll('#provider-form input, #provider-form textarea').forEach(field => {
+        field.addEventListener('input', function() {
+            this.classList.remove('is-invalid');
+            const errorDiv = document.getElementById(`${this.id}-error`);
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+            }
+        });
+    });
+</script>
 {% endblock %}

@@ -6,7 +6,7 @@ import requests
 from django.shortcuts import render, redirect
 from django.views import generic
 from allauth.account.views import SignupView
-from .forms import CustomSignupForm, ProviderVerificationForm
+from .forms import CustomSignupForm, ProviderVerificationForm, ProfileUpdateForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
 
@@ -41,7 +41,45 @@ class CustomSignupView(SignupView):
 
 @login_required
 def profile_view(request):
-    context = {"user": request.user, "role": request.user.role}
+    if request.method == "POST":
+        if 'provider_form' in request.POST:
+            provider_form = ProviderVerificationForm(request.POST, request.FILES, instance=request.user.provider_profile)
+            form = ProfileUpdateForm(instance=request.user)
+            if provider_form.is_valid():
+                provider = provider_form.save(commit=False)
+                provider.user = request.user
+                provider.save()
+                return redirect("profile")
+        else:
+            form = ProfileUpdateForm(request.POST, instance=request.user)
+            provider_form = ProviderVerificationForm(instance=request.user.provider_profile)
+            if form.is_valid():
+                form.save()
+                return redirect("profile")
+
+        # Get provider data for display regardless of form validity
+        try:
+            provider = Provider.objects.get(user=request.user)
+            context = {
+                "user": request.user,
+                "role": request.user.role,
+                "form": form,
+                "provider_verification_form": provider_form,
+                "provider": provider
+            }
+        except Provider.DoesNotExist:
+            context = {
+                "user": request.user,
+                "role": request.user.role,
+                "form": form,
+                "provider_verification_form": provider_form
+            }
+        return render(request, "users/profile.html", context)
+    else:
+        form = ProfileUpdateForm(instance=request.user)
+        provider_form = ProviderVerificationForm(instance=request.user.provider_profile)
+
+    context = {"user": request.user, "role": request.user.role, "form": form, "provider_verification_form": provider_form}
 
     if request.user.role == "training_provider":
         try:
