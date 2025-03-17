@@ -4,7 +4,6 @@ from .models import Provider
 
 # from .models import CustomUser, Student
 
-
 class CustomSignupForm(SignupForm):
     ROLE_CHOICES = (
         ("career_changer", "Career Changer"),
@@ -23,55 +22,51 @@ class CustomSignupForm(SignupForm):
         self.fields["email"].required = True
 
 
-class ProviderVerificationForm(forms.ModelForm):
-    class Meta:
-        model = Provider
-        fields = [
-            "name",
-            "contact_firstname",
-            "contact_lastname",
-            "phone_num",
-            "address",
-            "website",
-            "provider_desc",
-            "verification_file",
-        ]
+class ProviderVerificationForm(forms.Form):
+    business_name = forms.CharField(
+        max_length=100, 
+        required=True, 
+        widget=forms.TextInput(attrs={'placeholder': 'Enter your business name'})
+    )
+    business_address = forms.CharField(
+        max_length=255, 
+        required=True, 
+        widget=forms.TextInput(attrs={'placeholder': 'Enter business address'})
+    )
+    website = forms.URLField(
+        required=False, 
+        widget=forms.URLInput(attrs={'placeholder': 'Enter website URL'})
+    )
+    description = forms.CharField(
+        widget=forms.Textarea(attrs={'placeholder': 'Enter business description', 'rows': 1, 'style': 'resize: none;'}), 
+        required=False
+    )
+    first_name = forms.CharField(
+        max_length=50, 
+        required=True, 
+        widget=forms.TextInput(attrs={'placeholder': 'Enter your first name'})
+    )
+    last_name = forms.CharField(
+        max_length=50, 
+        required=True, 
+        widget=forms.TextInput(attrs={'placeholder': 'Enter your last name'})
+    )
+    contact_number = forms.CharField(
+        max_length=15, 
+        required=True, 
+        widget=forms.TextInput(attrs={'placeholder': 'Enter contact number'})
+    )
+    certificate = forms.FileField(required=True)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["name"].widget.attrs.update({"class": "form-control"})
-        self.fields["contact_firstname"].widget.attrs.update({"class": "form-control"})
-        self.fields["contact_lastname"].widget.attrs.update({"class": "form-control"})
-        self.fields["phone_num"].widget.attrs.update({"class": "form-control"})
-        self.fields["address"].widget.attrs.update({"class": "form-control"})
-        self.fields["website"].widget.attrs.update({"class": "form-control"})
-        self.fields["provider_desc"].widget.attrs.update({"class": "form-control"})
-        self.fields["verification_file"].required = True
-        self.fields["verification_file"].widget.attrs.update(
-            {"class": "form-control", "accept": ".pdf,.jpg,.jpeg,.png"}
-        )
+    def clean_contact_number(self):
+        contact_number = self.cleaned_data.get('contact_number')
+        if not contact_number.isdigit():
+            raise forms.ValidationError("Contact number must contain only digits.")
+        return contact_number
 
-    def clean_phone_num(self):
-        phone = self.cleaned_data.get("phone_num")
-        if phone:
-            # Remove any non-digit characters
-            phone = "".join(filter(str.isdigit, phone))
-            if len(phone) != 10:
-                raise forms.ValidationError("Phone number must be 10 digits.")
-        return phone
-
-    def clean_name(self):
-        name = self.cleaned_data.get("name")
-        if len(name) < 3:
-            raise forms.ValidationError(
-                "Business name must be at least 3 characters long."
-            )
-        return name
-
-    def clean_provider_desc(self):
-        desc = self.cleaned_data.get("provider_desc")
-        if desc and len(desc) < 50:
-            raise forms.ValidationError(
-                "Description must be at least 50 characters long."
-            )
-        return desc
+    def clean_certificate(self):
+        certificate = self.cleaned_data.get('certificate')
+        if certificate:
+            if certificate.size > 5 * 1024 * 1024:
+                raise forms.ValidationError("Certificate file size must be under 5MB.")
+        return certificate

@@ -139,25 +139,37 @@
             <div class="mb-3">
                 <label for="business_name" class="form-label">Business Name <span style="color: red;">*</span></label>
                 <input type="text" class="form-control" name="business_name" id="business_name"
-                    placeholder="Enter your business name" required>
+                    placeholder="Enter your business name" value="{{ form.business_name.value|default:'' }}" required>
+                {% if form.business_name.errors %}
+                    <div class="text-danger">{{ form.business_name.errors }}</div>
+                {% endif %}
             </div>
 
             <div class="mb-3">
                 <label for="business_address" class="form-label">Business Address <span
                         style="color: red;">*</span></label>
                 <input type="text" class="form-control" name="business_address" id="business_address"
-                    placeholder="Enter business address" required>
+                    placeholder="Enter business address" value="{{ form.business_address.value|default:'' }}" required>
+                {% if form.business_address.errors %}
+                    <div class="text-danger">{{ form.business_address.errors }}</div>
+                {% endif %}
             </div>
 
             <div class="mb-3">
                 <label for="website" class="form-label">Business Website (Optional)</label>
-                <input type="url" class="form-control" name="website" id="website" placeholder="Enter website URL">
+                <input type="url" class="form-control" name="website" id="website" placeholder="Enter website URL" value="{{ form.website.value|default:'' }}">
+                {% if form.website.errors %}
+                    <div class="text-danger">{{ form.website.errors }}</div>
+                {% endif %}
             </div>
 
             <div class="mb-3">
                 <label for="description" class="form-label">Business Description (Optional)</label>
                 <textarea class="form-control" name="description" id="description"
-                    placeholder="Enter business description" rows="1" style="resize: none;"></textarea>
+                    placeholder="Enter business description" rows="1" style="resize: none;">{{ form.description.value|default:'' }}</textarea>
+                {% if form.description.errors %}
+                    <div class="text-danger">{{ form.description.errors }}</div>
+                {% endif %}
             </div>
 
             <script>
@@ -196,15 +208,24 @@
             <div class="mb-3">
                 <label class="form-label">Contact Person <span style="color: red;">*</span></label>
                 <input type="text" class="form-control" name="first_name" id="first_name"
-                    placeholder="Enter your first name" required>
+                    placeholder="Enter your first name" value="{{ form.first_name.value|default:'' }}" required>
+                {% if form.first_name.errors %}
+                    <div class="text-danger">{{ form.first_name.errors }}</div>
+                {% endif %}
                 <input type="text" class="form-control" name="last_name" id="last_name"
-                    placeholder="Enter your last name" required>
+                    placeholder="Enter your last name" value="{{ form.last_name.value|default:'' }}" required>
+                {% if form.last_name.errors %}
+                    <div class="text-danger">{{ form.last_name.errors }}</div>
+                {% endif %}
             </div>
 
             <div class="mb-3">
                 <label for="contact_number" class="form-label">Contact Number <span style="color: red;">*</span></label>
                 <input type="tel" class="form-control" name="contact_number" id="contact_number"
-                    placeholder="Enter contact number" required>
+                    placeholder="Enter contact number" value="{{ form.contact_number.value|default:'' }}" required>
+                {% if form.contact_number.errors %}
+                    <div class="text-danger">{{ form.contact_number.errors }}</div>
+                {% endif %}
             </div>
 
             <div class="mb-3">
@@ -212,6 +233,9 @@
                         style="color: red;">*</span></label>
                 <input type="file" class="form-control" name="certificate" id="certificate" accept=".pdf,.jpg,.png"
                     required>
+                {% if form.certificate.errors %}
+                    <div class="text-danger">{{ form.certificate.errors }}</div>
+                {% endif %}
             </div>
 
             <button type="submit" class="btn btn-custom">Submit for Verification</button>

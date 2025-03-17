@@ -56,13 +56,10 @@ class Provider(models.Model):
     provider_desc = models.TextField(null=True, blank=True)
     website = models.URLField(blank=True, null=True)
     verification_status = models.BooleanField(default=False)
-    verification_file_url = models.URLField(blank=True, null=True)
-    verification_file = models.FileField(
-        upload_to="provider_certificates/",
-        null=True,
-        blank=True,
-        help_text="Upload your business certificate (PDF, JPG, PNG)",
-    )
+    certificate = models.FileField(upload_to='provider_certificates/',
+                                   null=True,
+                                   blank=True,
+                                   help_text="Upload your business certificate (PDF, JPG, PNG)",)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
