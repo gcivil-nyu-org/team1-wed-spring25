@@ -213,17 +213,17 @@ def course_map(request):
 
 def course_data(request):
     """Fetch course data and get lat/lng dynamically"""
-    courses = Course.objects.all().values("course_id","name", "course_desc", "location")
+    courses = Course.objects.all().values(
+        "course_id", "name", "course_desc", "location"
+    )
     course_list = []
 
     for course in courses:
-        lat, lng = get_coordinates(
-            course["location"]
-        )
+        lat, lng = get_coordinates(course["location"])
         if lat and lng:
             course_list.append(
                 {
-                    "course_id":course["course_id"],
+                    "course_id": course["course_id"],
                     "name": course["name"],
                     "course_desc": course["course_desc"],
                     "latitude": lat,
