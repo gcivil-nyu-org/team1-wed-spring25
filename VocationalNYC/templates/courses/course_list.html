@@ -1589,7 +1589,7 @@ margin-top: 1em;
                     <li class="Tabs-Content-Inner">
                         <a
                                 class="header__RootNavAnchor-sc-1geadoy-8 Tabs-Content-Middle"
-                                data-tracking-id=top_nav href=#>
+                                data-tracking-id=top_nav href="{% url 'bookmark_list' %}">
                             Bookmarks
                         </a>
                     </li>
@@ -2201,9 +2201,9 @@ margin-top: 1em;
                                                         <span class="input__Container-sc-1ie8rf0-0 Add-To-Compare-Border">
                                                             <label class="input__Label-sc-1ie8rf0-5 Add-To-Compare-Outer size-small">
                                                                 <input class="Hidden-Input"
-                                                                    name="compare-{{ course.id }}"
+                                                                    name="compare-{{ course.pk }}"
                                                                     type=checkbox
-                                                                    value="{{ course.id }}">
+                                                                    value="{{ course.pk }}">
                                                                 <span class="input__Control-sc-1ie8rf0-1 Add-To-Compare-Check">
                                                                     <svg viewBox="0 0 100 100">
                                                                         <path d="M12.1 52.1l24.4 24.4 53-53" fill=none
@@ -2224,13 +2224,14 @@ margin-top: 1em;
                                                     </div>
 
                                                     <button class="button__ButtonStyled-sc-1vhaw8r-1 BookmarkButton type-primary size-small"
-                                                            data-course-id="{{ course.id }}"
+                                                            data-url="{% url 'add_bookmark' course.pk %}"
+                                                            data-course-id="{{ course.pk }}"
                                                             data-tracking-apply-int-code=false
                                                             data-tracking-campaign=edu_save_cta_click
                                                             data-tracking-id=edu_save_tracking
                                                             data-tracking-placement=edu_save_cta_rankingcard
-                                                            data-tracking-trigger-utag-link-event=true>
-
+                                                            data-tracking-trigger-utag-link-event=true
+                                                            onclick="location.href=this.getAttribute('data-url')">
                                                         Add Bookmark
                                                     </button>
                                                 </div>

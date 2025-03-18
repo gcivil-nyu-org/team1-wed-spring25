@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
 
 from users.models import Provider, Student
+from bookmarks.models import BookmarkList
 
 
 def login(request):
@@ -25,7 +26,10 @@ class CustomSignupView(SignupView):
         # 1. Create the user via the form
         user = form.save(self.request)
 
-        # 2. Log the user in
+        # 2. Create default bookmark list for the new user
+        BookmarkList.objects.create(user=user, name="default")
+
+        # 3. Log the user in
         auth_login(
             self.request,
             user,
