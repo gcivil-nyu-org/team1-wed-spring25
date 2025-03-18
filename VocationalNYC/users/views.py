@@ -9,6 +9,8 @@ from allauth.account.views import SignupView
 from .forms import CustomSignupForm, ProviderVerificationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
+from django.contrib import messages
+from django.db import IntegrityError, transaction
 
 from users.models import Provider, Student
 from bookmarks.models import BookmarkList
@@ -27,7 +29,14 @@ class CustomSignupView(SignupView):
         user = form.save(self.request)
 
         # 2. Create default bookmark list for the new user
-        BookmarkList.objects.create(user=user, name="default")
+        try:
+            with transaction.atomic():
+                BookmarkList.objects.create(user=user, name='default')
+                messages.success(self.request, "Deafault Bookmark list created successfully.")
+        except IntegrityError:
+            messages.error(
+                self.request, "Failed to create default bookmark."
+            )
 
         # 3. Log the user in
         auth_login(
