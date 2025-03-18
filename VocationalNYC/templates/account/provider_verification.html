@@ -64,7 +64,7 @@
             /* Reduced font size */
             padding: 10px 11px 10px 11px;
             border-radius: 12px;/input field/ background: white;
-            border: 2px solid var(--green);
+            border: 2px solid var (--green);
             color: #333;
             margin-bottom: 0.8rem;
             /* Adjusted bottom margin */
@@ -78,16 +78,15 @@
         }
 
         .text-area-form-control {
+            width: 100%;
             font-size: 0.9rem;
-            /* Reduced font size */
             padding: 10px 11px 10px 11px;
-            border-radius: 12px;/input field/ background: white;
+            border-radius: 12px;
+            background: white;
             border: 2px solid var(--green);
             color: #333;
             margin-bottom: 0.8rem;
-            /* Adjusted bottom margin */
-
-            resize: none
+            resize: none;
         }
 
         .text-area-form-control:focus,
@@ -104,7 +103,7 @@
             /* Reduced font size */
             padding: 12px 13px 12px 13px;
             border-radius: 12px;/button/ border: none;
-            color: var(--white);
+            color: var (--white);
             background: linear-gradient(to right, var(--green), var(--sand), var(--peach));
             background-size: 500%;
             box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.15);
@@ -136,44 +135,52 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
             <div class="mb-3">
-                <label for="business_name" class="form-label">Business Name <span style="color: red;">*</span></label>
-                <input type="text" class="form-control" name="business_name" id="business_name"
-                    placeholder="Enter your business name" value="{{ form.business_name.value|default:'' }}" required>
-                {% if form.business_name.errors %}
-                    <div class="text-danger">{{ form.business_name.errors }}</div>
+                <label for="name" class="form-label">Business Name <span style="color: red;">*</span></label>
+                <input type="text" class="form-control {% if form.name.errors %}is-invalid{% endif %}" 
+                    name="name" id="name" placeholder="Enter your business name" 
+                    value="{{ form.name.value|default:'' }}" required>
+                {% if form.name.errors %}
+                    <div class="invalid-feedback">{{ form.name.errors }}</div>
                 {% endif %}
             </div>
 
             <div class="mb-3">
-                <label for="business_address" class="form-label">Business Address <span
-                        style="color: red;">*</span></label>
-                <input type="text" class="form-control" name="business_address" id="business_address"
-                    placeholder="Enter business address" value="{{ form.business_address.value|default:'' }}" required>
-                {% if form.business_address.errors %}
-                    <div class="text-danger">{{ form.business_address.errors }}</div>
+                <label for="address" class="form-label">Business Address <span style="color: red;">*</span></label>
+                <input type="text" class="form-control {% if form.address.errors %}is-invalid{% endif %}" 
+                    name="address" id="address" placeholder="Enter business address" 
+                    value="{{ form.address.value|default:'' }}" required>
+                {% if form.address.errors %}
+                    <div class="invalid-feedback">{{ form.address.errors }}</div>
                 {% endif %}
             </div>
 
             <div class="mb-3">
                 <label for="website" class="form-label">Business Website (Optional)</label>
-                <input type="url" class="form-control" name="website" id="website" placeholder="Enter website URL" value="{{ form.website.value|default:'' }}">
+                <input type="url" class="form-control {% if form.website.errors %}is-invalid{% endif %}" 
+                    name="website" id="website" placeholder="Enter website URL" 
+                    value="{{ form.website.value|default:'' }}">
                 {% if form.website.errors %}
-                    <div class="text-danger">{{ form.website.errors }}</div>
+                    <div class="invalid-feedback">{{ form.website.errors }}</div>
                 {% endif %}
             </div>
 
             <div class="mb-3">
-                <label for="description" class="form-label">Business Description (Optional)</label>
-                <textarea class="form-control" name="description" id="description"
-                    placeholder="Enter business description" rows="1" style="resize: none;">{{ form.description.value|default:'' }}</textarea>
-                {% if form.description.errors %}
-                    <div class="text-danger">{{ form.description.errors }}</div>
-                {% endif %}
+                <label for="provider_desc" class="form-label">Business Description (Optional)</label>
+                <textarea class="text-area-form-control" name="provider_desc" id="provider_desc"
+                    placeholder="Enter business description" rows="1">{{ form.provider_desc.value|default:'' }}</textarea>
             </div>
 
             <script>
-                handleTextarea('description', 4);
+                handleTextarea('provider_desc', 4);
 
                 function handleTextarea(inputId, maxRows) {
                     const textarea = document.getElementById(inputId);
@@ -184,47 +191,51 @@
                         110.3125    // Height for more than 3 rows
                     ];
 
-                    textarea.addEventListener('input', function () {
-                        this.style.height = 'auto'; // Reset to auto to get accurate scrollHeight
-
+                    textarea.addEventListener('input', function() {
+                        this.style.height = 'auto';
                         let calculatedHeight = this.scrollHeight;
-                        let rows = 1; // Default to 1 row
+                        let rows = 1;
 
-                        // Determine the number of rows based on scrollHeight and rowHeights
                         if (calculatedHeight > rowHeights[0] && calculatedHeight <= rowHeights[1]) {
                             rows = 2;
                         } else if (calculatedHeight > rowHeights[1] && calculatedHeight <= rowHeights[2]) {
                             rows = 3;
                         } else if (calculatedHeight > rowHeights[2]) {
-                            rows = 4; // Cap at maxRows
+                            rows = 4;
                         }
 
-                        // Apply the height based on the calculated number of rows
-                        this.style.height = ${ rowHeights[Math.min(rows, maxRows) - 1] } px;
+                        this.style.height = `${rowHeights[Math.min(rows - 1, maxRows - 1)]}px`;
                     });
+
+                    // Trigger the input event on load to handle initial content
+                    textarea.dispatchEvent(new Event('input'));
                 }
             </script>
 
             <div class="mb-3">
                 <label class="form-label">Contact Person <span style="color: red;">*</span></label>
-                <input type="text" class="form-control" name="first_name" id="first_name"
-                    placeholder="Enter your first name" value="{{ form.first_name.value|default:'' }}" required>
-                {% if form.first_name.errors %}
-                    <div class="text-danger">{{ form.first_name.errors }}</div>
+                <input type="text" class="form-control {% if form.contact_firstname.errors %}is-invalid{% endif %}" 
+                    name="contact_firstname" id="contact_firstname" placeholder="Enter your first name" 
+                    value="{{ form.contact_firstname.value|default:'' }}" required>
+                {% if form.contact_firstname.errors %}
+                    <div class="invalid-feedback">{{ form.contact_firstname.errors }}</div>
                 {% endif %}
-                <input type="text" class="form-control" name="last_name" id="last_name"
-                    placeholder="Enter your last name" value="{{ form.last_name.value|default:'' }}" required>
-                {% if form.last_name.errors %}
-                    <div class="text-danger">{{ form.last_name.errors }}</div>
+                
+                <input type="text" class="form-control {% if form.contact_lastname.errors %}is-invalid{% endif %}" 
+                    name="contact_lastname" id="contact_lastname" placeholder="Enter your last name" 
+                    value="{{ form.contact_lastname.value|default:'' }}" required>
+                {% if form.contact_lastname.errors %}
+                    <div class="invalid-feedback">{{ form.contact_lastname.errors }}</div>
                 {% endif %}
             </div>
 
             <div class="mb-3">
-                <label for="contact_number" class="form-label">Contact Number <span style="color: red;">*</span></label>
-                <input type="tel" class="form-control" name="contact_number" id="contact_number"
-                    placeholder="Enter contact number" value="{{ form.contact_number.value|default:'' }}" required>
-                {% if form.contact_number.errors %}
-                    <div class="text-danger">{{ form.contact_number.errors }}</div>
+                <label for="phone_num" class="form-label">Contact Number <span style="color: red;">*</span></label>
+                <input type="tel" class="form-control {% if form.phone_num.errors %}is-invalid{% endif %}" 
+                    name="phone_num" id="phone_num" placeholder="Enter contact number" 
+                    value="{{ form.phone_num.value|default:'' }}" required>
+                {% if form.phone_num.errors %}
+                    <div class="invalid-feedback">{{ form.phone_num.errors }}</div>
                 {% endif %}
             </div>
 

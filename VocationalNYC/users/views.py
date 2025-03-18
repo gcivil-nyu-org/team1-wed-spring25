@@ -91,30 +91,18 @@ def provider_verification_view(request):
     if request.method == "POST":
         form = ProviderVerificationForm(request.POST, request.FILES)
         if form.is_valid():
-            provider = Provider(
-                user=request.user,
-                name=form.cleaned_data['business_name'],
-                address=form.cleaned_data['business_address'],
-                website=form.cleaned_data['website'],
-                provider_desc=form.cleaned_data['description'],
-                contact_firstname=form.cleaned_data['first_name'],
-                contact_lastname=form.cleaned_data['last_name'],
-                phone_num=form.cleaned_data['contact_number'],
-                certificate=form.cleaned_data['certificate'],
-                verification_status=False
-            )
+            provider = form.save(commit=False)
+            provider.user = request.user
+            provider.verification_status = False
             provider.save()
-
             return render(
                 request,
                 "account/provider_verification_success.html",
-                {"provider": provider, "is_pending": True},
+                {"provider": provider}
             )
-        else:
-            return render(request, "account/provider_verification.html", {"form": form})
     else:
         form = ProviderVerificationForm()
-
+    
     return render(request, "account/provider_verification.html", {"form": form})
 
 
