@@ -31,12 +31,12 @@ class CustomSignupView(SignupView):
         # 2. Create default bookmark list for the new user
         try:
             with transaction.atomic():
-                BookmarkList.objects.create(user=user, name='default')
-                messages.success(self.request, "Deafault Bookmark list created successfully.")
+                BookmarkList.objects.create(user=user, name="default")
+                messages.success(
+                    self.request, "Deafault Bookmark list created successfully."
+                )
         except IntegrityError:
-            messages.error(
-                self.request, "Failed to create default bookmark."
-            )
+            messages.error(self.request, "Failed to create default bookmark.")
 
         # 3. Log the user in
         auth_login(

@@ -46,7 +46,9 @@ class CourseListView(generic.ListView):
                     state = course.get("state", "").strip()
                     zip_code = course.get("zip_code", "").strip()
 
-                    location = ", ".join(filter(None, [address1, city, state, zip_code]))
+                    location = ", ".join(
+                        filter(None, [address1, city, state, zip_code])
+                    )
 
                     # Get or create the provider
                     provider, created = Provider.objects.get_or_create(
@@ -62,7 +64,9 @@ class CourseListView(generic.ListView):
 
                     duration = course.get("cost_includes", "").strip()
 
-                    classroom_match = re.search(r"Classroom Hours\s+(\d+\.?\d*)", duration)
+                    classroom_match = re.search(
+                        r"Classroom Hours\s+(\d+\.?\d*)", duration
+                    )
                     classroom_hours = (
                         int(float(classroom_match.group(1))) if classroom_match else 0
                     )
@@ -77,7 +81,9 @@ class CourseListView(generic.ListView):
                         int(float(internship_match.group(1))) if internship_match else 0
                     )
 
-                    practical_match = re.search(r"Practical Hours\s+(\d+\.?\d*)", duration)
+                    practical_match = re.search(
+                        r"Practical Hours\s+(\d+\.?\d*)", duration
+                    )
                     practical_hours = (
                         int(float(practical_match.group(1))) if practical_match else 0
                     )
