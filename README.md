@@ -1,3 +1,7 @@
+main:[![Build Status](https://app.travis-ci.com/gcivil-nyu-org/team1-wed-spring25.svg?token=dZycGtqUCL7r5eEaxTBe&branch=main)](https://app.travis-ci.com/gcivil-nyu-org/team1-wed-spring25) [![Coverage Status](https://coveralls.io/repos/github/gcivil-nyu-org/team1-wed-spring25/badge.svg?branch=main)](https://coveralls.io/github/gcivil-nyu-org/team1-wed-spring25?branch=main)
+
+develop:[![Build Status](https://app.travis-ci.com/gcivil-nyu-org/team1-wed-spring25.svg?token=dZycGtqUCL7r5eEaxTBe&branch=develop)](https://app.travis-ci.com/gcivil-nyu-org/team1-wed-spring25) [![Coverage Status](https://coveralls.io/repos/github/gcivil-nyu-org/team1-wed-spring25/badge.svg?branch=develop)](https://coveralls.io/github/gcivil-nyu-org/team1-wed-spring25?branch=develop)
+
 # VocationalNYC
 
 This project is a Django-based web application configured to run using Docker. The application has been migrated from SQLite to PostgreSQL. This README outlines the steps required for local development, CI/CD testing, and production deployment—including the configuration for Docker Compose and Nginx.
