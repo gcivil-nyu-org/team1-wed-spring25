@@ -23,7 +23,7 @@ if env_file.exists():
     environ.Env.read_env(env_file)
 
 
-DEBUG = env("DEBUG")
+DEBUG = env("DEBUG", default="False")
 
 DJANGO_ENV = env("DJANGO_ENV", default="production")
 
