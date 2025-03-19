@@ -39,11 +39,8 @@ script:
   - docker-compose -f docker-compose.ci.yml exec -T -u root app coverage run --source=vocationalnyc python manage.py test
 
 after_success:
-  # Log in to Docker Hub using your personal access token
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  # Build production images using the production compose file
   - docker-compose -f docker-compose.prod.yml build
-  # Push the production images to Docker Hub
   - docker-compose -f docker-compose.prod.yml push
 
 

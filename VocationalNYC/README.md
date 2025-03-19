@@ -62,13 +62,8 @@ For production, configure environment variables via the deployment platform (e.g
 The `docker-compose.yml` file defines the multi-container environment. An example configuration:
 
 ```yaml
+# This file is used to override the docker-compose.yml file for local development and testing purposes.
 services:
-  redis:
-    image: redis:latest
-    container_name: redis
-    ports:
-      - "6379:6379"
-
   nginx:
     build:
       context: ./nginx
@@ -76,45 +71,34 @@ services:
     container_name: nginx
     ports:
       - "80:80"
-    depends_on:
-      - app
 
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: app
-    depends_on:
-      - redis
+  redis:
+    image: redis:latest
+    container_name: redis
     ports:
-      - "5000:5000"
-    environment:
-      DJANGO_ENV: production
-      DJANGO_SETTINGS_MODULE: vocationalnyc.settings
-      
-```
+      - "6379:6379"
 
-The `docker-compose.override.yml` file overrides the corresponding fields in `docker-compose.yml` in local development environment. An example configuration:
-
-```yaml
-# This file is used to override the docker-compose.yml file for local development and testing purposes.
-services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
     env_file: .env
     environment:
-      # - DJANGO_ENV=websocket_testing # Uncomment this line to test the websocket
+    #   - DJANGO_ENV=development_w/channel # Uncomment this line to test the websocket
       - DJANGO_ENV=development
+    container_name: app
+    depends_on:
+      - redis
+      - nginx
     volumes:
       - .:/vocationalnyc
     ports:
-      - 5000:5000
+      - "5000:5000"
+      
 ```
 
 **Note:**  
-In order to test websocket functionalities you must set `DJANGO_ENV` to `websocket_testing`.
+In order to test websocket functionalities you must set `DJANGO_ENV` to `development_w/websocket`.
 
 **Commands to Build and Run Locally:**
 
@@ -231,19 +215,19 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(DEBUG=(bool, False))
-environ.Env.read_env(BASE_DIR / '.env')
-
-IS_TRAVIS = env.bool("TRAVIS", default=False)
+env_file = BASE_DIR / ".env"
+if env_file.exists():
+    environ.Env.read_env(env_file)
 
 # Database Configuration
-if IS_TRAVIS:
+if DJANGO_ENV == "travis":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
             "NAME": "travis_ci_test",
             "USER": "postgres",
-            "PASSWORD": "",
-            "HOST": "localhost",
+            "PASSWORD": "postgres",
+            "HOST": "db",
             "PORT": 5432,
         }
     }
@@ -251,10 +235,10 @@ elif DJANGO_ENV == "production":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": env("POSTGRES_DB", default="vocationalnyc"),
+            "NAME": env("POSTGRES_DB", default="db"),
             "USER": env("POSTGRES_USER", default="postgres"),
-            "PASSWORD": env("POSTGRES_PASSWORD", default="password"),
-            "HOST": env("POSTGRES_HOST", default="db"),
+            "PASSWORD": env("POSTGRES_PASSWORD", default="postgres"),
+            "HOST": env("POSTGRES_HOST", default="localhost"),
             "PORT": env.int("POSTGRES_PORT", default=5432),
         }
     }
