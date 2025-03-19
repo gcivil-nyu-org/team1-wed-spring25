@@ -18,14 +18,14 @@ env:
 
 before_install:
   - cd VocationalNYC
-  - docker-compose version
+  - docker-compose -f docker-compose.yml version
 
 install:
-  - docker-compose build
+  - docker-compose -f docker-compose.yml build
 
 before_script:
   # Start the containers in detached mode
-  - docker-compose up -d
+  - docker-compose -f docker-compose.yml up -d
   - sleep 10
   # Run migrations and collect static files inside the app container.
   # Use the -T flag to disable pseudo-tty allocation in Travis.
