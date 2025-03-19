@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     env_file: .env
     environment:
-      # - DJANGO_ENV=wobsocket_testing # Uncomment this line to test the websocket
+      # - DJANGO_ENV=websocket_testing # Uncomment this line to test the websocket
       - DJANGO_ENV=development
     volumes:
       - .:/vocationalnyc
