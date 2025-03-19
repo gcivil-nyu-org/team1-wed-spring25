@@ -1,0 +1,54 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [
+      {
+        "name": "app",
+        "image": "kxiao02/vocationalnyc-production-app:latest",
+        "essential": true,
+        "memory": 512,
+        "portMappings": [
+          {
+            "hostPort": 5000,
+            "containerPort": 5000
+          }
+        ],
+        "environment": [
+          {
+            "name": "DJANGO_SETTINGS_MODULE",
+            "value": "vocationalnyc.settings"
+          },
+          {
+            "name": "DJANGO_ENV",
+            "value": "production"
+          }
+        ],
+        "links": [
+          "redis"
+        ]
+      },
+      {
+        "name": "nginx",
+        "image": "kxiao02/vocationalnyc-production-nginx:latest",
+        "essential": true,
+        "memory": 256,
+        "portMappings": [
+          {
+            "hostPort": 80,
+            "containerPort": 80
+          }
+        ]
+      },
+      {
+        "name": "redis",
+        "image": "redis:latest",
+        "essential": true,
+        "memory": 128,
+        "portMappings": [
+          {
+            "hostPort": 6379,
+            "containerPort": 6379
+          }
+        ]
+      }
+    ]
+  }

@@ -113,30 +113,18 @@ TEMPLATES = [
 # WSGI_APPLICATION = "vocationalnyc.wsgi.application"
 ASGI_APPLICATION = "vocationalnyc.asgi.application"
 
-IS_TRAVIS = env.bool("TRAVIS", default=False)
-
 # Redis Configuration
-if IS_TRAVIS:
-    CHANNEL_LAYERS = {
-        "default": {
-            "BACKEND": "channels_redis.core.RedisChannelLayer",
-            "CONFIG": {
-                "hosts": [("localhost", 6379)],
-            },
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
         },
-    }
-else:
-    CHANNEL_LAYERS = {
-        "default": {
-            "BACKEND": "channels_redis.core.RedisChannelLayer",
-            "CONFIG": {
-                "hosts": [("redis", 6379)],
-            },
-        },
-    }
+    },
+}
 
 # Database Configuration
-if IS_TRAVIS:
+if DJANGO_ENV == "travis":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -151,10 +139,10 @@ elif DJANGO_ENV == "production":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": env("POSTGRES_DB", default="travis_ci_test"),
-            "USER": env("POSTGRES_USER", default="postgres"),
-            "PASSWORD": env("POSTGRES_PASSWORD", default=""),
-            "HOST": env("POSTGRES_HOST", default="localhost"),
+            "NAME": env("POSTGRES_DB"),
+            "USER": env("POSTGRES_USER"),
+            "PASSWORD": env("POSTGRES_PASSWORD"),
+            "HOST": env("POSTGRES_HOST"),
             "PORT": env.int("POSTGRES_PORT", default=5432),
         }
     }

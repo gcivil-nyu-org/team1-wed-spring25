@@ -15,33 +15,38 @@ env:
   global:
     - DJANGO_SETTINGS_MODULE=vocationalnyc.settings
     - PYTHONPATH=$PYTHONPATH:$(pwd)/VocationalNYC
+    # DOCKER_USERNAME and DOCKER_PASSWORD should be set as secure environment variables
 
 before_install:
   - cd VocationalNYC
-  - docker-compose -f docker-compose.yml version
+  - docker-compose -f docker-compose.ci.yml version
 
 install:
-  - docker-compose -f docker-compose.yml build
+  - docker-compose -f docker-compose.ci.yml build
 
 before_script:
-  # Start the containers in detached mode
-  - docker-compose -f docker-compose.yml up -d
+  # Start the CI containers in detached mode
+  - docker-compose -f docker-compose.ci.yml up -d
   - sleep 10
-  # Run migrations and collect static files inside the app container.
-  # Use the -T flag to disable pseudo-tty allocation in Travis.
-  # Use the -u flag to run the command as root.
-  - docker-compose exec -T -u root app python manage.py makemigrations --noinput
-  - docker-compose exec -T -u root app python manage.py migrate --noinput
-  - docker-compose exec -T -u root app python manage.py collectstatic --noinput
+  # Run migrations and collect static files inside the app container (as root)
+  - docker-compose -f docker-compose.ci.yml exec -T -u root app python manage.py makemigrations --noinput
+  - docker-compose -f docker-compose.ci.yml exec -T -u root app python manage.py migrate --noinput
+  - docker-compose -f docker-compose.ci.yml exec -T -u root app python manage.py collectstatic --noinput
 
 script:
-  - docker-compose exec -T -u root app python manage.py test
-  - docker-compose exec -T -u root app black --check .
-  - docker-compose exec -T -u root app flake8 .
-  - docker-compose exec -T -u root app coverage run --source=vocationalnyc python manage.py test
+  - docker-compose -f docker-compose.ci.yml exec -T -u root app python manage.py test
+  - docker-compose -f docker-compose.ci.yml exec -T -u root app black --check .
+  - docker-compose -f docker-compose.ci.yml exec -T -u root app flake8 .
+  - docker-compose -f docker-compose.ci.yml exec -T -u root app coverage run --source=vocationalnyc python manage.py test
 
 after_success:
-  - docker-compose exec -T app coveralls
+  # Log in to Docker Hub using your personal access token
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  # Build production images using the production compose file
+  - docker-compose -f docker-compose.prod.yml build
+  # Push the production images to Docker Hub
+  - docker-compose -f docker-compose.prod.yml push
+
 
 deploy:
   provider: elasticbeanstalk
