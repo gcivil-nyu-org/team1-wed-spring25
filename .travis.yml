@@ -36,7 +36,7 @@ script:
   - docker-compose -f docker-compose.ci.yml exec -T -u root app python manage.py test
   - docker-compose -f docker-compose.ci.yml exec -T -u root app black --check .
   - docker-compose -f docker-compose.ci.yml exec -T -u root app flake8 .
-  - docker-compose -f docker-compose.ci.yml exec -T -u root app coverage run --source=vocationalnyc python manage.py test
+  - docker-compose -f docker-compose.ci.yml exec -T -u root app coverage run --source=vocationalnyc manage.py test
 
 after_success:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
