@@ -130,7 +130,7 @@ if DJANGO_ENV == "travis":
             "ENGINE": "django.db.backends.postgresql",
             "NAME": "travis_ci_test",
             "USER": "postgres",
-            "PASSWORD": "",
+            "PASSWORD": "postgres",
             "HOST": "db",
             "PORT": 5432,
         }
@@ -139,10 +139,10 @@ elif DJANGO_ENV == "production":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": env("POSTGRES_DB", default=""),
-            "USER": env("POSTGRES_USER", default=""),
-            "PASSWORD": env("POSTGRES_PASSWORD", default=""),
-            "HOST": env("POSTGRES_HOST", default=""),
+            "NAME": env("POSTGRES_DB", default="db"),
+            "USER": env("POSTGRES_USER", default="postgres"),
+            "PASSWORD": env("POSTGRES_PASSWORD", default="postgres"),
+            "HOST": env("POSTGRES_HOST", default="localhost"),
             "PORT": env.int("POSTGRES_PORT", default=5432),
         }
     }
