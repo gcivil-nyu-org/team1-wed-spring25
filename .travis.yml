@@ -17,6 +17,7 @@ env:
     - PYTHONPATH=$PYTHONPATH:$(pwd)/VocationalNYC
 
 before_install:
+  - cd VocationalNYC
   - docker-compose version
 
 install:
