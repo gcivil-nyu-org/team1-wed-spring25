@@ -139,10 +139,10 @@ elif DJANGO_ENV == "production":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": env("POSTGRES_DB"),
-            "USER": env("POSTGRES_USER"),
-            "PASSWORD": env("POSTGRES_PASSWORD"),
-            "HOST": env("POSTGRES_HOST"),
+            "NAME": env("POSTGRES_DB", default=""),
+            "USER": env("POSTGRES_USER", default=""),
+            "PASSWORD": env("POSTGRES_PASSWORD", default=""),
+            "HOST": env("POSTGRES_HOST", default=""),
             "PORT": env.int("POSTGRES_PORT", default=5432),
         }
     }
