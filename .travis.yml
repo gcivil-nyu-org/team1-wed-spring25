@@ -15,7 +15,6 @@ env:
   global:
     - DJANGO_SETTINGS_MODULE=vocationalnyc.settings
     - PYTHONPATH=$PYTHONPATH:$(pwd)/VocationalNYC
-    # DOCKER_USERNAME and DOCKER_PASSWORD should be set as secure environment variables
 
 before_install:
   - cd VocationalNYC

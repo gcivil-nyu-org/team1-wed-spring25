@@ -1,12 +1,12 @@
 services:
   db:
     image: postgres:13
-    container_name: ci-postgres
+    container_name: db
     environment:
       POSTGRES_DB: travis_ci_test
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ""
-      POSTGRES_HOST: localhost
+      POSTGRES_HOST: db
     ports:
       - "5432:5432"
 

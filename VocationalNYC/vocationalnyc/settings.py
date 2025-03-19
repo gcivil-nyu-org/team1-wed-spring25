@@ -131,7 +131,7 @@ if DJANGO_ENV == "travis":
             "NAME": "travis_ci_test",
             "USER": "postgres",
             "PASSWORD": "",
-            "HOST": "localhost",
+            "HOST": "db",
             "PORT": 5432,
         }
     }
