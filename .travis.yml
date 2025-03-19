@@ -29,15 +29,16 @@ before_script:
   - sleep 10
   # Run migrations and collect static files inside the app container.
   # Use the -T flag to disable pseudo-tty allocation in Travis.
-  - docker-compose exec -T app python manage.py makemigrations --noinput
-  - docker-compose exec -T app python manage.py migrate --noinput
-  - docker-compose exec -T app python manage.py collectstatic --noinput
+  # Use the -u flag to run the command as root.
+  - docker-compose exec -T -u root app python manage.py makemigrations --noinput
+  - docker-compose exec -T -u root app python manage.py migrate --noinput
+  - docker-compose exec -T -u root app python manage.py collectstatic --noinput
 
 script:
-  - docker-compose exec -T app python manage.py test
-  - docker-compose exec -T app black --check .
-  - docker-compose exec -T app flake8 .
-  - docker-compose exec -T app coverage run --source=vocationalnyc python manage.py test
+  - docker-compose exec -T -u root app python manage.py test
+  - docker-compose exec -T -u root app black --check .
+  - docker-compose exec -T -u root app flake8 .
+  - docker-compose exec -T -u root app coverage run --source=vocationalnyc python manage.py test
 
 after_success:
   - docker-compose exec -T app coveralls
