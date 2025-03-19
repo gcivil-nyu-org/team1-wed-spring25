@@ -18,9 +18,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Initialize environment variables
 env = environ.Env(DEBUG=(bool, False))
-environ.Env.read_env(BASE_DIR / ".env")
+env_file = BASE_DIR / ".env"
+if env_file.exists():
+    environ.Env.read_env(env_file)
 
-DEBUG = env("DEBUG")
+
+DEBUG = env("DEBUG", default="False")
 
 DJANGO_ENV = env("DJANGO_ENV", default="production")
 
@@ -33,6 +36,7 @@ ALLOWED_HOSTS = env.list(
             "127.0.0.1",
             "localhost",
             "vocationalnyc-env.eba-uurzafst.us-east-1.elasticbeanstalk.com",
+            "vocationalnyc-test.us-east-1.elasticbeanstalk.com",
         ]
         if DEBUG
         else []
@@ -109,68 +113,36 @@ TEMPLATES = [
 # WSGI_APPLICATION = "vocationalnyc.wsgi.application"
 ASGI_APPLICATION = "vocationalnyc.asgi.application"
 
-IS_TRAVIS = env.bool("TRAVIS", default=False)
-
 # Redis Configuration
-if IS_TRAVIS:
-    CHANNEL_LAYERS = {
-        "default": {
-            "BACKEND": "channels_redis.core.RedisChannelLayer",
-            "CONFIG": {
-                "hosts": [("localhost", 6379)],
-            },
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
         },
-    }
-elif DJANGO_ENV == "production":
-    CHANNEL_LAYERS = {
-        "default": {
-            "BACKEND": "channels_redis.core.RedisChannelLayer",
-            "CONFIG": {
-                "hosts": [env("REDIS_URL")],
-            },
-        },
-    }
-else:
-    CHANNEL_LAYERS = {
-        "default": {
-            "BACKEND": "channels_redis.core.RedisChannelLayer",
-            "CONFIG": {
-                "hosts": [("redis", 6379)],
-            },
-        },
-    }
+    },
+}
 
 # Database Configuration
-if IS_TRAVIS:
+if DJANGO_ENV == "travis":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
             "NAME": "travis_ci_test",
             "USER": "postgres",
-            "PASSWORD": "",
-            "HOST": "localhost",
+            "PASSWORD": "postgres",
+            "HOST": "db",
             "PORT": 5432,
         }
     }
-# elif DJANGO_ENV == "postgres-test":
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.postgresql",
-#             "NAME": env("POSTGRES_DB", default="vocationalnyc_local"),
-#             "USER": env("POSTGRES_USER", default="postgres"),
-#             "PASSWORD": env("POSTGRES_PASSWORD", default=""),
-#             "HOST": env("POSTGRES_HOST", default="localhost"),
-#             "PORT": env.int("POSTGRES_PORT", default=5432),
-#         }
-#     }
 elif DJANGO_ENV == "production":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": env("POSTGRES_DB"),
-            "USER": env("POSTGRES_USER"),
-            "PASSWORD": env("POSTGRES_PASSWORD"),
-            "HOST": env("POSTGRES_HOST", default="db"),
+            "NAME": env("POSTGRES_DB", default="db"),
+            "USER": env("POSTGRES_USER", default="postgres"),
+            "PASSWORD": env("POSTGRES_PASSWORD", default="postgres"),
+            "HOST": env("POSTGRES_HOST", default="localhost"),
             "PORT": env.int("POSTGRES_PORT", default=5432),
         }
     }

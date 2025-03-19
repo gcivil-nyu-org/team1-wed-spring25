@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:13
+    container_name: db
+    environment:
+      POSTGRES_DB: travis_ci_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_HOST: db
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    depends_on:
+      - db
+      - redis
+      - nginx
+    ports:
+      - 5000:5000
+    environment:
+      DJANGO_ENV: travis
