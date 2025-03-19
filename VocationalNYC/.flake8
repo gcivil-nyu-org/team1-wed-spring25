@@ -1,4 +1,0 @@
-[flake8]
-max-line-length = 88
-exclude = .venv,build,dist,docs,*.egg-info .git .tox .mypy_cache .pytest_cache .vscode .vscode-test .github .github-actions .circleci .gitlab-ci.yml .gitignore .gitattributes .gitmodules .gitkeep .gitpod.Dockerfile .gitpod.yml .gitpod.docker .gitpod.dockerfile .gitpod.docker-compose .gitpod.docker-compose.yml 
-ignore = E203, E501, W503
