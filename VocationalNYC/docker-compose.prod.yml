@@ -1,5 +1,7 @@
 services:
   redis:
+    build:
+      context: .
     image: kxiao02/vocationalnyc-production-redis:latest
     container_name: redis
     ports:
