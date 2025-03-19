@@ -1,8 +1,8 @@
 # This file is used to override the docker-compose.yml file for local development and testing purposes.
 services:
   app:
-#     environment:
-#       # - DJANGO_ENV=websocket_testing # Uncomment this line to test the websocket
+    # environment:
+    #   - DJANGO_ENV=websocket_testing # Uncomment this line to test the websocket
 #       - DJANGO_ENV=development
     volumes:
       - .:/vocationalnyc
