@@ -25,7 +25,7 @@ This project is a Django-based web application configured to run using Docker. T
 
 ## Environment Variables
 
-The project uses environment variables to configure database settings, secret keys, and other configurations. An example `.env` file:
+The project uses environment variables to configure database settings, secret keys, and other configurations. An example `.env` file under `./VocationalNYC`:
 
 ```dotenv
 # .env file for local development and CI/CD
@@ -67,6 +67,7 @@ For production, environment variables are set via deployment platform.
    If needed, run migrations inside the running container:
 
    ```bash
+   docker-compose exec app python manage.py makemigrations
    docker-compose exec app python manage.py migrate
    ```
 
@@ -158,6 +159,9 @@ else:
 
 - **Volume Persistence:**  
   PostgreSQL data is persisted via the named volume `postgres_data`. On Linux, this is typically stored at `/var/lib/docker/volumes/postgres_data/_data`.
+
+- **Error `app-1    | exec /entrypoint.sh: no such file or directory`**:
+  Go to `entrypoint.sh` and switch from CRLF to LF.
 
 
 ### Reset Database
