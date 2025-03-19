@@ -110,7 +110,7 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = "vocationalnyc.wsgi.application"
+WSGI_APPLICATION = "vocationalnyc.wsgi.application"
 ASGI_APPLICATION = "vocationalnyc.asgi.application"
 
 # Redis Configuration
