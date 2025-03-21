@@ -6,7 +6,7 @@
     <h1>NYC Courses Map</h1>
     <div id="map" style="height: 600px; width: 100%;"></div>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBf9qUyF04HrgQ9iX_TGV35nGxbb9omF1Y"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={google_maps_api_key}"></script>
     <script>
         function initMap() {
             var nyc = {lat: 40.7128, lng: -74.0060};  // Default center in NYC
@@ -15,7 +15,14 @@
                 center: nyc
             });
 
-            fetch("{% url 'course_data' %}")
+            const urlParams = new URLSearchParams(window.location.search);
+            const courseId = urlParams.get("course_id");
+            let fetchUrl = "{% url 'course_data' %}";
+            if (courseId) {
+            fetchUrl += `?course_id=${courseId}`;
+            }
+
+            fetch(fetchUrl)
                 .then(response => response.json())
                 .then(data => {
                     data.forEach(course => {
@@ -39,6 +46,8 @@
                             marker.addListener('click', function() {
                                 infowindow.open(map, marker);
                             });
+
+                            map.setCenter({lat: course.latitude, lng: course.longitude});
                         }
                     });
                 });
