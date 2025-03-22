@@ -2,43 +2,48 @@ dist: focal
 language: python
 python:
   - "3.12"
-cache: pip
+
+services:
+  - docker
 
 branches:
   only:
     - develop
     - main
 
-services:
-  - postgresql
-  - redis-server
-
 env:
   global:
     - DJANGO_SETTINGS_MODULE=vocationalnyc.settings
     - PYTHONPATH=$PYTHONPATH:$(pwd)/VocationalNYC
 
+before_install:
+  - cd VocationalNYC
+  - docker-compose -f docker-compose.ci.yml version
+
 install:
-  - pip install -r VocationalNYC/requirements.txt
-  - pip install black flake8 coverage coveralls
+  - docker-compose -f docker-compose.ci.yml build
 
 before_script:
-  - psql -c 'create database travis_ci_test;' -U postgres
-  - echo "Database setting:"
-  - python -c "import os; os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'VocationalNYC.vocationalnyc.settings'); import django; django.setup(); from django.conf import settings; print(settings.DATABASES)"
-  - python VocationalNYC/manage.py makemigrations
-  - python VocationalNYC/manage.py migrate
-  - python VocationalNYC/manage.py collectstatic --noinput
+  # Start the CI containers in detached mode
+  - docker-compose -f docker-compose.ci.yml up -d
+  - sleep 10
+  # Run migrations and collect static files inside the app container (as root)
+  - docker-compose -f docker-compose.ci.yml exec -T -u root app python manage.py makemigrations --noinput
+  - docker-compose -f docker-compose.ci.yml exec -T -u root app python manage.py migrate --noinput
+  - docker-compose -f docker-compose.ci.yml exec -T -u root app python manage.py collectstatic --noinput
 
 script:
-  - cd VocationalNYC
-  - python manage.py test
-  - black --check .
-  - flake8
-  - coverage run --source=vocationalnyc manage.py test
+  - docker-compose -f docker-compose.ci.yml exec -T -u root app python manage.py test
+  - docker-compose -f docker-compose.ci.yml exec -T -u root app black --check .
+  - docker-compose -f docker-compose.ci.yml exec -T -u root app flake8 .
+  - docker-compose -f docker-compose.ci.yml exec -T -u root app coverage run --source=vocationalnyc manage.py test
 
 after_success:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker-compose -f docker-compose.prod.yml build
+  - docker-compose -f docker-compose.prod.yml push
   - coveralls
+
 
 deploy:
   provider: elasticbeanstalk

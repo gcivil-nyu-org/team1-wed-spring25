@@ -13,6 +13,9 @@ class BookmarkList(models.Model):
     def __str__(self):
         return f"bookmark list: {self.name}"
 
+    class Meta:
+        unique_together = ("user", "name")
+
 
 class Bookmark(models.Model):
     bookmark_list = models.ForeignKey(
@@ -25,3 +28,6 @@ class Bookmark(models.Model):
 
     def __str__(self):
         return f"Course {self.course} in bookmark list {self.bookmark_list.list_id}"
+
+    class Meta:
+        unique_together = ("bookmark_list", "course")

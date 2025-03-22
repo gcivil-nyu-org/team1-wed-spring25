@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import generic
 from django.db.models import Q, Avg, Count
+from django.core.cache import cache
 from review.models import Review
 
 from users.models import Provider
@@ -25,77 +26,85 @@ class CourseListView(generic.ListView):
     ordering = ["-course_id"]
 
     def get_queryset(self):
-        # Only update from the external API if no courses exist.
+        # update from the API once a day
         API_URL = "https://data.cityofnewyork.us/resource/fgq8-am2v.json"
-        try:
-            response = requests.get(API_URL, timeout=10)
-            response.raise_for_status()
-            courses_data = response.json()
+        if not cache.get("courses_last_updated"):
+            try:
+                response = requests.get(API_URL, timeout=10)
+                response.raise_for_status()
+                courses_data = response.json()
 
-            for course in courses_data:
-                course_name = course.get("course_name", "").strip()
-                provider_name = course.get("organization_name", "").strip()
+                for course in courses_data:
+                    course_name = course.get("course_name", "").strip()
+                    provider_name = course.get("organization_name", "").strip()
 
-                if not course_name or not provider_name:
-                    continue
+                    if not course_name or not provider_name:
+                        continue
 
-                address1 = course.get("address1", "").strip()
-                city = course.get("city", "").strip()
-                state = course.get("state", "").strip()
-                zip_code = course.get("zip_code", "").strip()
+                    address1 = course.get("address1", "").strip()
+                    city = course.get("city", "").strip()
+                    state = course.get("state", "").strip()
+                    zip_code = course.get("zip_code", "").strip()
 
-                location = ", ".join(filter(None, [address1, city, state, zip_code]))
+                    location = ", ".join(
+                        filter(None, [address1, city, state, zip_code])
+                    )
 
-                # Get or create the provider
-                provider, created = Provider.objects.get_or_create(
-                    name=provider_name,
-                    defaults={
-                        "phone_num": course.get("phone1", "0000000000"),
-                        "address": location,
-                        "open_time": course.get("open_time", ""),
-                        "provider_desc": course.get("provider_description", ""),
-                        "website": course.get("website", ""),
-                    },
-                )
+                    # Get or create the provider
+                    provider, created = Provider.objects.get_or_create(
+                        name=provider_name,
+                        defaults={
+                            "phone_num": course.get("phone1", "0000000000"),
+                            "address": location,
+                            "open_time": course.get("open_time", ""),
+                            "provider_desc": course.get("provider_description", ""),
+                            "website": course.get("website", ""),
+                        },
+                    )
 
-                duration = course.get("cost_includes", "").strip()
+                    duration = course.get("cost_includes", "").strip()
 
-                classroom_match = re.search(r"Classroom Hours\s+(\d+\.?\d*)", duration)
-                classroom_hours = (
-                    int(float(classroom_match.group(1))) if classroom_match else 0
-                )
+                    classroom_match = re.search(
+                        r"Classroom Hours\s+(\d+\.?\d*)", duration
+                    )
+                    classroom_hours = (
+                        int(float(classroom_match.group(1))) if classroom_match else 0
+                    )
 
-                lab_match = re.search(r"Lab Hours\s+(\d+\.?\d*)", duration)
-                lab_hours = int(float(lab_match.group(1))) if lab_match else 0
+                    lab_match = re.search(r"Lab Hours\s+(\d+\.?\d*)", duration)
+                    lab_hours = int(float(lab_match.group(1))) if lab_match else 0
 
-                internship_match = re.search(
-                    r"Internship Hours\s+(\d+\.?\d*)", duration
-                )
-                internship_hours = (
-                    int(float(internship_match.group(1))) if internship_match else 0
-                )
+                    internship_match = re.search(
+                        r"Internship Hours\s+(\d+\.?\d*)", duration
+                    )
+                    internship_hours = (
+                        int(float(internship_match.group(1))) if internship_match else 0
+                    )
 
-                practical_match = re.search(r"Practical Hours\s+(\d+\.?\d*)", duration)
-                practical_hours = (
-                    int(float(practical_match.group(1))) if practical_match else 0
-                )
+                    practical_match = re.search(
+                        r"Practical Hours\s+(\d+\.?\d*)", duration
+                    )
+                    practical_hours = (
+                        int(float(practical_match.group(1))) if practical_match else 0
+                    )
 
-                course_defaults = {
-                    "keywords": course.get("keywords", ""),
-                    "course_desc": course.get("coursedescription", ""),
-                    "cost": course.get("cost_total", 0),
-                    "location": location,
-                    "classroom_hours": classroom_hours,
-                    "lab_hours": lab_hours,
-                    "internship_hours": internship_hours,
-                    "practical_hours": practical_hours,
-                }
-                new_course, created = Course.objects.update_or_create(
-                    name=course_name, provider=provider, defaults=course_defaults
-                )
+                    course_defaults = {
+                        "keywords": course.get("keywords", ""),
+                        "course_desc": course.get("coursedescription", ""),
+                        "cost": course.get("cost_total", 0),
+                        "location": location,
+                        "classroom_hours": classroom_hours,
+                        "lab_hours": lab_hours,
+                        "internship_hours": internship_hours,
+                        "practical_hours": practical_hours,
+                    }
+                    Course.objects.update_or_create(
+                        name=course_name, provider=provider, defaults=course_defaults
+                    )
+                cache.set("courses_last_updated", True, 86400)
 
-        except requests.RequestException as e:
-            logger.error("External API call failed: %s", e)
+            except requests.RequestException as e:
+                logger.error("External API call failed: %s", e)
 
         # return Course.objects.all()
         courses = Course.objects.all().annotate(
@@ -204,16 +213,17 @@ def course_map(request):
 
 def course_data(request):
     """Fetch course data and get lat/lng dynamically"""
-    courses = Course.objects.all().values("name", "course_desc", "location")
+    courses = Course.objects.all().values(
+        "course_id", "name", "course_desc", "location"
+    )
     course_list = []
 
     for course in courses:
-        lat, lng = get_coordinates(
-            course["location"]
-        )  # Convert location to coordinates
+        lat, lng = get_coordinates(course["location"])
         if lat and lng:
             course_list.append(
                 {
+                    "course_id": course["course_id"],
                     "name": course["name"],
                     "course_desc": course["course_desc"],
                     "latitude": lat,

@@ -26,8 +26,14 @@
                                 title: course.name
                             });
 
+                            var courseDetailUrl = `/courses/${course.course_id}/`;
+
+                            // var infowindow = new google.maps.InfoWindow({
+                            //     content: `<b>${course.name}</b><br>${course.course_desc}`
+                            // });
+
                             var infowindow = new google.maps.InfoWindow({
-                                content: `<b>${course.name}</b><br>${course.course_desc}`
+                                content: `<a href="${courseDetailUrl}" target="_blank" style="font-weight: bold; text-decoration: none;">${course.name}</a>`
                             });
 
                             marker.addListener('click', function() {
