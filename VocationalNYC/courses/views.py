@@ -191,7 +191,7 @@ def search_result(request):
     return render(request, "courses/course_list.html", context)
 
 
-GOOGLE_MAPS_API_KEY = "google_maps_api_key"  # Replace with your actual Google Maps API key
+GOOGLE_MAPS_API_KEY = "AIzaSyD98-tguK4_siKaGEhazxzEH6WpccCzOu0"
 
 
 def get_coordinates(address):
@@ -219,7 +219,6 @@ def course_data(request):
 
     course_id = request.GET.get("course_id")
     course_list = []
-
 
     if course_id and course_id.isdigit():
         courses = courses.filter(course_id=course_id)
