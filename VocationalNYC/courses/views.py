@@ -137,8 +137,7 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
         context["reviews"] = reviews
         return context
 
-
-def search_result(request):
+def filterCourses(request):
     query = request.GET.get("query", "").strip()
 
     min_cost = request.GET.get("min_cost", None)
@@ -187,7 +186,10 @@ def search_result(request):
         "location": location,
         "min_classroom_hours": min_classroom_hours,
     }
+    return context
 
+def search_result(request):
+    context = filterCourses(request)
     return render(request, "courses/course_list.html", context)
 
 
@@ -232,3 +234,22 @@ def course_data(request):
             )
 
     return JsonResponse(course_list, safe=False)
+
+
+
+
+def sort_by(request):
+    
+    context = filterCourses(request)
+    courses = context['courses']
+    sort = request.GET.get('sort', 'blank')
+    order = request.GET.get('order', 'asc')
+    
+    if sort != "blank":
+        if order == 'desc':
+            sort = f'-{sort}'
+        courses = courses.order_by(sort)
+    
+    
+    # Render full HTML for the page (not just partial updates)
+    return render(request, 'courses/courses_section.html', {'courses':courses})

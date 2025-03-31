@@ -304,37 +304,67 @@
                                 <div class="Controls-Text">
                                     Sort by: &nbsp;
                                 </div>
-                                <select>
-                                    <option selected value=??asc>AAA
-                                    <option value=??dsc>BBB
-                                    <option value=??asc>CCC
-                                    <option value=??dsc>DDD
-                                    <option value=??asc>EEE
-                                    <option value=??dsc>FFF
-                                    <option value=??asc>GGG
-                                    <option value=??dsc>HHH
-                                </select>
+                                <select aria-labelledby=_atlas-search_sort-label
+                                        class="filter-bar__SelectStyled-sc-1glfoa-11" id="SortByDropDown">
+                                    <option selected value=blank>...</option>
+                                    <option value=name>Name</option>
+                                    <option value=cost>Cost</option>
+                                    <option value=classroom_hours>Classroom Hours</option>
+                                    <option value=avg_rating>Rating</option>
+                                </select></div>
+                                <div class="toggle-container" >
+                                    <span class="arrow arrow-up"></span>
+                                  </div>
+                                <script>
+                                    const dropdown = document.getElementById('SortByDropDown')
+                                    dropdown.addEventListener('change',sortby);
+                                    document.querySelector('.toggle-container').addEventListener('click', toggleArrow);
+                                    function toggleArrow() {
+                                        const arrow = document.querySelector('.arrow');
+                                        // Check if the arrow has the 'up' class
+                                        if (arrow.classList.contains('arrow-up')) {
+                                            // Arrow is currently pointing up, toggle it to down
+                                            arrow.classList.remove('arrow-up');
+                                            arrow.classList.add('arrow-down');
+                                            sortby();
+                                        } else {
+                                            // Arrow is currently pointing down, toggle it to up
+                                            arrow.classList.remove('arrow-down');
+                                            arrow.classList.add('arrow-up');
+                                            sortby();
 
-                                &nbsp;
-
-                                <div class="Controls-Text">
-                                    Show: &nbsp;
-                                </div>
-                                <select id="itemsPerPage">
-                                    <option selected value=10>10
-                                    <option value=20>20
-                                    <option value=25>25
-                                    <option value=50>50
-                                    <option value=100>100
-                                    <option value=150>150
-                                    <option value=200>200
-                                </select>
-
-
-
-
-                            </div>
-
+                                        }
+                                        
+                                    }
+                                    function sortby(){
+                                        const sort = document.getElementById("SortByDropDown").value;
+                                        const arrow = document.querySelector('.arrow')
+                                        const order = arrow.classList.contains('arrow-up') ? "asc" : "desc";
+                                        const currentUrl = new URL(window.location.href);
+                                        const queryParams = new URLSearchParams(window.location.search);
+                                        queryParams.set("order", order);
+                                        queryParams.set("sort", sort);
+                                        console.log(`Search by ${queryParams.toString()}`);
+                                        fetch(`/courses/sort/?${queryParams.toString()}`, {
+                                            method: 'GET',
+                                            headers: {
+                                                "X-Requested-With": "XMLHttpRequest", // Required for Django to recognize AJAX requests
+                                            },
+                                        })
+                                            .then(response => response.text()) // Parse response as text (HTML)
+                                            .then(html => {
+                                                document.getElementById("All-Course-Container").innerHTML = html;
+                                                initializeListeners(); // Reinitialize event listeners after update
+                                            })
+                                            .catch(error => console.error('Error:', error)); // Handle errors
+                                    }
+                                    function initializeListeners() {
+                                        document.querySelector('.toggle-container').addEventListener('click', toggleArrow);
+                                        const dropdown = document.getElementById("SortByDropDown");
+                                        dropdown.addEventListener("change", sortby);
+                                    }
+                                    document.addEventListener("DOMContentLoaded", initializeListeners);
+                                </script>
                         </div>
                     </div>
                 </div>
@@ -625,7 +655,7 @@
                                 </form>
 
                                 <!--courses-->
-                                <div class="All-Course-Container">
+                                <div class="All-Course-Container" id ="All-Course-Container">
                                     <ol class="CourseList">
                                         {% for course in courses %}
                                         <li class="CourseCard" style="animation-delay:0ms">

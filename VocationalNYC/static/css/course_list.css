@@ -629,6 +629,30 @@ margin-top: 0rem;  /* Negative margin to counteract padding */
             text-transform: uppercase;
             white-space: nowrap
         }
+        .Toggle-container{
+            position: relative;
+            
+
+            /* padding-left: 1rem; */
+        }
+        .arrow{
+            position: absolute;
+
+        }
+        .arrow-down {
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid black;
+        }
+        .arrow-up {
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid black;
+        }
 
         html {
             scroll-behavior: auto !important
