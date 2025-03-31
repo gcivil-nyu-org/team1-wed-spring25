@@ -3,56 +3,83 @@
 {% block title %}NYC Courses Map{% endblock %}
 
 {% block content %}
-    <h1>NYC Courses Map</h1>
-    <div id="map" style="height: 600px; width: 100%;"></div>
+<h1>NYC Courses Map</h1>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD98-tguK4_siKaGEhazxzEH6WpccCzOu0"></script>
-    <script>
-        function initMap() {
-            var nyc = {lat: 40.7128, lng: -74.0060};  // Default center in NYC
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 12,
-                center: nyc
-            });
+<!-- Filter Controls -->
+<form id="filter-form" style="margin-bottom: 20px;">
+    <label>Min Cost: <input type="number" name="min_cost"></label>
+    <label>Max Cost: <input type="number" name="max_cost"></label>
+    <label>Min Rating: <input type="number" step="0.1" name="min_rating" min="0" max="5"></label>
+    <label>Min Classroom Hours: <input type="number" name="min_hours"></label>
+    <label>Provider: <input type="text" name="provider"></label>
+    <label>Location: <input type="text" name="location"></label>
+    <button type="submit">Apply Filters</button>
+</form>
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const courseId = urlParams.get("course_id");
-            let fetchUrl = "{% url 'course_data' %}";
-            if (courseId) {
-            fetchUrl += `?course_id=${courseId}`;
-            }
+<div id="map" style="height: 600px; width: 100%;"></div>
 
-            fetch(fetchUrl)
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(course => {
-                        if (course.latitude && course.longitude) {
-                            var marker = new google.maps.Marker({
-                                position: {lat: course.latitude, lng: course.longitude},
-                                map: map,
-                                title: course.name
-                            });
+<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}"></script>
+<script>
+    let map;
+    let markers = [];
 
-                            var courseDetailUrl = `/courses/${course.course_id}/`;
+    function initMap() {
+        const nyc = { lat: 40.7128, lng: -74.0060 };
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 12,
+            center: nyc
+        });
 
-                            // var infowindow = new google.maps.InfoWindow({
-                            //     content: `<b>${course.name}</b><br>${course.course_desc}`
-                            // });
+        loadCourses();  // Load initially
+    }
 
-                            var infowindow = new google.maps.InfoWindow({
-                                content: `<a href="${courseDetailUrl}" target="_blank" style="font-weight: bold; text-decoration: none;">${course.name}</a>`
-                            });
+    function loadCourses(params = {}) {
+        // Clear existing markers
+        markers.forEach(marker => marker.setMap(null));
+        markers = [];
 
-                            marker.addListener('click', function() {
-                                infowindow.open(map, marker);
-                            });
+        const url = new URL("{% url 'course_data' %}", window.location.origin);
+        Object.entries(params).forEach(([key, value]) => {
+            if (value) url.searchParams.append(key, value);
+        });
 
-                            map.setCenter({lat: course.latitude, lng: course.longitude});
-                        }
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(course => {
+                    const marker = new google.maps.Marker({
+                        position: { lat: course.latitude, lng: course.longitude },
+                        map: map,
+                        title: course.name
                     });
-                });
-        }
 
-        window.onload = initMap;
-    </script>
+                    const infowindow = new google.maps.InfoWindow({
+                        content: `<a href="/courses/${course.course_id}/" target="_blank" style="font-weight: bold; text-decoration: none;">${course.name}</a>`
+                    });
+
+                    marker.addListener("click", () => {
+                        infowindow.open(map, marker);
+                    });
+
+                    markers.push(marker);
+                });
+
+                if (data.length) {
+                    map.setCenter({ lat: data[0].latitude, lng: data[0].longitude });
+                }
+            });
+    }
+
+    document.getElementById("filter-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const filters = {};
+        for (const [key, value] of formData.entries()) {
+            filters[key] = value.trim();
+        }
+        loadCourses(filters);
+    });
+
+    window.onload = initMap;
+</script>
 {% endblock %}
