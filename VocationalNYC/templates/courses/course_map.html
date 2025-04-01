@@ -3,83 +3,100 @@
 {% block title %}NYC Courses Map{% endblock %}
 
 {% block content %}
-<h1>NYC Courses Map</h1>
+    <h1>NYC Courses Map</h1>
 
-<!-- Filter Controls -->
-<form id="filter-form" style="margin-bottom: 20px;">
-    <label>Min Cost: <input type="number" name="min_cost"></label>
-    <label>Max Cost: <input type="number" name="max_cost"></label>
-    <label>Min Rating: <input type="number" step="0.1" name="min_rating" min="0" max="5"></label>
-    <label>Min Classroom Hours: <input type="number" name="min_hours"></label>
-    <label>Provider: <input type="text" name="provider"></label>
-    <label>Location: <input type="text" name="location"></label>
-    <button type="submit">Apply Filters</button>
-</form>
 
-<div id="map" style="height: 600px; width: 100%;"></div>
+    <form id="filter-form" style="margin-bottom: 20px;">
+        <label>Min Cost: <input type="number" name="min_cost"></label>
+        <label>Max Cost: <input type="number" name="max_cost"></label>
+        <label>Min Rating: <input type="number" step="0.1" name="min_rating" min="0" max="5"></label>
+        <label>Min Classroom Hours: <input type="number" name="min_hours"></label>
+        <label>Provider: <input type="text" name="provider"></label>
+        <label>Location: <input type="text" name="location"></label>
+        <button type="submit">Apply Filters</button>
+    </form>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCawC4Ts27j8dsyhx_sw8_EDCCA1UOT5G0"></script>
-<script>
-    let map;
-    let markers = [];
 
-    function initMap() {
-        const nyc = { lat: 40.7128, lng: -74.0060 };
-        map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 12,
-            center: nyc
-        });
+    <div id="map" style="height: 600px; width: 100%;"></div>
 
-        loadCourses();  // Load initially
-    }
 
-    function loadCourses(params = {}) {
-        // Clear existing markers
-        markers.forEach(marker => marker.setMap(null));
-        markers = [];
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCawC4Ts27j8dsyhx_sw8_EDCCA1UOT5G0"></script>
+    <script>
+        let map;
+        let markers = [];
 
-        const url = new URL("{% url 'course_data' %}", window.location.origin);
-        Object.entries(params).forEach(([key, value]) => {
-            if (value) url.searchParams.append(key, value);
-        });
-
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(course => {
-                    const marker = new google.maps.Marker({
-                        position: { lat: course.latitude, lng: course.longitude },
-                        map: map,
-                        title: course.name
-                    });
-
-                    const infowindow = new google.maps.InfoWindow({
-                        content: `<a href="/courses/${course.course_id}/" target="_blank" style="font-weight: bold; text-decoration: none;">${course.name}</a>`
-                    });
-
-                    marker.addListener("click", () => {
-                        infowindow.open(map, marker);
-                    });
-
-                    markers.push(marker);
-                });
-
-                if (data.length) {
-                    map.setCenter({ lat: data[0].latitude, lng: data[0].longitude });
-                }
+        function initMap() {
+            const nyc = { lat: 40.7128, lng: -74.0060 };
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 12,
+                center: nyc
             });
-    }
 
-    document.getElementById("filter-form").addEventListener("submit", function (e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        const filters = {};
-        for (const [key, value] of formData.entries()) {
-            filters[key] = value.trim();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const courseId = urlParams.get("course_id");
+
+            const initialFilters = {};
+            if (courseId) {
+                initialFilters["course_id"] = courseId;
+                document.getElementById("filter-form").style.display = "none";  // Optional: hide form for course_id links
+            }
+
+            loadCourses(initialFilters);
         }
-        loadCourses(filters);
-    });
 
-    window.onload = initMap;
-</script>
+        function loadCourses(filters = {}) {
+
+            markers.forEach(marker => marker.setMap(null));
+            markers = [];
+
+            const fetchUrl = new URL("{% url 'course_data' %}", window.location.origin);
+            Object.entries(filters).forEach(([key, value]) => {
+                if (value) fetchUrl.searchParams.append(key, value);
+            });
+
+            fetch(fetchUrl)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach((course, index) => {
+                        if (course.latitude && course.longitude) {
+                            const marker = new google.maps.Marker({
+                                position: { lat: course.latitude, lng: course.longitude },
+                                map: map,
+                                title: course.name
+                            });
+
+                            const infoWindow = new google.maps.InfoWindow({
+                                content: `<a href="/courses/${course.course_id}/" target="_blank" style="font-weight: bold; text-decoration: none;">${course.name}</a>`
+                            });
+
+                            marker.addListener("click", function () {
+                                infoWindow.open(map, marker);
+                            });
+
+                            markers.push(marker);
+
+                            if (index === 0) {
+                                map.setCenter({ lat: course.latitude, lng: course.longitude });
+                            }
+                        }
+                    });
+                });
+        }
+
+
+        document.getElementById("filter-form").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const filters = {};
+            for (const [key, value] of formData.entries()) {
+                if (value.trim() !== "") {
+                    filters[key] = value.trim();
+                }
+            }
+            loadCourses(filters);
+        });
+
+        window.onload = initMap;
+    </script>
 {% endblock %}

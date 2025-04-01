@@ -238,6 +238,10 @@ def course_map(request):
 def course_data(request):
     """Fetch course data and get lat/lng dynamically"""
     courses = Course.objects.all()
+    course_id = request.GET.get("course_id")
+
+    if course_id and course_id.isdigit():
+        courses = courses.filter(course_id=course_id)
 
     min_cost = request.GET.get("min_cost")
     max_cost = request.GET.get("max_cost")
