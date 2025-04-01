@@ -80,7 +80,7 @@ class ProviderVerificationForm(forms.ModelForm):
                 raise forms.ValidationError(
                     "URL must start with 'http://' or 'https://'"
                 )
-            if not "." in url:
+            if "." not in url:
                 raise forms.ValidationError("Please enter a valid domain name")
         return url
 
