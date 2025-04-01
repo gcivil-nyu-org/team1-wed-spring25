@@ -193,20 +193,19 @@ def search_result(request):
     return render(request, "courses/course_list.html", context)
 
 
-GOOGLE_MAPS_API_KEY = "API_KEY"
+GOOGLE_MAPS_API_KEY = "AIzaSyCawC4Ts27j8dsyhx_sw8_EDCCA1UOT5G0"
+
+
 def get_coordinates(address):
     """Convert an address to latitude and longitude using Google Maps API, with caching."""
     if not address:
         return None, None
 
-
     key = "coords:" + hashlib.sha256(address.encode()).hexdigest()
-
 
     cached_coords = cache.get(key)
     if cached_coords:
         return cached_coords
-
 
     url = f"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={GOOGLE_MAPS_API_KEY}"
     try:
@@ -225,8 +224,6 @@ def get_coordinates(address):
     return None, None
 
 
-
-
 def course_map(request):
     """Render the course map page"""
     return render(request, "courses/course_map.html")
@@ -236,6 +233,7 @@ def course_map(request):
 #     return render(request, "courses/course_map.html", {
 #         "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY
 #     })
+
 
 def course_data(request):
     """Fetch course data and get lat/lng dynamically"""
@@ -270,12 +268,14 @@ def course_data(request):
     for course in courses:
         lat, lng = get_coordinates(course.location)
         if lat and lng:
-            data.append({
-                "course_id": course.course_id,
-                "name": course.name,
-                "course_desc": course.course_desc,
-                "latitude": lat,
-                "longitude": lng,
-            })
+            data.append(
+                {
+                    "course_id": course.course_id,
+                    "name": course.name,
+                    "course_desc": course.course_desc,
+                    "latitude": lat,
+                    "longitude": lng,
+                }
+            )
 
     return JsonResponse(data, safe=False)
