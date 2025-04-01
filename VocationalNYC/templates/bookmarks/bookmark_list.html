@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>My Bookmark List</h1>
+
+<button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createBookmarkListModal">
+  Create New List
+</button>
+
+{% if messages %}
+  <div class="alert alert-info">
+    {% for message in messages %}
+      <p>{{ message }}</p>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<div class="modal fade" id="createBookmarkListModal" tabindex="-1" aria-labelledby="createBookmarkListModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" action="{% url 'create_bookmark_list' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="createBookmarkListModalLabel">Create new bookmark list</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="listName" class="form-label">Bookmark List Name</label>
+            <input type="text" class="form-control" id="listName" name="name" placeholder="Enter a name" required>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% if lists %}
+  <ul>
+    {% for list in lists %}
+    <li>
+        <a href="{% url 'bookmark_list_detail' list.list_id %}">{{ list.name }}</a>
+        (<a href="{% url 'delete_bookmark_list' list.list_id %}">delete</a>)
+    </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>You don't have any bookmark list.</p>
+{% endif %}
+{% endblock %}

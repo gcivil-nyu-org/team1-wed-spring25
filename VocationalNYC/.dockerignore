@@ -1,0 +1,27 @@
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+.git
+.gitignore
+
+.venv/
+venv/
+env/
+
+__pycache__/
+*.pyc
+
+*.sqlite3
+*.log
+
+.vscode/
+.idea/
+
+logs/
+
+.DS_Store
+Thumbs.db
+
+node_modules/

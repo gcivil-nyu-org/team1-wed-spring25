@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VocationalNYC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="icon" href="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/favicon.png" type="image/png">
+
+
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Raleway:500');
+
+        /* Palette */
+        :root {
+            --green: #a2ccb6;
+            --light-peach: #ffecd9;
+            --peach: #ee786e;
+            --sand: #fceeb5;
+            --white: #fff;
+            font-family: system-ui!important;
+
+        }
+
+        body {
+            background: var(--light-peach);
+            display: grid;
+            height: 100vh;
+            margin: 0;
+            place-items: center;
+            padding: 1rem;
+            font-family: system-ui!important;
+        }
+
+        .card {
+            width: 600px;
+            padding: 40px;
+            border-radius: 18px;/*main card*/
+            box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            background: var(--white);
+            backdrop-filter: blur(10px);
+        }
+
+        .card-title {
+            color: var(--green);
+            font-weight: 600;
+            font-size: 2.2rem;
+            {#text-transform: uppercase;#}
+            letter-spacing: 1.5px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            margin: 12px 0;
+            padding: 14px;
+            border-radius: 12px; /*button*/
+            font-size: 1.1rem;
+        }
+
+        .btn-custom {
+            display: block;
+            width: 100%;
+            font-size: 13rem;
+            border-radius: 5rem;/*not about the button*/
+            border: none;
+            color: var(--white);
+            background: linear-gradient(to right, var(--green) 0%, var(--sand) 50%, var(--peach) 100%);
+            background-size: 500%;
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            animation: gradient 2s forwards;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1 class="card-title">VocationalNYC</h1>
+        <p>Your all-in-one platform to discover vocational training opportunities, gain new skills, and advance your career in the NYC metropolitan area.</p>
+        <hr>
+        <div class="menu text-center">
+            <p><strong>Explore Your Opportunities:</strong></p>
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile' %}" class="btn btn-custom">👤 My Profile</a>
+                <a href="{% url 'account_logout' %}" class="btn btn-custom">🚪 Sign Out</a>
+            {% else %}
+                <a href="{% url 'account_login' %}" class="btn btn-custom">🚀 Sign In</a>
+                <a href="{% url 'account_signup' %}" class="btn btn-custom">✨ Sign Up</a>
+            {% endif %}
+            <a href="{% url 'course_list' %}" class="btn btn-custom">📚 Browse Courses</a>
+            <a href="{% url 'provider_list' %}" class="btn btn-custom">🔍 View All Providers</a>
+            <a href="/contact" class="btn btn-custom">📩 Contact Us</a>
+        </div>
+    </div>
+</body>
+</html>

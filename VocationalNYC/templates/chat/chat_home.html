@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container">
+    <h1>Welcome to Chat Home</h1>
+    <p>
+      <a href="{% url 'select_chat_partner' %}" class="btn-custom">+</a>
+    </p>
+    <p>
+      <a href="{% url 'chat_list' %}" class="btn-custom">Chats</a>
+    </p>
+  </div>
+{% endblock %}

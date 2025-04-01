@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Profile | VocationalNYC{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Left Column - User Info -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="avatar-circle mb-3">
+                            {{ user.username|make_list|first|upper }}
+                        </div>
+                        <h4>{{ user.get_full_name|default:user.username }}</h4>
+                        <span class="badge bg-primary">{{ user.role|title }}</span>
+                    </div>
+                    <hr>
+                    <div class="user-info">
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                        <p><strong>Joined:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column - Role Specific Info -->
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    {% if role == "training_provider" %}
+                        {% if provider %}
+                            <h3>Provider Information</h3>
+                            <div class="provider-status mb-4">
+                                <strong>Verification Status:</strong>
+                                {% if provider.verification_status %}
+                                    <span class="badge bg-success">Verified</span>
+                                {% else %}
+                                    <span class="badge bg-warning">Pending Verification</span>
+                                {% endif %}
+                            </div>
+                            <div class="provider-details">
+                                <p><strong>Business Name:</strong> {{ provider.name }}</p>
+                                <p><strong>Contact:</strong> {{ provider.contact_firstname }} {{ provider.contact_lastname }}</p>
+                                <p><strong>Phone:</strong> {{ provider.phone_num }}</p>
+                                <p><strong>Address:</strong> {{ provider.address }}</p>
+                                {% if provider.website %}
+                                    <p><strong>Website:</strong> <a href="{{ provider.website }}" target="_blank">{{ provider.website }}</a></p>
+                                {% endif %}
+                                {% if provider.open_time %}
+                                    <p><strong>Business Hours:</strong> {{ provider.open_time }}</p>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <div class="alert alert-warning">
+                                Please complete your provider verification to access all features.
+                                <a href="{% url 'provider_verification' %}" class="btn btn-primary mt-3">Complete Verification</a>
+                            </div>
+                        {% endif %}
+
+                    {% elif role == "career_changer" %}
+                        <h3>Career Changer Profile</h3>
+                        {% if student %}
+                            <div class="student-details">
+                                {% if student.bio %}
+                                    <h5>About Me</h5>
+                                    <p>{{ student.bio }}</p>
+                                {% endif %}
+                                <!-- Add more student-specific information here -->
+                            </div>
+                        {% endif %}
+                        <div class="activity-section mt-4">
+                            <h5>Recent Activity</h5>
+                            <!-- Add recent activity, saved courses, etc. -->
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .avatar-circle {
+        width: 80px;
+        height: 80px;
+        background-color: #a2ccb6;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2em;
+        color: white;
+        margin: 0 auto;
+    }
+    .badge {
+        padding: 8px 16px;
+        font-size: 0.9em;
+    }
+    .provider-status {
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+    .provider-details p {
+        margin-bottom: 0.5rem;
+    }
+</style>
+{% endblock %}

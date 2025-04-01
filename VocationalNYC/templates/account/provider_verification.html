@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provider Verification</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="icon"
+        href="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/favicon.png"
+        type="image/png">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Raleway:500');
+
+        :root {
+            --green: #a2ccb6;
+            --light-peach: #ffecd9;
+            --peach: #ee786e;
+            --sand: #fceeb5;
+            --white: #fff;
+        }
+
+        body {
+            background: var(--light-peach);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: system-ui !important;
+            padding: 2rem;
+        }
+
+        .verification-container {
+            width: 600px;
+            padding: 20px 35px 20px 35px;
+            border-radius: 18px;/main card/ box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            background: var(--white);
+        }
+
+        .verification-container h2 {
+            color: var(--green);
+            font-weight: 600;
+            font-size: 2rem;
+            /* Reduced font size */
+            margin-bottom: 1rem;
+            /* Adjusted margin */
+        }
+
+        .form-label {
+            font-weight: bold;
+            text-align: left;
+            display: block;
+            font-size: 0.9rem;
+            /* Reduced font size */
+
+        }
+
+        .form-control {
+            font-size: 0.9rem;
+            /* Reduced font size */
+            padding: 10px 11px 10px 11px;
+            border-radius: 12px;/input field/ background: white;
+            border: 2px solid var(--green);
+            color: #333;
+            margin-bottom: 0.8rem;
+            /* Adjusted bottom margin */
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--peach);
+            outline: none;
+            box-shadow: 0 0 8px var(--peach);
+        }
+
+        .text-area-form-control {
+            font-size: 0.9rem;
+            /* Reduced font size */
+            padding: 10px 11px 10px 11px;
+            border-radius: 12px;/input field/ background: white;
+            border: 2px solid var(--green);
+            color: #333;
+            margin-bottom: 0.8rem;
+            /* Adjusted bottom margin */
+
+            resize: none
+        }
+
+        .text-area-form-control:focus,
+        .form-select:focus {
+            border-color: var(--peach);
+            outline: none;
+            box-shadow: 0 0 8px var(--peach);
+        }
+
+        .btn-custom {
+            display: block;
+            width: 100%;
+            font-size: 1.2rem;
+            /* Reduced font size */
+            padding: 12px 13px 12px 13px;
+            border-radius: 12px;/button/ border: none;
+            color: var(--white);
+            background: linear-gradient(to right, var(--green), var(--sand), var(--peach));
+            background-size: 500%;
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .btn-custom:hover {
+            animation: gradient 2s forwards;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="verification-container">
+        <h2>Provider Verification</h2>
+        <p>Please provide the required details for verification.</p>
+        <hr>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="business_name" class="form-label">Business Name <span style="color: red;">*</span></label>
+                <input type="text" class="form-control" name="business_name" id="business_name"
+                    placeholder="Enter your business name" value="{{ form.business_name.value|default:'' }}" required>
+                {% if form.business_name.errors %}
+                    <div class="text-danger">{{ form.business_name.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="business_address" class="form-label">Business Address <span
+                        style="color: red;">*</span></label>
+                <input type="text" class="form-control" name="business_address" id="business_address"
+                    placeholder="Enter business address" value="{{ form.business_address.value|default:'' }}" required>
+                {% if form.business_address.errors %}
+                    <div class="text-danger">{{ form.business_address.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="website" class="form-label">Business Website (Optional)</label>
+                <input type="url" class="form-control" name="website" id="website" placeholder="Enter website URL" value="{{ form.website.value|default:'' }}">
+                {% if form.website.errors %}
+                    <div class="text-danger">{{ form.website.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Business Description (Optional)</label>
+                <textarea class="form-control" name="description" id="description"
+                    placeholder="Enter business description" rows="1" style="resize: none;">{{ form.description.value|default:'' }}</textarea>
+                {% if form.description.errors %}
+                    <div class="text-danger">{{ form.description.errors }}</div>
+                {% endif %}
+            </div>
+
+                <script>
+      handleTextarea('description', 4);
+
+      function handleTextarea(inputId, maxRows) {
+        const textarea = document.getElementById(inputId);
+        const rowHeights = [
+          45.578125,  // Height for 1 row
+          67.15625,   // Height for 2 rows
+          88.734375,  // Height for 3 rows
+          110.3125    // Height for more than 3 rows
+        ];
+
+        textarea.addEventListener('input', function () {
+          this.style.height = 'auto'; // Reset to auto to get accurate scrollHeight
+
+          let calculatedHeight = this.scrollHeight;
+          let rows = 1; // Default to 1 row
+
+          // Determine the number of rows based on scrollHeight and rowHeights
+          if (calculatedHeight > rowHeights[0] && calculatedHeight <= rowHeights[1]) {
+            rows = 2;
+          } else if (calculatedHeight > rowHeights[1] && calculatedHeight <= rowHeights[2]) {
+            rows = 3;
+          } else if (calculatedHeight > rowHeights[2]) {
+            rows = 4; // Cap at maxRows
+          }
+
+          // Apply the height based on the calculated number of rows
+          this.style.height = `${rowHeights[Math.min(rows, maxRows) - 1]}px`;
+        });
+      }
+    </script>
+
+            <div class="mb-3">
+                <label class="form-label">Contact Person <span style="color: red;">*</span></label>
+                <input type="text" class="form-control" name="first_name" id="first_name"
+                    placeholder="Enter your first name" value="{{ form.first_name.value|default:'' }}" required>
+                {% if form.first_name.errors %}
+                    <div class="text-danger">{{ form.first_name.errors }}</div>
+                {% endif %}
+                <input type="text" class="form-control" name="last_name" id="last_name"
+                    placeholder="Enter your last name" value="{{ form.last_name.value|default:'' }}" required>
+                {% if form.last_name.errors %}
+                    <div class="text-danger">{{ form.last_name.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="contact_number" class="form-label">Contact Number <span style="color: red;">*</span></label>
+                <input type="tel" class="form-control" name="contact_number" id="contact_number"
+                    placeholder="Enter contact number" value="{{ form.contact_number.value|default:'' }}" required>
+                {% if form.contact_number.errors %}
+                    <div class="text-danger">{{ form.contact_number.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="certificate" class="form-label">Upload Business Certificate <span
+                        style="color: red;">*</span></label>
+                <input type="file" class="form-control" name="certificate" id="certificate" accept=".pdf,.jpg,.png"
+                    required>
+                {% if form.certificate.errors %}
+                    <div class="text-danger">{{ form.certificate.errors }}</div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-custom">Submit for Verification</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
