@@ -12,6 +12,7 @@
      <link rel="stylesheet" href="{% static 'css/course_list.css' %}">
 
              <link rel="stylesheet" href="{% static 'css/globals.css' %}">
+   <link rel="stylesheet" href="{% static 'css/toggle_for_filter.css' %}">
 
 
 
@@ -136,18 +137,25 @@
                                 <div class="Controls-Text">
                                     Sort by: &nbsp;
                                 </div>
-                                <select>
-                                    <option selected value=??asc>AAA
-                                    <option value=??dsc>BBB
-                                    <option value=??asc>CCC
-                                    <option value=??dsc>DDD
-                                    <option value=??asc>EEE
-                                    <option value=??dsc>FFF
-                                    <option value=??asc>GGG
-                                    <option value=??dsc>HHH
+                                <select aria-labelledby=_atlas-search_sort-label
+                                        class="filter-bar__SelectStyled-sc-1glfoa-11" id="SortByDropDown">
+                                    <option selected value=blank>...</option>
+                                    <option value=name>Name</option>
+                                    <option value=cost>Cost</option>
+                                    <option value=classroom_hours>Classroom Hours</option>
+                                    <option value=avg_rating>Rating</option>
                                 </select>
 
+                                <div class="toggle-container" >
+                                    <span class="arrow arrow-up"></span>
+                                  </div>
+
+<script src="{% static 'js/sorting.js' %}"></script>
+
                                 &nbsp;
+
+
+                                 &nbsp; &nbsp; &nbsp;
 
                                 <div class="Controls-Text">
                                     Show: &nbsp;
@@ -457,7 +465,7 @@
                                 </form>
 
                                 <!--courses-->
-                                <div class="All-Course-Container">
+                                <div class="All-Course-Container" id ="All-Course-Container">
                                     <ol class="CourseList">
                                         {% for course in courses %}
                                         <li class="CourseCard" style="animation-delay:0ms">
