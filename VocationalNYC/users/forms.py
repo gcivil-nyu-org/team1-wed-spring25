@@ -1,6 +1,6 @@
 from allauth.account.forms import SignupForm
 from django import forms
-from .models import Provider, CustomUser, Student
+from .models import Provider, CustomUser
 
 
 class CustomSignupForm(SignupForm):
