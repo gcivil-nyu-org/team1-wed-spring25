@@ -1,0 +1,14 @@
+{
+  "course_list": {
+    "title": "Discover Courses to Advance Your Career",
+    "content": "Explore a wide range of vocational programs designed to boost your skills and expand your career opportunities. Whether you're aiming to enhance your current expertise or embark on a new career path, you'll find flexible and affordable options that suit your needs.<br>Use the filters to refine your search by cost, location, and duration to identify the perfect course for you. Each listing includes detailed descriptions, costs, and learning outcomes to ensure you make an informed decision. Start discovering today and unlock new opportunities for growth and success."
+  },
+  "bookmark_list": {
+    "title": "Your Saved Courses",
+    "content": "This is your personalized hub for all the courses you've bookmarked. Quickly return to programs that caught your interest and compare them side-by-side to narrow down your top choices. Whether you’re actively enrolling or just exploring options, this space keeps everything organized for easy access.<br>Use this list to manage your learning journey. Edit your saved programs, remove ones that no longer fit your goals, and revisit detailed course information to make confident, informed decisions about your next steps."
+  },
+  "course_map": {
+    "title": "Explore Courses on a Map",
+    "content": "Use the interactive map to visually discover vocational training programs across the city. See what’s available near you, around your workplace, or in a neighborhood you’re considering moving to — all in just a few clicks.<br>Each pin represents a real opportunity to advance your career. Hover to preview course names, click to view program details, and explore the geographic spread of high-impact learning paths. Whether you're looking for something local or just curious what’s nearby, the map brings location-based discovery to life."
+  }
+}
