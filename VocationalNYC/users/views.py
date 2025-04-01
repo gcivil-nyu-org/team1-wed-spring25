@@ -1,5 +1,6 @@
 import requests
 
+import sys
 # import os
 # from django.conf import settings
 # from django.core.files.storage import default_storage
@@ -11,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
 from django.contrib import messages
 from django.db import IntegrityError, transaction
+from django.http import JsonResponse
 
 from users.models import Provider, Student
 from bookmarks.models import BookmarkList
@@ -38,17 +40,31 @@ class CustomSignupView(SignupView):
         except IntegrityError:
             messages.error(self.request, "Failed to create default bookmark.")
 
-        # 3. Log the user in
-        auth_login(
-            self.request,
-            user,
-            backend="allauth.account.auth_backends.AuthenticationBackend",
-        )
+        # # 3. Log the user in
+        # auth_login(
+        #     self.request,
+        #     user,
+        #     backend="allauth.account.auth_backends.AuthenticationBackend",
+        # )
 
-        # Redirect based on role:
+        # # Redirect based on role:
+        # if user.role == "training_provider":
+        #     return redirect("provider_verification")
+        # else:
+        #     return redirect("profile")
+        
         if user.role == "training_provider":
+            # set user to inactive and redirect to provider verification page
+            user.is_active = False
+            user.save()
             return redirect("provider_verification")
         else:
+            # log in the user and redirect to profile page
+            auth_login(
+                self.request,
+                user,
+                backend="allauth.account.auth_backends.AuthenticationBackend",
+            )
             return redirect("profile")
 
 
@@ -72,28 +88,76 @@ def profile_view(request):
     return render(request, "users/profile.html", context)
 
 
-@login_required
 def provider_verification_view(request):
     if request.user.role != "training_provider":
         return redirect("profile")
 
+    print("provider_verification_view called")
     if request.method == "POST":
-        form = ProviderVerificationForm(request.POST, request.FILES)
+        confirm_existing = request.POST.get("confirm_existing") == "true"
+        
+        # Pass the confirm_existing value to the form's initial data
+        form = ProviderVerificationForm(request.POST, request.FILES, initial={'confirm_existing': confirm_existing})
+        print("form:", form)
         if form.is_valid():
-            provider = form.save(commit=False)
-            provider.user = request.user
-            provider.verification_status = False
-            provider.save()
+            name = form.cleaned_data.get("name")
+            confirm_existing = form.cleaned_data.get("confirm_existing", False)
 
+            print(f"Confirm existing (from cleaned_data): {confirm_existing}")
+            print(f"Name: {name}")
+
+            try:
+                existing_provider = Provider.objects.get(name=name)
+            except Provider.DoesNotExist:
+                existing_provider = None
+            
+            print(f"Existing provider: {existing_provider}")
+            sys.stdout.flush()
+
+            if existing_provider and existing_provider.user is None and confirm_existing:
+                provider = existing_provider
+                provider.user = request.user
+                provider.verification_status = False
+                provider.save()
+            else:
+                provider = form.save(commit=False)
+                provider.user = request.user
+                provider.verification_status = False
+                provider.save()
+
+            request.user.is_active = True
+            request.user.save()
+            auth_login(
+                request,
+                request.user,
+                backend="allauth.account.auth_backends.AuthenticationBackend",
+            )
             return render(
                 request,
                 "account/provider_verification_success.html",
                 {"provider": provider, "is_pending": True},
             )
+        else:
+            print("Form is not valid")
+            print("Form errors:", form.errors)
+            sys.stdout.flush()
+
     else:
         form = ProviderVerificationForm()
 
     return render(request, "account/provider_verification.html", {"form": form})
+
+
+def check_provider_name(request):
+    name = request.GET.get("name", "")
+    try:
+        provider = Provider.objects.get(name=name)
+        return JsonResponse({
+            "exists": True,
+            "user": provider.user is not None,
+        })
+    except Provider.DoesNotExist:
+        return JsonResponse({"exists": False})
 
 
 class ProviderDetailView(generic.DetailView):

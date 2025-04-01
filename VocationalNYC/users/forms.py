@@ -24,6 +24,13 @@ class CustomSignupForm(SignupForm):
 
 
 class ProviderVerificationForm(forms.ModelForm):
+    # hidden field to confirm existing provider
+    confirm_existing = forms.BooleanField(
+        required=False, 
+        widget=forms.HiddenInput(),
+        initial=False
+    )
+
     class Meta:
         model = Provider
         fields = [
@@ -62,11 +69,38 @@ class ProviderVerificationForm(forms.ModelForm):
 
     def clean_name(self):
         name = self.cleaned_data.get("name")
+
         if len(name) < 3:
             raise forms.ValidationError(
                 "Business name must be at least 3 characters long."
             )
-        return name
+
+        confirm_existing = False
+        if self.data.get('confirm_existing') == 'true':
+            confirm_existing = True
+        print("clean_name: name =", name, "confirm_existing =", confirm_existing)
+        if confirm_existing:
+            print("clean_name: confirm_existing is true")
+            print("name:", name)
+            return name
+        try:
+            existing_provider = Provider.objects.get(name=name)
+        except Provider.DoesNotExist:
+            return name
+
+        if existing_provider.user is None:
+            print("clean_name: existing_provider.user is None")
+            if not confirm_existing:
+                raise forms.ValidationError(
+                    "An unregistered provider with this name exists. "
+                    "If this is your organization, please confirm to bind your account."
+                )
+            return name
+        else:
+            print(existing_provider.user)
+            raise forms.ValidationError(
+                "The name of the organization already exists. Please modify the name."
+            )
 
     def clean_provider_desc(self):
         desc = self.cleaned_data.get("provider_desc")
