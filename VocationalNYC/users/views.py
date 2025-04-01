@@ -7,7 +7,7 @@ import sys
 from django.shortcuts import render, redirect
 from django.views import generic
 from allauth.account.views import SignupView
-from .forms import CustomSignupForm, ProviderVerificationForm
+from .forms import CustomSignupForm, ProviderVerificationForm, ProfileUpdateForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
 from django.contrib import messages
@@ -70,18 +70,52 @@ class CustomSignupView(SignupView):
 
 @login_required
 def profile_view(request):
-    context = {"user": request.user, "role": request.user.role}
+    if request.method == "POST":
+        if "provider_form" in request.POST and request.user.role == "training_provider":
+            provider_form = ProviderVerificationForm(
+                request.POST,
+                request.FILES,
+                instance=getattr(request.user, "provider_profile", None),
+            )
+            form = ProfileUpdateForm(instance=request.user)
+            if provider_form.is_valid():
+                provider = provider_form.save(commit=False)
+                provider.user = request.user
+                provider.save()
+                return redirect("profile")
+        else:
+            form = ProfileUpdateForm(request.POST, instance=request.user)
+            if form.is_valid():
+                form.save()
+                return redirect("profile")
+    else:
+        form = ProfileUpdateForm(instance=request.user)
+
+    context = {"user": request.user, "role": request.user.role, "form": form}
 
     if request.user.role == "training_provider":
         try:
             provider = Provider.objects.get(user=request.user)
             context["provider"] = provider
+            context["provider_verification_form"] = ProviderVerificationForm(
+                instance=provider
+            )
         except Provider.DoesNotExist:
-            pass
+            context["provider_verification_form"] = ProviderVerificationForm()
     elif request.user.role == "career_changer":
         try:
             student = request.user.student_profile
             context["student"] = student
+            # Add bookmark lists to context
+            bookmark_lists = request.user.bookmark_list.all().prefetch_related(
+                "bookmark__course"
+            )
+            context["bookmark_lists"] = bookmark_lists
+            # Add reviews to context
+            reviews = request.user.reviews.select_related("course").order_by(
+                "-created_at"
+            )
+            context["reviews"] = reviews
         except Student.DoesNotExist:
             pass
 
@@ -100,6 +134,7 @@ def provider_verification_view(request):
         form = ProviderVerificationForm(request.POST, request.FILES, initial={'confirm_existing': confirm_existing})
         print("form:", form)
         if form.is_valid():
+            print("Form is valid")
             name = form.cleaned_data.get("name")
             confirm_existing = form.cleaned_data.get("confirm_existing", False)
 
@@ -132,10 +167,11 @@ def provider_verification_view(request):
                 request.user,
                 backend="allauth.account.auth_backends.AuthenticationBackend",
             )
+
             return render(
                 request,
                 "account/provider_verification_success.html",
-                {"provider": provider, "is_pending": True},
+                {"provider": provider},
             )
         else:
             print("Form is not valid")
