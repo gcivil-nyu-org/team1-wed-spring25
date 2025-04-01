@@ -628,7 +628,13 @@
                                                         </span>
                                                     </div>
 
+
+<button class="button__ButtonStyled-sc-1vhaw8r-1 type-primary size-small"
+        onclick="location.href='/courses/map/?course_id={{ course.pk }}'">
+    Show on Map
+</button>
                                                     <button class="BookmarkButton size-small"
+
                                                             data-url="{% url 'add_bookmark' course.pk %}"
                                                             data-course-id="{{ course.pk }}"
                                                             data-tracking-apply-int-code=false
