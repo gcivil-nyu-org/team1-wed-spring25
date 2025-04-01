@@ -44,4 +44,5 @@ urlpatterns = [
     path("courses/", include("courses.urls")),
     path("reviews/", include("review.urls")),
     path("chat/", include("message.urls")),
+    path("bookmarks/", include("bookmarks.urls")),
 ]

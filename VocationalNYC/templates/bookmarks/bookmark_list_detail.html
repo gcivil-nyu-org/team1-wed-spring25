@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ bookmark_list.name }}</h1>
+<ul>
+    {% for bookmark in bookmark_list.bookmark.all %}
+        <li>
+            {{ bookmark.course.name }} - Added on {{ bookmark.time }}
+            <a href="{% url 'delete_bookmark' bookmark_list.list_id bookmark.id %}">delete</a>
+        </li>
+    {% empty %}
+        <li>The bookmark list is empty.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
