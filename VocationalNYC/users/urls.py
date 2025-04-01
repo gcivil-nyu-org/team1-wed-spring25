@@ -20,5 +20,5 @@ urlpatterns = [
         "provider/<int:pk>/", views.ProviderDetailView.as_view(), name="provider_detail"
     ),
     path("provider/", views.ProviderListView.as_view(), name="provider_list"),
-    path('check_provider_name/', check_provider_name, name='check_provider_name'),
+    path("check_provider_name/", check_provider_name, name="check_provider_name"),
 ]

@@ -1,6 +1,7 @@
 import requests
 
 import sys
+
 # import os
 # from django.conf import settings
 # from django.core.files.storage import default_storage
@@ -52,7 +53,7 @@ class CustomSignupView(SignupView):
         #     return redirect("provider_verification")
         # else:
         #     return redirect("profile")
-        
+
         if user.role == "training_provider":
             # set user to inactive and redirect to provider verification page
             user.is_active = False
@@ -129,7 +130,7 @@ def provider_verification_view(request):
     print("provider_verification_view called")
     if request.method == "POST":
         confirm_existing = request.POST.get("confirm_existing") == "true"
-        
+
         # Pass the confirm_existing value to the form's initial data
         form = ProviderVerificationForm(request.POST, request.FILES)
         if form.is_valid():
@@ -144,11 +145,15 @@ def provider_verification_view(request):
                 existing_provider = Provider.objects.get(name=name)
             except Provider.DoesNotExist:
                 existing_provider = None
-            
+
             print(f"Existing provider: {existing_provider}")
             sys.stdout.flush()
 
-            if existing_provider and existing_provider.user is None and confirm_existing:
+            if (
+                existing_provider
+                and existing_provider.user is None
+                and confirm_existing
+            ):
                 provider = existing_provider
                 provider.user = request.user
                 provider.verification_status = False
@@ -189,10 +194,12 @@ def check_provider_name(request):
         provider = Provider.objects.get(name=name)
         print(f"Provider found: {provider}")
         sys.stdout.flush()
-        return JsonResponse({
-            "exists": True,
-            "user": provider.user is not None,
-        })
+        return JsonResponse(
+            {
+                "exists": True,
+                "user": provider.user is not None,
+            }
+        )
     except Provider.DoesNotExist:
         print("Provider not found")
         sys.stdout.flush()

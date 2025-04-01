@@ -24,9 +24,7 @@ class CustomSignupForm(SignupForm):
 class ProviderVerificationForm(forms.ModelForm):
     # hidden field to confirm existing provider
     confirm_existing = forms.BooleanField(
-        required=False, 
-        widget=forms.HiddenInput(),
-        initial=False
+        required=False, widget=forms.HiddenInput(), initial=False
     )
 
     phone_num = forms.CharField(
@@ -83,7 +81,7 @@ class ProviderVerificationForm(forms.ModelForm):
             )
 
         confirm_existing = False
-        if self.data.get('confirm_existing') == 'true':
+        if self.data.get("confirm_existing") == "true":
             confirm_existing = True
         print("clean_name: name =", name, "confirm_existing =", confirm_existing)
         if confirm_existing:
@@ -126,7 +124,7 @@ class ProviderVerificationForm(forms.ModelForm):
             if "." not in url:
                 raise forms.ValidationError("Please enter a valid domain name")
         return url
-    
+
     def validate_unique(self):
         if self.cleaned_data.get("confirm_existing"):
             return
