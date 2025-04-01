@@ -221,11 +221,12 @@
             </div>
 
             <div class="mb-3">
-                <label for="contact_number" class="form-label">Contact Number <span style="color: red;">*</span></label>
-                <input type="tel" class="form-control" name="contact_number" id="contact_number"
-                    placeholder="Enter contact number" value="{{ form.contact_number.value|default:'' }}" required>
-                {% if form.contact_number.errors %}
-                    <div class="text-danger">{{ form.contact_number.errors }}</div>
+                <label for="phone_num" class="form-label">Contact Number <span style="color: red;">*</span></label>
+                <input type="tel" class="form-control {% if form.phone_num.errors %}is-invalid{% endif %}" 
+                    name="phone_num" id="phone_num" placeholder="Enter contact number" 
+                    value="{{ form.phone_num.value|default:'' }}" required>
+                {% if form.phone_num.errors %}
+                    <div class="invalid-feedback">{{ form.phone_num.errors }}</div>
                 {% endif %}
             </div>
 

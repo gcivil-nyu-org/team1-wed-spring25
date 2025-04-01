@@ -152,11 +152,15 @@ def check_provider_name(request):
     name = request.GET.get("name", "")
     try:
         provider = Provider.objects.get(name=name)
+        print(f"Provider found: {provider}")
+        sys.stdout.flush()
         return JsonResponse({
             "exists": True,
             "user": provider.user is not None,
         })
     except Provider.DoesNotExist:
+        print("Provider not found")
+        sys.stdout.flush()
         return JsonResponse({"exists": False})
 
 
