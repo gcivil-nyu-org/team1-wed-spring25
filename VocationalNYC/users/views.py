@@ -55,8 +55,12 @@ class CustomSignupView(SignupView):
 @login_required
 def profile_view(request):
     if request.method == "POST":
-        if 'provider_form' in request.POST and request.user.role == "training_provider":
-            provider_form = ProviderVerificationForm(request.POST, request.FILES, instance=getattr(request.user, 'provider_profile', None))
+        if "provider_form" in request.POST and request.user.role == "training_provider":
+            provider_form = ProviderVerificationForm(
+                request.POST,
+                request.FILES,
+                instance=getattr(request.user, "provider_profile", None),
+            )
             form = ProfileUpdateForm(instance=request.user)
             if provider_form.is_valid():
                 provider = provider_form.save(commit=False)
@@ -77,7 +81,9 @@ def profile_view(request):
         try:
             provider = Provider.objects.get(user=request.user)
             context["provider"] = provider
-            context["provider_verification_form"] = ProviderVerificationForm(instance=provider)
+            context["provider_verification_form"] = ProviderVerificationForm(
+                instance=provider
+            )
         except Provider.DoesNotExist:
             context["provider_verification_form"] = ProviderVerificationForm()
     elif request.user.role == "career_changer":
@@ -85,10 +91,14 @@ def profile_view(request):
             student = request.user.student_profile
             context["student"] = student
             # Add bookmark lists to context
-            bookmark_lists = request.user.bookmark_list.all().prefetch_related('bookmark__course')
+            bookmark_lists = request.user.bookmark_list.all().prefetch_related(
+                "bookmark__course"
+            )
             context["bookmark_lists"] = bookmark_lists
             # Add reviews to context
-            reviews = request.user.reviews.select_related('course').order_by('-created_at')
+            reviews = request.user.reviews.select_related("course").order_by(
+                "-created_at"
+            )
             context["reviews"] = reviews
         except Student.DoesNotExist:
             pass
@@ -111,11 +121,11 @@ def provider_verification_view(request):
             return render(
                 request,
                 "account/provider_verification_success.html",
-                {"provider": provider}
+                {"provider": provider},
             )
     else:
         form = ProviderVerificationForm()
-    
+
     return render(request, "account/provider_verification.html", {"form": form})
 
 

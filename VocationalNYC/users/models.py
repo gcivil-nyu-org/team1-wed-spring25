@@ -2,6 +2,7 @@ from django.db import models
 from .managers import CustomUserManager
 from django.contrib.auth.models import AbstractUser
 
+
 class CustomUser(AbstractUser):
     ROLE_CHOICES = (
         ("career_changer", "Career Changer"),
@@ -16,6 +17,7 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f"{self.role.capitalize()}: {self.username}"
+
 
 class Student(models.Model):
     student_id = models.AutoField(primary_key=True)
@@ -35,6 +37,7 @@ class Student(models.Model):
     def __str__(self):
         return f"Student: {self.user.username}"
 
+
 class Provider(models.Model):
     provider_id = models.AutoField(primary_key=True)
     user = models.OneToOneField(
@@ -53,10 +56,12 @@ class Provider(models.Model):
     provider_desc = models.TextField(null=True, blank=True)
     website = models.URLField(blank=True, null=True)
     verification_status = models.BooleanField(default=False)
-    certificate = models.FileField(upload_to='provider_certificates/',
-                                   null=True,
-                                   blank=True,
-                                   help_text="Upload your business certificate (PDF, JPG, PNG)",)
+    certificate = models.FileField(
+        upload_to="provider_certificates/",
+        null=True,
+        blank=True,
+        help_text="Upload your business certificate (PDF, JPG, PNG)",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

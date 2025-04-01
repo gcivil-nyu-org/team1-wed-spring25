@@ -7,9 +7,7 @@ class Review(models.Model):
     review_id = models.AutoField(primary_key=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="reviews")
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, 
-        on_delete=models.CASCADE,
-        related_name='reviews'
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reviews"
     )  # ✅ Use custom user model
     content = models.TextField()
     score_rating = models.IntegerField()
