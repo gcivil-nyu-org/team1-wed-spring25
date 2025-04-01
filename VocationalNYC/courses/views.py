@@ -14,9 +14,6 @@ import hashlib
 from users.models import Provider
 from .models import Course
 from django.http import JsonResponse
-from django.conf import settings
-
-# from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -227,12 +224,6 @@ def get_coordinates(address):
 def course_map(request):
     """Render the course map page"""
     return render(request, "courses/course_map.html")
-
-
-# def course_map(request):
-#     return render(request, "courses/course_map.html", {
-#         "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY
-#     })
 
 
 def course_data(request):
