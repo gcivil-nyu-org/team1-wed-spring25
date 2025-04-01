@@ -2,6 +2,7 @@ import json
 import os
 from django.conf import settings
 
+
 def intro_content(request):
     try:
         # Load the intros.json file
