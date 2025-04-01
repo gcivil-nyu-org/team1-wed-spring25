@@ -8,4 +8,5 @@ urlpatterns = [
     path("search_result/", views.search_result, name="search_result"),
     path("map/", course_map, name="course_map"),
     path("api/course_data/", course_data, name="course_data"),
+    path("sort/", views.sort_by, name="course_sort"),
 ]
