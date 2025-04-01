@@ -281,5 +281,4 @@ def course_data(request):
                     "longitude": lng,
                 }
             )
-
     return JsonResponse(data, safe=False)
