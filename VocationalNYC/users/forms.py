@@ -65,6 +65,7 @@ class ProviderVerificationForm(forms.ModelForm):
             "provider_desc",
             "website",
             "certificate",
+            "confirm_existing",
         ]
 
     def clean_phone_num(self):
@@ -125,6 +126,11 @@ class ProviderVerificationForm(forms.ModelForm):
             if "." not in url:
                 raise forms.ValidationError("Please enter a valid domain name")
         return url
+    
+    def validate_unique(self):
+        if self.cleaned_data.get("confirm_existing"):
+            return
+        super().validate_unique()
 
 
 class ProfileUpdateForm(forms.ModelForm):

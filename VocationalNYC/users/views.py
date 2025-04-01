@@ -131,8 +131,7 @@ def provider_verification_view(request):
         confirm_existing = request.POST.get("confirm_existing") == "true"
         
         # Pass the confirm_existing value to the form's initial data
-        form = ProviderVerificationForm(request.POST, request.FILES, initial={'confirm_existing': confirm_existing})
-        print("form:", form)
+        form = ProviderVerificationForm(request.POST, request.FILES)
         if form.is_valid():
             print("Form is valid")
             name = form.cleaned_data.get("name")
