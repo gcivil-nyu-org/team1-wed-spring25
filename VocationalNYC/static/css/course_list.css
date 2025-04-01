@@ -1156,6 +1156,8 @@ margin-left: auto;
     height: auto !important;
     flex-shrink: 0;
 
+            border-radius: 12px;
+
 
         }
 .CourseList > *:empty,
@@ -1183,6 +1185,8 @@ visibility: hidden !important;
             animation: 500ms ease-in-out 0s 1 normal both running iBevsA;
     height: auto;
             width: 100% !important;
+
+
 
         }
 
@@ -1348,6 +1352,7 @@ visibility: hidden !important;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
     background-color: var(--white-00);
+
 }
 
 .Course-Cards:hover {
@@ -2876,6 +2881,21 @@ margin-top: 1em;
 
 
 
-
+           .SortShowDropDown {
+            font-size: 0.875rem;
+            appearance: none;
+            margin-right: 0;
+            padding: 6px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+            cursor: pointer;
+            transition: background 300ms;
+                        background-color: white;
+            background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB2aWV3Qm94PSIwIDAgMTEzLjIgNjMuMSIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTEzLjIgNjMuMTsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8cGF0aCBkPSJNNi43LDBDMi45LDAsMCwyLjksMCw2LjdjMCwxLjksMSwzLjgsMS45LDQuOGw0OS43LDQ5LjdjMSwxLDIuOSwxLjksNC44LDEuOXMzLjgtMSw0LjgtMS45bDUwLjEtNDkuN2MxLTEsMS45LTIuOSwxLjktNC44CgljMC0zLjgtMi45LTYuNy02LjctNi43Ii8+Cjwvc3ZnPgo=);
+            background-position: calc(100% - 9px) center;
+            background-repeat: no-repeat;
+            background-size: 0.5rem 0.5rem
+        }
 
 
