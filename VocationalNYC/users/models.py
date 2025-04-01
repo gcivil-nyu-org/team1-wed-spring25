@@ -56,8 +56,7 @@ class Provider(models.Model):
     provider_desc = models.TextField(null=True, blank=True)
     website = models.URLField(blank=True, null=True)
     verification_status = models.BooleanField(default=False)
-    verification_file_url = models.URLField(blank=True, null=True)
-    verification_file = models.FileField(
+    certificate = models.FileField(
         upload_to="provider_certificates/",
         null=True,
         blank=True,
