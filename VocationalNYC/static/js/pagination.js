@@ -1,5 +1,5 @@
 
-    document.addEventListener('DOMContentLoaded', () => {
+function reinitializePagination() {
         const courses = Array.from(document.querySelectorAll('.Course-Card-Outer-Container'));
         const itemsPerPage = document.getElementById('itemsPerPage');
         const prevPageBtn = document.getElementById('prevPage');
@@ -50,4 +50,6 @@
 
         // Initial render
         renderCourses();
-    });
+}
+
+document.addEventListener('DOMContentLoaded', reinitializePagination);
