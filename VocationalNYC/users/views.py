@@ -10,7 +10,7 @@ from django.views import generic
 from allauth.account.views import SignupView
 from .forms import CustomSignupForm, ProviderVerificationForm, ProfileUpdateForm
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login as auth_login
+from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
 from django.db import IntegrityError, transaction
 from django.http import JsonResponse
@@ -19,7 +19,22 @@ from users.models import Provider, Student
 from bookmarks.models import BookmarkList
 
 
+# def login(request):
+#     return render(request, "users/login.html")
+
+
 def login(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            auth_login(request, user)
+            if getattr(user, "role", "") == "training_provider" and not user.is_active:
+                return redirect("provider_verification")
+            return redirect("profile")
+        else:
+            messages.error(request, "用户名或密码错误，请重试。")
     return render(request, "users/login.html")
 
 
@@ -41,23 +56,15 @@ class CustomSignupView(SignupView):
         except IntegrityError:
             messages.error(self.request, "Failed to create default bookmark.")
 
-        # # 3. Log the user in
-        # auth_login(
-        #     self.request,
-        #     user,
-        #     backend="allauth.account.auth_backends.AuthenticationBackend",
-        # )
-
-        # # Redirect based on role:
-        # if user.role == "training_provider":
-        #     return redirect("provider_verification")
-        # else:
-        #     return redirect("profile")
-
         if user.role == "training_provider":
             # set user to inactive and redirect to provider verification page
             user.is_active = False
             user.save()
+            auth_login(
+                self.request,
+                user,
+                backend="users.backends.TrainingProviderVerificationBackend",
+            )
             return redirect("provider_verification")
         else:
             # log in the user and redirect to profile page
@@ -123,6 +130,16 @@ def profile_view(request):
     return render(request, "users/profile.html", context)
 
 
+def provider_verification_required(function):
+    def wrap(request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.role == "training_provider":
+            return function(request, *args, **kwargs)
+        return redirect("account_login")
+    wrap.__doc__ = function.__doc__
+    wrap.__name__ = function.__name__
+    return wrap
+
+@provider_verification_required
 def provider_verification_view(request):
     if request.user.role != "training_provider":
         return redirect("profile")

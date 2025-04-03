@@ -78,6 +78,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "users.middleware.TrainingProviderMiddleware",  # Custom middleware for training provider verification
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
@@ -85,6 +86,7 @@ MIDDLEWARE = [
 ]
 
 AUTHENTICATION_BACKENDS = [
+    "users.backends.TrainingProviderVerificationBackend",  # Custom backend for training provider verification
     "django.contrib.auth.backends.ModelBackend",  # Django admin login
     "allauth.account.auth_backends.AuthenticationBackend",  # allauth authentication
 ]
@@ -183,6 +185,7 @@ ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_ADAPTER = 'users.adapters.MyAccountAdapter'
 
 AUTH_USER_MODEL = "users.CustomUser"
 ACCOUNT_FORMS = {
