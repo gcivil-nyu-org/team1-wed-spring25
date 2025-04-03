@@ -105,6 +105,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "vocationalnyc.context_processors.intro_content",
             ],
         },
     },
@@ -217,3 +218,5 @@ FAVICON_PATH = STATIC_URL + "favicon.ico"
 
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/"
+
+GOOGLE_MAPS_API_KEY = env("GOOGLE_MAPS_API_KEY", default="")

@@ -9,12 +9,11 @@ from django.views import generic
 from django.db.models import Q, Avg, Count
 from django.core.cache import cache
 from review.models import Review
+import hashlib
 
 from users.models import Provider
 from .models import Course
 from django.http import JsonResponse
-
-# from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -138,7 +137,7 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
         return context
 
 
-def search_result(request):
+def filterCourses(request):
     query = request.GET.get("query", "").strip()
 
     min_cost = request.GET.get("min_cost", None)
@@ -187,22 +186,42 @@ def search_result(request):
         "location": location,
         "min_classroom_hours": min_classroom_hours,
     }
+    return context
 
+
+def search_result(request):
+    context = filterCourses(request)
     return render(request, "courses/course_list.html", context)
 
 
-GOOGLE_MAPS_API_KEY = "AIzaSyBf9qUyF04HrgQ9iX_TGV35nGxbb9omF1Y"
+GOOGLE_MAPS_API_KEY = "AIzaSyCawC4Ts27j8dsyhx_sw8_EDCCA1UOT5G0"
 
 
 def get_coordinates(address):
-    """Convert an address to latitude and longitude using Google Maps API"""
-    url = f"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={GOOGLE_MAPS_API_KEY}"
-    response = requests.get(url)
-    data = response.json()
+    """Convert an address to latitude and longitude using Google Maps API, with caching."""
+    if not address:
+        return None, None
 
-    if data["status"] == "OK":
-        location = data["results"][0]["geometry"]["location"]
-        return location["lat"], location["lng"]
+    key = "coords:" + hashlib.sha256(address.encode()).hexdigest()
+
+    cached_coords = cache.get(key)
+    if cached_coords:
+        return cached_coords
+
+    url = f"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={GOOGLE_MAPS_API_KEY}"
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+
+        if data["status"] == "OK":
+            location = data["results"][0]["geometry"]["location"]
+            coords = (location["lat"], location["lng"])
+            cache.set(key, coords, timeout=60 * 60 * 24 * 7)  # Cache for 7 days
+            return coords
+    except requests.RequestException as e:
+        logger.error("Geocoding API error: %s", e)
+
     return None, None
 
 
@@ -213,22 +232,65 @@ def course_map(request):
 
 def course_data(request):
     """Fetch course data and get lat/lng dynamically"""
-    courses = Course.objects.all().values(
-        "course_id", "name", "course_desc", "location"
-    )
-    course_list = []
+    courses = Course.objects.all()
+    course_id = request.GET.get("course_id")
 
+    if course_id and course_id.isdigit():
+        courses = courses.filter(course_id=course_id)
+
+    min_cost = request.GET.get("min_cost")
+    max_cost = request.GET.get("max_cost")
+    min_rating = request.GET.get("min_rating")
+    provider = request.GET.get("provider")
+    location = request.GET.get("location")
+    min_hours = request.GET.get("min_hours")
+
+    if min_cost and min_cost.isdigit():
+        courses = courses.filter(cost__gte=int(min_cost))
+    if max_cost and max_cost.isdigit():
+        courses = courses.filter(cost__lte=int(max_cost))
+    if min_hours and min_hours.isdigit():
+        courses = courses.filter(classroom_hours__gte=int(min_hours))
+    if location:
+        courses = courses.filter(location__icontains=location)
+    if provider:
+        courses = courses.filter(provider__name__icontains=provider)
+
+    courses = courses.annotate(avg_rating=Avg("reviews__score_rating"))
+    if min_rating:
+        try:
+            courses = courses.filter(avg_rating__gte=float(min_rating))
+        except ValueError:
+            pass
+
+    data = []
     for course in courses:
-        lat, lng = get_coordinates(course["location"])
+        lat, lng = get_coordinates(course.location)
         if lat and lng:
-            course_list.append(
+            data.append(
                 {
-                    "course_id": course["course_id"],
-                    "name": course["name"],
-                    "course_desc": course["course_desc"],
+                    "course_id": course.course_id,
+                    "name": course.name,
+                    "course_desc": course.course_desc,
                     "latitude": lat,
                     "longitude": lng,
                 }
             )
 
     return JsonResponse(course_list, safe=False)
+
+
+def sort_by(request):
+
+    context = filterCourses(request)
+    courses = context["courses"]
+    sort = request.GET.get("sort", "blank")
+    order = request.GET.get("order", "asc")
+
+    if sort != "blank":
+        if order == "desc":
+            sort = f"-{sort}"
+        courses = courses.order_by(sort)
+
+    # Render full HTML for the page (not just partial updates)
+    return render(request, "courses/courses_section.html", {"courses": courses})
