@@ -13,39 +13,24 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
 from django.contrib import messages
 from django.db import IntegrityError, transaction
-from allauth.account.views import LoginView
+# from allauth.account.views import LoginView
 from django.http import JsonResponse
 
 from users.models import Provider, Student
 from bookmarks.models import BookmarkList
 
 
-# def login(request):
-#     return render(request, "users/login.html")
+def login(request):
+    return render(request, "users/login.html")
 
 
-# def login(request):
-#     if request.method == "POST":
-#         username = request.POST.get("username")
-#         password = request.POST.get("password")
-#         user = authenticate(request, username=username, password=password)
-#         if user is not None:
-#             auth_login(request, user)
-#             if getattr(user, "role", "") == "training_provider" and not user.is_active:
-#                 return redirect("provider_verification")
-#             return redirect("profile")
-#         else:
-#             messages.error(request, "用户名或密码错误，请重试。")
-#     return render(request, "users/login.html")
-
-
-class MyLoginView(LoginView):
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        user = self.request.user
-        if getattr(user, "role", None) == "training_provider" and not user.is_active:
-            return redirect("provider_verification")
-        return response
+# class MyLoginView(LoginView):
+#     def form_valid(self, form):
+#         response = super().form_valid(form)
+#         user = self.request.user
+#         if getattr(user, "role", None) == "training_provider" and not user.is_active:
+#             return redirect("provider_verification")
+#         return response
 
 
 class CustomSignupView(SignupView):
