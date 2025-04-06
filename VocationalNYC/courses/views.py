@@ -277,7 +277,7 @@ def course_data(request):
                 }
             )
 
-    return JsonResponse(course_list, safe=False)
+    return JsonResponse(data, safe=False)
 
 
 def sort_by(request):

@@ -4,7 +4,12 @@ from django.urls import path, include
 # from allauth.account.views import SignupView
 
 # from .forms import StudentSignupForm, ProviderSignupForm
-from .views import CustomSignupView, provider_verification_view
+from .views import (
+    CustomSignupView,
+    provider_verification_view,
+    check_provider_name,
+    # MyLoginView,
+)
 from . import views
 
 urlpatterns = [
@@ -20,4 +25,6 @@ urlpatterns = [
         "provider/<int:pk>/", views.ProviderDetailView.as_view(), name="provider_detail"
     ),
     path("provider/", views.ProviderListView.as_view(), name="provider_list"),
+    path("check_provider_name/", check_provider_name, name="check_provider_name"),
+    # path("accounts/login/", MyLoginView.as_view(), name="account_login"),
 ]
