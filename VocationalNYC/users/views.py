@@ -13,6 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
 from django.contrib import messages
 from django.db import IntegrityError, transaction
+
 # from allauth.account.views import LoginView
 from django.http import JsonResponse
 
