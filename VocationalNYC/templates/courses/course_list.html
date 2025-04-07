@@ -13,10 +13,23 @@
 
              <link rel="stylesheet" href="{% static 'css/globals.css' %}">
 
+<style>
+    html, body {
+    height: 100%;
+    overflow: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
 
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+</style>
 
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" data-rh=true
           name=viewport>
+
 </head>
 <body>
 
@@ -54,9 +67,6 @@
             <div class="Main-Body-Area">
 
                 <!--title and paragraph-->
-
-{% if intro %}
-
                 <div class="Introduction content">
 
                     <header class="Introduction-Title-And-Content">
@@ -66,21 +76,13 @@
 
                                 <div class="Introduction-Text-Title">
                                     <h1 class="Introduction-Title">
-
-{{ intro.title }}
-
+                                        Discover Courses to Advance Your Career
                                     </h1>
                                 </div>
 
                                 <p class="Introduction-Content" style="margin-top: 1rem !important;">
-
-                                                        {{ intro.content|safe }}
-
-
-
-
-
-                            </p>
+                                    Explore a wide range of vocational programs designed to boost your skills and expand your career opportunities. Whether you're aiming to enhance your current expertise or embark on a new career path, you'll find flexible and affordable options that suit your needs.<br>Use the filters to refine your search by cost, location, and duration to identify the perfect course for you. Each listing includes detailed descriptions, costs, and learning outcomes to ensure you make an informed decision. Start discovering today and unlock new opportunities for growth and success.
+                                </p>
 
                             </div>
 
@@ -90,7 +92,7 @@
 
                 </div>
 
-{% endif %}
+
                 <!--horizontal-filter-bar-->
                 <div class="Horizontal-Filter-Bar-Outer-Container">
 
@@ -216,7 +218,67 @@
                                             </div>
                                         </div>
                                     </fieldset>
-                                    
+
+                                                                                                            <fieldset
+                                        class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                        name="schoolName">
+                                        <legend class=" Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Provider (Not Working)
+                                            </div>
+                                        </legend>
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
+                                                    <div aria-expanded=false aria-haspopup=listbox
+                                                        aria-owns=react-auto
+                                                        class=react-autosuggest__container
+                                                        role=combobox><input aria-autocomplete=list
+                                                            aria-controls=react-auto
+                                                            autocomplete=off
+                                                            class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
+                                                            placeholder="Provider"
+                                                            name="provider"
+                                                            type=text
+                                                            value>
+                                                            <div class="react-autosuggest__suggestions-container sf-hidden"
+                                                                role=listbox></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                                                        <fieldset
+                                        class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                        name="schoolName">
+                                        <legend class=" Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Min Rating (Not Working)
+                                            </div>
+                                        </legend>
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
+                                                    <div aria-expanded=false aria-haspopup=listbox
+                                                        aria-owns=react-auto
+                                                        class=react-autosuggest__container
+                                                        role=combobox><input aria-autocomplete=list
+                                                            aria-controls=react-auto
+                                                            autocomplete=off
+                                                            class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
+                                                            placeholder="Min Rating"
+                                                            type="number" step="0.1" name="min_rating" min="0" max="5"
+                                                            value>
+                                                            <div class="react-autosuggest__suggestions-container sf-hidden"
+                                                                role=listbox></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+
                                     <fieldset
                                         class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
                                         name="schoolName">
@@ -311,7 +373,7 @@
                                                     style="--width:100%">
                                                     <label class="select__LabelStyled-sc-i9bbt3-0 All-Distances-Inner-Frame">
                                                         <select class="select__SelectStyled-sc-i9bbt3-1 All-Distances-Content-Box" name="distance">
-                                                            <option selected value>All Distances
+                                                            <option selected value>(Not Working) All Distances
                                                             <option value=25>Within 25 miles
                                                             <option value=50>Within 50 miles
                                                             <option value=100>Within 100 miles
