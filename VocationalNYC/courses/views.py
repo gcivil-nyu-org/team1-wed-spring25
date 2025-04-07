@@ -15,7 +15,6 @@ from users.models import Provider
 from .models import Course
 from django.http import JsonResponse
 
-
 logger = logging.getLogger(__name__)
 
 
