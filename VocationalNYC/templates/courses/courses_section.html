@@ -37,16 +37,15 @@
                                                           <ul class="Course-Location-Outer Card__StyledRankList-sc-1ra20i5-11 CourseLocation"
                                                                 font-size=4 spacing=0>
                                                                 <li class="Course-Location-Outer rank-list-item">
-                                                                    <a class="Course-Location-Inner has-badge" onclick="location.href='/courses/map/?course_id={{ course.pk }}'">
-                                                                        <div class="Course-Location-Outer-Icon ranked has-badge">
-                                                                        </div>
+                                                                    <a class="Course-Location-Inner has-badge" href="/courses/map/?course_id={{ course.pk }}">
+                                                                        <div class="Course-Location-Outer-Icon ranked has-badge"></div>
                                                                         <span class=in>{{ course.provider.address }}</span></a>
                                                                 </li>
                                                             </ul>
 
                                                             <div class=flex>
                                                                 <a class="Anchor-byh49a-0 Course-Reviews-Outer-Container"
-                                                                    href="#">
+                                                                    href="{% url 'course_detail' course.pk %}#student-review-section">
 
                                                                 <div aria-label="{{ course.rating }} out of 5"
                                                                      class="Course-Reviews-Inner-Container Course-Rating-And-Reviews kiGUEr"
