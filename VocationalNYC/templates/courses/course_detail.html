@@ -331,21 +331,29 @@ color: #a2ccb6!important;
             }
         }
 
+
 </style>
 
 <div class="course-container">
     <h1 class="course-header">{{ course.name }}</h1>
 
     <div class="course-meta">
-        <p>
+
+        <p class="provider-info">
             🏫 <strong>Provider:</strong>
-<a href="{{ course.provider.website }}" target="_blank">{{ course.provider.name }}</a>
+            <a href="{{ course.provider.website }}" target="_blank">{{ course.provider.name }}</a>
+            {% if course.provider.verification_status %}
+                <span class="VerificationIcon" data-tooltip="Verified Provider">
+                    <img src="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/verified.png" srcset alt="Verified">
+                </span>
+            {% endif %}
         </p>
 
         <p onclick="location.href='/courses/map/?course_id={{ course.pk }}'" style="cursor:pointer;">
             📍 <strong>Location:</strong>
                         <a href="javascript:void()">{{ course.location }}</a>
         </p>
+
     </div>
 
     <div class="course-description">

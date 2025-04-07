@@ -13,10 +13,23 @@
 
              <link rel="stylesheet" href="{% static 'css/globals.css' %}">
 
+<style>
+    html, body {
+    height: 100%;
+    overflow: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
 
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+</style>
 
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" data-rh=true
           name=viewport>
+
 </head>
 <body>
 

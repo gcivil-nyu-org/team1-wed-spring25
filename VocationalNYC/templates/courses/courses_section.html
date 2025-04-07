@@ -16,21 +16,20 @@
                                                                     <h3 class="Course-Name-Inner-Container">
                                                                         <span class="Course-Title">
                                                                             {{ course.name }}
-                                                                            {% comment %}
-                                                                            <div class="Card__IconWrapper-sc-1ra20i5-2 Verification-Icon-Outer">
-                                                                                <picture class=Image__Picture-sc-412cjc-0>
-                                                                                    <img class="Image__PictureImage-sc-412cjc-1 Verification-Icon Image-sc-412cjc-2 Card__Claimed-sc-1ra20i5-3 kQDDcT Verification-Icon-Inner"
-                                                                                         src="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/verified.png"
-                                                                                         srcset
-                                                                                         alt="">
-                                                                                </picture>
-                                                                            </div>
-                                                                            {% endcomment %}
                                                                         </span>
                                                                     </h3>
                                                                 </a>
                                                             </div>
-                                                            <p class="Course-Provider">{{ course.provider.name }}</p>
+                                                            <p class="Course-Provider provider-info">
+                                                                <a href="{{ course.provider.website }}" target="_blank" style="color: black; text-decoration: none;">
+                                                                    {{ course.provider.name }}
+                                                                </a>
+                                                                {% if course.provider.verification_status %}
+                                                                    <span class="VerificationIcon" data-tooltip="Verified Provider">
+                                                                        <img src="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/verified.png" srcset alt="Verified">
+                                                                    </span>
+                                                                {% endif %}
+                                                            </p>
                                                         </div>
                                                         <div class="Course-Address-And-Reviews" spacing=3>
 
