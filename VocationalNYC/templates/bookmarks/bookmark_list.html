@@ -53,27 +53,20 @@
         {% csrf_token %}
         <div class="modal-header border-0">
           <h5 class="modal-title modal-header-text" id="createBookmarkListModalLabel">
-            📝 Create New Bookmark List
+            ➕ Create New Bookmark List
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
+<div class="modal-body">
   <label for="listName" class="modal-label">Name</label>
   <input type="text" class="modal-input" id="listName" name="name" placeholder="e.g. Bootcamps" required>
-</div>
-<!--<div class="modal-footer border-0 justify-content-between">-->
-<!--  <button type="button" class="cancel-button" data-bs-dismiss="modal">Cancel</button>-->
-<!--  <button type="submit" class="cta-button">Create</button>-->
-<!--</div>-->
 
-<div class="modal-footer border-0">
-  <div class="modal-button-left">
+  <div class="modal-footer aligned-footer border-0">
     <button type="button" class="cancel-button" data-bs-dismiss="modal">Cancel</button>
-  </div>
-  <div class="modal-button-right">
-    <button type="submit" class="cta-button">Create</button>
+    <button type="submit" class="create-button">Create</button>
   </div>
 </div>
+
       </form>
     </div>
   </div>

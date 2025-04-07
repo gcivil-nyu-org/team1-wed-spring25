@@ -54,6 +54,8 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   z-index: 2;
+      padding: 0 !important; /* remove all internal padding */
+
 }
 
 .glass-modal .modal-body,
@@ -127,25 +129,7 @@
         color: var(--primary);
     }
 
-    .cta-button {
-        display: inline-block;
-        padding: 0.9rem 2.2rem;
-        font-weight: 800;
-        font-size: 1rem;
-        border: none;
-        border-radius: 100px;
-        background: linear-gradient(to right, var(--green) 0%, var(--sand) 50%, var(--peach) 100%);
-        background-size: 500%;
-        color: white;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.15);
-        margin-bottom: 2rem;
-    }
 
-    .cta-button:hover {
-        animation: gradient 2s forwards;
-    }
 
     @keyframes gradient {
         0% {
@@ -165,9 +149,13 @@
         border: 1px solid var(--primary);
         color: #1e3a2a;
         margin-bottom: 2rem;
+            align-items: center; /* vertical centering */
+
     }
 
-
+.alert.alert-info p {
+    margin-bottom: 0;
+}
 
 
     .bookmark-meta li {
@@ -306,25 +294,35 @@
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(162, 204, 182, 0.2);
+
 }
 
 
-
-.cancel-button:hover {
-  background: rgba(0, 0, 0, 0.1);
-}
 
 .modal-footer {
   display: flex;
   justify-content: space-between; /* ← NOW BUTTONS WILL GO LEFT & RIGHT */
   align-items: center;
-  gap: 1rem;
   padding: 0; /* Optional: trim any extra spacing */
   margin-top: 1.5rem; /* Optional: spacing from input */
 }
 
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.aligned-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
 .cancel-button,
-.cta-button {
+.create-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -335,31 +333,55 @@
   font-size: 1rem;
   line-height: 1;
   letter-spacing: 0.02em;
-  border-radius: 100px;
+  border-radius: 1rem;
   border: none;
   cursor: pointer;
   box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.08);
 }
 
 
-.cta-button {
+.create-button {
   background: linear-gradient(to right, var(--green) 0%, var(--sand) 50%, var(--peach) 100%);
   background-size: 500%;
   color: white;
   transition: all 0.3s ease;
+    margin-right: 0!important;
+
 }
 
-.cta-button:hover {
+.create-button:hover {
   animation: gradient 2s forwards;
 }
 
 .cancel-button {
-  background: rgba(0, 0, 0, 0.05);
-  color: #374151;
+  background: linear-gradient(to right, #e5e7eb 0%, #d1d5db 50%, #9ca3af 100%);
+  background-size: 500%;
+      color: white;
   transition: background 0.3s ease;
+margin-left: 0!important;
 }
 
 .cancel-button:hover {
-  background: rgba(0, 0, 0, 0.1);
+  animation: gradient 2s forwards;
 }
 
+
+    .cta-button {
+        display: inline-block;
+        padding: 0.9rem 2.2rem;
+        font-weight: 800;
+        font-size: 1rem;
+        border: none;
+        border-radius: 100px;
+        background: linear-gradient(to right, var(--green) 0%, var(--sand) 50%, var(--peach) 100%);
+        background-size: 500%;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.15);
+        margin-bottom: 2rem;
+    }
+
+    .cta-button:hover {
+        animation: gradient 2s forwards;
+    }
