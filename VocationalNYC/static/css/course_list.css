@@ -30,7 +30,7 @@
             --blue-90: #00206B;
             --blue-80: #033493;
             --blue-70: #064AB7;
-            --blue-50: #1263D3;
+        --blue-50: #1263D3;
             --blue-30: #358CE7;
             --blue-20: #6AB4F4;
             --blue-15: #B1DCFB;
@@ -64,12 +64,10 @@
 
         a {
             text-decoration: none;
-            color: var(--blue-50);
             transition: color 0.5s
         }
 
         a:hover, a:active {
-            color: var(--blue-90)
         }
 
         .Small-Icon {
@@ -338,7 +336,7 @@
     padding: 0px 0rem;
     max-width: 1212px;
 
-    width: 1212px;
+    width: 1212px!important;
 
     margin-left: auto;
     margin-right: auto;
@@ -450,20 +448,17 @@
             font-size: 0.75rem;
             line-height: 1.3;
             font-weight: 700;
-            color: rgb(18, 99, 211)
-        }
+color: #a2ccb6;!important;        }
 
         a.Course-Reviews-Outer-Container {
             transition: color 0.5s
         }
 
-        .Course-Reviews-Outer-Container a:focus, a.Course-Reviews-Outer-Container:focus, .Course-Reviews-Outer-Container a:hover, a.Course-Reviews-Outer-Container:hover, .Course-Reviews-Outer-Container a:active, a.Course-Reviews-Outer-Container:active, .Course-Reviews-Outer-Container a.active, a.Course-Reviews-Outer-Container.active {
-            color: rgb(0, 32, 107) !important
-        }
+        .Course-Reviews-Outer-Container p:focus, a.Course-Reviews-Outer-Container:focus, .Course-Reviews-Outer-Container p:hover, a.Course-Reviews-Outer-Container:hover, .Course-Reviews-Outer-Container p:active, a.Course-Reviews-Outer-Container:active, .Course-Reviews-Outer-Container p.active, a.Course-Reviews-Outer-Container.active {
+color: #a2ccb6;!important;           }
 
         .Course-Reviews-Outer-Container:hover {
-            color: rgb(0, 32, 107) !important
-        }
+color: #a2ccb6;!important;           }
 
         .Course-Reviews-Outer-Container:hover {
             transition: 0.5s
@@ -1205,12 +1200,11 @@ visibility: hidden !important;
             align-self: center;
             vertical-align: middle;
             margin-right: 0rem;
-            stroke: rgb(18, 99, 211);
+            stroke: #a2ccb6!important;
             stroke-width: 4px
         }
 
         .Course-Review-Quantity {
-
             display: inline
         }
 
@@ -2899,14 +2893,14 @@ margin-top: 1em;
         }
 
 
-html, body {
-    height: 100%;
-    overflow: auto;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-}
+/*html, body {*/
+/*    height: 100%;*/
+/*    overflow: auto;*/
+/*    scrollbar-width: none; !* Firefox *!*/
+/*    -ms-overflow-style: none; !* IE and Edge *!*/
+/*}*/
 
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
-}
+/*html::-webkit-scrollbar,*/
+/*body::-webkit-scrollbar {*/
+/*    display: none; !* Chrome, Safari, Opera *!*/
+/*}*/

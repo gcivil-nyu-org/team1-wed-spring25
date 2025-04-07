@@ -10,5 +10,9 @@
   "course_map": {
     "title": "Explore Courses on a Map",
     "content": "Use the interactive map to visually discover vocational training programs across the city. See what’s available near you, around your workplace, or in a neighborhood you’re considering moving to — all in just a few clicks.<br>Each pin represents a real opportunity to advance your career. Hover to preview course names, click to view program details, and explore the geographic spread of high-impact learning paths. Whether you're looking for something local or just curious what’s nearby, the map brings location-based discovery to life."
+  },
+    "course_detail": {
+"title": "Course Overview",
+"content": "Find essential details about this program — including location, duration, cost, and reviews. Get clear on what’s offered and whether it fits your next move."
   }
 }
