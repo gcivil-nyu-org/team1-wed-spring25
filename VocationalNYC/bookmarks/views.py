@@ -72,9 +72,6 @@ def add_bookmark(request, course_id):
 
 @login_required
 def delete_bookmark(request, list_id, bookmark_id):
-    """
-    Delete a Course from a Bookmark List
-    """
     bookmark = get_object_or_404(
         Bookmark,
         id=bookmark_id,
@@ -84,7 +81,9 @@ def delete_bookmark(request, list_id, bookmark_id):
     if request.method == "POST":
         bookmark.delete()
         return redirect("bookmark_list_detail", list_id=list_id)
-    return render(request, "bookmarks/delete_bookmark.html", {"bookmark": bookmark})
+
+    # 🧹 no more confirmation page — just redirect back
+    return redirect("bookmark_list_detail", list_id=list_id)
 
 
 @login_required
@@ -112,17 +111,14 @@ def create_bookmark_list(request):
 
 @login_required
 def delete_bookmark_list(request, list_id):
-    """
-    Delete a Bookmark List
-    """
     bookmark_list = get_object_or_404(BookmarkList, list_id=list_id, user=request.user)
-    if bookmark_list.name == "default":
+
+    if bookmark_list.name.lower() == "default":
         messages.error(request, "Default bookmark list cannot be deleted.")
         return redirect("bookmark_list")
+
     if request.method == "POST":
         bookmark_list.delete()
         messages.success(request, "Bookmark list deleted successfully.")
-        return redirect("bookmark_list")
-    return render(
-        request, "bookmarks/delete_bookmark_list.html", {"bookmark_list": bookmark_list}
-    )
+
+    return redirect("bookmark_list")  # ← remove render() and always redirect
