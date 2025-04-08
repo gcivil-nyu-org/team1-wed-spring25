@@ -241,8 +241,26 @@ margin-left: auto;        padding: 4rem;
   margin: 0;
 }
 
-/* Button styles stay the same */
-.delete-button {
+.rename-button {
+  padding: 0.5rem 1rem;
+ background-color: #fde68a; /* soft yellow */
+  color: #92400e; /* dark amber text */
+  border: none;
+  border-radius: 9999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rename-button:hover {
+  background-color: #fcd34d; /* brighter yellow on hover */
+}
+
+    .delete-button {
   padding: 0.5rem 1rem;
   background-color: #fecaca;
   color: #991b1b;
@@ -260,7 +278,16 @@ margin-left: auto;        padding: 4rem;
 .delete-button:hover {
   background-color: #fca5a5;
 }
+.button-group {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-left: auto; /* push button group to the right edge */
+}
 
+.delete-button {
+  margin-left: auto; /* this ensures space between buttons and right edge */
+}
 /* Optional: style for empty message */
 .empty-message {
   text-align: center;
