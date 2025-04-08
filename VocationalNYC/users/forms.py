@@ -143,7 +143,7 @@ class ProfileUpdateForm(forms.ModelForm):
 class StudentProfileForm(forms.ModelForm):
     class Meta:
         model = Student
-        fields = ['bio']
+        fields = ["bio"]
         widgets = {
-            'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            "bio": forms.Textarea(attrs={"class": "form-control", "rows": 4}),
         }

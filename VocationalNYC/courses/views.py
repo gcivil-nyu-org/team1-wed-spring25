@@ -102,14 +102,16 @@ class CourseListView(generic.ListView):
                         "internship_hours": internship_hours,
                         "practical_hours": practical_hours,
                     }
-                    
+
                     # Create or update the course
                     logger.info(f"Updating/creating course: {course_name}")
                     course_obj, created = Course.objects.update_or_create(
                         name=course_name, provider=provider, defaults=course_defaults
                     )
-                    logger.info(f"Course {'created' if created else 'updated'}: {course_name}")
-                    
+                    logger.info(
+                        f"Course {'created' if created else 'updated'}: {course_name}"
+                    )
+
                     # Convert keywords to tags
                     if course_defaults["keywords"]:
                         logger.debug(f"Processing tags for course: {course_name}")
@@ -141,20 +143,20 @@ class CourseListView(generic.ListView):
         return courses
 
     def get_context_data(self, **kwargs):
-            context = super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
-            # Add bookmark list data
-            user = self.request.user
-            if user.is_authenticated:
-                bookmark_lists = BookmarkList.objects.filter(user=user)
-                default_list = bookmark_lists.first()
-            else:
-                bookmark_lists = []
-                default_list = None
+        # Add bookmark list data
+        user = self.request.user
+        if user.is_authenticated:
+            bookmark_lists = BookmarkList.objects.filter(user=user)
+            default_list = bookmark_lists.first()
+        else:
+            bookmark_lists = []
+            default_list = None
 
-            context["bookmark_lists"] = bookmark_lists
-            context["default_bookmark_list"] = default_list
-            return context
+        context["bookmark_lists"] = bookmark_lists
+        context["default_bookmark_list"] = default_list
+        return context
 
 
 class CourseDetailView(LoginRequiredMixin, generic.DetailView):

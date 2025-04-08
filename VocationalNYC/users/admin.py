@@ -67,4 +67,5 @@ class StudentAdmin(admin.ModelAdmin):
 
     def get_tags_display(self, obj):
         return ", ".join([tag.name for tag in obj.tags.all()])
-    get_tags_display.short_description = 'Tags'
+
+    get_tags_display.short_description = "Tags"

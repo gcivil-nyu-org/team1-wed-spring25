@@ -18,14 +18,16 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return f"{self.role.capitalize()}: {self.username}"
 
+
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    
+
     def __str__(self):
         return self.name
-    
+
     class Meta:
-        ordering = ['name']
+        ordering = ["name"]
+
 
 class Student(models.Model):
     student_id = models.AutoField(primary_key=True)
@@ -33,7 +35,7 @@ class Student(models.Model):
         CustomUser, on_delete=models.CASCADE, related_name="student_profile"
     )
     bio = models.TextField(blank=True, null=True)
-    tags = models.ManyToManyField(Tag, related_name='student', blank=True)
+    tags = models.ManyToManyField(Tag, related_name="student", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
