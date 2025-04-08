@@ -20,13 +20,13 @@ class CourseForm(forms.ModelForm):
         ]
 
         def __init__(self, *args, **kwargs):
-            self.provider = kwargs.pop('provider', None)
+            self.provider = kwargs.pop("provider", None)
             super().__init__(*args, **kwargs)
-        
+
         def clean_location(self):
-            location = self.cleaned_data.get('location', '')
+            location = self.cleaned_data.get("location", "")
             if not location or location.strip() == "":
-                if self.provider and hasattr(self.provider, 'address'):
+                if self.provider and hasattr(self.provider, "address"):
                     return self.provider.address
                 else:
                     return location
