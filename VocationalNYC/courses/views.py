@@ -14,7 +14,7 @@ import hashlib
 from users.models import Provider
 from .models import Course
 from django.http import JsonResponse
-from bookmarks.models import BookmarkList  # make sure this import is correct for your app
+from bookmarks.models import BookmarkList
 
 
 logger = logging.getLogger(__name__)
