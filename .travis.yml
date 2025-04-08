@@ -43,8 +43,8 @@ script:
 
 after_success:
   - docker-compose -f docker-compose.ci.yml exec -T -u root app ls -la
-  - docker-compose -f docker-compose.ci.yml exec -T -u root app pip install coveralls
-  - docker-compose -f docker-compose.ci.yml exec -T -u root app coveralls --verbose
+  - docker-compose -f docker-compose.ci.yml exec -T -e COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN -u root app pip install coveralls
+  - docker-compose -f docker-compose.ci.yml exec -T -e COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN -u root app coveralls --verbose
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker-compose -f docker-compose.prod.yml build
   - docker-compose -f docker-compose.prod.yml push
