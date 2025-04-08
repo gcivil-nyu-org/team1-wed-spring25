@@ -118,10 +118,10 @@ body::-webkit-scrollbar {
                                                         class="Filters"><span
                                                         class="Filters-Inside">Clear Filters</span>
                                                 </button>
-                                            {% if query %}
+                                            {% if keywords %}
                                             <li class="Applied-Filters-Outline">
                                                 <button aria-label="Remove Keywords filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
-                                                    <span class="Filters-Inside">Keywords: {{ query }}</span>
+                                                    <span class="Filters-Inside">Keywords: {{ keywords }}</span>
                                                     <span class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon">
                                                         <svg aria-hidden="true" class="Small-Icon" fill="var(--color)" height="8px" viewBox="0 0 38 38" width="8px">
                                                             <g fill-rule="evenodd" stroke="none" stroke-width="1">
@@ -212,7 +212,7 @@ body::-webkit-scrollbar {
                                                             autocomplete=off
                                                             class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
                                                             placeholder="Keywords"
-                                                            name="Keywords"
+                                                            name="keywords"
                                                             type=text
                                                             value="{{ keywords }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
