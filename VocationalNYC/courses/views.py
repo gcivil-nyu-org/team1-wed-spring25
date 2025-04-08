@@ -147,6 +147,7 @@ def filterCourses(request):
     max_cost = request.GET.get("max_cost", None)
     location = request.GET.get("location", "")
     min_classroom_hours = request.GET.get("min_classroom_hours", None)
+    tags = request.GET.getlist("tags", [])  # Get multiple tag values
 
     courses = Course.objects.all()
 
@@ -171,6 +172,10 @@ def filterCourses(request):
 
     if min_classroom_hours is not None and min_classroom_hours.isdigit():
         courses = courses.filter(classroom_hours__gte=int(min_classroom_hours))
+
+    if tags:
+        courses = courses.filter(tags__name__in=tags).distinct()
+
     courses = courses.annotate(
         avg_rating=Avg("reviews__score_rating"), reviews_count=Count("reviews")
     )

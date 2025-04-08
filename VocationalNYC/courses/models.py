@@ -1,6 +1,11 @@
 from django.db import models
 from users.models import Provider
 
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    
+    def __str__(self):
+        return self.name
 
 # Create your models here.
 class Course(models.Model):
@@ -17,6 +22,7 @@ class Course(models.Model):
     lab_hours = models.IntegerField(default=0)
     internship_hours = models.IntegerField(default=0)
     practical_hours = models.IntegerField(default=0)
+    tags = models.ManyToManyField(Tag, related_name='courses', blank=True)
 
     def __str__(self):
         return f"{self.name}"

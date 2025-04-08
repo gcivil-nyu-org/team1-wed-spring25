@@ -331,14 +331,44 @@ color: #a2ccb6!important;
             }
         }
 
+    .course-tags {
+        margin: 1rem 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
 
+    .tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        background: var(--primary-light);
+        color: var(--primary-dark);
+        border-radius: 100px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .tag:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: var(--neon-glow);
+    }
+
+    .no-tags {
+        color: #6b7280;
+        font-style: italic;
+        font-size: 0.875rem;
+        padding: 0.5rem 0;
+    }
 </style>
 
 <div class="course-container">
     <h1 class="course-header">{{ course.name }}</h1>
 
     <div class="course-meta">
-
         <p class="provider-info">
             🏫 <strong>Provider:</strong>
             <a href="{{ course.provider.website }}" target="_blank">{{ course.provider.name }}</a>
@@ -351,9 +381,19 @@ color: #a2ccb6!important;
 
         <p onclick="location.href='/courses/map/?course_id={{ course.pk }}'" style="cursor:pointer;">
             📍 <strong>Location:</strong>
-                        <a href="javascript:void()">{{ course.location }}</a>
+            <a href="javascript:void()">{{ course.location }}</a>
         </p>
 
+        <div class="course-tags">
+            <p>🏷️ <strong>Tags:</strong></p>
+            {% if course.tags.exists %}
+                {% for tag in course.tags.all %}
+                    <span class="tag">{{ tag.name }}</span>
+                {% endfor %}
+            {% else %}
+                <span class="no-tags">No tags available</span>
+            {% endif %}
+        </div>
     </div>
 
     <div class="course-description">
@@ -365,8 +405,8 @@ color: #a2ccb6!important;
         <p>💰 <strong>Cost:</strong> ${{ course.cost }}</p>
         <p>📘 <strong>Classroom Hours:</strong> {{ course.classroom_hours }}</p>
         <p>🧪 <strong>Lab Hours:</strong> {{ course.lab_hours }}</p>
-        <p>🏢 <strong>Internship Hours:</strong> {{ course.internship_hours }}</p>
         <p>🔧 <strong>Practical Hours:</strong> {{ course.practical_hours }}</p>
+        <p>🏢 <strong>Internship Hours:</strong> {{ course.internship_hours }}</p>
     </div>
 
     <div class="review-section" id="student-review-section">
@@ -374,51 +414,52 @@ color: #a2ccb6!important;
 
         {% if reviews %}
             <ul class="review-list">
-{% for review in reviews %}
-<li class="review-item">
-    <div class="review-header-row">
-        <div class="review-user-icon">
-            <svg class="person-crop-circle" height="28" viewBox="0 0 64 64" width="28" xmlns="http://www.w3.org/2000/svg">
-                <path d="M29.9475268,59.5867724 C46.1333288,59.5867724 59.534715,46.15661 59.534715,29.9998218 C59.534715,13.8140198 46.1043387,0.412871288 29.9185367,0.412871288 C13.7617248,0.412871288 0.36059406,13.8140198 0.36059406,29.9998218 C0.36059406,46.15661 13.7907743,59.5867724 29.9475268,59.5867724 Z M29.9475268,39.8621585 C21.2165169,39.8621585 14.5159426,42.9948714 11.5572297,46.4756852 C7.67029902,42.0956436 5.32073466,36.3523367 5.32073466,29.9998218 C5.32073466,16.3085941 16.2273089,5.34403961 29.9185367,5.34403961 C43.6097644,5.34403961 54.5743189,16.3085941 54.6039513,29.9998218 C54.6325367,36.3523367 52.253804,42.1246337 48.3378832,46.4756852 C45.4081605,42.9948714 38.6785961,39.8621585 29.9475268,39.8621585 Z M29.9475268,34.9309902 C35.5458832,34.9889704 39.8968931,30.2318614 39.8968931,23.9954258 C39.8968931,18.1360396 35.5168337,13.291901 29.9475268,13.291901 C24.3782198,13.291901 19.9691703,18.1360396 19.9979358,23.9954258 C20.0272099,30.2318614 24.3782198,34.8729506 29.9475268,34.9309902 Z" transform="translate(2 2)"></path>
-            </svg>
-        </div>
-
-        <div class="review-header-text">
-            <span class="review-username">{{ review.user.username }}</span>
-<div class="review-stars" aria-label="{{ review.score_rating }} out of 5">
-    {% for i in "12345"|make_list %}
-        {% if forloop.counter <= review.score_rating %}
-            <svg class="Course-Rating" fill="currentColor" stroke="currentColor">
-                <use xlink:href="#star"></use>
-            </svg>
-        {% else %}
-            <svg class="Course-Rating" fill="white" stroke="currentColor">
-                <use xlink:href="#star"></use>
-            </svg>
-        {% endif %}
-    {% endfor %}
-    <span class="review-score">({{ review.score_rating }}/5)</span>
-</div>        </div>
-    </div>
-
-    <div class="review-body">
-        <p>"{{ review.content }}"</p>
-        <div class="review-timestamp">
-    {% timezone "America/New_York" %}
-Posted on {{ review.created_at|date:"l, F j, Y \\a\\t g:i:s A" }}    {% endtimezone %}
-</div>
-    </div>
-
-    {% if user == review.user %}
-<form method="POST" action="{% url 'review-delete' review.pk %}" class="delete-review-form">
-    {% csrf_token %}
-    <button type="submit"
-            class="delete-button"
-            onclick="return confirm('Are you sure you want to delete this review?');">
-        🗑️ Delete
-    </button>
-</form>    {% endif %}
-</li>{% endfor %}
+                {% for review in reviews %}
+                <li class="review-item">
+                    <div class="review-header-row">
+                        <div class="review-user-icon">
+                            <svg class="person-crop-circle" height="28" viewBox="0 0 64 64" width="28" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M29.9475268,59.5867724 C46.1333288,59.5867724 59.534715,46.15661 59.534715,29.9998218 C59.534715,13.8140198 46.1043387,0.412871288 29.9185367,0.412871288 C13.7617248,0.412871288 0.36059406,13.8140198 0.36059406,29.9998218 C0.36059406,46.15661 13.7907743,59.5867724 29.9475268,59.5867724 Z M29.9475268,39.8621585 C21.2165169,39.8621585 14.5159426,42.9948714 11.5572297,46.4756852 C7.67029902,42.0956436 5.32073466,36.3523367 5.32073466,29.9998218 C5.32073466,16.3085941 16.2273089,5.34403961 29.9185367,5.34403961 C43.6097644,5.34403961 54.5743189,16.3085941 54.6039513,29.9998218 C54.6325367,36.3523367 52.253804,42.1246337 48.3378832,46.4756852 C45.4081605,42.9948714 38.6785961,39.8621585 29.9475268,39.8621585 Z M29.9475268,34.9309902 C35.5458832,34.9889704 39.8968931,30.2318614 39.8968931,23.9954258 C39.8968931,18.1360396 35.5168337,13.291901 29.9475268,13.291901 C24.3782198,13.291901 19.9691703,18.1360396 19.9979358,23.9954258 C20.0272099,30.2318614 24.3782198,34.8729506 29.9475268,34.9309902 Z" transform="translate(2 2)"></path>
+                            </svg>
+                        </div>
+                        <div class="review-header-text">
+                            <span class="review-username">{{ review.user.username }}</span>
+                            <div class="review-stars" aria-label="{{ review.score_rating }} out of 5">
+                                {% for i in "12345"|make_list %}
+                                    {% if forloop.counter <= review.score_rating %}
+                                        <svg class="Course-Rating" fill="currentColor" stroke="currentColor">
+                                            <use xlink:href="#star"></use>
+                                        </svg>
+                                    {% else %}
+                                        <svg class="Course-Rating" fill="white" stroke="currentColor">
+                                            <use xlink:href="#star"></use>
+                                        </svg>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="review-score">({{ review.score_rating }}/5)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-body">
+                        <p>"{{ review.content }}"</p>
+                    </div>
+                    <div class="review-timestamp">
+                        {% timezone "America/New_York" %}
+                        Posted on {{ review.created_at|date:"l, F j, Y \\a\\t g:i:s A" }}
+                        {% endtimezone %}
+                    </div>
+                    {% if user == review.user %}
+                    <form method="POST" action="{% url 'review-delete' review.pk %}" class="delete-review-form">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="delete-button"
+                                onclick="return confirm('Are you sure you want to delete this review?');">
+                            🗑️ Delete
+                        </button>
+                    </form>
+                    {% endif %}
+                </li>
+                {% endfor %}
             </ul>
         {% else %}
             <p class="text-gray-500 italic">No reviews yet. Be the first to review!</p>
@@ -427,20 +468,19 @@ Posted on {{ review.created_at|date:"l, F j, Y \\a\\t g:i:s A" }}    {% endtimez
 
     <section class="review-submission">
         {% if user.is_authenticated %}
+        <form method="POST" action="{% url 'review-create' course.pk %}">
+            {% csrf_token %}
             <header>
                 <p>✍️ Leave a Review</p>
             </header>
+            <label for="content">Your Review:</label>
+            <textarea name="content" rows="5" required></textarea>
 
-            <form method="POST" action="{% url 'review-create' course.pk %}">
-                {% csrf_token %}
-                <label for="content">Your Review:</label>
-                <textarea name="content" rows="5" required></textarea>
+            <label for="score_rating">Rating (1–5):</label>
+            <input type="number" name="score_rating" min="1" max="5" required>
 
-                <label for="score_rating">Rating (1–5):</label>
-                <input type="number" name="score_rating" min="1" max="5" required>
-
-                <button type="submit" class="cta-button">🚀 Submit Review</button>
-            </form>
+            <button type="submit" class="cta-button">🚀 Submit Review</button>
+        </form>
         {% else %}
             <p class="text-gray-700 text-lg mt-6">
                 <a href="{% url 'login' %}" class="text-blue-600 hover:underline font-semibold">Log in</a> to submit a review.
@@ -448,5 +488,4 @@ Posted on {{ review.created_at|date:"l, F j, Y \\a\\t g:i:s A" }}    {% endtimez
         {% endif %}
     </section>
 </div>
-
 {% endblock %}
