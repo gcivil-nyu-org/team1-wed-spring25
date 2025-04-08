@@ -128,7 +128,7 @@
                                             {% for bookmark in list.bookmark.all %}
                                                 <li class="list-group-item">
                                                     <a href="{% url 'course_detail' bookmark.course.course_id %}">
-                                                        {{ bookmark.course.course_name }}
+                                                        {{ bookmark.course.name }}
                                                     </a>
                                                     <small class="text-muted d-block">
                                                         Bookmarked on: {{ bookmark.time|date:"F j, Y" }}
@@ -147,6 +147,21 @@
 
                         <div class="reviews-section mt-4">
                             <h5>My Reviews</h5>
+                            <!-- Debug Information -->
+                            {% if debug %}
+                            <div class="alert alert-info">
+                                <h6>Debug Info:</h6>
+                                <p>User ID: {{ user.id }}</p>
+                                <p>Role: {{ user.role }}</p>
+                                <p>Reviews Count: {{ reviews|length }}</p>
+                                <p>Raw Reviews Data:</p>
+                                <ul>
+                                {% for review in reviews %}
+                                    <li>ID: {{ review.review_id }} - Course: {{ review.course.name|default:"No course" }}</li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
                             {% if reviews %}
                                 <div class="reviews-list">
                                     {% for review in reviews %}

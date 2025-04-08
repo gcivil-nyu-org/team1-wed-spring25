@@ -1,10 +1,7 @@
 import requests
-
 import sys
+import logging
 
-# import os
-# from django.conf import settings
-# from django.core.files.storage import default_storage
 from django.shortcuts import render, redirect
 from django.views import generic
 from allauth.account.views import SignupView
@@ -19,7 +16,9 @@ from django.http import JsonResponse
 
 from users.models import Provider, Student
 from bookmarks.models import BookmarkList
+from review.models import Review
 
+logger = logging.getLogger(__name__)
 
 def login(request):
     return render(request, "users/login.html")
@@ -107,21 +106,28 @@ def profile_view(request):
         except Provider.DoesNotExist:
             context["provider_verification_form"] = ProviderVerificationForm()
     elif request.user.role == "career_changer":
+        # Get student profile if exists
         try:
             student = request.user.student_profile
             context["student"] = student
-            # Add bookmark lists to context
-            bookmark_lists = request.user.bookmark_list.all().prefetch_related(
-                "bookmark__course"
-            )
-            context["bookmark_lists"] = bookmark_lists
-            # Add reviews to context
-            reviews = request.user.reviews.select_related("course").order_by(
-                "-created_at"
-            )
-            context["reviews"] = reviews
         except Student.DoesNotExist:
-            pass
+            logger.info(f"Student profile not found for user {request.user.id}")
+            # Create student profile
+            student = Student.objects.create(user=request.user)
+            context["student"] = student
+        
+        # Add bookmark lists to context
+        bookmark_lists = request.user.bookmark_list.all().prefetch_related(
+            "bookmark__course"
+        )
+        context["bookmark_lists"] = bookmark_lists
+
+        # Get reviews (independent of student profile)
+        logger.debug(f"Fetching reviews for user {request.user.id}")
+        reviews = Review.objects.filter(user=request.user).select_related("course")
+        logger.debug(f"Found {reviews.count()} reviews")
+        context["reviews"] = reviews
+        context["debug"] = False # Set debug to False for production
 
     return render(request, "users/profile.html", context)
 
