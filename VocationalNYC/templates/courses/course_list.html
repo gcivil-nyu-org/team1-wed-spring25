@@ -10,13 +10,27 @@
         href="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/favicon.png"
         type="image/png">
      <link rel="stylesheet" href="{% static 'css/course_list.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
              <link rel="stylesheet" href="{% static 'css/globals.css' %}">
 
+<style>
+    html, body {
+    height: 100%;
+    overflow: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
 
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+</style>
 
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" data-rh=true
           name=viewport>
+
 </head>
 <body>
 
@@ -54,9 +68,6 @@
             <div class="Main-Body-Area">
 
                 <!--title and paragraph-->
-
-{% if intro %}
-
                 <div class="Introduction content">
 
                     <header class="Introduction-Title-And-Content">
@@ -66,21 +77,13 @@
 
                                 <div class="Introduction-Text-Title">
                                     <h1 class="Introduction-Title">
-
-{{ intro.title }}
-
+                                        Discover Courses to Advance Your Career
                                     </h1>
                                 </div>
 
                                 <p class="Introduction-Content" style="margin-top: 1rem !important;">
-
-                                                        {{ intro.content|safe }}
-
-
-
-
-
-                            </p>
+                                    Explore a wide range of vocational programs designed to boost your skills and expand your career opportunities. Whether you're aiming to enhance your current expertise or embark on a new career path, you'll find flexible and affordable options that suit your needs.<br>Use the filters to refine your search by cost, location, and duration to identify the perfect course for you. Each listing includes detailed descriptions, costs, and learning outcomes to ensure you make an informed decision. Start discovering today and unlock new opportunities for growth and success.
+                                </p>
 
                             </div>
 
@@ -90,7 +93,7 @@
 
                 </div>
 
-{% endif %}
+
                 <!--horizontal-filter-bar-->
                 <div class="Horizontal-Filter-Bar-Outer-Container">
 
@@ -115,22 +118,26 @@
                                                         class="Filters"><span
                                                         class="Filters-Inside">Clear Filters</span>
                                                 </button>
+                                            {% if keywords %}
                                             <li class="Applied-Filters-Outline">
-                                                <button aria-label="Clear Ranking filter."
-                                                        class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
-                                                    <span class="Filters-Inside">filter 1</span><span
-                                                        class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon"><svg
-                                                        aria-hidden=true class="Small-Icon"
-                                                        fill=var(--color) height=8px
-                                                        viewBox="0 0 38 38" width=8px><g
-                                                        fill-rule=evenodd stroke=none stroke-width=1><polygon
-                                                        fill-rule=nonzero
-                                                        points="33.4 0 19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38 38 33.399 23.6 18.999 38 4.6"></polygon></g></svg></span>
+                                                <button aria-label="Remove Keywords filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
+                                                    <span class="Filters-Inside">Keywords: {{ keywords }}</span>
+                                                    <span class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon">
+                                                        <svg aria-hidden="true" class="Small-Icon" fill="var(--color)" height="8px" viewBox="0 0 38 38" width="8px">
+                                                            <g fill-rule="evenodd" stroke="none" stroke-width="1">
+                                                                <polygon fill-rule="nonzero" points="33.4 0 19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38 38 33.399 23.6 18.999 38 4.6"></polygon>
+                                                            </g>
+                                                        </svg>
+                                                    </span>
                                                 </button>
+                                            </li>
+                                            {% endif %}
                                         </ul>
                                     </div>
                                 </div>
                             </div>
+
+
                             <div class="Controls">
 
                                 <div class="Controls-Text">
@@ -193,7 +200,7 @@
                                                 Keywords
                                             </div>
                                         </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
                                             <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
                                                 <div class="autosuggest__Container-sc-hb0rq-0 Input">
                                                     <div aria-expanded=false aria-haspopup=listbox
@@ -204,9 +211,9 @@
                                                             autocomplete=off
                                                             class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
                                                             placeholder="Keywords"
-                                                            name="query"
+                                                            name="keywords"
                                                             type=text
-                                                            value>
+                                                            value="{{ keywords }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 id=react-auto
                                                                 role=listbox></div>
@@ -215,7 +222,68 @@
                                             </div>
                                         </div>
                                     </fieldset>
-                                    
+
+                                                                                                            <fieldset
+                                        class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                        name="schoolName">
+                                        <legend class=" Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Provider
+                                            </div>
+                                        </legend>
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
+                                                    <div aria-expanded=false aria-haspopup=listbox
+                                                        aria-owns=react-auto
+                                                        class=react-autosuggest__container
+                                                        role=combobox><input aria-autocomplete=list
+                                                            aria-controls=react-auto
+                                                            autocomplete=off
+                                                            class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
+                                                            placeholder="Provider"
+                                                            name="provider"
+                                                            type=text
+                                                            value="{{ provider }}">
+                                                            <div class="react-autosuggest__suggestions-container sf-hidden"
+                                                                role=listbox></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                                                        <fieldset
+                                        class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                        name="schoolName">
+                                        <legend class=" Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Min Rating
+                                            </div>
+                                        </legend>
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
+                                                    <div aria-expanded=false aria-haspopup=listbox
+                                                        aria-owns=react-auto
+                                                        class=react-autosuggest__container
+                                                        role=combobox><input aria-autocomplete=list
+                                                            aria-controls=react-auto
+                                                            autocomplete=off
+                                                            class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
+                                                            placeholder="Min Rating"
+                                                            name="min_rating"
+                                                            type="number" step="0.1"  min="0" max="5"
+                                                            value="{{ min_rating }}">
+                                                            <div class="react-autosuggest__suggestions-container sf-hidden"
+                                                                role=listbox></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+
                                     <fieldset
                                         class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
                                         name="schoolName">
@@ -224,7 +292,7 @@
                                                 Min Cost
                                             </div>
                                         </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
                                             <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
                                                 <div class="autosuggest__Container-sc-hb0rq-0 Input">
                                                     <div aria-expanded=false aria-haspopup=listbox
@@ -238,7 +306,7 @@
                                                             placeholder="Min Cost"
                                                             type="number"
                                                             step="1"
-                                                            value>
+                                                            value="{{ min_cost }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 role=listbox></div>
                                                     </div>
@@ -255,7 +323,7 @@
                                                 Max Cost
                                             </div>
                                         </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
                                             <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
                                                 <div class="autosuggest__Container-sc-hb0rq-0 Input">
                                                     <div aria-expanded=false aria-haspopup=listbox
@@ -269,7 +337,7 @@
                                                             placeholder="Max Cost"
                                                             type="number"
                                                             step="1"
-                                                            value>
+                                                            value="{{ max_cost }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 role=listbox></div>
                                                     </div>
@@ -286,7 +354,7 @@
                                                 Location
                                             </div>
                                         </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
                                             <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
                                                 <div class="autosuggest__Container-sc-hb0rq-0 Input">
                                                     <div aria-expanded=false aria-haspopup=listbox
@@ -299,7 +367,7 @@
                                                             name="location"
                                                             placeholder="City, State or ZIP"
                                                             type=text
-                                                            value>
+                                                            value="{{ location }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 id=location-input
                                                                 role=listbox></div>
@@ -310,7 +378,7 @@
                                                     style="--width:100%">
                                                     <label class="select__LabelStyled-sc-i9bbt3-0 All-Distances-Inner-Frame">
                                                         <select class="select__SelectStyled-sc-i9bbt3-1 All-Distances-Content-Box" name="distance">
-                                                            <option selected value>All Distances
+                                                            <option selected value>(Not Working) All Distances
                                                             <option value=25>Within 25 miles
                                                             <option value=50>Within 50 miles
                                                             <option value=100>Within 100 miles
@@ -350,7 +418,7 @@
                                                 Area of Study
                                             </div>
                                         </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
                                             <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
                                                 <span class="select__Container-sc-i9bbt3-3 All-Distances-Outer-Frame"
                                                     style=--width:100%><label
@@ -419,7 +487,7 @@
                                                 Min Classroom Hours
                                             </div>
                                         </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
                                             <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
                                                 <div class="autosuggest__Container-sc-hb0rq-0 Input">
                                                     <div aria-expanded=false aria-haspopup=listbox
@@ -492,20 +560,109 @@
 
             <!--footer-->
 
-        {% include 'includes/footer.html' %}
+           {% include 'includes/footer.html' %}
+        {% include 'courses/course_comparison_container.html' %}
 
+<link rel="stylesheet" href="{% static 'css/bookmark.css' %}">
+
+
+<div class="modal fade" id="bookmarkModal" tabindex="-1" aria-labelledby="bookmarkModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content glass-modal">
+      <form id="bookmarkForm">
+        {% csrf_token %}
+        <input type="hidden" name="course_id" id="modalCourseId">
+
+        <div class="modal-header border-0">
+          <h5 class="modal-title modal-header-text" id="bookmarkModalLabel">
+            ➕ Add Bookmark for <span id="courseNameDisplay"></span>
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+
+        <div id="bookmarkError" class="alert alert-info" style="display: none;margin-left: 1rem; margin-right: 1rem;"></div>
+        <div id="bookmarkSuccess" class="alert alert-info" style="display: none;margin-left: 1rem; margin-right: 1rem;"></div>
+
+        <div class="modal-body">
+          {% if bookmark_lists %}
+            <label for="bookmarkList" class="modal-label">Choose Bookmark List:</label>
+            <select name="bookmark_list" id="bookmarkList" class="modal-select">
+              {% for list in bookmark_lists %}
+              <option value="{{ list.list_id }}"
+                {% if default_bookmark_list and list.list_id == default_bookmark_list.list_id %} selected {% endif %}>
+                {{ list.name }}
+              </option>
+              {% endfor %}
+            </select>
+          {% else %}
+            <p class="alert alert-info">You don't have any bookmark lists yet.</p>
+          {% endif %}
+
+          <div class="modal-footer aligned-footer border-0">
+            {% if bookmark_lists %}
+              <button type="button" class="cancel-button" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="create-button">Add</button>
+            {% else %}
+              <button type="button" class="cancel-button" data-bs-dismiss="modal">Cancel</button>
+              <button onclick="window.location.href='{% url 'bookmark_list' %}'" class="create-button">Create List</button>
+
+            {% endif %}
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  window.openBookmarkModal = function(courseId, courseName) {
+    const modal = new bootstrap.Modal(document.getElementById('bookmarkModal'));
+    document.getElementById("modalCourseId").value = courseId;
+    document.getElementById("courseNameDisplay").textContent = courseName;
+    document.getElementById("bookmarkError").style.display = "none";
+    modal.show();
+  };
+
+  document.getElementById("bookmarkForm")?.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const courseId = document.getElementById("modalCourseId").value;
+    const bookmarkListId = document.getElementById("bookmarkList").value;
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    const response = await fetch(`/bookmarks/courses/${courseId}/add_bookmark/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": csrfToken,
+      },
+      body: `bookmark_list=${bookmarkListId}`
+    });
+
+    const resultHTML = await response.text();
+
+    if (response.redirected) {
+      document.getElementById("bookmarkSuccess").textContent = "✅ Course bookmarked successfully!";
+      document.getElementById("bookmarkSuccess").style.display = "block";
+      setTimeout(() => {
+        const modalInstance = bootstrap.Modal.getInstance(document.getElementById('bookmarkModal'));
+        modalInstance.hide();
+        location.reload();
+      }, 2000);
+    } else {
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = resultHTML;
+      const messageText = tempDiv.querySelector('.alert-info');
+      if (messageText) {
+        const errorBox = document.getElementById("bookmarkError");
+        errorBox.innerHTML = messageText.innerHTML;
+        errorBox.style.display = "block";
+      }
+    }
+  });
+});
+</script>  </div>
     </main>
-
-
-
-
-
-
-
-
-                                    {% include 'courses/course_comparison_container.html' %}
-
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

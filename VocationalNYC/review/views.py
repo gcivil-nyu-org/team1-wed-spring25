@@ -83,6 +83,6 @@ class ReviewDeleteView(View):
                 status=403,
             )
 
-        # course_id = review.course.pk
+        course_id = review.course.pk  # Capture course ID before deleting
         review.delete()
-        return redirect("course_detail", pk=pk)
+        return redirect("course_detail", pk=course_id)

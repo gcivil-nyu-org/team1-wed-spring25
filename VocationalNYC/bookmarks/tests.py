@@ -116,7 +116,8 @@ class BookmarkListTests(TestCase):
                 },
             )
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Bookmark.objects.filter(id=bookmark.id).exists())
 
         # POST request test - confirm delete
         response = self.client.post(

@@ -16,37 +16,35 @@
                                                                     <h3 class="Course-Name-Inner-Container">
                                                                         <span class="Course-Title">
                                                                             {{ course.name }}
-                                                                            {% comment %}
-                                                                            <div class="Card__IconWrapper-sc-1ra20i5-2 Verification-Icon-Outer">
-                                                                                <picture class=Image__Picture-sc-412cjc-0>
-                                                                                    <img class="Image__PictureImage-sc-412cjc-1 Verification-Icon Image-sc-412cjc-2 Card__Claimed-sc-1ra20i5-3 kQDDcT Verification-Icon-Inner"
-                                                                                         src="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/verified.png"
-                                                                                         srcset
-                                                                                         alt="">
-                                                                                </picture>
-                                                                            </div>
-                                                                            {% endcomment %}
                                                                         </span>
                                                                     </h3>
                                                                 </a>
                                                             </div>
-                                                            <p class="Course-Provider">{{ course.provider.name }}</p>
+                                                            <p class="Course-Provider provider-info">
+                                                                <a href="{{ course.provider.website }}" target="_blank" style="color: black; text-decoration: none;">
+                                                                    {{ course.provider.name }}
+                                                                </a>
+                                                                {% if course.provider.verification_status %}
+                                                                    <span class="VerificationIcon" data-tooltip="Verified Provider">
+                                                                        <img src="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/verified.png" srcset alt="Verified">
+                                                                    </span>
+                                                                {% endif %}
+                                                            </p>
                                                         </div>
                                                         <div class="Course-Address-And-Reviews" spacing=3>
 
                                                           <ul class="Course-Location-Outer Card__StyledRankList-sc-1ra20i5-11 CourseLocation"
                                                                 font-size=4 spacing=0>
                                                                 <li class="Course-Location-Outer rank-list-item">
-                                                                    <a class="Course-Location-Inner has-badge">
-                                                                        <div class="Course-Location-Outer-Icon ranked has-badge">
-                                                                        </div>
+                                                                    <a class="Course-Location-Inner has-badge" href="/courses/map/?course_id={{ course.pk }}">
+                                                                        <div class="Course-Location-Outer-Icon ranked has-badge"></div>
                                                                         <span class=in>{{ course.provider.address }}</span></a>
                                                                 </li>
                                                             </ul>
 
                                                             <div class=flex>
                                                                 <a class="Anchor-byh49a-0 Course-Reviews-Outer-Container"
-                                                                    href="#">
+                                                                    href="{% url 'course_detail' course.pk %}#student-review-section">
 
                                                                 <div aria-label="{{ course.rating }} out of 5"
                                                                      class="Course-Reviews-Inner-Container Course-Rating-And-Reviews kiGUEr"
@@ -54,23 +52,23 @@
                                                                     {% for i in "12345"|make_list %}
                                                                         {% if forloop.counter <= course.rating_full_stars %}
                                                                         <svg class="Course-Rating"
-                                                                             fill=#1263D3
-                                                                             stroke=#1263D3>
+                                                                             fill=#a2ccb6
+                                                                             stroke=#a2ccb6>
                                                                             <use xlink:href=#star></use>
                                                                         </svg>
                                                                         {% elif forloop.counter == course.rating_partial_star_position %}
                                                                         <svg class="Course-Rating"
                                                                              fill=url(#course_rating)
-                                                                             stroke=#1263D3>
+                                                                             stroke=#a2ccb6>
                                                                             <use xlink:href=#star></use>
                                                                             <defs>
                                                                                 <lineargradient
                                                                                         id=course_rating
                                                                                         x1=0% x2=100% y1=0% y2=0%>
                                                                                     <stop offset=0%
-                                                                                          stop-color=#1263D3></stop>
+                                                                                          stop-color=#a2ccb6></stop>
                                                                                     <stop offset={{ course.rating_partial_percentage }}%
-                                                                                          stop-color=#1263D3></stop>
+                                                                                          stop-color=#a2ccb6></stop>
                                                                                     <stop offset={{ course.rating_partial_percentage }}%
                                                                                           stop-color=#ffffff></stop>
                                                                                     <stop offset=100%
@@ -81,7 +79,7 @@
                                                                         {% else %}
                                                                         <svg class="Course-Rating"
                                                                              fill=#ffffff
-                                                                             stroke=#1263D3>
+                                                                             stroke=#a2ccb6>
                                                                             <use xlink:href=#star></use>
                                                                         </svg>
                                                                         {% endif %}
@@ -171,22 +169,22 @@
                                                     </div>
 
 
-<button class="button__ButtonStyled-sc-1vhaw8r-1 type-primary size-small"
-        onclick="location.href='/courses/map/?course_id={{ course.pk }}'">
-    Show on Map
-</button>
-                                                    <button class="BookmarkButton size-small"
 
-                                                            data-url="{% url 'add_bookmark' course.pk %}"
-                                                            data-course-id="{{ course.pk }}"
-                                                            data-tracking-apply-int-code=false
-                                                            data-tracking-campaign=edu_save_cta_click
-                                                            data-tracking-id=edu_save_tracking
-                                                            data-tracking-placement=edu_save_cta_rankingcard
-                                                            data-tracking-trigger-utag-link-event=true
-                                                            onclick="location.href=this.getAttribute('data-url')">
-                                                        Add Bookmark
-                                                    </button>
+
+
+                                    {% if user.is_authenticated %}
+  <button class="BookmarkButton size-small"
+          onclick="openBookmarkModal({{ course.pk }}, '{{ course.name|escapejs }}')">
+    Add Bookmark
+  </button>
+{% else %}
+  <button class="BookmarkButton size-small"
+          onclick="window.location.href='/accounts/login/'">
+    Add Bookmark
+  </button>
+{% endif %}
+
+
                                                 </div>
                                             </div>
                                         </li>
