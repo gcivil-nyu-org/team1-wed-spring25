@@ -14,6 +14,8 @@ import hashlib
 from users.models import Provider
 from .models import Course
 from django.http import JsonResponse
+from bookmarks.models import BookmarkList  # make sure this import is correct for your app
+
 
 logger = logging.getLogger(__name__)
 
@@ -121,6 +123,22 @@ class CourseListView(generic.ListView):
                 course.rating_partial_percentage = 0
 
         return courses
+
+    def get_context_data(self, **kwargs):
+            context = super().get_context_data(**kwargs)
+
+            # Add bookmark list data
+            user = self.request.user
+            if user.is_authenticated:
+                bookmark_lists = BookmarkList.objects.filter(user=user)
+                default_list = bookmark_lists.first()
+            else:
+                bookmark_lists = []
+                default_list = None
+
+            context["bookmark_lists"] = bookmark_lists
+            context["default_bookmark_list"] = default_list
+            return context
 
 
 class CourseDetailView(LoginRequiredMixin, generic.DetailView):

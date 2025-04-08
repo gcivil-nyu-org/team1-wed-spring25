@@ -56,10 +56,9 @@ def add_bookmark(request, course_id):
                     course=course,
                     time=timezone.now().date(),
                 )
-            messages.success(request, "Bookmark created successfully.")
             return redirect("course_list")
         except IntegrityError:
-            messages.error(request, "The course has already in the bookmark list.")
+            messages.error(request, "This course is already in the bookmark list.")
 
     # GET request, show the bookmark list
     context = {
