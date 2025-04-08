@@ -24,7 +24,7 @@ class Bookmark(models.Model):
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, related_name="bookmark"
     )
-    time = models.DateField()
+    time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Course {self.course} in bookmark list {self.bookmark_list.list_id}"
