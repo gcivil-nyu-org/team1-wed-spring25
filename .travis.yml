@@ -21,6 +21,7 @@ before_install:
   - docker-compose -f docker-compose.ci.yml version
   - gem update --system
   - gem install bundler
+  - gem install coveralls
 
 install:
   - docker-compose -f docker-compose.ci.yml build
