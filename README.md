@@ -312,3 +312,4 @@ PostgreSQL data is persisted via the named volume (e.g., `postgres_data`). On Li
 
 - **Exposed Ports:**
   `app:5000` & `nginx:80`.
+
