@@ -1,105 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign Up</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
-    />
-{% load static %}
-<link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="icon" href="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/favicon.png" type="image/png">
+
+
     <style>
-      body {
-        background-color: #f5f5f5;
-      }
-      .signup-container {
-        max-width: 500px;
-        margin: 80px auto;
-        background: #fff;
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      }
-      .signup-container h2 {
-        text-align: center;
-        margin-bottom: 20px;
-      }
-      .btn-custom {
-        background-color: #007bff;
-        color: #fff;
-      }
-      .btn-custom:hover {
-        background-color: #0056b3;
-      }
+        @import url('https://fonts.googleapis.com/css?family=Raleway:500');
+
+        /* Palette */
+        :root {
+            --green: #a2ccb6;
+            --light-peach: #ffecd9;
+            --peach: #ee786e;
+            --sand: #fceeb5;
+            --white: #fff;
+        }
+
+        body {
+            background: var(--light-peach);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: system-ui!important;
+            padding: 2rem;
+        }
+
+        .signup-container {
+            width: 600px;
+            padding: 50px;
+            border-radius: 18px;/*main card*/
+            box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            background: var(--white);
+        }
+
+        .signup-container h2 {
+            color: var(--green);
+            font-weight: 600;
+            font-size: 2.4rem;
+            letter-spacing: 1.5px;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: bold;
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+        }
+
+        .form-control, .form-select {
+            font-size: 1rem;
+            padding: 14px;
+            border-radius: 12px;/*input field*/
+            background: white;
+            border: 2px solid var(--green);
+            color: #333;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--peach);
+            outline: none;
+            box-shadow: 0 0 8px var(--peach);
+        }
+
+        .btn-custom {
+            display: block;
+            width: 100%;
+            font-size: 1.4rem;
+            padding: 14px;
+            border-radius: 12px;/*button*/
+            border: none;
+            color: var(--white);
+            background: linear-gradient(to right, var(--green), var(--sand), var(--peach));
+            background-size: 500%;
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .btn-custom:hover {
+            animation: gradient 2s forwards;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100%; }
+        }
+
+        .text-center a {
+            text-decoration: none;
+            font-weight: bold;
+            color: var(--peach);
+        }
+
+        .text-center a:hover {
+            color: var(--green);
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="signup-container">
-      <h2>Create an Account</h2>
-      <form method="post">
-        {% csrf_token %} {{ form.non_field_errors }}
+        <h2>Create an Account</h2>
+        <p>Create an account to explore vocational training programs or list your courses. Whether you're starting a new career or providing training opportunities, signing up gives you full access.</p>
+        <hr>
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Non-field errors (e.g., global form errors) -->
+            {{ form.non_field_errors }}
+        
+            <!-- Username field + errors -->
+            <div class="mb-3">
+                <label for="id_username" class="form-label">
+                    Username <span style="color: red;">*</span>
+                </label>
+                <!-- If the user typed a taken username, the form will have errors here -->
+                {% if form.username.errors %}
+                    <div class="text-danger">
+                        {{ form.username.errors }}
+                    </div>
+                {% endif %}
+                <input type="text" class="form-control"
+                       name="username" id="id_username"
+                       placeholder="Type your username" required />
+            </div>
+        
+            <!-- Email field + errors -->
+            <div class="mb-3">
+                <label for="id_email" class="form-label">
+                    Email Address <span style="color: red;">*</span>
+                </label>
+                {% if form.email.errors %}
+                    <div class="text-danger">
+                        {{ form.email.errors }}
+                    </div>
+                {% endif %}
+                <input type="email" class="form-control"
+                       name="email" id="id_email"
+                       placeholder="Type your email address" required />
+            </div>
+        
+            <!-- Password1 field + errors -->
+            <div class="mb-3">
+                <label for="id_password1" class="form-label">Password <span style="color: red;">*</span></label>
+                {% if form.password1.errors %}
+                    <div class="text-danger">
+                        {{ form.password1.errors }}
+                    </div>
+                {% endif %}
+                <input type="password" class="form-control"
+                       name="password1" id="id_password1"
+                       placeholder="Enter your password" required />
+            </div>
+        
+            <!-- Password2 field + errors -->
+            <div class="mb-3">
+                <label for="id_password2" class="form-label">Confirm Password <span style="color: red;">*</span></label>
+                {% if form.password2.errors %}
+                    <div class="text-danger">
+                        {{ form.password2.errors }}
+                    </div>
+                {% endif %}
+                <input type="password" class="form-control"
+                       name="password2" id="id_password2"
+                       placeholder="Re-enter your password" required />
+            </div>
+        
+            <!-- Role field + errors -->
+            <div class="mb-3">
+                <label for="id_role" class="form-label">Role <span style="color: red;">*</span></label>
+                {% if form.role.errors %}
+                    <div class="text-danger">
+                        {{ form.role.errors }}
+                    </div>
+                {% endif %}
+                <select class="form-select" id="id_role" name="role" required>
+                    <option value="" disabled selected>Choose your role</option>
+                    <option value="career_changer">Career Changer (i.e., Student)</option>
+                    <option value="training_provider">Training Provider (i.e., School Representative)</option>
+                </select>
+            </div>
+        
+            <button type="submit" class="btn btn-custom">Sign Up</button>
 
-        <div class="mb-3">
-          <label for="id_username" class="form-label">Username</label>
-          <input
-            type="text"
-            class="form-control"
-            name="username"
-            id="id_username"
-            placeholder="Choose a username"
-            required
-          />
-        </div>
-
-        <div class="mb-3">
-          <label for="id_email" class="form-label">Email Address</label>
-          <input
-            type="email"
-            class="form-control"
-            name="email"
-            id="id_email"
-            placeholder="Enter your email"
-            required
-          />
-        </div>
-
-        <div class="mb-3">
-          <label for="id_password1" class="form-label">Password</label>
-          <input
-            type="password"
-            class="form-control"
-            name="password1"
-            id="id_password1"
-            placeholder="Create a password"
-            required
-          />
-        </div>
-
-        <div class="mb-3">
-          <label for="id_password2" class="form-label">Confirm Password</label>
-          <input
-            type="password"
-            class="form-control"
-            name="password2"
-            id="id_password2"
-            placeholder="Confirm your password"
-            required
-          />
-        </div>
-
-        <button type="submit" class="btn btn-custom w-100">Sign Up</button>
-
-        <div class="mt-3 text-center">
-          <p>
-            Already have an account?
-            <a href="{% url 'account_login' %}">Log in here</a>.
-          </p>
-        </div>
-      </form>
+                      <div class="mt-3 text-center">
+                <p>Already have an account? <a href="{% url 'account_login' %}">Sign in here</a></p>
+            </div>
+        </form>        
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

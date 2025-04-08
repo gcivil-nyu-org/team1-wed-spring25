@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provider Verification</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="icon"
+        href="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/favicon.png"
+        type="image/png">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Raleway:500');
+
+        :root {
+            --green: #a2ccb6;
+            --light-peach: #ffecd9;
+            --peach: #ee786e;
+            --sand: #fceeb5;
+            --white: #fff;
+        }
+
+        body {
+            background: var(--light-peach);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: system-ui !important;
+            padding: 2rem;
+        }
+
+        .verification-container {
+            width: 600px;
+            padding: 20px 35px 20px 35px;
+            border-radius: 18px;/main card/ box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            background: var(--white);
+        }
+
+        .verification-container h2 {
+            color: var(--green);
+            font-weight: 600;
+            font-size: 2rem;
+            /* Reduced font size */
+            margin-bottom: 1rem;
+            /* Adjusted margin */
+        }
+
+        .form-label {
+            font-weight: bold;
+            text-align: left;
+            display: block;
+            font-size: 0.9rem;
+            /* Reduced font size */
+
+        }
+
+        .form-control {
+            font-size: 0.9rem;
+            /* Reduced font size */
+            padding: 10px 11px 10px 11px;
+            border-radius: 12px;/input field/ background: white;
+            border: 2px solid var (--green);
+            color: #333;
+            margin-bottom: 0.8rem;
+            /* Adjusted bottom margin */
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--peach);
+            outline: none;
+            box-shadow: 0 0 8px var(--peach);
+        }
+
+        .text-area-form-control {
+            width: 100%;
+            font-size: 0.9rem;
+            padding: 10px 11px 10px 11px;
+            border-radius: 12px;
+            background: white;
+            border: 2px solid var(--green);
+            color: #333;
+            margin-bottom: 0.8rem;
+            resize: none;
+        }
+
+        .text-area-form-control:focus,
+        .form-select:focus {
+            border-color: var(--peach);
+            outline: none;
+            box-shadow: 0 0 8px var(--peach);
+        }
+
+        .btn-custom {
+            display: block;
+            width: 100%;
+            font-size: 1.2rem;
+            /* Reduced font size */
+            padding: 12px 13px 12px 13px;
+            border-radius: 12px;/button/ border: none;
+            color: var (--white);
+            background: linear-gradient(to right, var(--green), var(--sand), var(--peach));
+            background-size: 500%;
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .btn-custom:hover {
+            animation: gradient 2s forwards;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="verification-container">
+        <h2>Provider Verification</h2>
+        <p>Please provide the required details for verification.</p>
+        <hr>
+        <form id="provider_form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label for="name" class="form-label">Business Name <span style="color: red;">*</span></label>
+                <input type="text" class="form-control {% if form.name.errors %}is-invalid{% endif %}" 
+                    name="name" id="name" placeholder="Enter your business name" 
+                    value="{{ form.name.value|default:'' }}" required>
+                {% if form.name.errors %}
+                    <div class="invalid-feedback">{{ form.name.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="address" class="form-label">Business Address <span style="color: red;">*</span></label>
+                <input type="text" class="form-control {% if form.address.errors %}is-invalid{% endif %}" 
+                    name="address" id="address" placeholder="Enter business address" 
+                    value="{{ form.address.value|default:'' }}" required>
+                {% if form.address.errors %}
+                    <div class="invalid-feedback">{{ form.address.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="website" class="form-label">Business Website (Optional)</label>
+                <input type="url" class="form-control {% if form.website.errors %}is-invalid{% endif %}" 
+                    name="website" id="website" placeholder="Enter website URL" 
+                    value="{{ form.website.value|default:'' }}">
+                {% if form.website.errors %}
+                    <div class="invalid-feedback">{{ form.website.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="provider_desc" class="form-label">Business Description (Optional)</label>
+                <textarea class="text-area-form-control" name="provider_desc" id="provider_desc"
+                    placeholder="Enter business description" rows="1">{{ form.provider_desc.value|default:'' }}</textarea>
+            </div>
+
+            <script>
+                handleTextarea('provider_desc', 4);
+
+                function handleTextarea(inputId, maxRows) {
+                    const textarea = document.getElementById(inputId);
+                    const rowHeights = [
+                        45.578125,  // Height for 1 row
+                        67.15625,   // Height for 2 rows
+                        88.734375,  // Height for 3 rows
+                        110.3125    // Height for more than 3 rows
+                    ];
+
+                    textarea.addEventListener('input', function() {
+                        this.style.height = 'auto';
+                        let calculatedHeight = this.scrollHeight;
+                        let rows = 1;
+
+                        if (calculatedHeight > rowHeights[0] && calculatedHeight <= rowHeights[1]) {
+                            rows = 2;
+                        } else if (calculatedHeight > rowHeights[1] && calculatedHeight <= rowHeights[2]) {
+                            rows = 3;
+                        } else if (calculatedHeight > rowHeights[2]) {
+                            rows = 4;
+                        }
+
+                        this.style.height = `${rowHeights[Math.min(rows - 1, maxRows - 1)]}px`;
+                    });
+
+                    // Trigger the input event on load to handle initial content
+                    textarea.dispatchEvent(new Event('input'));
+                }
+            </script>
+
+            <div class="mb-3">
+                <label class="form-label">Contact Person <span style="color: red;">*</span></label>
+                <input type="text" class="form-control {% if form.contact_firstname.errors %}is-invalid{% endif %}" 
+                    name="contact_firstname" id="contact_firstname" placeholder="Enter your first name" 
+                    value="{{ form.contact_firstname.value|default:'' }}" required>
+                {% if form.contact_firstname.errors %}
+                    <div class="invalid-feedback">{{ form.contact_firstname.errors }}</div>
+                {% endif %}
+                
+                <input type="text" class="form-control {% if form.contact_lastname.errors %}is-invalid{% endif %}" 
+                    name="contact_lastname" id="contact_lastname" placeholder="Enter your last name" 
+                    value="{{ form.contact_lastname.value|default:'' }}" required>
+                {% if form.contact_lastname.errors %}
+                    <div class="invalid-feedback">{{ form.contact_lastname.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="phone_num" class="form-label">Contact Number <span style="color: red;">*</span></label>
+                <input type="tel" class="form-control {% if form.phone_num.errors %}is-invalid{% endif %}" 
+                    name="phone_num" id="phone_num" placeholder="Enter contact number" 
+                    value="{{ form.phone_num.value|default:'' }}" required>
+                {% if form.phone_num.errors %}
+                    <div class="invalid-feedback">{{ form.phone_num.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="certificate" class="form-label">Upload Business Certificate <span
+                        style="color: red;">*</span></label>
+                <input type="file" class="form-control" name="certificate" id="certificate" accept=".pdf,.jpg,.png"
+                    required>
+                {% if form.certificate.errors %}
+                    <div class="text-danger">{{ form.certificate.errors }}</div>
+                {% endif %}
+            </div>
+
+            <input type="hidden" name="confirm_existing" id="id_confirm_existing" value="false">
+
+            <button type="submit" class="btn btn-custom">Submit for Verification</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.getElementById("provider_form").addEventListener("submit", function(e) {
+          e.preventDefault(); // prevent default form submission
+        
+          const name = document.getElementById("name").value;
+          // send AJAX to check
+          fetch(`/accounts/check_provider_name/?name=${encodeURIComponent(name)}`)
+            .then(res => res.json())
+            .then(data => {
+              if (data.exists && !data.user) {
+                // exists but not registered
+                if (confirm("A provider with this name exists but is not registered. Do you want to bind your account to it?")) {
+                  document.getElementById("id_confirm_existing").value = "true";
+                } 
+                else {
+                  alert("Please modify the provider name.");
+                  return; // not submit
+                }
+              } 
+              else if (data.exists && data.user) {
+                alert("The name of the organization already exists. Please modify the name.");
+                return; // not submit
+              }
+              // if the name is valid or user confirmed, submit the form
+              e.target.submit();
+            })
+            .catch(err => {
+              console.error(err);
+              e.target.submit();
+            });
+        });
+        </script>
+</body>
+
+</html>

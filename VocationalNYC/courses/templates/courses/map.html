@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NYC Courses Map</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>NYC Courses Map</h1>
+    <div id="map"></div>
+    <script>
+        function initMap() {
+            var nyc = {lat: 40.7128, lng: -74.0060};
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 12,
+                center: nyc
+            });
+
+            fetch('/api/course_data/')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(course => {
+                        if (course.latitude && course.longitude) {
+                            var marker = new google.maps.Marker({
+                                position: {lat: course.latitude, lng: course.longitude},
+                                map: map,
+                                title: course.name
+                            });
+
+                            var infowindow = new google.maps.InfoWindow({
+                                content: `<b>${course.name}</b><br>${course.description}`
+                            });
+
+                            marker.addListener('click', function() {
+                                infowindow.open(map, marker);
+                            });
+                        }
+                    });
+                });
+        }
+
+        window.onload = initMap;
+    </script>
+</body>
+</html>

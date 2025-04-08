@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Add Bookmark for {{ course.name}}</h1>
+
+{% if messages %}
+  <div class="alert alert-info">
+    {% for message in messages %}
+      <p>{{ message }}</p>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<form method="post">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="bookmarkList" class="form-label">Choose Bookmark List:</label>
+    <select name="bookmark_list" id="bookmarkList" class="form-select">
+      {% for list in bookmark_lists %}
+        <option value="{{ list.list_id }}"
+          {% if default_bookmark_list and list.list_id == default_bookmark_list.list_id %}
+             selected
+          {% endif %}>
+          {{ list.name }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary">Add Bookmark</button>
+</form>
+<a href="{% url 'course_list' %}" class="btn btn-secondary mt-2">Cancel</a>
+{% endblock %}

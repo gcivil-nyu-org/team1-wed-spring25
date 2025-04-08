@@ -1,0 +1,670 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Discover Courses</title>
+      <link rel="icon"
+        href="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/favicon.png"
+        type="image/png">
+     <link rel="stylesheet" href="{% static 'css/course_list.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+             <link rel="stylesheet" href="{% static 'css/globals.css' %}">
+
+<style>
+    html, body {
+    height: 100%;
+    overflow: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+          background-color: var(--light-peach)!important;
+
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+</style>
+
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" data-rh=true
+          name=viewport>
+
+</head>
+<body>
+
+<!--svg icons-->
+<svg aria-hidden=true id=__SVG_SPRITE_NODE__ style=position:absolute;width:0;height:0>
+    <symbol id=user-circle viewBox="10 11 44 44">
+        <defs>
+            <path d="M32 11c12.2 0 22 9.9 22 22s-9.9 22-22 22-22-9.9-22-22 9.9-22 22-22zm12.046 34.645c3.349-3.194 5.454-7.681 5.454-12.646 0-9.625-7.795-17.5-17.5-17.5-9.625 0-17.5 7.876-17.5 17.5 0 4.965 2.105 9.453 5.454 12.645.047-1.822.46-5.573.722-6.425.29-.943.652-1.813 1.087-2.465a5.475 5.475 0 011.74-1.667c.726-.436 1.595-.653 2.538-.653 0 0 0 .002.002.002l.026-.002c1.665 1.592 3.618 2.389 5.93 2.393 2.315-.005 4.268-.801 5.932-2.392h.027c.944 0 1.814.216 2.539.651a5.482 5.482 0 011.74 1.668c.435.653.797 1.523 1.087 2.465.262.852.675 4.603.722 6.425zM39.25 28.416a7.25 7.25 0 11-14.5 0 7.25 7.25 0 0114.5 0z"
+                  id=user-circle_a></path>
+        </defs>
+        <use xlink:href=#user-circle_a></use>
+    </symbol>
+    <symbol id=caret viewBox="0 0 113.2 63.1">
+        <path d="M6.7 0C2.9 0 0 2.9 0 6.7c0 1.9 1 3.8 1.9 4.8l49.7 49.7c1 1 2.9 1.9 4.8 1.9s3.8-1 4.8-1.9l50.1-49.7c1-1 1.9-2.9 1.9-4.8 0-3.8-2.9-6.7-6.7-6.7"></path>
+    </symbol>
+    <symbol id=star viewBox="0 0 64 64" xmlns=http://www.w3.org/2000/svg>
+        <path d="M54 27.277c0-.652-.492-1.06-1.48-1.218l-13.275-1.931-5.949-12.042C32.962 11.36 32.529 11 32 11s-.962.361-1.296 1.086l-5.949 12.042-13.275 1.93c-.988.16-1.48.567-1.48 1.219 0 .37.222.793.661 1.27l9.625 9.368-2.274 13.232a4.162 4.162 0 00-.053.53c0 .37.093.683.277.939.186.255.463.384.833.384.318 0 .671-.106 1.058-.317L32 46.437l11.873 6.246c.37.21.724.317 1.058.317.353 0 .621-.13.805-.384.186-.256.279-.569.279-.94 0-.228-.01-.406-.027-.529l-2.274-13.232 9.599-9.368c.458-.46.687-.883.687-1.27"></path>
+    </symbol>
+</svg>
+
+<main id=app style=display:block;width:100%;position:relative>
+
+    <div style=width:inherit>
+
+
+
+
+        <!--top horizontal header-->
+        {% include 'includes/header.html' %}
+
+
+        <!--main content-->
+        <article compass="[object Object]">
+
+            <div class="Main-Body-Area">
+
+                <!--title and paragraph-->
+                <div class="Introduction content">
+
+                    <header class="Introduction-Title-And-Content">
+
+                        <div class="Introduction-Text-Outer">
+                            <div class="Introduction-Text-Inner">
+
+                                <div class="Introduction-Text-Title">
+                                    <h1 class="Introduction-Title">
+                                        Discover Courses to Advance Your Career
+                                    </h1>
+                                </div>
+
+                                <p class="Introduction-Content" style="margin-top: 1rem !important;">
+                                    Explore a wide range of vocational programs designed to boost your skills and expand your career opportunities. Whether you're aiming to enhance your current expertise or embark on a new career path, you'll find flexible and affordable options that suit your needs.<br>Use the filters to refine your search by cost, location, and duration to identify the perfect course for you. Each listing includes detailed descriptions, costs, and learning outcomes to ensure you make an informed decision. Start discovering today and unlock new opportunities for growth and success.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </header>
+
+                </div>
+
+
+                <!--horizontal-filter-bar-->
+                <div class="Horizontal-Filter-Bar-Outer-Container">
+
+                    <div class="Horizontal-Filter-Bar-Inner-Container">
+                        <div class="Main-Area Horizontal-Filter-Bar-Content-Area Horizontal-Filter-Container">
+
+                            <div class="Number-Of-Results">
+                                <span
+                                    data-tracking-id=search-results-count>
+                                    {{courses.count}}
+                                </span>
+                                <span>
+                                    results
+                                </span>
+                            </div>
+                            <div class="Horizontal-Filters-Area-Outer-Container">
+                                <div class="Horizontal-Filters-Area-Inner-Container">
+                                    <div>
+                                        <ul class="Applied-Filters-Border">
+                                            <li class="Applied-Filters-Outline">
+                                                <button aria-label="Clear all filters"
+                                                        class="Filters"><span
+                                                        class="Filters-Inside">Clear Filters</span>
+                                                </button>
+                                            {% if keywords %}
+                                            <li class="Applied-Filters-Outline">
+                                                <button aria-label="Remove Keywords filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
+                                                    <span class="Filters-Inside">Keywords: {{ keywords }}</span>
+                                                    <span class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon">
+                                                        <svg aria-hidden="true" class="Small-Icon" fill="var(--color)" height="8px" viewBox="0 0 38 38" width="8px">
+                                                            <g fill-rule="evenodd" stroke="none" stroke-width="1">
+                                                                <polygon fill-rule="nonzero" points="33.4 0 19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38 38 33.399 23.6 18.999 38 4.6"></polygon>
+                                                            </g>
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                            </li>
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="Controls">
+
+                                <div class="Controls-Text">
+                                    Sort by: &nbsp;
+                                </div>
+                                <select aria-labelledby=_atlas-search_sort-label
+                                        class="SortShowDropDown" id="SortByDropDown" style="padding: 6px 20px;">
+    <option selected disabled value="blank">Select a sorting option</option>
+    <option value="name-asc">Name (A–Z)</option>
+    <option value="name-desc">Name (Z–A)</option>
+    <option value="cost-asc">Cost (Low to High)</option>
+    <option value="cost-desc">Cost (High to Low)</option>
+    <option value="classroom_hours-asc">Classroom Hours (Low to High)</option>
+    <option value="classroom_hours-desc">Classroom Hours (High to Low)</option>
+    <option value="avg_rating-asc">Rating (Low to High)</option>
+    <option value="avg_rating-desc">Rating (High to Low)</option>
+</select>
+
+
+
+<script src="{% static 'js/sorting.js' %}" type="text/javascript"></script>
+
+                                &nbsp;&nbsp;
+
+                                <div class="Controls-Text">
+                                    Show: &nbsp;
+                                </div>
+                                <select class="SortShowDropDown" style="width:60px;" id="itemsPerPage">
+                                    <option selected value=10>10
+                                    <option value=20>20
+                                    <option value=25>25
+                                    <option value=50>50
+                                    <option value=100>100
+                                    <option value=150>150
+                                    <option value=200>200
+                                </select>
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="Lower-Main-Body-Area">
+
+                    <div class="Main-Area Lower-Main-Body-Area-Border Content-Container">
+                        <div class="Lower-Main-Body-Area-Inner">
+                            <div class="Lower-Main-Body-Area-Content">
+
+                                <!--left-side filters-->
+                                <form action="{% url 'search_result' %}" method="GET" id="searchForm">
+                                    
+                                    <fieldset
+                                        class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                        name="schoolName">
+                                        <legend class=" Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Keywords
+                                            </div>
+                                        </legend>
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
+                                                    <div aria-expanded=false aria-haspopup=listbox
+                                                        aria-owns=react-auto
+                                                        class=react-autosuggest__container
+                                                        role=combobox><input aria-autocomplete=list
+                                                            aria-controls=react-auto
+                                                            autocomplete=off
+                                                            class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
+                                                            placeholder="Keywords"
+                                                            name="keywords"
+                                                            type=text
+                                                            value="{{ keywords }}">
+                                                            <div class="react-autosuggest__suggestions-container sf-hidden"
+                                                                id=react-auto
+                                                                role=listbox></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                                                                                            <fieldset
+                                        class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                        name="schoolName">
+                                        <legend class=" Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Provider
+                                            </div>
+                                        </legend>
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
+                                                    <div aria-expanded=false aria-haspopup=listbox
+                                                        aria-owns=react-auto
+                                                        class=react-autosuggest__container
+                                                        role=combobox><input aria-autocomplete=list
+                                                            aria-controls=react-auto
+                                                            autocomplete=off
+                                                            class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
+                                                            placeholder="Provider"
+                                                            name="provider"
+                                                            type=text
+                                                            value="{{ provider }}">
+                                                            <div class="react-autosuggest__suggestions-container sf-hidden"
+                                                                role=listbox></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                                                        <fieldset
+                                        class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                        name="schoolName">
+                                        <legend class=" Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Min Rating
+                                            </div>
+                                        </legend>
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
+                                                    <div aria-expanded=false aria-haspopup=listbox
+                                                        aria-owns=react-auto
+                                                        class=react-autosuggest__container
+                                                        role=combobox><input aria-autocomplete=list
+                                                            aria-controls=react-auto
+                                                            autocomplete=off
+                                                            class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
+                                                            placeholder="Min Rating"
+                                                            name="min_rating"
+                                                            type="number" step="0.1"  min="0" max="5"
+                                                            value="{{ min_rating }}">
+                                                            <div class="react-autosuggest__suggestions-container sf-hidden"
+                                                                role=listbox></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+
+                                    <fieldset
+                                        class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                        name="schoolName">
+                                        <legend class=" Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Min Cost
+                                            </div>
+                                        </legend>
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
+                                                    <div aria-expanded=false aria-haspopup=listbox
+                                                        aria-owns=react-auto
+                                                        class=react-autosuggest__container
+                                                        role=combobox><input aria-autocomplete=list
+                                                            aria-controls=react-auto
+                                                            autocomplete=off
+                                                            class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
+                                                            name="min_cost"
+                                                            placeholder="Min Cost"
+                                                            type="number"
+                                                            step="1"
+                                                            value="{{ min_cost }}">
+                                                            <div class="react-autosuggest__suggestions-container sf-hidden"
+                                                                role=listbox></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    
+                                    <fieldset
+                                        class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                        name="schoolName">
+                                        <legend class=" Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Max Cost
+                                            </div>
+                                        </legend>
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
+                                                    <div aria-expanded=false aria-haspopup=listbox
+                                                        aria-owns=react-auto
+                                                        class=react-autosuggest__container
+                                                        role=combobox><input aria-autocomplete=list
+                                                            aria-controls=react-auto
+                                                            autocomplete=off
+                                                            class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
+                                                            name="max_cost"
+                                                            placeholder="Max Cost"
+                                                            type="number"
+                                                            step="1"
+                                                            value="{{ max_cost }}">
+                                                            <div class="react-autosuggest__suggestions-container sf-hidden"
+                                                                role=listbox></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    
+                                    <fieldset
+                                        class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                        name=location>
+                                        <legend class=" Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Location
+                                            </div>
+                                        </legend>
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
+                                                    <div aria-expanded=false aria-haspopup=listbox
+                                                        aria-owns=location-input
+                                                        class=react-autosuggest__container
+                                                        role=combobox><input aria-autocomplete=list
+                                                            aria-controls=location-input
+                                                            autocomplete=off
+                                                            class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
+                                                            name="location"
+                                                            placeholder="City, State or ZIP"
+                                                            type=text
+                                                            value="{{ location }}">
+                                                            <div class="react-autosuggest__suggestions-container sf-hidden"
+                                                                id=location-input
+                                                                role=listbox></div>
+                                                    </div>
+                                                </div>
+                                                <div style="margin-bottom: 0.5rem !important;"></div>
+                                                <span class="select__Container-sc-i9bbt3-3 All-Distances-Outer-Frame"
+                                                    style="--width:100%">
+                                                    <label class="select__LabelStyled-sc-i9bbt3-0 All-Distances-Inner-Frame">
+                                                        <select class="select__SelectStyled-sc-i9bbt3-1 All-Distances-Content-Box" name="distance">
+                                                            <option selected value>(Not Working) All Distances
+                                                            <option value=25>Within 25 miles
+                                                            <option value=50>Within 50 miles
+                                                            <option value=100>Within 100 miles
+                                                            <option value=250>Within 250 miles
+                                                        </select>
+                                                    <svg class="Small-Icon Dropdown-Icon" fill=var(--gray-30) viewBox="0 0 64 64">
+                                                        <path d="M33.3,39.8l13.1-13.1c0.4-0.4,0.6-0.8,0.6-1.3c0-1-0.9-1.9-1.9-1.9H18.8c-1,0-1.9,0.8-1.9,1.9  c0,0.5,0.2,1,0.6,1.3l13.1,13.1c0.4,0.4,0.8,0.6,1.3,0.6S33,40.2,33.3,39.8"></path>
+                                                    </svg>
+                                                </label>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <script>
+                                            document.addEventListener("DOMContentLoaded", function () {
+                                                var selectElement = document.querySelector(".All-Distances-Content-Box");
+                                                
+                                                selectElement.addEventListener("change", function () {
+                                                    if (selectElement.value === "") {
+                                                        selectElement.style.color = "darkgray"; // Keep dark gray for "All Distances"
+                                                    } else {
+                                                        selectElement.style.color = "black"; // Change to black for other options
+                                                    }
+                                                });
+                                            });
+
+
+
+                                        </script>
+                                    </fieldset>
+                                    
+                                    {% comment %}
+                                    <fieldset
+                                        class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                        name=area-of-study>
+                                        <legend class=" Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Area of Study
+                                            </div>
+                                        </legend>
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <span class="select__Container-sc-i9bbt3-3 All-Distances-Outer-Frame"
+                                                    style=--width:100%><label
+                                                        class="select__LabelStyled-sc-i9bbt3-0 All-Distances-Inner-Frame"><select
+                                                            class="select__SelectStyled-sc-i9bbt3-1 All-Distances-Content-Box"
+                                                            name=study><option
+                                                                selected value>All Areas of Study<option
+                                                                    value="Agriculture, Agriculture Operations, and Related Sciences">Agriculture<option
+                                                                        value="Architecture and Related Services">Architecture<option
+                                                                            value="Basic Skills and Developmental/Remedial Education">Basic Skills and Developmental/Remedial Education<option
+                                                                                value="Biological and Biomedical Sciences">Biological and Biomedical Sciences<option
+                                                                                    value="Business, Management, Marketing, and Related Support Services">Business, Management and Marketing<option
+                                                                                        value="Citizenship Activities">Citizenship Activities<option
+                                                                                            value="Communication, Journalism, and Related Programs">Communication / Journalism<option
+                                                                                                value="Communications Technologies/Technicians and Support Services">Communications Technologies/Technicians<option
+                                                                                                    value="Computer and Information Sciences and Support Services">Computer and Information Sciences<option
+                                                                                                        value="Construction Trades">Construction Trades<option
+                                                                                                            value=Education>Education<option value=Engineering>Engineering<option
+                                                                                                                value="Engineering Technologies and Engineering-Related Fields">Engineering Technologies and Related Fields<option
+                                                                                                                    value="English Language and Literature/Letters">English Language and Literature<option
+                                                                                                                        value="Area, Ethnic, Cultural, Gender, and Group Studies">Ethnic, Cultural, Gender, and Group Studies<option
+                                                                                                                            value="Family and Consumer Sciences/Human Sciences">Family, Consumer and Human Sciences<option
+                                                                                                                                value="Foreign Languages, Literatures, and Linguistics">Foreign Languages, Literatures, and Linguistics<option
+                                                                                                                                    value="Health Professions and Related Programs">Health Professions<option
+                                                                                                                                        value="Health-Related Knowledge and Skills">Health-Related Knowledge and Skills<option
+                                                                                                                                            value="High School/Secondary Diplomas and Certificates">High School/Secondary Diplomas and Certificates<option
+                                                                                                                                                value=History>History<option
+                                                                                                                                                    value="Homeland Security, Law Enforcement, Firefighting and Related Protective Services">Homeland Security, Law Enforcement, Firefighting and Related Services<option
+                                                                                                                                                        value="Interpersonal and Social Skills">Interpersonal and Social Skills<option
+                                                                                                                                                            value="Legal Professions and Studies">Legal Professions and Studies<option
+                                                                                                                                                                value="Leisure and Recreational Activities">Leisure and Recreational Activities<option
+                                                                                                                                                                    value="Liberal Arts and Sciences, General Studies and Humanities">Liberal Arts and Humanities<option
+                                                                                                                                                                        value="Library Science">Library Science<option
+                                                                                                                                                                            value="Mathematics and Statistics">Mathematics and Statistics<option
+                                                                                                                                                                                value="Mechanic and Repair Technologies/Technicians">Mechanic and Repair Technologies/Technicians<option
+                                                                                                                                                                                    value="Military Science, Leadership and Operational Art">Military Science, Leadership and Operations<option
+                                                                                                                                                                                        value="Military Technologies and Applied Sciences">Military Technologies and Applied Sciences<option
+                                                                                                                                                                                            value="Multi/Interdisciplinary Studies">Multi/Interdisciplinary Studies<option
+                                                                                                                                                                                            value="Natural Resources and Conservation">Natural Resources and Conservation<option
+                                                                                                                                                                                            value="Parks, Recreation, Leisure, and Fitness Studies">Parks, Recreation, Leisure, and Fitness Studies<option
+                                                                                                                                                                                            value="Personal and Culinary Services">Personal and Culinary Services<option
+                                                                                                                                                                                            value="Philosophy and Religious Studies">Philosophy and Religious Studies<option
+                                                                                                                                                                                            value="Physical Sciences">Physical Sciences<option
+                                                                                                                                                                                            value="Precision Production">Precision Production<option
+                                                                                                                                                                                            value=Psychology>Psychology<option
+                                                                                                                                                                                            value="Public Administration and Social Service Professions">Public Administration and Social Service Professions<option
+                                                                                                                                                                                            value="Residency Programs">Residency Programs<option
+                                                                                                                                                                                            value="Science Technologies/Technicians">Science Technologies/Technicians<option
+                                                                                                                                                                                            value="Social Sciences">Social Sciences<option
+                                                                                                                                                                                            value="Theology and Religious Vocations">Theology and Religious Vocations<option
+                                                                                                                                                                                            value="Transportation and Materials Moving">Transportation and Materials Moving</select><svg
+                                                                                                                                                                                                class="Small-Icon Dropdown-Icon"
+                                                                                                                                                                                                fill=var(--gray-30)
+                                                                                                                                                                                                viewBox="0 0 64 64"><path
+                                                                                                                                                                                                    d="M33.3,39.8l13.1-13.1c0.4-0.4,0.6-0.8,0.6-1.3c0-1-0.9-1.9-1.9-1.9H18.8c-1,0-1.9,0.8-1.9,1.9  c0,0.5,0.2,1,0.6,1.3l13.1,13.1c0.4,0.4,0.8,0.6,1.3,0.6S33,40.2,33.3,39.8"></path></svg></label></span>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    {% endcomment %}
+                                    
+                                    <fieldset
+                                        class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
+                                        name="schoolName">
+                                        <legend class=" Filter-Section-Title-Outer">
+                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
+                                                Min Classroom Hours
+                                            </div>
+                                        </legend>
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
+                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
+                                                <div class="autosuggest__Container-sc-hb0rq-0 Input">
+                                                    <div aria-expanded=false aria-haspopup=listbox
+                                                        aria-owns=react-auto
+                                                        class=react-autosuggest__container
+                                                        role=combobox><input aria-autocomplete=list
+                                                            aria-controls=react-auto
+                                                            autocomplete=off
+                                                            class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
+                                                            name="min_classroom_hours"
+                                                            placeholder="Min Hours"
+                                                            type="number"
+                                                            step="1"
+                                                            value>
+                                                            <div class="react-autosuggest__suggestions-container sf-hidden"
+                                                                role=listbox></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    
+                                    <fieldset class="Filter-Section Filter-Section-Outline" style="border-bottom: none;">
+                                        
+                                        <legend class="Filter-Section-Title-Outer">
+                                            <div class="Filter-Section-Title-Inner">
+                                                Apply Filters
+                                            </div>
+                                        </legend>
+                                        
+                                        <div class="Filter-Section-Action-Outer">
+                                            <div class="Filter-Section-Action-Inner">
+                                                <button type="submit" class="Apply-Filters-Button">
+                                                    Filter Your Search
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    
+                                </form>
+
+                                <!--courses-->
+                                <div class="All-Course-Container" id ="All-Course-Container">
+                                    {% include 'courses/courses_section.html' %}
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </article>
+
+
+        <!--Pagination-->
+       <div id="pagination" class="Pagination">
+    <button id="prevPage" disabled style="border-radius: 5px;">&laquo; Prev</button>
+    <span id="pageInfo">Page 1</span>
+    <button id="nextPage" style="border-radius: 5px;">Next &raquo;</button>
+</div>
+
+
+<script src="{% static 'js/pagination.js' %}"></script>
+
+        <hr style="margin-top: 56px; border:none; border-bottom: 1px solid rgb(211, 215, 220)!important;">
+
+            <!--footer-->
+
+           {% include 'includes/footer.html' %}
+        {% include 'courses/course_comparison_container.html' %}
+
+<link rel="stylesheet" href="{% static 'css/bookmark.css' %}">
+
+
+<div class="modal fade" id="bookmarkModal" tabindex="-1" aria-labelledby="bookmarkModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content glass-modal">
+      <form id="bookmarkForm">
+        {% csrf_token %}
+        <input type="hidden" name="course_id" id="modalCourseId">
+
+        <div class="modal-header border-0">
+          <h5 class="modal-title modal-header-text" id="bookmarkModalLabel">
+            ➕ Add Bookmark for <span id="courseNameDisplay"></span>
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div id="bookmarkError" class="alert alert-info" style="display: none;margin-left: 1rem; margin-right: 1rem;"></div>
+        <div id="bookmarkSuccess" class="alert alert-info" style="display: none;margin-left: 1rem; margin-right: 1rem;"></div>
+
+        <div class="modal-body">
+          {% if bookmark_lists %}
+            <label for="bookmarkList" class="modal-label">Choose Bookmark List:</label>
+            <select name="bookmark_list" id="bookmarkList" class="modal-select">
+              {% for list in bookmark_lists %}
+              <option value="{{ list.list_id }}"
+                {% if default_bookmark_list and list.list_id == default_bookmark_list.list_id %} selected {% endif %}>
+                {{ list.name }}
+              </option>
+              {% endfor %}
+            </select>
+          {% else %}
+            <p class="alert alert-info">You don't have any bookmark lists yet.</p>
+          {% endif %}
+
+          <div class="modal-footer aligned-footer border-0">
+            {% if bookmark_lists %}
+              <button type="button" class="cancel-button" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="create-button">Add</button>
+            {% else %}
+              <button type="button" class="cancel-button" data-bs-dismiss="modal">Cancel</button>
+              <button onclick="window.location.href='{% url 'bookmark_list' %}'" class="create-button">Create List</button>
+
+            {% endif %}
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  window.openBookmarkModal = function(courseId, courseName) {
+    const modal = new bootstrap.Modal(document.getElementById('bookmarkModal'));
+    document.getElementById("modalCourseId").value = courseId;
+    document.getElementById("courseNameDisplay").textContent = courseName;
+    document.getElementById("bookmarkError").style.display = "none";
+    modal.show();
+  };
+
+  document.getElementById("bookmarkForm")?.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const courseId = document.getElementById("modalCourseId").value;
+    const bookmarkListId = document.getElementById("bookmarkList").value;
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    const response = await fetch(`/bookmarks/courses/${courseId}/add_bookmark/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": csrfToken,
+      },
+      body: `bookmark_list=${bookmarkListId}`
+    });
+
+    const resultHTML = await response.text();
+
+    if (response.redirected) {
+      document.getElementById("bookmarkSuccess").textContent = "✅ Course bookmarked successfully!";
+      document.getElementById("bookmarkSuccess").style.display = "block";
+      setTimeout(() => {
+        const modalInstance = bootstrap.Modal.getInstance(document.getElementById('bookmarkModal'));
+        modalInstance.hide();
+        location.reload();
+      }, 2000);
+    } else {
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = resultHTML;
+      const messageText = tempDiv.querySelector('.alert-info');
+      if (messageText) {
+        const errorBox = document.getElementById("bookmarkError");
+        errorBox.innerHTML = messageText.innerHTML;
+        errorBox.style.display = "block";
+      }
+    }
+  });
+});
+</script>  </div>
+    </main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
