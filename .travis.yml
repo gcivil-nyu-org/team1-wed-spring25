@@ -44,7 +44,7 @@ script:
   - docker-compose -f docker-compose.ci.yml exec -T -u root app flake8 .
   - docker-compose -f docker-compose.ci.yml exec -T -u root app coverage run --source=vocationalnyc manage.py test
   # copy the coverage report to Travis CI
-  - docker cp $(docker-compose -f docker-compose.ci.yml ps -q app):/app/.coverage ./
+  - docker cp $(docker-compose -f docker-compose.ci.yml ps -q app):.coverage ./
 
 after_success:
   # - docker-compose -f docker-compose.ci.yml exec -T -e COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN -u root app pip install coveralls
