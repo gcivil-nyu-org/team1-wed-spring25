@@ -107,15 +107,55 @@
                     {% elif role == "career_changer" %}
                         <h3>Career Changer Profile</h3>
                         {% if student %}
-                            <div class="student-details">
-                                {% if student.bio %}
+                            <div id="student-details" class="student-details">
+                                <div class="bio-section mb-4">
                                     <h5>About Me</h5>
-                                    <p>{{ student.bio }}</p>
-                                {% endif %}
-                                <p><strong>Tag:</strong> {{ student.tag }}</p>
-                                <p><strong>Bio:</strong> {{ student.bio}}</p>
+                                    {% if student.bio %}
+                                        <p>{{ student.bio }}</p>
+                                    {% else %}
+                                        <p class="text-muted">No bio added yet.</p>
+                                    {% endif %}
+                                </div>
 
+                                <div class="tags-section mb-4">
+                                    <h5>My Tags</h5>
+                                    <div class="tags-container">
+                                        {% for tag in student.tags.all %}
+                                            <span class="badge bg-secondary me-2 mb-2">
+                                                {{ tag.name }}
+                                                <button type="button" class="btn-close btn-close-white ms-2" 
+                                                        onclick="removeTag('{{ tag.name }}')"
+                                                        style="font-size: 0.5rem;"></button>
+                                            </span>
+                                        {% empty %}
+                                            <p class="text-muted">No tags added yet.</p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                                <button type="button" id="edit-student-btn" class="btn btn-secondary" onclick="toggleStudentForm()">Edit Profile</button>
                             </div>
+
+                            <form id="student-form" method="post" style="display: none;">
+                                {% csrf_token %}
+                                <input type="hidden" name="student_form" value="1">
+                                <div class="mb-3">
+                                    <label for="student-bio" class="form-label">Bio</label>
+                                    <textarea class="form-control" id="student-bio" name="bio" rows="4">{{ student.bio }}</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tag" class="form-label">Add Tag</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="tag" name="tag">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="addTag()">Add</button>
+                                    </div>
+                                    <small class="text-muted">Click Add to add a tag</small>
+                                </div>
+                                <div class="mt-3">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    <button type="button" id="cancel-student-btn" class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </form>
                         {% endif %}
 
                         <div class="bookmark-section mt-4">
@@ -271,6 +311,28 @@
         document.getElementById('provider-details').style.display = 'block';
     });
 
+    function toggleStudentForm() {
+        const detailsElement = document.getElementById('student-details');
+        const formElement = document.getElementById('student-form');
+        
+        if (!detailsElement || !formElement) {
+            console.error('Student form elements not found');
+            return;
+        }
+
+        if (formElement.style.display === 'none') {
+            detailsElement.style.display = 'none';
+            formElement.style.display = 'block';
+        } else {
+            formElement.style.display = 'none';
+            detailsElement.style.display = 'block';
+        }
+    }
+
+    document.getElementById('cancel-student-btn').addEventListener('click', function() {
+        toggleStudentForm();
+    });
+
     function validateProviderForm() {
         let isValid = true;
         const form = document.getElementById('provider-form');
@@ -325,6 +387,81 @@
                 errorDiv.style.display = 'none';
             }
         });
+    });
+
+    function addTag() {
+        const tagInput = document.getElementById('tag');
+        const tagName = tagInput.value.trim();
+        if (tagName) {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            fetch('/api/student/add-tag/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ tag: tagName }),
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    console.error('Failed to add tag:', data.error);
+                    alert('Failed to add tag. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error adding tag:', error);
+                alert('Error adding tag. Please try again.');
+            });
+        }
+        tagInput.value = '';
+    }
+
+    function removeTag(tagName) {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        fetch('/api/student/remove-tag/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({ tag: tagName }),
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                console.error('Failed to remove tag:', data.error);
+                alert('Failed to remove tag. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error removing tag:', error);
+            alert('Error removing tag. Please try again.');
+        });
+    }
+
+    // Ensure tag input works with both Enter key and button click
+    document.getElementById('tag').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            addTag();
+        }
     });
 </script>
 {% endblock %}

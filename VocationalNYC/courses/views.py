@@ -27,15 +27,18 @@ class CourseListView(generic.ListView):
     ordering = ["-course_id"]
 
     def get_queryset(self):
-        # update from the API once a day
+        # Update Api data once a day
+        logger.info("Starting course data refresh check")
         API_URL = "https://data.cityofnewyork.us/resource/fgq8-am2v.json"
         if not cache.get("courses_last_updated"):
             try:
+                logger.info("Fetching courses from API")
                 response = requests.get(API_URL, timeout=10)
                 response.raise_for_status()
                 courses_data = response.json()
 
                 for course in courses_data:
+                    logger.debug(f"Processing course: {course.get('course_name', '')}")
                     course_name = course.get("course_name", "").strip()
                     provider_name = course.get("organization_name", "").strip()
 
@@ -99,18 +102,31 @@ class CourseListView(generic.ListView):
                         "internship_hours": internship_hours,
                         "practical_hours": practical_hours,
                     }
-                    Course.objects.update_or_create(
+                    
+                    # Create or update the course
+                    logger.info(f"Updating/creating course: {course_name}")
+                    course_obj, created = Course.objects.update_or_create(
                         name=course_name, provider=provider, defaults=course_defaults
                     )
+                    logger.info(f"Course {'created' if created else 'updated'}: {course_name}")
+                    
+                    # Convert keywords to tags
+                    if course_defaults["keywords"]:
+                        logger.debug(f"Processing tags for course: {course_name}")
+                        course_obj.set_keywords_as_tags(course_defaults["keywords"])
+
+                logger.info("Course data refresh completed")
                 cache.set("courses_last_updated", True, 86400)
 
             except requests.RequestException as e:
-                logger.error("External API call failed: %s", e)
+                logger.error(f"External API call failed: {e}")
 
-        # return Course.objects.all()
+        logger.info("Fetching courses from database")
         courses = Course.objects.all().annotate(
             avg_rating=Avg("reviews__score_rating"), reviews_count=Count("reviews")
         )
+        logger.info(f"Found {courses.count()} courses")
+
         for course in courses:
             avg = course.avg_rating if course.avg_rating is not None else 0
             course.rating = round(avg, 1)
@@ -165,7 +181,7 @@ def filterCourses(request):
     max_cost = request.GET.get("max_cost", None)
     location = request.GET.get("location", "")
     min_classroom_hours = request.GET.get("min_classroom_hours", None)
-    tags = request.GET.getlist("tags", [])  # Get multiple tag values
+    # tags = request.GET.getlist("tags", [])  # Get multiple tag values
 
     courses = Course.objects.all()
 
@@ -191,8 +207,8 @@ def filterCourses(request):
     if min_classroom_hours is not None and min_classroom_hours.isdigit():
         courses = courses.filter(classroom_hours__gte=int(min_classroom_hours))
 
-    if tags:
-        courses = courses.filter(tags__name__in=tags).distinct()
+    # if tags:
+    #     courses = courses.filter(tags__name__in=tags).distinct()
 
     courses = courses.annotate(
         avg_rating=Avg("reviews__score_rating"), reviews_count=Count("reviews")

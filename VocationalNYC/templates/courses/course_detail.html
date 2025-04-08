@@ -384,16 +384,14 @@ color: #a2ccb6!important;
             <a href="javascript:void()">{{ course.location }}</a>
         </p>
 
+        {% if course.tags.exists %}
         <div class="course-tags">
             <p>🏷️ <strong>Tags:</strong></p>
-            {% if course.tags.exists %}
-                {% for tag in course.tags.all %}
-                    <span class="tag">{{ tag.name }}</span>
-                {% endfor %}
-            {% else %}
-                <span class="no-tags">No tags available</span>
-            {% endif %}
+            {% for tag in course.tags.all %}
+                <span class="tag">{{ tag.name }}</span>
+            {% endfor %}
         </div>
+        {% endif %}
     </div>
 
     <div class="course-description">
@@ -468,19 +466,17 @@ color: #a2ccb6!important;
 
     <section class="review-submission">
         {% if user.is_authenticated %}
-        <form method="POST" action="{% url 'review-create' course.pk %}">
-            {% csrf_token %}
-            <header>
-                <p>✍️ Leave a Review</p>
-            </header>
-            <label for="content">Your Review:</label>
-            <textarea name="content" rows="5" required></textarea>
-
-            <label for="score_rating">Rating (1–5):</label>
-            <input type="number" name="score_rating" min="1" max="5" required>
-
-            <button type="submit" class="cta-button">🚀 Submit Review</button>
-        </form>
+            <form method="POST" action="{% url 'review-create' course.pk %}">
+                {% csrf_token %}
+                <header>
+                    <p>Share Your Experience</p>
+                </header>
+                <label for="content">Your Review:</label>
+                <textarea name="content" rows="5" required></textarea>
+                <label for="score_rating">Rating (1–5):</label>
+                <input type="number" name="score_rating" min="1" max="5" required>
+                <button type="submit" class="cta-button">🚀 Submit Review</button>
+            </form>
         {% else %}
             <p class="text-gray-700 text-lg mt-6">
                 <a href="{% url 'login' %}" class="text-blue-600 hover:underline font-semibold">Log in</a> to submit a review.

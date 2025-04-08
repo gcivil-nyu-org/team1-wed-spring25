@@ -26,5 +26,6 @@ urlpatterns = [
     ),
     path("provider/", views.ProviderListView.as_view(), name="provider_list"),
     path("check_provider_name/", check_provider_name, name="check_provider_name"),
-    # path("accounts/login/", MyLoginView.as_view(), name="account_login"),
+    path('api/student/add-tag/', views.add_tag, name='add_tag'),
+    path('api/student/remove-tag/', views.remove_tag, name='remove_tag'),
 ]

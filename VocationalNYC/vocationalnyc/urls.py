@@ -30,6 +30,7 @@ urlpatterns = [
     path("", RedirectView.as_view(url="/courses/", permanent=False), name="home"),
     # Account-related URLs
     path("accounts/", include("users.urls")),
+    path("", include("users.urls")),
     # Admin URLs
     path(
         "admin/login/",
