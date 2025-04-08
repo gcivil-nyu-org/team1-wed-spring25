@@ -21,6 +21,7 @@ before_install:
   - docker-compose -f docker-compose.ci.yml version
   - gem update --system
   - gem install bundler
+  - pip install coveralls
 
 install:
   - docker-compose -f docker-compose.ci.yml build
@@ -28,8 +29,8 @@ install:
 before_script:
   # Start the CI containers in detached mode
   - docker-compose -f docker-compose.ci.yml up -d
-  - docker-compose -f docker-compose.ci.yml exec -T -u root app apt-get update
-  - docker-compose -f docker-compose.ci.yml exec -T -u root app apt-get install -y git
+  # - docker-compose -f docker-compose.ci.yml exec -T -u root app apt-get update
+  # - docker-compose -f docker-compose.ci.yml exec -T -u root app apt-get install -y git
   - sleep 10
   # Run migrations and collect static files inside the app container (as root)
   - docker-compose -f docker-compose.ci.yml exec -T -u root app python manage.py makemigrations --noinput
@@ -42,10 +43,12 @@ script:
   - docker-compose -f docker-compose.ci.yml exec -T -u root app black --check .
   - docker-compose -f docker-compose.ci.yml exec -T -u root app flake8 .
   - docker-compose -f docker-compose.ci.yml exec -T -u root app coverage run --source=vocationalnyc manage.py test
+  # copy the coverage report to Travis CI
+  - docker cp $(docker-compose -f docker-compose.ci.yml ps -q app):/app/.coverage ./
 
 after_success:
-  - docker-compose -f docker-compose.ci.yml exec -T -e COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN -u root app pip install coveralls
-  - docker-compose -f docker-compose.ci.yml exec -T -e COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN -u root app coveralls --verbose
+  # - docker-compose -f docker-compose.ci.yml exec -T -e COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN -u root app pip install coveralls
+  # - docker-compose -f docker-compose.ci.yml exec -T -e COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN -u root app coveralls --verbose
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker-compose -f docker-compose.prod.yml build
   - docker-compose -f docker-compose.prod.yml push
