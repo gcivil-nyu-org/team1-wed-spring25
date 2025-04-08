@@ -170,18 +170,21 @@
 
 
 
-                                                    <button class="BookmarkButton size-small"
 
-                                                            data-url="{% url 'add_bookmark' course.pk %}"
-                                                            data-course-id="{{ course.pk }}"
-                                                            data-tracking-apply-int-code=false
-                                                            data-tracking-campaign=edu_save_cta_click
-                                                            data-tracking-id=edu_save_tracking
-                                                            data-tracking-placement=edu_save_cta_rankingcard
-                                                            data-tracking-trigger-utag-link-event=true
-                                                            onclick="location.href=this.getAttribute('data-url')">
-                                                        Add Bookmark
-                                                    </button>
+
+                                    {% if user.is_authenticated %}
+  <button class="BookmarkButton size-small"
+          onclick="openBookmarkModal({{ course.pk }}, '{{ course.name|escapejs }}')">
+    Add Bookmark
+  </button>
+{% else %}
+  <button class="BookmarkButton size-small"
+          onclick="window.location.href='/accounts/login/'">
+    Add Bookmark
+  </button>
+{% endif %}
+
+
                                                 </div>
                                             </div>
                                         </li>
