@@ -116,20 +116,24 @@ class CourseListViewTest(TestCase):
         # Test setting keywords as tags
         course.set_keywords_as_tags("python django testing")
         self.assertEqual(course.tags.count(), 3)
-        self.assertTrue(course.tags.filter(name='python').exists())
-        self.assertTrue(course.tags.filter(name='django').exists())
-        self.assertTrue(course.tags.filter(name='testing').exists())
+        self.assertTrue(course.tags.filter(name="python").exists())
+        self.assertTrue(course.tags.filter(name="django").exists())
+        self.assertTrue(course.tags.filter(name="testing").exists())
 
         # Test getting tags list
         tags_list = course.get_tags_list()
         self.assertEqual(len(tags_list), 3)
-        self.assertEqual({tag.name for tag in tags_list}, {'python', 'django', 'testing'})
+        self.assertEqual(
+            {tag.name for tag in tags_list}, {"python", "django", "testing"}
+        )
 
         # Test updating keywords and tags (should add new tags without duplicating existing ones)
         course.set_keywords_as_tags("python react frontend")
-        self.assertEqual(course.tags.count(), 5)  # Now 5: python, django, testing, react, frontend
-        self.assertTrue(course.tags.filter(name='react').exists())
-        self.assertTrue(course.tags.filter(name='frontend').exists())
+        self.assertEqual(
+            course.tags.count(), 5
+        )  # Now 5: python, django, testing, react, frontend
+        self.assertTrue(course.tags.filter(name="react").exists())
+        self.assertTrue(course.tags.filter(name="frontend").exists())
 
         # Test empty keywords
         course.set_keywords_as_tags("")
