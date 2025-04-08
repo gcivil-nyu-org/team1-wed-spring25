@@ -135,7 +135,11 @@ def rename_bookmark_list(request, list_id):
             return redirect("bookmark_list")
 
         # Check for duplicate name
-        if BookmarkList.objects.filter(user=request.user, name__iexact=new_name).exclude(list_id=list_id).exists():
+        if (
+            BookmarkList.objects.filter(user=request.user, name__iexact=new_name)
+            .exclude(list_id=list_id)
+            .exists()
+        ):
             messages.error(request, "A bookmark list with this name already exists.")
             return redirect("bookmark_list")
 
