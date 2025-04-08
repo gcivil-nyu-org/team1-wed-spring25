@@ -117,22 +117,26 @@ body::-webkit-scrollbar {
                                                         class="Filters"><span
                                                         class="Filters-Inside">Clear Filters</span>
                                                 </button>
+                                            {% if query %}
                                             <li class="Applied-Filters-Outline">
-                                                <button aria-label="Clear Ranking filter."
-                                                        class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
-                                                    <span class="Filters-Inside">filter 1</span><span
-                                                        class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon"><svg
-                                                        aria-hidden=true class="Small-Icon"
-                                                        fill=var(--color) height=8px
-                                                        viewBox="0 0 38 38" width=8px><g
-                                                        fill-rule=evenodd stroke=none stroke-width=1><polygon
-                                                        fill-rule=nonzero
-                                                        points="33.4 0 19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38 38 33.399 23.6 18.999 38 4.6"></polygon></g></svg></span>
+                                                <button aria-label="Remove Keywords filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
+                                                    <span class="Filters-Inside">Keywords: {{ query }}</span>
+                                                    <span class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon">
+                                                        <svg aria-hidden="true" class="Small-Icon" fill="var(--color)" height="8px" viewBox="0 0 38 38" width="8px">
+                                                            <g fill-rule="evenodd" stroke="none" stroke-width="1">
+                                                                <polygon fill-rule="nonzero" points="33.4 0 19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38 38 33.399 23.6 18.999 38 4.6"></polygon>
+                                                            </g>
+                                                        </svg>
+                                                    </span>
                                                 </button>
+                                            </li>
+                                            {% endif %}
                                         </ul>
                                     </div>
                                 </div>
                             </div>
+
+
                             <div class="Controls">
 
                                 <div class="Controls-Text">
@@ -207,9 +211,9 @@ body::-webkit-scrollbar {
                                                             autocomplete=off
                                                             class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
                                                             placeholder="Keywords"
-                                                            name="query"
+                                                            name="Keywords"
                                                             type=text
-                                                            value>
+                                                            value="{{ keywords }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 id=react-auto
                                                                 role=listbox></div>
@@ -224,7 +228,7 @@ body::-webkit-scrollbar {
                                         name="schoolName">
                                         <legend class=" Filter-Section-Title-Outer">
                                             <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
-                                                Provider (Not Working)
+                                                Provider
                                             </div>
                                         </legend>
                                         <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
@@ -240,7 +244,7 @@ body::-webkit-scrollbar {
                                                             placeholder="Provider"
                                                             name="provider"
                                                             type=text
-                                                            value>
+                                                            value="{{ provider }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 role=listbox></div>
                                                     </div>
@@ -254,7 +258,7 @@ body::-webkit-scrollbar {
                                         name="schoolName">
                                         <legend class=" Filter-Section-Title-Outer">
                                             <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
-                                                Min Rating (Not Working)
+                                                Min Rating
                                             </div>
                                         </legend>
                                         <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
@@ -268,8 +272,9 @@ body::-webkit-scrollbar {
                                                             autocomplete=off
                                                             class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
                                                             placeholder="Min Rating"
-                                                            type="number" step="0.1" name="min_rating" min="0" max="5"
-                                                            value>
+                                                            name="min_rating"
+                                                            type="number" step="0.1"  min="0" max="5"
+                                                            value="{{ min_rating }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 role=listbox></div>
                                                     </div>
@@ -301,7 +306,7 @@ body::-webkit-scrollbar {
                                                             placeholder="Min Cost"
                                                             type="number"
                                                             step="1"
-                                                            value>
+                                                            value="{{ min_cost }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 role=listbox></div>
                                                     </div>
@@ -332,7 +337,7 @@ body::-webkit-scrollbar {
                                                             placeholder="Max Cost"
                                                             type="number"
                                                             step="1"
-                                                            value>
+                                                            value="{{ max_cost }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 role=listbox></div>
                                                     </div>
@@ -362,7 +367,7 @@ body::-webkit-scrollbar {
                                                             name="location"
                                                             placeholder="City, State or ZIP"
                                                             type=text
-                                                            value>
+                                                            value="{{ location }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 id=location-input
                                                                 role=listbox></div>

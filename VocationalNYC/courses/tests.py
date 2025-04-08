@@ -224,20 +224,22 @@ class SearchResultTest(TestCase):
         )
 
     def test_search_by_name(self):
-        response = self.client.get(reverse("search_result"), {"query": "Python"})
+        response = self.client.get(reverse("search_result"), {"keywords": "Python"})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context["courses"]), 2)
         self.assertIn(self.course1, response.context["courses"])
         self.assertIn(self.course2, response.context["courses"])
 
     def test_search_by_description(self):
-        response = self.client.get(reverse("search_result"), {"query": "data science"})
+        response = self.client.get(
+            reverse("search_result"), {"keywords": "data science"}
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context["courses"]), 1)
         self.assertEqual(response.context["courses"][0], self.course2)
 
     def test_search_by_keywords(self):
-        response = self.client.get(reverse("search_result"), {"query": "web"})
+        response = self.client.get(reverse("search_result"), {"keywords": "web"})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context["courses"]), 2)
         self.assertIn(self.course1, response.context["courses"])
