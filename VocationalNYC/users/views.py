@@ -1,14 +1,16 @@
 import requests
-
 import sys
+import logging
 
-# import os
-# from django.conf import settings
-# from django.core.files.storage import default_storage
 from django.shortcuts import render, redirect
 from django.views import generic
 from allauth.account.views import SignupView
-from .forms import CustomSignupForm, ProviderVerificationForm, ProfileUpdateForm
+from .forms import (
+    CustomSignupForm,
+    ProviderVerificationForm,
+    ProfileUpdateForm,
+    StudentProfileForm,
+)
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
 from django.contrib import messages
@@ -16,9 +18,14 @@ from django.db import IntegrityError, transaction
 
 # from allauth.account.views import LoginView
 from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+import json
 
-from users.models import Provider, Student
+from users.models import Provider, Student, Tag
 from bookmarks.models import BookmarkList
+from review.models import Review
+
+logger = logging.getLogger(__name__)
 
 
 def login(request):
@@ -87,6 +94,18 @@ def profile_view(request):
                 provider.user = request.user
                 provider.save()
                 return redirect("profile")
+        elif "student_form" in request.POST and request.user.role == "career_changer":
+            student_form = StudentProfileForm(
+                request.POST, instance=request.user.student_profile
+            )
+            if student_form.is_valid():
+                student_form.save()
+                messages.success(request, "Profile updated successfully!")
+                return redirect("profile")
+            else:
+                messages.error(
+                    request, "Error updating profile. Please check your input."
+                )
         else:
             form = ProfileUpdateForm(request.POST, instance=request.user)
             if form.is_valid():
@@ -110,18 +129,24 @@ def profile_view(request):
         try:
             student = request.user.student_profile
             context["student"] = student
-            # Add bookmark lists to context
-            bookmark_lists = request.user.bookmark_list.all().prefetch_related(
-                "bookmark__course"
-            )
-            context["bookmark_lists"] = bookmark_lists
-            # Add reviews to context
-            reviews = request.user.reviews.select_related("course").order_by(
-                "-created_at"
-            )
-            context["reviews"] = reviews
+            context["student_form"] = StudentProfileForm(instance=student)
         except Student.DoesNotExist:
-            pass
+            student = Student.objects.create(user=request.user)
+            context["student"] = student
+            context["student_form"] = StudentProfileForm(instance=student)
+
+        # Add bookmark lists to context
+        bookmark_lists = request.user.bookmark_list.all().prefetch_related(
+            "bookmark__course"
+        )
+        context["bookmark_lists"] = bookmark_lists
+
+        # Get reviews (independent of student profile)
+        logger.debug(f"Fetching reviews for user {request.user.id}")
+        reviews = Review.objects.filter(user=request.user).select_related("course")
+        logger.debug(f"Found {reviews.count()} reviews")
+        context["reviews"] = reviews
+        context["debug"] = False  # Set debug to False for production
 
     return render(request, "users/profile.html", context)
 
@@ -262,3 +287,45 @@ class ProviderListView(generic.ListView):
             print(f"Call API failed, the status code is: {response.status_code}")
 
         return Provider.objects.all()
+
+
+@login_required
+@require_POST
+def add_tag(request):
+    try:
+        data = json.loads(request.body)
+        tag_name = data.get("tag", "").strip().lower()
+        if not tag_name:
+            return JsonResponse({"success": False, "error": "Tag name is required"})
+
+        student = request.user.student_profile
+
+        # Check if student already has this tag
+        if student.tags.filter(name=tag_name).exists():
+            return JsonResponse(
+                {"success": False, "error": "You already have this tag"}
+            )
+
+        tag, created = Tag.objects.get_or_create(name=tag_name)
+        student.tags.add(tag)
+        return JsonResponse({"success": True})
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})
+
+
+@login_required
+@require_POST
+def remove_tag(request):
+    try:
+        data = json.loads(request.body)
+        tag_name = data.get("tag", "").strip()
+        if not tag_name:
+            return JsonResponse({"success": False, "error": "Tag name is required"})
+
+        student = request.user.student_profile
+        tag = Tag.objects.filter(name=tag_name.lower()).first()
+        if tag:
+            student.tags.remove(tag)
+        return JsonResponse({"success": True})
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})

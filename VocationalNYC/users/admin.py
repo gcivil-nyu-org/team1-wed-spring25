@@ -51,16 +51,21 @@ class ProviderAdmin(admin.ModelAdmin):
 
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ("user", "bio", "tag", "created_at")
-    list_filter = ("created_at", "tag")
+    list_display = ("user", "bio", "get_tags_display", "created_at")
+    list_filter = ("created_at", "tags")
     search_fields = ("user__username", "user__email", "bio")
     readonly_fields = ("created_at", "updated_at")
 
     fieldsets = (
         ("User Information", {"fields": ("user",)}),
-        ("Profile Details", {"fields": ("bio", "tag")}),
+        ("Profile Details", {"fields": ("bio", "tags")}),
         (
             "Timestamps",
             {"fields": ("created_at", "updated_at"), "classes": ("collapse",)},
         ),
     )
+
+    def get_tags_display(self, obj):
+        return ", ".join([tag.name for tag in obj.tags.all()])
+
+    get_tags_display.short_description = "Tags"
