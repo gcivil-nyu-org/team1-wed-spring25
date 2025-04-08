@@ -138,8 +138,11 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
 
 
 def filterCourses(request):
-    query = request.GET.get("query", "").strip()
+    # query = request.GET.get("query", "").strip()
+    keywords = request.GET.get("keywords", "").strip()
 
+    provider_name = request.GET.get("provider", "")
+    min_rating = request.GET.get("min_rating", None)
     min_cost = request.GET.get("min_cost", None)
     max_cost = request.GET.get("max_cost", None)
     location = request.GET.get("location", "")
@@ -147,12 +150,15 @@ def filterCourses(request):
 
     courses = Course.objects.all()
 
-    if query:
+    if keywords:
         courses = courses.filter(
-            Q(name__icontains=query)
-            | Q(course_desc__icontains=query)
-            | Q(keywords__icontains=query)
+            Q(name__icontains=keywords)
+            | Q(course_desc__icontains=keywords)
+            | Q(keywords__icontains=keywords)
         )
+
+    if provider_name:
+        courses = courses.filter(provider__name__icontains=provider_name)
 
     if min_cost is not None and min_cost.isdigit():
         courses = courses.filter(cost__gte=int(min_cost))
@@ -168,6 +174,10 @@ def filterCourses(request):
     courses = courses.annotate(
         avg_rating=Avg("reviews__score_rating"), reviews_count=Count("reviews")
     )
+
+    if min_rating and min_rating.replace(".", "", 1).isdigit():
+        courses = courses.filter(avg_rating__gte=float(min_rating))
+
     for course in courses:
         avg = course.avg_rating if course.avg_rating is not None else 0
         course.rating = round(avg, 1)
@@ -178,9 +188,12 @@ def filterCourses(request):
         else:
             course.rating_partial_star_position = 0
             course.rating_partial_percentage = 0
+
     context = {
         "courses": courses,
-        "query": query,
+        "keywords": keywords,
+        "provider_name": provider_name,
+        "min_rating": min_rating,
         "min_cost": min_cost,
         "max_cost": max_cost,
         "location": location,
@@ -238,6 +251,7 @@ def course_data(request):
     if course_id and course_id.isdigit():
         courses = courses.filter(course_id=course_id)
 
+    keywords = request.GET.get("keywords")
     min_cost = request.GET.get("min_cost")
     max_cost = request.GET.get("max_cost")
     min_rating = request.GET.get("min_rating")
@@ -245,6 +259,8 @@ def course_data(request):
     location = request.GET.get("location")
     min_hours = request.GET.get("min_hours")
 
+    if keywords:
+        courses = courses.filter(Q(name__icontains=keywords))
     if min_cost and min_cost.isdigit():
         courses = courses.filter(cost__gte=int(min_cost))
     if max_cost and max_cost.isdigit():
