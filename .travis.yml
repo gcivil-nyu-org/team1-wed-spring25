@@ -47,7 +47,7 @@ script:
   - docker-compose -f docker-compose.ci.yml exec -T -u root app pwd
 
   - docker-compose -f docker-compose.ci.yml exec -T -u root app ls -la
-  - docker cp $(docker-compose -f docker-compose.ci.yml ps -q app):/app/.coverage ./
+  - docker cp $(docker-compose -f docker-compose.ci.yml ps -q app):/vocationalnyc/.coverage ./
 
 after_success:
   # - docker-compose -f docker-compose.ci.yml exec -T -e COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN -u root app pip install coveralls
