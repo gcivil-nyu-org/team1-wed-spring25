@@ -44,10 +44,19 @@ script:
   - docker-compose -f docker-compose.ci.yml exec -T -u root app flake8 .
   - docker-compose -f docker-compose.ci.yml exec -T -u root app coverage run --source=vocationalnyc manage.py test
   # copy the coverage report to Travis CI
-  - docker cp $(docker-compose -f docker-compose.ci.yml ps -q app):/vocationalnyc/.coverage ./
-  - coverage paths -a "/vocationalnyc" -s "$PWD/VocationalNYC"
+  # - docker cp $(docker-compose -f docker-compose.ci.yml ps -q app):/vocationalnyc/.coverage ./
+  # - coverage paths -a "/vocationalnyc" -s "$PWD/VocationalNYC"
 
 after_success:
+  - docker-compose -f docker-compose.ci.yml exec -T -u root app bash -c "apt-get update && apt-get install -y git"
+  
+  # 将 Travis CI 的 git 仓库复制到容器中
+  - mkdir -p gittemp && cp -r .git gittemp/
+  - docker cp gittemp/.git $(docker-compose -f docker-compose.ci.yml ps -q app):/app/.git
+  
+  # 在容器中运行 coveralls，传递所有必要的环境变量
+  - docker-compose -f docker-compose.ci.yml exec -T -e TRAVIS=true -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID -e TRAVIS_BRANCH=$TRAVIS_BRANCH -e CI=true -e TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST -u root app pip install coveralls
+  - docker-compose -f docker-compose.ci.yml exec -T -e TRAVIS=true -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID -e TRAVIS_BRANCH=$TRAVIS_BRANCH -e CI=true -e TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST -u root app coveralls --verbose
   # - docker-compose -f docker-compose.ci.yml exec -T -e COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN -u root app pip install coveralls
   # - docker-compose -f docker-compose.ci.yml exec -T -e COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN -u root app coveralls --verbose
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
