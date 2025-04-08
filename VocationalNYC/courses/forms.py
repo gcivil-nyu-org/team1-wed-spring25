@@ -4,7 +4,7 @@ from .models import Course
 
 class CourseForm(forms.ModelForm):
     location = forms.CharField(required=False)
-    
+
     class Meta:
         model = Course
         fields = [

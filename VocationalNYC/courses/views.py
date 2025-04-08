@@ -2,7 +2,7 @@ import requests
 import logging
 import re
 
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
@@ -329,6 +329,7 @@ def post_new_course(request):
         form = CourseForm()
     return render(request, "courses/new_course.html", {"form": form})
 
+
 # @login_required
 # def delete_course(request, course_id):
 #     course = get_object_or_404(Course, course_id=course_id, provider=request.user.provider)
@@ -336,4 +337,3 @@ def post_new_course(request):
 #         course.delete()
 #         return redirect('course_list')
 #     return render(request, 'courses/confirm_delete_course.html', {'course': course})
-
