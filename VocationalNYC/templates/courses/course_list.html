@@ -555,20 +555,11 @@ body::-webkit-scrollbar {
 
             <!--footer-->
 
-        {% include 'includes/footer.html' %}
-
+           {% include 'includes/footer.html' %}
+        {% include 'courses/course_comparison_container.html' %}
+{% include 'bookmarks/create_bookmark.html' with bookmark_lists=bookmark_lists default_bookmark_list=default_bookmark_list %}
         </div>
     </main>
-
-
-
-
-
-
-
-
-                                    {% include 'courses/course_comparison_container.html' %}
-
 
 </body>
 </html>
