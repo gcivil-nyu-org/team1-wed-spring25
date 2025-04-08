@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load tz %}  {# Load timezone utilities #}
 {% block content %}
 
 <link rel="stylesheet" href="{% static 'css/bookmark.css' %}">
@@ -13,7 +14,11 @@
       <li class="bookmark-entry">
         <div class="bookmark-content">
           <div class="bookmark-left">
-            {{ bookmark.course.name }} – Added on {{ bookmark.time }}
+                  {% timezone "America/New_York" %}
+
+            {{ bookmark.course.name }} – Added on {{ bookmark.time|date:"l, F j, Y \\a\\t g:i:s A" }}
+            {% endtimezone %}
+
           </div>
           <form method="post" action="{% url 'delete_bookmark' bookmark_list.list_id bookmark.id %}">
             {% csrf_token %}
