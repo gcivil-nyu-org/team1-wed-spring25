@@ -111,6 +111,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "vocationalnyc.context_processors.intro_content",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
