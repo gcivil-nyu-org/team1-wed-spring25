@@ -10,6 +10,7 @@
         href="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/favicon.png"
         type="image/png">
      <link rel="stylesheet" href="{% static 'css/course_list.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
              <link rel="stylesheet" href="{% static 'css/globals.css' %}">
 
@@ -200,7 +201,7 @@ body::-webkit-scrollbar {
                                                 Keywords
                                             </div>
                                         </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
                                             <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
                                                 <div class="autosuggest__Container-sc-hb0rq-0 Input">
                                                     <div aria-expanded=false aria-haspopup=listbox
@@ -231,7 +232,7 @@ body::-webkit-scrollbar {
                                                 Provider
                                             </div>
                                         </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
                                             <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
                                                 <div class="autosuggest__Container-sc-hb0rq-0 Input">
                                                     <div aria-expanded=false aria-haspopup=listbox
@@ -261,7 +262,7 @@ body::-webkit-scrollbar {
                                                 Min Rating
                                             </div>
                                         </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
                                             <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
                                                 <div class="autosuggest__Container-sc-hb0rq-0 Input">
                                                     <div aria-expanded=false aria-haspopup=listbox
@@ -292,7 +293,7 @@ body::-webkit-scrollbar {
                                                 Min Cost
                                             </div>
                                         </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
                                             <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
                                                 <div class="autosuggest__Container-sc-hb0rq-0 Input">
                                                     <div aria-expanded=false aria-haspopup=listbox
@@ -323,7 +324,7 @@ body::-webkit-scrollbar {
                                                 Max Cost
                                             </div>
                                         </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
                                             <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
                                                 <div class="autosuggest__Container-sc-hb0rq-0 Input">
                                                     <div aria-expanded=false aria-haspopup=listbox
@@ -354,7 +355,7 @@ body::-webkit-scrollbar {
                                                 Location
                                             </div>
                                         </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
                                             <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
                                                 <div class="autosuggest__Container-sc-hb0rq-0 Input">
                                                     <div aria-expanded=false aria-haspopup=listbox
@@ -418,7 +419,7 @@ body::-webkit-scrollbar {
                                                 Area of Study
                                             </div>
                                         </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
                                             <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
                                                 <span class="select__Container-sc-i9bbt3-3 All-Distances-Outer-Frame"
                                                     style=--width:100%><label
@@ -487,7 +488,7 @@ body::-webkit-scrollbar {
                                                 Min Classroom Hours
                                             </div>
                                         </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
+                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
                                             <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
                                                 <div class="autosuggest__Container-sc-hb0rq-0 Input">
                                                     <div aria-expanded=false aria-haspopup=listbox
@@ -560,20 +561,109 @@ body::-webkit-scrollbar {
 
             <!--footer-->
 
-        {% include 'includes/footer.html' %}
+           {% include 'includes/footer.html' %}
+        {% include 'courses/course_comparison_container.html' %}
 
+<link rel="stylesheet" href="{% static 'css/bookmark.css' %}">
+
+
+<div class="modal fade" id="bookmarkModal" tabindex="-1" aria-labelledby="bookmarkModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content glass-modal">
+      <form id="bookmarkForm">
+        {% csrf_token %}
+        <input type="hidden" name="course_id" id="modalCourseId">
+
+        <div class="modal-header border-0">
+          <h5 class="modal-title modal-header-text" id="bookmarkModalLabel">
+            ➕ Add Bookmark for <span id="courseNameDisplay"></span>
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+
+        <div id="bookmarkError" class="alert alert-info" style="display: none;margin-left: 1rem; margin-right: 1rem;"></div>
+        <div id="bookmarkSuccess" class="alert alert-info" style="display: none;margin-left: 1rem; margin-right: 1rem;"></div>
+
+        <div class="modal-body">
+          {% if bookmark_lists %}
+            <label for="bookmarkList" class="modal-label">Choose Bookmark List:</label>
+            <select name="bookmark_list" id="bookmarkList" class="modal-select">
+              {% for list in bookmark_lists %}
+              <option value="{{ list.list_id }}"
+                {% if default_bookmark_list and list.list_id == default_bookmark_list.list_id %} selected {% endif %}>
+                {{ list.name }}
+              </option>
+              {% endfor %}
+            </select>
+          {% else %}
+            <p class="alert alert-info">You don't have any bookmark lists yet.</p>
+          {% endif %}
+
+          <div class="modal-footer aligned-footer border-0">
+            {% if bookmark_lists %}
+              <button type="button" class="cancel-button" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="create-button">Add</button>
+            {% else %}
+              <button type="button" class="cancel-button" data-bs-dismiss="modal">Cancel</button>
+              <button onclick="window.location.href='{% url 'bookmark_list' %}'" class="create-button">Create List</button>
+
+            {% endif %}
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  window.openBookmarkModal = function(courseId, courseName) {
+    const modal = new bootstrap.Modal(document.getElementById('bookmarkModal'));
+    document.getElementById("modalCourseId").value = courseId;
+    document.getElementById("courseNameDisplay").textContent = courseName;
+    document.getElementById("bookmarkError").style.display = "none";
+    modal.show();
+  };
+
+  document.getElementById("bookmarkForm")?.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const courseId = document.getElementById("modalCourseId").value;
+    const bookmarkListId = document.getElementById("bookmarkList").value;
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    const response = await fetch(`/bookmarks/courses/${courseId}/add_bookmark/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": csrfToken,
+      },
+      body: `bookmark_list=${bookmarkListId}`
+    });
+
+    const resultHTML = await response.text();
+
+    if (response.redirected) {
+      document.getElementById("bookmarkSuccess").textContent = "✅ Course bookmarked successfully!";
+      document.getElementById("bookmarkSuccess").style.display = "block";
+      setTimeout(() => {
+        const modalInstance = bootstrap.Modal.getInstance(document.getElementById('bookmarkModal'));
+        modalInstance.hide();
+        location.reload();
+      }, 2000);
+    } else {
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = resultHTML;
+      const messageText = tempDiv.querySelector('.alert-info');
+      if (messageText) {
+        const errorBox = document.getElementById("bookmarkError");
+        errorBox.innerHTML = messageText.innerHTML;
+        errorBox.style.display = "block";
+      }
+    }
+  });
+});
+</script>  </div>
     </main>
-
-
-
-
-
-
-
-
-                                    {% include 'courses/course_comparison_container.html' %}
-
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

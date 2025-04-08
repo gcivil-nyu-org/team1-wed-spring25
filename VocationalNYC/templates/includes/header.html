@@ -2,13 +2,12 @@
                 <div class="Introduction content" style="display: flex; justify-content: center;">
                     <div class="Main-Header">
 
-          <a style="margin-left: 0;"
+          <a style="margin-left: 0;width: 28px!important; height: 28px!important;"
 
                href=#><img
                     alt=""
-                    height=28
-                    src=https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/favicon.png
-                    width=28></a>
+                    style="" width="28" height="28"
+                    src=https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/favicon.png></a>
 
             <div class="Tabs">
                 <ul class="Tabs-Content-Outer">
@@ -34,7 +33,8 @@
                 </ul>
             </div>
 
-            <div class="Header-Corner" style="display: flex; align-items: center; gap: 10px; position: relative;">
+            <div class="Header-Corner" style="display: flex; align-items: center; gap: 10px; position: relative;             height: 32px!important;
+">
 
                 <!-- User Info -->
             {% if user.role == "training_provider" or user.role == "career_changer" or user.role == "administrator" %}
@@ -146,11 +146,11 @@
 
                 {% else %}
 
-                <button onclick="window.location.href='/accounts/login/?next={{ request.path }}'" style="background-color: #007bff; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 4px;">
+                <button onclick="window.location.href='/accounts/login/?next={{ request.path }}'" style="background-color: #007bff; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 4px; width: 80px!important; height: 30px!important; font-size: 11px!important;">
                     Sign In
                 </button>
 
-                <button onclick="window.location.href='/accounts/signup/'" style="background-color: #28a745; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 4px;">
+                <button onclick="window.location.href='/accounts/signup/'" style="background-color: #28a745; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 4px; width: 80px!important; height: 30px!important; font-size: 11px!important;">
                     Sign Up
                 </button>
 

@@ -99,6 +99,50 @@ class CourseListViewTest(TestCase):
         self.assertTemplateUsed(response, "courses/course_list.html")
         self.assertIn("courses", response.context)
 
+    def test_course_tags_operations(self):
+        provider = Provider.objects.create(
+            name="Test Provider",
+            phone_num="1234567890",
+            address="Test Address",
+        )
+        course = Course.objects.create(
+            name="Test Course",
+            provider=provider,
+            course_desc="Test Description",
+            cost=1000,
+            location="Test Location",
+        )
+
+        # Test setting keywords as tags
+        course.set_keywords_as_tags("python django testing")
+        self.assertEqual(course.tags.count(), 3)
+        self.assertTrue(course.tags.filter(name="python").exists())
+        self.assertTrue(course.tags.filter(name="django").exists())
+        self.assertTrue(course.tags.filter(name="testing").exists())
+
+        # Test getting tags list
+        tags_list = course.get_tags_list()
+        self.assertEqual(len(tags_list), 3)
+        self.assertEqual(
+            {tag.name for tag in tags_list}, {"python", "django", "testing"}
+        )
+
+        # Test updating keywords and tags (should add new tags without duplicating existing ones)
+        course.set_keywords_as_tags("python react frontend")
+        self.assertEqual(
+            course.tags.count(), 5
+        )  # Now 5: python, django, testing, react, frontend
+        self.assertTrue(course.tags.filter(name="react").exists())
+        self.assertTrue(course.tags.filter(name="frontend").exists())
+
+        # Test empty keywords
+        course.set_keywords_as_tags("")
+        self.assertEqual(course.tags.count(), 5)  # should not change existing tags
+
+        # Test single character keywords (should be ignored)
+        course.set_keywords_as_tags("a b c python")
+        self.assertEqual(course.tags.count(), 5)  # only python exists, a,b,c ignored
+
 
 class CourseDetailViewTest(TestCase):
     def setUp(self):
@@ -172,7 +216,7 @@ class CourseDetailViewTest(TestCase):
 
         # Should redirect to login page
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.url.startswith("/accounts/login/"))
+        self.assertTrue(response.url.startswith("/login/"))  # Updated login URL check
 
 
 class SearchResultTest(TestCase):
