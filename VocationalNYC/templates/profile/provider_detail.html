@@ -1,17 +1,16 @@
-
-{% extends 'base.html' %}
-
+{% extends "base.html" %}
 
 {% block title %}Provider Details{% endblock %}
 
 {% block content %}
-    <div class="container">
-        {% if error_message %}
-            <p class="error">{{ error_message }}</p>
-        {% elif provider %}
-            <h2>{{ provider.name }}</h2>
-            <p class="info"><strong>Phone:</strong> {{ provider.phone_num }}</p>
-            <p class="info"><strong>Address:</strong> {{ provider.address }}</p>
+<div class="container mt-4">
+    {% if error_message %}
+        <p class="error">{{ error_message }}</p>
+    {% elif provider %}
+        <h2>{{ provider.name }}</h2>
+        <p class="info"><strong>Phone:</strong> {{ provider.phone_num }}</p>
+        <p class="info"><strong>Address:</strong> {{ provider.address }}</p>
+        {% if provider.website %}
             <p class="info"><strong>Website:</strong> <a href="{{ provider.website }}" target="_blank">{{ provider.website }}</a></p>
             <p class="info"><strong>Courses:</strong></p>
             <ul>
@@ -24,8 +23,9 @@
                 {% empty %}
                     <li>No courses yet</li>
                 {% endfor %}
-        {% else %}
-            <p class="error">Provider not found.</p>
         {% endif %}
-    </div>
+    {% else %}
+        <p class="error">Provider not found.</p>
+    {% endif %}
+</div>
 {% endblock %}
