@@ -408,6 +408,20 @@ def manage_courses(request):
 
     courses = Course.objects.filter(provider=provider)
 
+    courses = courses.annotate(
+        avg_rating=Avg("reviews__score_rating"), reviews_count=Count("reviews")
+    )
+
+    for course in courses:
+            avg = course.avg_rating if course.avg_rating is not None else 0
+            course.rating = round(avg, 1)
+            course.total_hours = (
+                course.classroom_hours
+                + course.lab_hours
+                + course.internship_hours
+                + course.practical_hours
+            )
+
     context = {"courses": courses, "provider": provider}
 
     return render(request, "courses/manage_courses.html", context)
@@ -457,38 +471,26 @@ def delete_course(request, course_id):
         course.delete()
     return redirect("course_list")
 
+@login_required
+def edit_course(request, course_id):    
+    course = get_object_or_404(Course, pk=course_id)
+    
+    if request.method == 'POST':
+        if course.provider != request.user.provider_profile:
+            return HttpResponseForbidden("You can't edit this course.")
 
-# @login_required
-# def edit_course(request):
-#     """
-#     编辑现有课程
-#     """
-#     if request.method != 'POST':
-#         return redirect('manage_courses')
-
-#     course_id = request.POST.get('course_id')
-#     course = get_object_or_404(Course, course_id=course_id)
-
-#     # 检查是否是课程所属的培训机构在编辑
-#     if course.provider != request.user.provider_profile:
-#         return HttpResponseForbidden("您无权编辑此课程")
-
-#     # 获取表单数据
-#     course.name = request.POST.get('name')
-#     course.keywords = request.POST.get('keywords')
-#     course.course_desc = request.POST.get('course_desc')
-#     course.cost = int(request.POST.get('cost'))
-#     course.location = request.POST.get('location')
-#     course.classroom_hours = int(request.POST.get('classroom_hours'))
-#     course.lab_hours = int(request.POST.get('lab_hours'))
-#     course.internship_hours = int(request.POST.get('internship_hours'))
-#     course.practical_hours = int(request.POST.get('practical_hours'))
-
-#     course.save()
-
-#     # 清除旧标签并设置新标签
-#     course.tags.clear()
-#     course.set_keywords_as_tags(course.keywords)
-
-#     messages.success(request, f"课程 '{course.name}' 已成功更新")
-#     return redirect('manage_courses')
+        course.name = request.POST.get('name', course.name)
+        course.keywords = request.POST.get('keywords', course.keywords)
+        course.course_desc = request.POST.get('course_desc', course.course_desc)
+        course.cost = request.POST.get('cost', course.cost)
+        course.location = request.POST.get('location', course.location)
+        course.classroom_hours = request.POST.get('classroom_hours', course.classroom_hours)
+        course.lab_hours = request.POST.get('lab_hours', course.lab_hours)
+        course.internship_hours = request.POST.get('internship_hours', course.internship_hours)
+        course.practical_hours = request.POST.get('practical_hours', course.practical_hours)
+        
+        course.save()
+        messages.success(request, "Edit course successfully!")
+        return redirect('manage_courses')
+    
+    return render(request, 'courses/edit_course.html', {'course': course})
