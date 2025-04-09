@@ -6,8 +6,9 @@ from unittest.mock import patch
 from django.test import TestCase, RequestFactory, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.template.response import TemplateResponse
 
-from courses.views import CourseListView
+from courses.views import CourseListView,sort_by
 from courses.models import Course
 from users.models import Provider
 from review.models import Review
@@ -329,3 +330,53 @@ class SearchResultTest(TestCase):
         response = self.client.get(reverse("search_result"), {})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context["courses"]), 3)
+
+# Mock filterCourses function
+def mock_filterCourses(request):
+    return {
+        "courses": Course.objects.all()  # Replace with your actual queryset or mock data
+    }
+
+class SortByFunctionTest(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        # Create some mock course objects for testing
+        Course.objects.create(name="Course A", rating=5)
+        Course.objects.create(name="Course B", rating=3)
+        Course.objects.create(name="Course C", rating=4)
+
+    @patch("your_module.filterCourses", side_effect=mock_filterCourses)
+    def test_sort_by_function(self, mock_filter_courses):
+        # Create a request with sorting parameters
+        request = self.factory.get("/courses?sort=rating&order=desc")
+
+        # Call the sort_by function
+        response = sort_by(request)
+
+        # Verify the response is rendered correctly
+        self.assertIsInstance(response, TemplateResponse)
+        self.assertEqual(response.status_code, 200)
+
+        # Check that courses are sorted in descending order by rating
+        sorted_courses = list(response.context_data["courses"])
+        self.assertEqual(sorted_courses[0].rating, 5)  # Highest rating first
+        self.assertEqual(sorted_courses[1].rating, 4)
+        self.assertEqual(sorted_courses[2].rating, 3)
+
+    @patch("your_module.filterCourses", side_effect=mock_filterCourses)
+    def test_sort_by_function_default_order(self, mock_filter_courses):
+        # Create a request without sorting parameters (default behavior)
+        request = self.factory.get("/courses")
+
+        # Call the sort_by function
+        response = sort_by(request)
+
+        # Verify the response is rendered correctly
+        self.assertIsInstance(response, TemplateResponse)
+        self.assertEqual(response.status_code, 200)
+
+        # Check that courses are not sorted (default order)
+        unsorted_courses = list(response.context_data["courses"])
+        self.assertEqual(unsorted_courses[0].name, "Course A")
+        self.assertEqual(unsorted_courses[1].name, "Course B")
+        self.assertEqual(unsorted_courses[2].name, "Course C")
