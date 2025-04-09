@@ -23,7 +23,7 @@ class MyAccountAdapter(DefaultAccountAdapter):
                 f"Redirecting training_provider {user.username} to provider_verification."
             )
             return HttpResponseRedirect(reverse("provider_verification"))
-        return reverse('profile')  # Changed from default '/' to '/accounts/profile/'
+        return reverse("profile")  # Changed from default '/' to '/accounts/profile/'
 
     def respond_inactive(self, request, user):
         if getattr(user, "role", None) == "training_provider":
