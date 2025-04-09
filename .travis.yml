@@ -45,7 +45,7 @@ script:
 after_success:  
   # run coveralls inside the docker container
   - docker-compose -f docker-compose.ci.yml exec -T -e TRAVIS=true -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID -e TRAVIS_BRANCH=$TRAVIS_BRANCH -e CI=true -e TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST -u root app pip install coveralls
-  - docker-compose -f docker-compose.ci.yml exec -T -e TRAVIS=true -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID -e TRAVIS_BRANCH=$TRAVIS_BRANCH -e CI=true -e TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST -u root app coveralls --verbose
+  - docker-compose -f docker-compose.ci.yml exec -T -e TRAVIS=true -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID -e TRAVIS_BRANCH=$TRAVIS_BRANCH -e CI=true -e TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST -u root app coveralls --skip-git --verbose
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker-compose -f docker-compose.prod.yml build
   - docker-compose -f docker-compose.prod.yml push
