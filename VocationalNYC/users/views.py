@@ -254,6 +254,11 @@ class ProviderDetailView(generic.DetailView):
     template_name = "profile/provider_detail.html"
     context_object_name = "provider"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["courses"] = self.object.course.all()
+        return context
+
 
 class ProviderListView(generic.ListView):
     model = Provider

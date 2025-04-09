@@ -12,6 +12,13 @@
         <p class="info"><strong>Address:</strong> {{ provider.address }}</p>
         {% if provider.website %}
             <p class="info"><strong>Website:</strong> <a href="{{ provider.website }}" target="_blank">{{ provider.website }}</a></p>
+            <p class="info"><strong>Courses:</strong></p>
+            <ul>
+                {% for course in courses %}
+                    <li>{{ course.name }}</li>
+                {% empty %}
+                    <li>No courses yet</li>
+                {% endfor %}
         {% endif %}
     {% else %}
         <p class="error">Provider not found.</p>
