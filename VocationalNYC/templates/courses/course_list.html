@@ -134,6 +134,93 @@ body::-webkit-scrollbar {
                                                 </button>
                                             </li>
                                             {% endif %}
+                                            {% if provider %}
+                                            <li class="Applied-Filters-Outline">
+                                                <button aria-label="Remove Provider filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
+                                                    <span class="Filters-Inside">Provider: {{ provider }}</span>
+                                                    <span class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon">
+                                                        <svg aria-hidden="true" class="Small-Icon" fill="var(--color)" height="8px" viewBox="0 0 38 38" width="8px">
+                                                            <g fill-rule="evenodd" stroke="none" stroke-width="1">
+                                                                <polygon fill-rule="nonzero" points="33.4 0 19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38 38 33.399 23.6 18.999 38 4.6"></polygon>
+                                                            </g>
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                            </li>
+                                            {% endif %}
+                                            {% if min_rating %}
+                                            <li class="Applied-Filters-Outline">
+                                                <button aria-label="Remove Min Rating filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
+                                                    <span class="Filters-Inside">Min Rating: {{ min_rating }}</span>
+                                                    <span class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon">
+                                                        <svg aria-hidden="true" class="Small-Icon" fill="var(--color)" height="8px" viewBox="0 0 38 38" width="8px">
+                                                            <g fill-rule="evenodd" stroke="none" stroke-width="1">
+                                                                <polygon fill-rule="nonzero" points="33.4 0 19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38 38 33.399 23.6 18.999 38 4.6"></polygon>
+                                                            </g>
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                            </li>
+                                            {% endif %}
+                                            {% if min_cost %}
+                                            <li class="Applied-Filters-Outline">
+                                                <button aria-label="Remove Min Cost filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
+                                                    <span class="Filters-Inside">Min Cost: {{ min_cost }}</span>
+                                                    <span class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon">
+                                                        <svg aria-hidden="true" class="Small-Icon" fill="var(--color)" height="8px" viewBox="0 0 38 38" width="8px">
+                                                            <g fill-rule="evenodd" stroke="none" stroke-width="1">
+                                                                <polygon fill-rule="nonzero" points="33.4 0 19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38 38 33.399 23.6 18.999 38 4.6"></polygon>
+                                                            </g>
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                            </li>
+                                            {% endif %}
+                                            {% if max_cost %}
+                                            <li class="Applied-Filters-Outline">
+                                                <button aria-label="Remove Max Cost filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
+                                                    <span class="Filters-Inside">Max Cost: {{ max_cost }}</span>
+                                                    <span class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon">
+                                                        <svg aria-hidden="true" class="Small-Icon" fill="var(--color)" height="8px" viewBox="0 0 38 38" width="8px">
+                                                            <g fill-rule="evenodd" stroke="none" stroke-width="1">
+                                                                <polygon fill-rule="nonzero" points="33.4 0 19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38 38 33.399 23.6 18.999 38 4.6"></polygon>
+                                                            </g>
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                            </li>
+                                            {% endif %}
+                                            {% if location %}
+                                            <li class="Applied-Filters-Outline">
+                                                <button aria-label="Remove Location filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
+                                                    <span class="Filters-Inside">Location: {{ location }}</span>
+                                                    <span class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon">
+                                                        <svg aria-hidden="true" class="Small-Icon" fill="var(--color)" height="8px" viewBox="0 0 38 38" width="8px">
+                                                            <g fill-rule="evenodd" stroke="none" stroke-width="1">
+                                                                <polygon fill-rule="nonzero" points="33.4 0 19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38 38 33.399 23.6 18.999 38 4.6"></polygon>
+                                                            </g>
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                            </li>
+                                            {% endif %}
+                                            {% if min_classroom_hours %}
+                                            <li class="Applied-Filters-Outline">
+                                                <button aria-label="Remove Min Classroom Hours filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
+                                                    <span class="Filters-Inside">Min Classroom Hours: {{ min_classroom_hours }}</span>
+                                                    <span class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon">
+                                                        <svg aria-hidden="true" class="Small-Icon" fill="var(--color)" height="8px" viewBox="0 0 38 38" width="8px">
+                                                            <g fill-rule="evenodd" stroke="none" stroke-width="1">
+                                                                <polygon fill-rule="nonzero" points="33.4 0 19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38 38 33.399 23.6 18.999 38 4.6"></polygon>
+                                                            </g>
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                            </li>
+                                            {% endif %}
+
+                                            
+
                                         </ul>
                                     </div>
                                 </div>
