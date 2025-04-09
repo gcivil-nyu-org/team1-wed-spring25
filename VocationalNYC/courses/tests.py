@@ -331,37 +331,6 @@ class SearchResultTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context["courses"]), 3)
 
-# Mock filterCourses function
-def mock_filterCourses(request):
-    return {
-        "courses": Course.objects.all()  # Replace with your actual queryset or mock data
-    }
-
-class SortByFunctionTest(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        # Create some mock course objects for testing
-        Course.objects.create(name="Course A", rating=5)
-        Course.objects.create(name="Course B", rating=3)
-        Course.objects.create(name="Course C", rating=4)
-
-    @patch("your_module.filterCourses", side_effect=mock_filterCourses)
-    def test_sort_by_function(self, mock_filter_courses):
-        # Create a request with sorting parameters
-        request = self.factory.get("/courses?sort=rating&order=desc")
-
-        # Call the sort_by function
-        response = sort_by(request)
-
-        # Verify the response is rendered correctly
-        self.assertIsInstance(response, TemplateResponse)
-        self.assertEqual(response.status_code, 200)
-
-        # Check that courses are sorted in descending order by rating
-        sorted_courses = list(response.context_data["courses"])
-        self.assertEqual(sorted_courses[0].rating, 5)  # Highest rating first
-        self.assertEqual(sorted_courses[1].rating, 4)
-        self.assertEqual(sorted_courses[2].rating, 3)
 
     @patch("your_module.filterCourses", side_effect=mock_filterCourses)
     def test_sort_by_function_default_order(self, mock_filter_courses):
@@ -380,3 +349,343 @@ class SortByFunctionTest(TestCase):
         self.assertEqual(unsorted_courses[0].name, "Course A")
         self.assertEqual(unsorted_courses[1].name, "Course B")
         self.assertEqual(unsorted_courses[2].name, "Course C")
+
+class FilterCoursesTest(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        
+        # Create test provider
+        self.provider = Provider.objects.create(
+            name="Test Provider",
+            phone_num="1234567890",
+            address="123 Test St, New York, NY, 10001"
+        )
+        
+        # Create test courses with different attributes
+        self.course1 = Course.objects.create(
+            name="Python Course",
+            provider=self.provider,
+            keywords="python, programming",
+            course_desc="Learn Python programming",
+            cost=1000,
+            location="123 Test St, New York, NY, 10001",
+            classroom_hours=40,
+            lab_hours=20
+        )
+        
+        self.course2 = Course.objects.create(
+            name="Web Development",
+            provider=self.provider,
+            keywords="web, javascript",
+            course_desc="Learn web development",
+            cost=2000,
+            location="456 Test Ave, Brooklyn, NY, 11201",
+            classroom_hours=60,
+            lab_hours=30
+        )
+
+    def test_filter_by_keywords(self):
+        request = self.factory.get('/search/', {'keywords': 'python'})
+        context = filterCourses(request)
+        self.assertEqual(len(context['courses']), 1)
+        self.assertEqual(context['courses'][0].name, "Python Course")
+
+    def test_filter_by_provider(self):
+        request = self.factory.get('/search/', {'provider': 'Test Provider'})
+        context = filterCourses(request)
+        self.assertEqual(len(context['courses']), 2)
+
+    def test_filter_by_cost_range(self):
+        request = self.factory.get('/search/', {'min_cost': '1500', 'max_cost': '2500'})
+        context = filterCourses(request)
+        self.assertEqual(len(context['courses']), 1)
+        self.assertEqual(context['courses'][0].name, "Web Development")
+
+    def test_filter_by_location(self):
+        request = self.factory.get('/search/', {'location': 'Brooklyn'})
+        context = filterCourses(request)
+        self.assertEqual(len(context['courses']), 1)
+        self.assertEqual(context['courses'][0].name, "Web Development")
+
+    def test_filter_by_classroom_hours(self):
+        request = self.factory.get('/search/', {'min_classroom_hours': '50'})
+        context = filterCourses(request)
+        self.assertEqual(len(context['courses']), 1)
+        self.assertEqual(context['courses'][0].name, "Web Development")
+
+    def test_invalid_filters(self):
+        request = self.factory.get('/search/', {
+            'min_cost': 'invalid',
+            'max_cost': 'invalid',
+            'min_classroom_hours': 'invalid'
+        })
+        context = filterCourses(request)
+        self.assertEqual(len(context['courses']), 2)  # Should return all courses
+
+class CourseMapTest(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.client = Client()
+        
+        # Create test provider and course
+        self.provider = Provider.objects.create(
+            name="Test Provider",
+            phone_num="1234567890",
+            address="123 Test St, New York, NY, 10001"
+        )
+        
+        self.course = Course.objects.create(
+            name="Test Course",
+            provider=self.provider,
+            location="123 Test St, New York, NY, 10001"
+        )
+
+    def test_course_map_view(self):
+        response = self.client.get(reverse('course_map'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'courses/course_map.html')
+
+    @patch('courses.views.requests.get')
+    def test_course_data_view(self, mock_get):
+        mock_get.return_value = MockResponse({
+            'results': [{
+                'geometry': {
+                    'location': {
+                        'lat': 40.7128,
+                        'lng': -74.0060
+                    }
+                }
+            }]
+        })
+        
+        response = self.client.get(reverse('course_data'))
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            [{
+                'name': 'Test Course',
+                'location': '123 Test St, New York, NY, 10001',
+                'lat': 40.7128,
+                'lng': -74.0060
+            }]
+        )
+
+class PostNewCourseTest(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.client = Client()
+        
+        # Create test user and provider
+        self.user = get_user_model().objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123'
+        )
+        
+        self.provider = Provider.objects.create(
+            name="Test Provider",
+            phone_num="1234567890",
+            address="123 Test St, New York, NY, 10001"
+        )
+        
+        self.client.login(username='testuser', password='testpass123')
+
+    def test_post_new_course_get(self):
+        response = self.client.get(reverse('post_new_course'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'courses/post_new_course.html')
+
+    def test_post_new_course_post_valid(self):
+        data = {
+            'name': 'New Test Course',
+            'provider': self.provider.id,
+            'course_desc': 'Test course description',
+            'cost': 1000,
+            'location': '123 Test St, New York, NY, 10001',
+            'classroom_hours': 40,
+            'lab_hours': 20,
+            'keywords': 'test, course'
+        }
+        
+        response = self.client.post(reverse('post_new_course'), data)
+        self.assertEqual(response.status_code, 302)  # Should redirect
+        self.assertTrue(Course.objects.filter(name='New Test Course').exists())
+
+    def test_post_new_course_post_invalid(self):
+        data = {
+            'name': '',  # Invalid: empty name
+            'provider': self.provider.id,
+            'course_desc': 'Test course description',
+            'cost': -100,  # Invalid: negative cost
+            'location': '123 Test St, New York, NY, 10001',
+            'classroom_hours': -40,  # Invalid: negative hours
+            'lab_hours': 20
+        }
+        
+        response = self.client.post(reverse('post_new_course'), data)
+        self.assertEqual(response.status_code, 200)  # Should stay on form page
+        self.assertFalse(Course.objects.filter(course_desc='Test course description').exists())
+
+class CourseListViewBookmarksTest(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.client = Client()
+        
+        # Create test user
+        self.user = get_user_model().objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123'
+        )
+        
+        # Create test provider and course
+        self.provider = Provider.objects.create(
+            name="Test Provider",
+            phone_num="1234567890",
+            address="123 Test St, New York, NY, 10001"
+        )
+        
+        self.course = Course.objects.create(
+            name="Test Course",
+            provider=self.provider,
+            location="123 Test St, New York, NY, 10001"
+        )
+        
+        self.client.login(username='testuser', password='testpass123')
+
+    def test_context_with_bookmarks(self):
+        # Create a bookmark list
+        from bookmarks.models import BookmarkList
+        bookmark_list = BookmarkList.objects.create(
+            user=self.user,
+            name="My Bookmarks"
+        )
+        
+        response = self.client.get(reverse('course_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('bookmark_lists', response.context)
+        self.assertIn('default_bookmark_list', response.context)
+        self.assertEqual(response.context['default_bookmark_list'], bookmark_list)
+
+    def test_context_without_bookmarks(self):
+        response = self.client.get(reverse('course_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(list(response.context['bookmark_lists']), [])
+        self.assertIsNone(response.context['default_bookmark_list'])
+
+class SortByTest(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        
+        # Create test provider
+        self.provider = Provider.objects.create(
+            name="Test Provider",
+            phone_num="1234567890",
+            address="123 Test St, New York, NY, 10001"
+        )
+        
+        # Create test courses with different attributes for sorting
+        self.course1 = Course.objects.create(
+            name="Python Course",
+            provider=self.provider,
+            cost=1000,
+            classroom_hours=40,
+            location="123 Test St, New York, NY, 10001"
+        )
+        
+        self.course2 = Course.objects.create(
+            name="Web Development",
+            provider=self.provider,
+            cost=2000,
+            classroom_hours=60,
+            location="456 Test Ave, Brooklyn, NY, 11201"
+        )
+        
+        self.course3 = Course.objects.create(
+            name="Data Science",
+            provider=self.provider,
+            cost=1500,
+            classroom_hours=50,
+            location="789 Test Blvd, Queens, NY, 11301"
+        )
+
+    def test_sort_by_name_ascending(self):
+        request = self.factory.get('/courses/sort/', {'sort': 'name', 'order': 'asc'})
+        response = sort_by(request)
+        
+        self.assertEqual(response.status_code, 200)
+        courses = list(response.context['courses'])
+        self.assertEqual(courses[0].name, "Data Science")
+        self.assertEqual(courses[1].name, "Python Course")
+        self.assertEqual(courses[2].name, "Web Development")
+
+    def test_sort_by_name_descending(self):
+        request = self.factory.get('/courses/sort/', {'sort': 'name', 'order': 'desc'})
+        response = sort_by(request)
+        
+        self.assertEqual(response.status_code, 200)
+        courses = list(response.context['courses'])
+        self.assertEqual(courses[0].name, "Web Development")
+        self.assertEqual(courses[1].name, "Python Course")
+        self.assertEqual(courses[2].name, "Data Science")
+
+    def test_sort_by_cost_ascending(self):
+        request = self.factory.get('/courses/sort/', {'sort': 'cost', 'order': 'asc'})
+        response = sort_by(request)
+        
+        self.assertEqual(response.status_code, 200)
+        courses = list(response.context['courses'])
+        self.assertEqual(courses[0].cost, 1000)
+        self.assertEqual(courses[1].cost, 1500)
+        self.assertEqual(courses[2].cost, 2000)
+
+    def test_sort_by_cost_descending(self):
+        request = self.factory.get('/courses/sort/', {'sort': 'cost', 'order': 'desc'})
+        response = sort_by(request)
+        
+        self.assertEqual(response.status_code, 200)
+        courses = list(response.context['courses'])
+        self.assertEqual(courses[0].cost, 2000)
+        self.assertEqual(courses[1].cost, 1500)
+        self.assertEqual(courses[2].cost, 1000)
+
+    def test_sort_by_classroom_hours_ascending(self):
+        request = self.factory.get('/courses/sort/', {'sort': 'classroom_hours', 'order': 'asc'})
+        response = sort_by(request)
+        
+        self.assertEqual(response.status_code, 200)
+        courses = list(response.context['courses'])
+        self.assertEqual(courses[0].classroom_hours, 40)
+        self.assertEqual(courses[1].classroom_hours, 50)
+        self.assertEqual(courses[2].classroom_hours, 60)
+
+    def test_sort_by_classroom_hours_descending(self):
+        request = self.factory.get('/courses/sort/', {'sort': 'classroom_hours', 'order': 'desc'})
+        response = sort_by(request)
+        
+        self.assertEqual(response.status_code, 200)
+        courses = list(response.context['courses'])
+        self.assertEqual(courses[0].classroom_hours, 60)
+        self.assertEqual(courses[1].classroom_hours, 50)
+        self.assertEqual(courses[2].classroom_hours, 40)
+
+    def test_default_sort(self):
+        request = self.factory.get('/courses/sort/')
+        response = sort_by(request)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['courses']), 3)
+
+    def test_invalid_sort_field(self):
+        request = self.factory.get('/courses/sort/', {'sort': 'invalid_field', 'order': 'asc'})
+        response = sort_by(request)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['courses']), 3)
+
+    def test_invalid_order(self):
+        request = self.factory.get('/courses/sort/', {'sort': 'name', 'order': 'invalid'})
+        response = sort_by(request)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['courses']), 3)
