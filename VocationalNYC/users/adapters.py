@@ -8,13 +8,16 @@ logger = logging.getLogger(__name__)
 
 
 class MyAccountAdapter(DefaultAccountAdapter):
+    def is_open_for_signup(self, request):
+        return True
+
     def is_open_for_login(self, request, user):
         if getattr(user, "role", None) == "training_provider":
             logger.debug(
                 f"Training provider {user.username} allowed for login regardless of is_active."
             )
             return True
-        return super().is_open_for_login(request, user)
+        return user.is_active  # Base implementation for non-training providers
 
     def get_login_redirect_url(self, request):
         user = request.user
@@ -23,7 +26,7 @@ class MyAccountAdapter(DefaultAccountAdapter):
                 f"Redirecting training_provider {user.username} to provider_verification."
             )
             return HttpResponseRedirect(reverse("provider_verification"))
-        return reverse('profile')  # Changed from default '/' to '/accounts/profile/'
+        return reverse("profile")  # Always redirect to profile for consistency
 
     def respond_inactive(self, request, user):
         if getattr(user, "role", None) == "training_provider":
@@ -31,5 +34,4 @@ class MyAccountAdapter(DefaultAccountAdapter):
                 f"Redirecting training_provider user {user.username} to provider_verification"
             )
             return reverse("provider_verification")
-        # For non-training providers, return None to let Django handle default inactive response
         return None

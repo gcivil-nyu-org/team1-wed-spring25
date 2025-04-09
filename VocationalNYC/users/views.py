@@ -14,7 +14,7 @@ from .forms import (
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
 from django.contrib import messages
-from django.db import IntegrityError, transaction
+from django.db import transaction
 
 # from allauth.account.views import LoginView
 from django.http import JsonResponse
@@ -109,14 +109,18 @@ def profile_view(request):
                 messages.success(request, "Profile updated successfully!")
                 return redirect("profile")
             else:
-                messages.error(request, "Error updating profile. Please check your input.")
+                messages.error(
+                    request, "Error updating profile. Please check your input."
+                )
         else:
             form = ProfileUpdateForm(request.POST, instance=request.user)
             if form.is_valid():
                 form.save()
                 return redirect("profile")
             else:
-                messages.error(request, "Error updating profile. Please check your input.")
+                messages.error(
+                    request, "Error updating profile. Please check your input."
+                )
     else:
         # GET request
         form = ProfileUpdateForm(instance=request.user)
@@ -142,7 +146,9 @@ def profile_view(request):
         context["student_form"] = StudentProfileForm(instance=student)
 
         # Add bookmark lists
-        bookmark_lists = request.user.bookmark_list.all().prefetch_related("bookmark__course")
+        bookmark_lists = request.user.bookmark_list.all().prefetch_related(
+            "bookmark__course"
+        )
         context["bookmark_lists"] = bookmark_lists
 
         # Reviews
@@ -151,7 +157,6 @@ def profile_view(request):
         context["debug"] = False
 
     return render(request, "users/profile.html", context)
-
 
 
 def provider_verification_required(function):
