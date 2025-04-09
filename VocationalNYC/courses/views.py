@@ -2,20 +2,22 @@ import requests
 import logging
 import re
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views import generic
-from django.db.models import Q, Avg, Count
+from django.contrib import messages
+from django.db.models import Q, Avg, Count, F, ExpressionWrapper, IntegerField
 from django.core.cache import cache
 from review.models import Review
+from django.db import transaction
 import hashlib
 
 from users.models import Provider
 from .models import Course
 from .forms import CourseForm
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 from bookmarks.models import BookmarkList
 
 
@@ -32,6 +34,7 @@ class CourseListView(generic.ListView):
         # Update Api data once a day
         logger.info("Starting course data refresh check")
         API_URL = "https://data.cityofnewyork.us/resource/fgq8-am2v.json"
+        logger.info(cache.get("courses_last_updated"))
         if not cache.get("courses_last_updated"):
             try:
                 logger.info("Fetching courses from API")
@@ -97,7 +100,7 @@ class CourseListView(generic.ListView):
                     course_defaults = {
                         "keywords": course.get("keywords", ""),
                         "course_desc": course.get("coursedescription", ""),
-                        "cost": course.get("cost_total", 0),
+                        "cost": int(course.get("cost_total", 0).strip()),
                         "location": location,
                         "classroom_hours": classroom_hours,
                         "lab_hours": lab_hours,
@@ -106,18 +109,37 @@ class CourseListView(generic.ListView):
                     }
 
                     # Create or update the course
-                    logger.info(f"Updating/creating course: {course_name}")
+                    # logger.info(f"Updating/creating course: {course_name}")
                     course_obj, created = Course.objects.update_or_create(
                         name=course_name, provider=provider, defaults=course_defaults
                     )
-                    logger.info(
-                        f"Course {'created' if created else 'updated'}: {course_name}"
-                    )
+                    # logger.info(
+                    #     f"Course {'created' if created else 'updated'}: {course_name}"
+                    # )
+                    # course_obj, created = Course.objects.get_or_create(
+                    #     name=course_name,
+                    #     provider=provider,
+                    #     defaults=course_defaults
+                    # )
+
+                    # if created:
+                    #     logger.info(f"Course created: {course_name}")
+                    # else:
+                    #     has_changed = False
+                    #     for field, new_value in course_defaults.items():
+                    #         old_value = getattr(course_obj, field)
+                    #         if old_value != new_value:
+                    #             has_changed = True
+                    #             setattr(course_obj, field, new_value)
+
+                    #     if has_changed:
+                    #         course_obj.save()
+                    #         logger.info(f"Course updated: {course_name}")
 
                     # Convert keywords to tags
-                    if course_defaults["keywords"]:
-                        logger.debug(f"Processing tags for course: {course_name}")
-                        course_obj.set_keywords_as_tags(course_defaults["keywords"])
+                    # if course_defaults["keywords"]:
+                    #     logger.debug(f"Processing tags for course: {course_name}")
+                    #     course_obj.set_keywords_as_tags(course_defaults["keywords"])
 
                 logger.info("Course data refresh completed")
                 cache.set("courses_last_updated", True, 86400)
@@ -141,6 +163,12 @@ class CourseListView(generic.ListView):
             else:
                 course.rating_partial_star_position = 0
                 course.rating_partial_percentage = 0
+            course.total_hours = (
+                course.classroom_hours
+                + course.lab_hours
+                + course.internship_hours
+                + course.practical_hours
+            )
 
         return courses
 
@@ -184,7 +212,7 @@ def filterCourses(request):
     min_cost = request.GET.get("min_cost", None)
     max_cost = request.GET.get("max_cost", None)
     location = request.GET.get("location", "")
-    min_classroom_hours = request.GET.get("min_classroom_hours", None)
+    min_hours = request.GET.get("min_hours", None)
     # tags = request.GET.getlist("tags", [])  # Get multiple tag values
 
     courses = Course.objects.all()
@@ -208,8 +236,17 @@ def filterCourses(request):
     if location:
         courses = courses.filter(location__icontains=location)
 
-    if min_classroom_hours is not None and min_classroom_hours.isdigit():
-        courses = courses.filter(classroom_hours__gte=int(min_classroom_hours))
+    if min_hours is not None and min_hours.isdigit():
+        total_hours_expr = ExpressionWrapper(
+            F("classroom_hours")
+            + F("lab_hours")
+            + F("internship_hours")
+            + F("practical_hours"),
+            output_field=IntegerField(),
+        )
+        courses = courses.annotate(total_hours=total_hours_expr).filter(
+            total_hours__gte=int(min_hours)
+        )
 
     # if tags:
     #     courses = courses.filter(tags__name__in=tags).distinct()
@@ -240,7 +277,7 @@ def filterCourses(request):
         "min_cost": min_cost,
         "max_cost": max_cost,
         "location": location,
-        "min_classroom_hours": min_classroom_hours,
+        "min_hours": min_hours,
     }
     return context
 
@@ -356,25 +393,108 @@ def sort_by(request):
 
 
 @login_required
+def manage_courses(request):
+    """
+    Show all courses for the current training provider
+    """
+    try:
+        provider = request.user.provider_profile
+    except Provider.DoesNotExist:
+        messages.error(request, "You do not have a training provider profile.")
+        return redirect("home")
+
+    courses = Course.objects.filter(provider=provider)
+
+    courses = courses.annotate(
+        avg_rating=Avg("reviews__score_rating"), reviews_count=Count("reviews")
+    )
+
+    for course in courses:
+        avg = course.avg_rating if course.avg_rating is not None else 0
+        course.rating = round(avg, 1)
+        course.total_hours = (
+            course.classroom_hours
+            + course.lab_hours
+            + course.internship_hours
+            + course.practical_hours
+        )
+
+    context = {"courses": courses, "provider": provider}
+
+    return render(request, "courses/manage_courses.html", context)
+
+
+@login_required
 def post_new_course(request):
+    try:
+        provider = request.user.provider_profile
+    except Provider.DoesNotExist:
+        messages.error(request, "You do not have a training provider profile.")
+        return redirect("home")
     if request.method == "POST":
         form = CourseForm(request.POST)
         if form.is_valid():
-            course = form.save(commit=False)
-            course.provider = request.user.provider_profile
-            if not course.location:
-                course.location = course.provider.address
-            course.save()
-            return redirect("course_list")
+            try:
+                with transaction.atomic():
+                    course = form.save(commit=False)
+                    course.provider = provider
+                    if not course.location:
+                        course.location = course.provider.address
+                    course.save()
+
+                    # get tags from keywords
+                    # if 'keywords' in form.cleaned_data and form.cleaned_data['keywords']:
+                    #     course.set_keywords_as_tags(form.cleaned_data['keywords'])
+
+                    messages.success(
+                        request, f"Course '{course.name}' has been successfully posted."
+                    )
+                    return redirect("manage_courses")
+            except Exception as e:
+                logger.error(f"Error creating course: {str(e)}")
+                messages.error(request, "An error occurred while creating the course.")
+                return redirect("manage_courses")
     else:
         form = CourseForm()
     return render(request, "courses/new_course.html", {"form": form})
 
 
-# @login_required
-# def delete_course(request, course_id):
-#     course = get_object_or_404(Course, course_id=course_id, provider=request.user.provider)
-#     if request.method == 'POST':
-#         course.delete()
-#         return redirect('course_list')
-#     return render(request, 'courses/confirm_delete_course.html', {'course': course})
+@login_required
+def delete_course(request, course_id):
+    course = get_object_or_404(Course, course_id=course_id)
+    if request.method == "POST":
+        if course.provider != request.user.provider_profile:
+            return HttpResponseForbidden("You can't delete this course.")
+        course.delete()
+    return redirect("course_list")
+
+
+@login_required
+def edit_course(request, course_id):
+    course = get_object_or_404(Course, pk=course_id)
+
+    if request.method == "POST":
+        if course.provider != request.user.provider_profile:
+            return HttpResponseForbidden("You can't edit this course.")
+
+        course.name = request.POST.get("name", course.name)
+        course.keywords = request.POST.get("keywords", course.keywords)
+        course.course_desc = request.POST.get("course_desc", course.course_desc)
+        course.cost = request.POST.get("cost", course.cost)
+        course.location = request.POST.get("location", course.location)
+        course.classroom_hours = request.POST.get(
+            "classroom_hours", course.classroom_hours
+        )
+        course.lab_hours = request.POST.get("lab_hours", course.lab_hours)
+        course.internship_hours = request.POST.get(
+            "internship_hours", course.internship_hours
+        )
+        course.practical_hours = request.POST.get(
+            "practical_hours", course.practical_hours
+        )
+
+        course.save()
+        messages.success(request, "Edit course successfully!")
+        return redirect("manage_courses")
+
+    return redirect("manage_courses")

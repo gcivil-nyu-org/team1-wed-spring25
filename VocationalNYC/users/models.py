@@ -34,7 +34,7 @@ class Student(models.Model):
     user = models.OneToOneField(
         CustomUser, on_delete=models.CASCADE, related_name="student_profile"
     )
-    bio = models.TextField(blank=True, null=True)
+    bio = models.TextField(blank=True, null=True, max_length=1000)
     tags = models.ManyToManyField(Tag, related_name="student", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

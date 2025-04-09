@@ -10,6 +10,7 @@ branches:
   only:
     - develop
     - main
+    - main-copy
 
 env:
   global:

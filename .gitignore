@@ -25,7 +25,7 @@ __pycache__/
 **/provider_certificates
 
 logs/
-
+backup/
 .DS_Store
 Thumbs.db
 
