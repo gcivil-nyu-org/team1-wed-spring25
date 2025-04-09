@@ -1,4 +1,3 @@
-# users/adapters.py
 import logging
 from allauth.account.adapter import DefaultAccountAdapter
 from django.urls import reverse
