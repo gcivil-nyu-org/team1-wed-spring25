@@ -23,7 +23,7 @@ class MyAccountAdapter(DefaultAccountAdapter):
                 f"Redirecting training_provider {user.username} to provider_verification."
             )
             return HttpResponseRedirect(reverse("provider_verification"))
-        return super().get_login_redirect_url(request)
+        return reverse('profile')  # Changed from default '/' to '/accounts/profile/'
 
     def respond_inactive(self, request, user):
         if getattr(user, "role", None) == "training_provider":
@@ -31,4 +31,5 @@ class MyAccountAdapter(DefaultAccountAdapter):
                 f"Redirecting training_provider user {user.username} to provider_verification"
             )
             return reverse("provider_verification")
-        return super().respond_inactive(request, user)
+        # For non-training providers, return None to let Django handle default inactive response
+        return None

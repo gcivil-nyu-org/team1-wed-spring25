@@ -54,10 +54,13 @@ class CustomSignupView(SignupView):
             with transaction.atomic():
                 BookmarkList.objects.create(user=user, name="default")
                 messages.success(
-                    self.request, "Deafault Bookmark list created successfully."
+                    self.request, "Default bookmark list created successfully."
                 )
-        except IntegrityError:
-            messages.error(self.request, "Failed to create default bookmark.")
+        except Exception as e:
+            messages.error(
+                self.request, f"Failed to create default bookmark. Error: {str(e)}"
+            )
+            logger.error(f"Failed to create default bookmark: {str(e)}")
 
         if user.role == "training_provider":
             # set user to inactive and redirect to provider verification page
@@ -81,6 +84,7 @@ class CustomSignupView(SignupView):
 
 @login_required
 def profile_view(request):
+    form = None  # Ensure 'form' is defined
     if request.method == "POST":
         if "provider_form" in request.POST and request.user.role == "training_provider":
             provider_form = ProviderVerificationForm(
@@ -88,12 +92,14 @@ def profile_view(request):
                 request.FILES,
                 instance=getattr(request.user, "provider_profile", None),
             )
+            # Keep form for user info as fallback
             form = ProfileUpdateForm(instance=request.user)
             if provider_form.is_valid():
                 provider = provider_form.save(commit=False)
                 provider.user = request.user
                 provider.save()
                 return redirect("profile")
+
         elif "student_form" in request.POST and request.user.role == "career_changer":
             student_form = StudentProfileForm(
                 request.POST, instance=request.user.student_profile
@@ -103,15 +109,16 @@ def profile_view(request):
                 messages.success(request, "Profile updated successfully!")
                 return redirect("profile")
             else:
-                messages.error(
-                    request, "Error updating profile. Please check your input."
-                )
+                messages.error(request, "Error updating profile. Please check your input.")
         else:
             form = ProfileUpdateForm(request.POST, instance=request.user)
             if form.is_valid():
                 form.save()
                 return redirect("profile")
+            else:
+                messages.error(request, "Error updating profile. Please check your input.")
     else:
+        # GET request
         form = ProfileUpdateForm(instance=request.user)
 
     context = {"user": request.user, "role": request.user.role, "form": form}
@@ -125,30 +132,26 @@ def profile_view(request):
             )
         except Provider.DoesNotExist:
             context["provider_verification_form"] = ProviderVerificationForm()
+
     elif request.user.role == "career_changer":
         try:
             student = request.user.student_profile
-            context["student"] = student
-            context["student_form"] = StudentProfileForm(instance=student)
         except Student.DoesNotExist:
             student = Student.objects.create(user=request.user)
-            context["student"] = student
-            context["student_form"] = StudentProfileForm(instance=student)
+        context["student"] = student
+        context["student_form"] = StudentProfileForm(instance=student)
 
-        # Add bookmark lists to context
-        bookmark_lists = request.user.bookmark_list.all().prefetch_related(
-            "bookmark__course"
-        )
+        # Add bookmark lists
+        bookmark_lists = request.user.bookmark_list.all().prefetch_related("bookmark__course")
         context["bookmark_lists"] = bookmark_lists
 
-        # Get reviews (independent of student profile)
-        logger.debug(f"Fetching reviews for user {request.user.id}")
+        # Reviews
         reviews = Review.objects.filter(user=request.user).select_related("course")
-        logger.debug(f"Found {reviews.count()} reviews")
         context["reviews"] = reviews
-        context["debug"] = False  # Set debug to False for production
+        context["debug"] = False
 
     return render(request, "users/profile.html", context)
+
 
 
 def provider_verification_required(function):
