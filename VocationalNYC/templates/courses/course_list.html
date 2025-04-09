@@ -204,10 +204,10 @@ body::-webkit-scrollbar {
                                                 </button>
                                             </li>
                                             {% endif %}
-                                            {% if min_classroom_hours %}
+                                            {% if min_hours %}
                                             <li class="Applied-Filters-Outline">
-                                                <button aria-label="Remove Min Classroom Hours filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
-                                                    <span class="Filters-Inside">Min Classroom Hours: {{ min_classroom_hours }}</span>
+                                                <button aria-label="Remove Min Hours filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
+                                                    <span class="Filters-Inside">Min Hours: {{ min_hours }}</span>
                                                     <span class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon">
                                                         <svg aria-hidden="true" class="Small-Icon" fill="var(--color)" height="8px" viewBox="0 0 38 38" width="8px">
                                                             <g fill-rule="evenodd" stroke="none" stroke-width="1">
@@ -570,10 +570,10 @@ body::-webkit-scrollbar {
                                     
                                     <fieldset
                                         class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
-                                        name="min classroom hours">
+                                        name="min hours">
                                         <legend class=" Filter-Section-Title-Outer">
                                             <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
-                                                Min Classroom Hours
+                                                Min Hours
                                             </div>
                                         </legend>
                                         <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
@@ -586,11 +586,11 @@ body::-webkit-scrollbar {
                                                             aria-controls=react-auto
                                                             autocomplete=off
                                                             class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
-                                                            name="min_classroom_hours"
+                                                            name="min_hours"
                                                             placeholder="Min Hours"
                                                             type="number"
                                                             step="1"
-                                                            value="{{min_classroom_hours}}">
+                                                            value="{{min_hours}}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 role=listbox></div>
                                                     </div>

@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views import generic
-from django.db.models import Q, Avg, Count
+from django.db.models import Q, Avg, Count, F, ExpressionWrapper, IntegerField
 from django.core.cache import cache
 from review.models import Review
 import hashlib
@@ -106,13 +106,26 @@ class CourseListView(generic.ListView):
                     }
 
                     # Create or update the course
-                    logger.info(f"Updating/creating course: {course_name}")
-                    course_obj, created = Course.objects.update_or_create(
-                        name=course_name, provider=provider, defaults=course_defaults
+                    course_obj, created = Course.objects.get_or_create(
+                        name=course_name,
+                        provider=provider,
+                        defaults=course_defaults
                     )
-                    logger.info(
-                        f"Course {'created' if created else 'updated'}: {course_name}"
-                    )
+
+                    if created:
+                        logger.info(f"Course created: {course_name}")
+                    else:
+                        has_changed = False
+                        for field, new_value in course_defaults.items():
+                            old_value = getattr(course_obj, field)
+                            if old_value != new_value:
+                                has_changed = True
+                                setattr(course_obj, field, new_value)
+
+                        if has_changed:
+                            course_obj.save()
+                            logger.info(f"Course updated: {course_name}")
+
 
                     # Convert keywords to tags
                     if course_defaults["keywords"]:
@@ -141,6 +154,12 @@ class CourseListView(generic.ListView):
             else:
                 course.rating_partial_star_position = 0
                 course.rating_partial_percentage = 0
+            course.total_hours = (
+                course.classroom_hours +
+                course.lab_hours +
+                course.internship_hours +
+                course.practical_hours
+            )
 
         return courses
 
@@ -184,7 +203,7 @@ def filterCourses(request):
     min_cost = request.GET.get("min_cost", None)
     max_cost = request.GET.get("max_cost", None)
     location = request.GET.get("location", "")
-    min_classroom_hours = request.GET.get("min_classroom_hours", None)
+    min_hours = request.GET.get("min_hours", None)
     # tags = request.GET.getlist("tags", [])  # Get multiple tag values
 
     courses = Course.objects.all()
@@ -208,8 +227,12 @@ def filterCourses(request):
     if location:
         courses = courses.filter(location__icontains=location)
 
-    if min_classroom_hours is not None and min_classroom_hours.isdigit():
-        courses = courses.filter(classroom_hours__gte=int(min_classroom_hours))
+    if min_hours is not None and min_hours.isdigit():
+        total_hours_expr = ExpressionWrapper(
+            F('classroom_hours') + F('lab_hours') + F('internship_hours') + F('practical_hours'),
+            output_field=IntegerField()
+        )
+        courses = courses.annotate(total_hours=total_hours_expr).filter(total_hours__gte=int(min_hours))
 
     # if tags:
     #     courses = courses.filter(tags__name__in=tags).distinct()
@@ -240,7 +263,7 @@ def filterCourses(request):
         "min_cost": min_cost,
         "max_cost": max_cost,
         "location": location,
-        "min_classroom_hours": min_classroom_hours,
+        "min_hours": min_hours,
     }
     return context
 
