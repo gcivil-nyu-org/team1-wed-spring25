@@ -6,10 +6,11 @@ from unittest.mock import patch
 from django.test import TestCase, RequestFactory, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.contrib.messages import get_messages
 
 from courses.views import CourseListView
 from courses.models import Course
-from users.models import Provider
+from users.models import CustomUser, Provider
 from review.models import Review
 from requests.exceptions import RequestException
 
@@ -327,3 +328,359 @@ class SearchResultTest(TestCase):
         response = self.client.get(reverse("search_result"), {})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context["courses"]), 3)
+
+
+class ManageCourseTest(TestCase):
+    def setUp(self):
+        """
+        Set up test data before each test method
+        """
+        # Create a test user
+        self.user = CustomUser.objects.create_user(
+            username="testuser", email="test@example.com", password="testpassword"
+        )
+
+        # Create a provider profile for the test user
+        self.provider = Provider.objects.create(
+            user=self.user, name="Test Provider", address="123 Test Street"
+        )
+
+        # Create test courses
+        self.course1 = Course.objects.create(
+            provider=self.provider,
+            name="Test Course 1",
+            course_desc="Description 1",
+            cost=100,
+            classroom_hours=10,
+            lab_hours=5,
+            internship_hours=2,
+            practical_hours=3,
+            location=self.provider.address,
+        )
+
+        self.course2 = Course.objects.create(
+            provider=self.provider,
+            name="Test Course 2",
+            course_desc="Description 2",
+            cost=200,
+            classroom_hours=15,
+            lab_hours=10,
+            internship_hours=5,
+            practical_hours=5,
+            location="Different Location",
+        )
+
+        # Create some reviews for the courses
+        Review.objects.create(
+            course=self.course1,
+            user=self.user,
+            score_rating=5.0,
+            content="Test review content",
+        )
+
+        Review.objects.create(
+            course=self.course1,
+            user=self.user,
+            score_rating=4.0,
+            content="Test review content",
+        )
+
+        # Setup client for making requests
+        self.client = Client()
+
+        # Login the test user
+        self.client.login(username="testuser", password="testpassword")
+
+    def test_manage_courses_authenticated_provider(self):
+        """Test manage_courses view when user is authenticated and has a provider profile"""
+        response = self.client.get(reverse("manage_courses"))
+
+        # Check that response is 200 OK
+        self.assertEqual(response.status_code, 200)
+
+        # Check that correct template is used
+        self.assertTemplateUsed(response, "courses/manage_courses.html")
+
+        # Check that context contains courses and provider
+        self.assertIn("courses", response.context)
+        self.assertIn("provider", response.context)
+
+        # Check that the correct provider is in the context
+        self.assertEqual(response.context["provider"], self.provider)
+
+        # Check that all courses for this provider are included
+        self.assertEqual(len(response.context["courses"]), 2)
+
+        # Check that average rating is calculated correctly
+        for course in response.context["courses"]:
+            if course.pk == self.course1.pk:
+                self.assertEqual(course.rating, 4.5)  # (5.0 + 4.0) / 2 = 4.5
+                self.assertEqual(course.total_hours, 20)  # 10 + 5 + 2 + 3 = 20
+            elif course.pk == self.course2.pk:
+                self.assertEqual(course.rating, 0)  # No reviews
+                self.assertEqual(course.total_hours, 35)  # 15 + 10 + 5 + 5 = 35
+
+    def test_manage_courses_without_provider_profile(self):
+        """Test manage_courses view when user doesn't have a provider profile"""
+        # Create a new user without a provider profile
+        CustomUser.objects.create_user(
+            username="noprovider",
+            email="noprovider@example.com",
+            password="testpassword",
+        )
+
+        # Login the new user
+        self.client.login(username="noprovider", password="testpassword")
+
+        # Access the manage_courses view
+        response = self.client.get(reverse("manage_courses"))
+
+        # Should redirect to home
+        self.assertRedirects(response, reverse("home"), fetch_redirect_response=False)
+
+        # Check for error message
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(
+            str(messages[0]), "You do not have a training provider profile."
+        )
+
+    def test_post_new_course_get(self):
+        """Test GET request to post_new_course view"""
+        response = self.client.get(reverse("new_course"))
+
+        # Check that response is 200 OK
+        self.assertEqual(response.status_code, 200)
+
+        # Check that correct template is used
+        self.assertTemplateUsed(response, "courses/new_course.html")
+
+        # Check that form is in context
+        self.assertIn("form", response.context)
+
+    def test_post_new_course_post_valid(self):
+        """Test POST request to post_new_course view with valid data"""
+        # Data for the new course
+        course_data = {
+            "name": "New Test Course",
+            "course_desc": "New Description",
+            "cost": 150,
+            "classroom_hours": 12,
+            "lab_hours": 8,
+            "internship_hours": 4,
+            "practical_hours": 6,
+            "location": "",  # Testing that it falls back to provider address
+        }
+
+        # Post the data
+        response = self.client.post(reverse("new_course"), course_data)
+
+        # Should redirect to manage_courses page
+        self.assertRedirects(response, reverse("manage_courses"))
+
+        # Check that the course was created
+        self.assertTrue(Course.objects.filter(name="New Test Course").exists())
+
+        # Get the created course
+        new_course = Course.objects.get(name="New Test Course")
+
+        # Check that the course has the provider's address as location
+        self.assertEqual(new_course.location, self.provider.address)
+
+        # Check that success message was shown
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(
+            str(messages[0]), "Course 'New Test Course' has been successfully posted."
+        )
+
+    def test_post_new_course_post_invalid(self):
+        """Test POST request to post_new_course view with invalid data"""
+        # Empty data to trigger form validation error
+        course_data = {}
+
+        # Post the data
+        response = self.client.post(reverse("new_course"), course_data)
+
+        # Should stay on the same page
+        self.assertEqual(response.status_code, 200)
+
+        # Check that form is in context and has errors
+        self.assertIn("form", response.context)
+        self.assertTrue(response.context["form"].errors)
+
+    @patch("logging.Logger.error")
+    def test_post_new_course_exception(self, mock_logger):
+        """Test exception handling in post_new_course view"""
+        # Setup mock to raise exception during form.save
+        with patch(
+            "courses.forms.CourseForm.save", side_effect=Exception("Test error")
+        ):
+            course_data = {
+                "name": "Exception Course",
+                "course_desc": "This will cause an exception",
+                "cost": 150,
+                "classroom_hours": 12,
+                "lab_hours": 8,
+                "internship_hours": 4,
+                "practical_hours": 6,
+            }
+
+            # We need to make the form valid but cause an exception during save
+            with patch("courses.forms.CourseForm.is_valid", return_value=True):
+                response = self.client.post(reverse("new_course"), course_data)
+
+                # Should redirect to manage_courses page
+                self.assertRedirects(response, reverse("manage_courses"))
+
+                # Check that error message was shown
+                messages = list(get_messages(response.wsgi_request))
+                self.assertEqual(len(messages), 1)
+                self.assertEqual(
+                    str(messages[0]), "An error occurred while creating the course."
+                )
+
+                # Check that logger was called
+                mock_logger.assert_called_once_with("Error creating course: Test error")
+
+    def test_delete_course_authorized(self):
+        """Test delete_course view when user is authorized"""
+        # Make a POST request to delete
+        response = self.client.post(
+            reverse("delete_course", kwargs={"course_id": self.course1.course_id})
+        )
+
+        # Should redirect to course_list
+        self.assertRedirects(response, reverse("course_list"))
+
+        # Check that course was deleted
+        self.assertFalse(Course.objects.filter(pk=self.course1.pk).exists())
+
+    def test_delete_course_unauthorized(self):
+        """Test delete_course view when user is not the provider of the course"""
+        # Create another user and provider
+        other_user = CustomUser.objects.create_user(
+            username="otheruser", email="other@example.com", password="testpassword"
+        )
+
+        other_provider = Provider.objects.create(
+            user=other_user, name="Other Provider", address="456 Other Street"
+        )
+
+        # Create a course for the other provider
+        other_course = Course.objects.create(
+            provider=other_provider,
+            name="Other Course",
+            course_desc="Other Description",
+            cost=300,
+            classroom_hours=20,
+            lab_hours=10,
+            internship_hours=5,
+            practical_hours=5,
+            location=other_provider.address,
+        )
+
+        # Try to delete the other provider's course
+        response = self.client.post(
+            reverse("delete_course", kwargs={"course_id": other_course.course_id})
+        )
+
+        # Should return forbidden
+        self.assertEqual(response.status_code, 403)
+
+        # Check that course still exists
+        self.assertTrue(Course.objects.filter(pk=other_course.pk).exists())
+
+    def test_edit_course_get(self):
+        """Test GET request to edit_course view"""
+        response = self.client.get(
+            reverse("edit_course", kwargs={"course_id": self.course1.pk})
+        )
+
+        # Check that response is 200 OK
+        self.assertEqual(response.status_code, 302)
+
+        # Check that correct template is used
+        self.assertRedirects(response, reverse("manage_courses"))
+
+    def test_edit_course_post_authorized(self):
+        """Test POST request to edit_course view when user is authorized"""
+        # Data for updating the course
+        updated_data = {
+            "name": "Updated Course Name",
+            "keywords": "updated, keywords",
+            "course_desc": "Updated description",
+            "cost": 150,
+            "location": "Updated Location",
+            "classroom_hours": 15,
+            "lab_hours": 10,
+            "internship_hours": 5,
+            "practical_hours": 5,
+        }
+
+        # Post the data
+        response = self.client.post(
+            reverse("edit_course", kwargs={"course_id": self.course1.pk}), updated_data
+        )
+
+        # Should redirect to manage_courses
+        self.assertRedirects(response, reverse("manage_courses"))
+
+        # Refresh course from database
+        self.course1.refresh_from_db()
+
+        # Check that course was updated
+        self.assertEqual(self.course1.name, "Updated Course Name")
+        self.assertEqual(self.course1.keywords, "updated, keywords")
+        self.assertEqual(self.course1.course_desc, "Updated description")
+        self.assertEqual(self.course1.cost, 150)
+        self.assertEqual(self.course1.location, "Updated Location")
+        self.assertEqual(self.course1.classroom_hours, 15)
+        self.assertEqual(self.course1.lab_hours, 10)
+        self.assertEqual(self.course1.internship_hours, 5)
+        self.assertEqual(self.course1.practical_hours, 5)
+
+        # Check that success message was shown
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), "Edit course successfully!")
+
+    def test_edit_course_unauthorized(self):
+        """Test edit_course view when user is not the provider of the course"""
+        # Create another user and provider
+        other_user = CustomUser.objects.create_user(
+            username="otheruser", email="other@example.com", password="testpassword"
+        )
+
+        other_provider = Provider.objects.create(
+            user=other_user, name="Other Provider", address="456 Other Street"
+        )
+
+        # Create a course for the other provider
+        other_course = Course.objects.create(
+            provider=other_provider,
+            name="Other Course",
+            course_desc="Other Description",
+            cost=300,
+            classroom_hours=20,
+            lab_hours=10,
+            internship_hours=5,
+            practical_hours=5,
+            location=other_provider.address,
+        )
+
+        # Try to edit the other provider's course
+        updated_data = {
+            "name": "Should Not Update",
+        }
+
+        response = self.client.post(
+            reverse("edit_course", kwargs={"course_id": other_course.pk}), updated_data
+        )
+
+        # Should return forbidden
+        self.assertEqual(response.status_code, 403)
+
+        # Check that course was not updated
+        other_course.refresh_from_db()
+        self.assertEqual(other_course.name, "Other Course")

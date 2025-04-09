@@ -1,7 +1,6 @@
 import requests
 import logging
 import re
-import sys
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -36,8 +35,6 @@ class CourseListView(generic.ListView):
         logger.info("Starting course data refresh check")
         API_URL = "https://data.cityofnewyork.us/resource/fgq8-am2v.json"
         logger.info(cache.get("courses_last_updated"))
-        print("courses_last_updated:", cache.get("courses_last_updated"))
-        sys.stdout.flush()
         if not cache.get("courses_last_updated"):
             try:
                 logger.info("Fetching courses from API")
@@ -413,14 +410,14 @@ def manage_courses(request):
     )
 
     for course in courses:
-            avg = course.avg_rating if course.avg_rating is not None else 0
-            course.rating = round(avg, 1)
-            course.total_hours = (
-                course.classroom_hours
-                + course.lab_hours
-                + course.internship_hours
-                + course.practical_hours
-            )
+        avg = course.avg_rating if course.avg_rating is not None else 0
+        course.rating = round(avg, 1)
+        course.total_hours = (
+            course.classroom_hours
+            + course.lab_hours
+            + course.internship_hours
+            + course.practical_hours
+        )
 
     context = {"courses": courses, "provider": provider}
 
@@ -471,26 +468,33 @@ def delete_course(request, course_id):
         course.delete()
     return redirect("course_list")
 
+
 @login_required
-def edit_course(request, course_id):    
+def edit_course(request, course_id):
     course = get_object_or_404(Course, pk=course_id)
-    
-    if request.method == 'POST':
+
+    if request.method == "POST":
         if course.provider != request.user.provider_profile:
             return HttpResponseForbidden("You can't edit this course.")
 
-        course.name = request.POST.get('name', course.name)
-        course.keywords = request.POST.get('keywords', course.keywords)
-        course.course_desc = request.POST.get('course_desc', course.course_desc)
-        course.cost = request.POST.get('cost', course.cost)
-        course.location = request.POST.get('location', course.location)
-        course.classroom_hours = request.POST.get('classroom_hours', course.classroom_hours)
-        course.lab_hours = request.POST.get('lab_hours', course.lab_hours)
-        course.internship_hours = request.POST.get('internship_hours', course.internship_hours)
-        course.practical_hours = request.POST.get('practical_hours', course.practical_hours)
-        
+        course.name = request.POST.get("name", course.name)
+        course.keywords = request.POST.get("keywords", course.keywords)
+        course.course_desc = request.POST.get("course_desc", course.course_desc)
+        course.cost = request.POST.get("cost", course.cost)
+        course.location = request.POST.get("location", course.location)
+        course.classroom_hours = request.POST.get(
+            "classroom_hours", course.classroom_hours
+        )
+        course.lab_hours = request.POST.get("lab_hours", course.lab_hours)
+        course.internship_hours = request.POST.get(
+            "internship_hours", course.internship_hours
+        )
+        course.practical_hours = request.POST.get(
+            "practical_hours", course.practical_hours
+        )
+
         course.save()
         messages.success(request, "Edit course successfully!")
-        return redirect('manage_courses')
-    
-    return render(request, 'courses/edit_course.html', {'course': course})
+        return redirect("manage_courses")
+
+    return redirect("manage_courses")
