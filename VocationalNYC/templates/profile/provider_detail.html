@@ -15,7 +15,11 @@
             <p class="info"><strong>Courses:</strong></p>
             <ul>
                 {% for course in courses %}
-                    <li>{{ course.name }}</li>
+                    <li>
+                        <a href="{% url 'course_detail' course.course_id %}">
+                            {{ course.name }}
+                        </a>
+                    </li>
                 {% empty %}
                     <li>No courses yet</li>
                 {% endfor %}

@@ -83,10 +83,7 @@ class ProviderVerificationForm(forms.ModelForm):
         confirm_existing = False
         if self.data.get("confirm_existing") == "true":
             confirm_existing = True
-        print("clean_name: name =", name, "confirm_existing =", confirm_existing)
         if confirm_existing:
-            print("clean_name: confirm_existing is true")
-            print("name:", name)
             return name
         try:
             existing_provider = Provider.objects.get(name=name)
@@ -94,7 +91,6 @@ class ProviderVerificationForm(forms.ModelForm):
             return name
 
         if existing_provider.user is None:
-            print("clean_name: existing_provider.user is None")
             if not confirm_existing:
                 raise forms.ValidationError(
                     "An unregistered provider with this name exists. "
@@ -102,7 +98,6 @@ class ProviderVerificationForm(forms.ModelForm):
                 )
             return name
         else:
-            print(existing_provider.user)
             raise forms.ValidationError(
                 "The name of the organization already exists. Please modify the name."
             )
