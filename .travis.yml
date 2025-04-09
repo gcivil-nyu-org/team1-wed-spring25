@@ -40,7 +40,7 @@ script:
   - docker-compose -f docker-compose.ci.yml exec -T -u root app python manage.py test
   - docker-compose -f docker-compose.ci.yml exec -T -u root app black --check .
   - docker-compose -f docker-compose.ci.yml exec -T -u root app flake8 .
-  - docker-compose -f docker-compose.ci.yml exec -T -u root app coverage run --source=vocationalnyc manage.py test
+  - docker-compose -f docker-compose.ci.yml exec -T -u root app coverage run --source=users,courses,review,message,bookmarks manage.py test
 
 after_success:  
   - docker-compose -f docker-compose.ci.yml exec -T -u root app bash -c "apt-get update && apt-get install -y git && git init && git config --global user.name 'Travis CI' && git config --global user.email 'travis@example.com' && git add . && git commit -m 'Initial commit'"
