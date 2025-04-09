@@ -47,7 +47,7 @@ after_success:
   
   # copy the .git directory to the docker container
   - mkdir -p gittemp && cp -r .git gittemp/
-  - docker cp gittemp/.git $(docker-compose -f docker-compose.ci.yml ps -q app):/app/.git
+  - docker cp gittemp/.git $(docker-compose -f docker-compose.ci.yml ps -q app):/vocationalnyc/.git
   
   # run coveralls inside the docker container
   - docker-compose -f docker-compose.ci.yml exec -T -e TRAVIS=true -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID -e TRAVIS_BRANCH=$TRAVIS_BRANCH -e CI=true -e TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST -u root app pip install coveralls
