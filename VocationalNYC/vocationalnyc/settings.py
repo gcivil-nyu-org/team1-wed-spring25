@@ -13,14 +13,20 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import environ
 
+USE_TZ = True
+TIME_ZONE = "America/New_York"
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Initialize environment variables
 env = environ.Env(DEBUG=(bool, False))
-environ.Env.read_env(BASE_DIR / ".env")
+env_file = BASE_DIR / ".env"
+if env_file.exists():
+    environ.Env.read_env(env_file)
 
-DEBUG = env("DEBUG")
+
+DEBUG = env("DEBUG", default="False")
 
 DJANGO_ENV = env("DJANGO_ENV", default="production")
 
@@ -33,6 +39,7 @@ ALLOWED_HOSTS = env.list(
             "127.0.0.1",
             "localhost",
             "vocationalnyc-env.eba-uurzafst.us-east-1.elasticbeanstalk.com",
+            "vocationalnyc-test.us-east-1.elasticbeanstalk.com",
         ]
         if DEBUG
         else []
@@ -74,6 +81,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "users.middleware.TrainingProviderMiddleware",  # Custom middleware for training provider verification
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
@@ -81,6 +89,7 @@ MIDDLEWARE = [
 ]
 
 AUTHENTICATION_BACKENDS = [
+    "users.backends.TrainingProviderVerificationBackend",  # Custom backend for training provider verification
     "django.contrib.auth.backends.ModelBackend",  # Django admin login
     "allauth.account.auth_backends.AuthenticationBackend",  # allauth authentication
 ]
@@ -101,76 +110,46 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "vocationalnyc.context_processors.intro_content",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-# WSGI_APPLICATION = "vocationalnyc.wsgi.application"
+WSGI_APPLICATION = "vocationalnyc.wsgi.application"
 ASGI_APPLICATION = "vocationalnyc.asgi.application"
 
-IS_TRAVIS = env.bool("TRAVIS", default=False)
-
 # Redis Configuration
-if IS_TRAVIS:
-    CHANNEL_LAYERS = {
-        "default": {
-            "BACKEND": "channels_redis.core.RedisChannelLayer",
-            "CONFIG": {
-                "hosts": [("localhost", 6379)],
-            },
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
         },
-    }
-elif DJANGO_ENV == "production":
-    CHANNEL_LAYERS = {
-        "default": {
-            "BACKEND": "channels_redis.core.RedisChannelLayer",
-            "CONFIG": {
-                "hosts": [env("REDIS_URL")],
-            },
-        },
-    }
-else:
-    CHANNEL_LAYERS = {
-        "default": {
-            "BACKEND": "channels_redis.core.RedisChannelLayer",
-            "CONFIG": {
-                "hosts": [("redis", 6379)],
-            },
-        },
-    }
+    },
+}
 
 # Database Configuration
-if IS_TRAVIS:
+if DJANGO_ENV == "travis":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
             "NAME": "travis_ci_test",
             "USER": "postgres",
-            "PASSWORD": "",
-            "HOST": "localhost",
+            "PASSWORD": "postgres",
+            "HOST": "db",
             "PORT": 5432,
         }
     }
-# elif DJANGO_ENV == "postgres-test":
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.postgresql",
-#             "NAME": env("POSTGRES_DB", default="vocationalnyc_local"),
-#             "USER": env("POSTGRES_USER", default="postgres"),
-#             "PASSWORD": env("POSTGRES_PASSWORD", default=""),
-#             "HOST": env("POSTGRES_HOST", default="localhost"),
-#             "PORT": env.int("POSTGRES_PORT", default=5432),
-#         }
-#     }
 elif DJANGO_ENV == "production":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": env("POSTGRES_DB"),
-            "USER": env("POSTGRES_USER"),
-            "PASSWORD": env("POSTGRES_PASSWORD"),
-            "HOST": env("POSTGRES_HOST", default="db"),
+            "NAME": env("POSTGRES_DB", default="db"),
+            "USER": env("POSTGRES_USER", default="postgres"),
+            "PASSWORD": env("POSTGRES_PASSWORD", default="postgres"),
+            "HOST": env("POSTGRES_HOST", default="localhost"),
             "PORT": env.int("POSTGRES_PORT", default=5432),
         }
     }
@@ -210,6 +189,7 @@ ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_ADAPTER = "users.adapters.MyAccountAdapter"
 
 AUTH_USER_MODEL = "users.CustomUser"
 ACCOUNT_FORMS = {
@@ -245,3 +225,22 @@ FAVICON_PATH = STATIC_URL + "favicon.ico"
 
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/"
+
+GOOGLE_MAPS_API_KEY = env("GOOGLE_MAPS_API_KEY", default="")
+
+# Add logging configuration
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "users.views": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+        },
+    },
+}

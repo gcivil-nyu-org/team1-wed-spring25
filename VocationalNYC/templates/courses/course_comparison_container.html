@@ -1,0 +1,310 @@
+<style>
+    .VocationalCourseAndProviderContainer {
+        box-sizing: border-box;
+    }
+    .VocationalCourseAndProviderContainerTwo {
+        display: flex;
+        text-align: center;
+        transition: transform 0.5s;
+        position: fixed;
+        right: 0px;
+        opacity: 1;
+        z-index: 950;
+        bottom: 8rem;
+        box-shadow: rgba(17, 17, 17, 0.3) 0px 0px 3px
+    }
+    .VocationalCourseAndProviderUniversalHeight {
+        height: 267px!important;
+    }
+    .MagicButton {
+        display: flex;
+        -webkit-box-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        justify-content: center;
+        position: relative;
+        width: 2rem;
+        background: #a2ccb6;
+        color: rgb(255, 255, 255);
+        transition: background 0.5s;
+        cursor: pointer;
+        padding-top: 2.5rem;
+        padding-bottom: 0.5rem
+    }
+    .MagicButton:hover {
+        background: #a2ccb6
+    }
+    .MagicButton:focus {
+        outline: #a2ccb6 inset 2px;
+        outline-offset: 0px
+    }
+    .VocationalCourseAndProviderSVGTwo {
+        vertical-align: initial;
+        display: inline-block;
+        transform: rotate(270deg)
+    }
+    .VocationalCourseAndProviderSVG {
+        position: absolute;
+        top: 0.5rem;
+        left: 0px;
+        right: unset;
+        width: 2rem;
+        transition: 0.5s
+    }
+    .VocationalCourseAndProviderSVG:hover {
+        fill: rgb(255, 255, 255)
+    }
+    .sf-hidden {
+        display: none !important
+    }
+    .VocationalCourseAndProviderContainerThree {
+        padding: 0px 0px 0.5rem;
+        background: rgb(255, 255, 255);
+        border: 1px solid rgb(211, 215, 220)
+    }
+    .VocationalCourseAndProviderContainerFour {
+        height: 200px;
+        width: 330px;
+        padding-top: 0.25rem;
+        margin: 0rem 0.5rem 0.5rem;
+        overflow-y: auto
+    }
+    .VocationalCourseAndProviderClassTwo {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        height: auto;
+        margin: 0rem 0.5rem
+    }
+    .VocationalCourseAndProviderSVGThree {
+        vertical-align: initial;
+        display: inline-block
+    }
+    .VocationalCourseAndProviderSVGFour {
+        position: relative;
+        align-self: flex-end;
+        top: 15px;
+        cursor: pointer
+    }
+    .VocationalCourseAndProviderSVGFour:hover {
+        fill: rgb(26, 29, 38);
+        transition: 0.5s
+    }
+    .VocationalCourseNameClassOne {
+        margin: 0px 0px 0rem;
+        font-weight: 700
+    }
+    .VocationalCourseNameClassTwo {
+        font-size: 0.875rem;
+        color: rgb(26, 29, 38);
+        margin-bottom: 0.125rem;
+        line-height: 1.4;
+        text-align: left;
+        width: 95%
+    }
+    .VocationalCourseProviderNameClassOne {
+        margin: 0px 0px 0rem;
+        font-weight: 400
+    }
+    .VocationalCourseProviderNameClassTwo {
+        font-size: 0.625rem;
+        color: rgb(81, 87, 103);
+        margin-bottom: 0.5rem;
+        line-height: 1.2
+    }
+    .BorderLines {
+        margin-bottom: 0rem;
+        border-top: 1px solid rgb(211, 215, 220)
+    }
+    .VocationalCourseAndProviderButtonBorderOne {
+        margin: 0px;
+        border-radius: 5px;
+        transition: 0.25s;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: bold;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizelegibility;
+        text-align: center;
+        display: inline-flex;
+        box-sizing: border-box;
+        -webkit-box-align: stretch;
+        align-items: stretch;
+        padding: 0px;
+        background: #a2ccb6;
+        border-width: 1px 1px 0px;
+        border-style: solid;
+        border-color: #a2ccb6;
+        border-image: initial;
+        color: white;
+        line-height: 1.5;
+        height: 40px
+    }
+    .VocationalCourseAndProviderButtonBorderOne:focus {
+        outline: none
+    }
+    .VocationalCourseAndProviderButtonBorderOne .button-content {
+        display: flex;
+        -webkit-box-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        justify-content: center;
+        margin: auto
+    }
+    .VocationalCourseAndProviderButtonBorderOne:hover, .VocationalCourseAndProviderButtonBorderOne:active, .VocationalCourseAndProviderButtonBorderOne.active {
+        background-color: rgb(185, 37, 35)
+    }
+    .VocationalCourseAndProviderButtonBorderOne .VocationalCourseAndProviderButtonOne {
+        margin-top: -1px
+    }
+    .VocationalCourseAndProviderButtonBorderOne .VocationalCourseAndProviderButtonOne {
+        height: 40px
+    }
+    .VocationalCourseAndProviderButtonBorderOne .button-content {
+        padding: 0rem 1rem 0.125rem
+    }
+    .VocationalCourseAndProviderButtonBorderOne:hover, .VocationalCourseAndProviderButtonBorderOne:active, .VocationalCourseAndProviderButtonBorderOne.active {
+        background-color: #a2ccb6
+    }
+    .VocationalCourseAndProviderButtonBorderTwo {
+        margin-top: 0.5rem
+    }
+    .VocationalCourseAndProviderButtonTwo {
+        display: flex;
+        -webkit-box-align: center;
+        align-items: center;
+        padding: 0px 1rem;
+        border-right: 1px solid rgb(211, 215, 220)
+    }
+    .VocationalCourseAndProviderContainerOne {
+        display: flex;
+        text-align: center;
+        transition: transform 0.5s;
+        position: fixed;
+        right: 0px;
+        opacity: 1;
+        z-index: 950;
+        bottom: 8rem;
+        transform: translateX(100%) translateX(-2rem);
+        box-shadow: rgba(17, 17, 17, 0.3) 0px 0px 3px
+    }
+    .VocationalCourseAndProviderSVGOne {
+        vertical-align: initial;
+        display: inline-block;
+        transform: rotate(90deg)
+    }
+    .VocationalCourseComparisonOne {
+        box-sizing: border-box;
+    }
+    .VocationalCourseComparisonTwo {
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 2rem;
+        transition: 0.5s;
+        -webkit-writing-mode: vertical-lr;
+        writing-mode: vertical-lr;
+        transform: rotate(180deg);
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizelegibility;
+        text-size-adjust: none;
+        opacity: 1
+    }
+</style>
+
+<svg aria-hidden=true style=position:absolute;width:0;height:0>
+    <symbol id=chevron viewBox="0 0 64 64">
+        <path d="M54.476 25.672a1.803 1.803 0 000-2.54l-4.635-4.608a1.77 1.77 0 00-2.513 0L32.5 33.35 17.672 18.524a1.77 1.77 0 00-2.513 0l-4.635 4.607a1.803 1.803 0 000 2.541l20.72 20.692a1.77 1.77 0 002.513 0l20.72-20.692z"></path>
+    </symbol>
+    <symbol id=x-close viewBox="0 0 38 38">
+        <path d="M33.4 0L19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38l4.6-4.601-14.4-14.4L38 4.6z" fill-rule=evenodd></path>
+    </symbol>
+</svg>
+
+<div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderContainerOne VocationalCourseAndProviderUniversalHeight" id="CollapsedCompareCoursesTab">
+    <div class="MagicButton" id="ExpandButton" href=javascript:void(0);>
+        <svg class="VocationalCourseAndProviderSVGOne VocationalCourseAndProviderSVG" fill=#ffffff height=1.5rem iconhovercolor=#ffffff
+             role=img width=1.5rem>
+            <use filter=0 xlink:href=#chevron></use>
+        </svg>
+        <div class="VocationalCourseComparisonOne VocationalCourseComparisonTwo">Compare Courses</div>
+    </div>
+</div>
+
+    <div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderContainerTwo VocationalCourseAndProviderUniversalHeight" id="ExpandedCompareCoursesPanel" style="display: none;">
+
+        <div class="MagicButton" id="CollapseButton">
+            <svg class="VocationalCourseAndProviderSVGTwo VocationalCourseAndProviderSVG" fill=#ffffff height=1.5rem iconhovercolor=#ffffff role=img width=1.5rem>
+                <use filter=0 xlink:href=#chevron></use>
+            </svg>
+            <div class="sf-hidden">Compare Courses</div>
+        </div>
+
+        <div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderContainerThree">
+
+            <div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderContainerFour">
+
+
+
+                <div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderClassTwo">
+                    <svg class="VocationalCourseAndProviderSVGThree VocationalCourseAndProviderSVGFour" fill=gray50 height=0.625rem role=img width=0.625rem><use filter=0 xlink:href=#x-close></use></svg>
+                    <p class="VocationalCourseNameClassOne VocationalCourseNameClassTwo">Vocational Course Name 1</p>
+                    <p class="VocationalCourseProviderNameClassOne VocationalCourseProviderNameClassTwo">Course Provider Name 1</p>
+                </div>
+
+                <div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderClassTwo">
+                    <svg class="VocationalCourseAndProviderSVGThree VocationalCourseAndProviderSVGFour" fill=gray50 height=0.625rem role=img width=0.625rem><use filter=0 xlink:href=#x-close></use></svg>
+                    <p class="VocationalCourseNameClassOne VocationalCourseNameClassTwo">Vocational Course Name 2</p>
+                    <p class="VocationalCourseProviderNameClassOne VocationalCourseProviderNameClassTwo">Course Provider Name 2</p>
+                </div>
+
+                <div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderClassTwo">
+                    <svg class="VocationalCourseAndProviderSVGThree VocationalCourseAndProviderSVGFour" fill=gray50 height=0.625rem role=img width=0.625rem><use filter=0 xlink:href=#x-close></use></svg>
+                    <p class="VocationalCourseNameClassOne VocationalCourseNameClassTwo">Vocational Course Name 3</p>
+                    <p class="VocationalCourseProviderNameClassOne VocationalCourseProviderNameClassTwo">Course Provider Name 3</p>
+                </div>
+
+                <div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderClassTwo">
+                    <svg class="VocationalCourseAndProviderSVGThree VocationalCourseAndProviderSVGFour" fill=gray50 height=0.625rem role=img width=0.625rem><use filter=0 xlink:href=#x-close></use></svg>
+                    <p class="VocationalCourseNameClassOne VocationalCourseNameClassTwo">Vocational Course Name 4</p>
+                    <p class="VocationalCourseProviderNameClassOne VocationalCourseProviderNameClassTwo">Course Provider Name 4</p>
+                </div>
+
+                <div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderClassTwo">
+                    <svg class="VocationalCourseAndProviderSVGThree VocationalCourseAndProviderSVGFour" fill=gray50 height=0.625rem role=img width=0.625rem><use filter=0 xlink:href=#x-close></use></svg>
+                    <p class="VocationalCourseNameClassOne VocationalCourseNameClassTwo">Vocational Course Name 5</p>
+                    <p class="VocationalCourseProviderNameClassOne VocationalCourseProviderNameClassTwo">Course Provider Name 5</p>
+                </div>
+
+
+
+            </div>
+
+            <div class="BorderLines" color=#D3D7DC spacing=0></div>
+
+            <button border=#9297A1 class="VocationalCourseAndProviderButtonBorderOne VocationalCourseAndProviderButtonBorderTwo">
+                <div class="VocationalCourseAndProviderButtonOne VocationalCourseAndProviderButtonTwo">6</div>
+                <div class=button-content>Compare Courses Now</div>
+            </button>
+
+        </div>
+
+    </div>
+
+<script>
+    const collapsed_compare_courses_tab = document.getElementById("CollapsedCompareCoursesTab");
+    const expanded_compare_courses_panel = document.getElementById("ExpandedCompareCoursesPanel");
+
+    document.getElementById("ExpandButton").addEventListener("click", function () {
+        if (collapsed_compare_courses_tab.style.display !== "none" && expanded_compare_courses_panel.style.display === "none") {
+            collapsed_compare_courses_tab.style.display = "none";
+            expanded_compare_courses_panel.style.display = "";
+        }
+    });
+
+    document.getElementById("CollapseButton").addEventListener("click", function () {
+        if (collapsed_compare_courses_tab.style.display === "none" && expanded_compare_courses_panel.style.display !== "none") {
+            collapsed_compare_courses_tab.style.display = "";
+            expanded_compare_courses_panel.style.display = "none";
+        }
+    });
+</script>

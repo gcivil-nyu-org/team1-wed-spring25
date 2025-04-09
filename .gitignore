@@ -5,15 +5,7 @@
 
 .idea
 .idea/
-
-=======
-
-
-.idea
-.idea/
-
-=======
-
+.vscode/
 
 .git
 .gitignore
@@ -27,11 +19,10 @@ env/
 __pycache__/
 *.pyc
 
+# Data
 *.sqlite3
 *.log
-
-.vscode/
-.idea/
+**/provider_certificates
 
 logs/
 
@@ -39,5 +30,7 @@ logs/
 Thumbs.db
 
 node_modules/
+
+**/migrations/
 
 db_script.sh

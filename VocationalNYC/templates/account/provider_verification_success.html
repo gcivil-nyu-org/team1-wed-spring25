@@ -39,6 +39,12 @@
 
         <div class="provider-info mb-4">
             <h4>{{ provider.name }}</h4>
+            <p class="mb-2">Contact: {{ provider.contact_firstname }} {{ provider.contact_lastname }}</p>
+            <p class="mb-2">Phone: {{ provider.phone_num }}</p>
+            <p class="mb-2">Address: {{ provider.address }}</p>
+            {% if provider.website %}
+                <p class="mb-2">Website: <a href="{{ provider.website }}" target="_blank">{{ provider.website }}</a></p>
+            {% endif %}
             <p>Thank you for submitting your provider verification information. Our team will review your submission and update your status accordingly.</p>
         </div>
 

@@ -1,0 +1,192 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/course_list.css' %}">
+
+                                    <ol class="CourseList">
+                                        {% for course in courses %}
+                                        <li class="CourseCard" style="animation-delay:0ms">
+                                            <div class="Course-Card-Outer-Container Course-Cards" spacing=4>
+
+
+                                                <div class="Card__TextContainer-sc-1ra20i5-8 Course-Card-Inner-Container Course-Information">
+                                                    <div class="Card__CardOverview-sc-1ra20i5-9 Course-Card-Inner-Container Course-Overview">
+                                                        <div class="Course-Name-Inner-Container-And-Provider" spacing=2>
+                                                            <div>
+                                                                <a class="Anchor-byh49a-0 Card__StyledAnchor-sc-1ra20i5-10 Course-Name-Outer-Container CourseName card-name"
+                                                                   href="{% url 'course_detail' course.pk %}">
+                                                                    <h3 class="Course-Name-Inner-Container">
+                                                                        <span class="Course-Title">
+                                                                            {{ course.name }}
+                                                                        </span>
+                                                                    </h3>
+                                                                </a>
+                                                            </div>
+                                                            <p class="Course-Provider provider-info">
+                                                                <a href="{% url 'provider_detail' course.provider_id %}" target="_blank" style="color: black; text-decoration: none;">
+                                                                    {{ course.provider.name }}
+                                                                </a>
+                                                                {% if course.provider.verification_status %}
+                                                                    <span class="VerificationIcon" data-tooltip="Verified Provider">
+                                                                        <img src="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/verified.png" srcset alt="Verified">
+                                                                    </span>
+                                                                {% endif %}
+                                                            </p>
+                                                        </div>
+                                                        <div class="Course-Address-And-Reviews" spacing=3>
+
+                                                          <ul class="Course-Location-Outer Card__StyledRankList-sc-1ra20i5-11 CourseLocation"
+                                                                font-size=4 spacing=0>
+                                                                <li class="Course-Location-Outer rank-list-item">
+                                                                    <a class="Course-Location-Inner has-badge" href="/courses/map/?course_id={{ course.pk }}">
+                                                                        <div class="Course-Location-Outer-Icon ranked has-badge"></div>
+                                                                        <span class=in>{{ course.provider.address }}</span></a>
+                                                                </li>
+                                                            </ul>
+
+                                                            <div class=flex>
+                                                                <a class="Anchor-byh49a-0 Course-Reviews-Outer-Container"
+                                                                    href="{% url 'course_detail' course.pk %}#student-review-section">
+
+                                                                <div aria-label="{{ course.rating }} out of 5"
+                                                                     class="Course-Reviews-Inner-Container Course-Rating-And-Reviews kiGUEr"
+                                                                     spacing=0>
+                                                                    {% for i in "12345"|make_list %}
+                                                                        {% if forloop.counter <= course.rating_full_stars %}
+                                                                        <svg class="Course-Rating"
+                                                                             fill=#a2ccb6
+                                                                             stroke=#a2ccb6>
+                                                                            <use xlink:href=#star></use>
+                                                                        </svg>
+                                                                        {% elif forloop.counter == course.rating_partial_star_position %}
+                                                                        <svg class="Course-Rating"
+                                                                             fill=url(#course_rating)
+                                                                             stroke=#a2ccb6>
+                                                                            <use xlink:href=#star></use>
+                                                                            <defs>
+                                                                                <lineargradient
+                                                                                        id=course_rating
+                                                                                        x1=0% x2=100% y1=0% y2=0%>
+                                                                                    <stop offset=0%
+                                                                                          stop-color=#a2ccb6></stop>
+                                                                                    <stop offset={{ course.rating_partial_percentage }}%
+                                                                                          stop-color=#a2ccb6></stop>
+                                                                                    <stop offset={{ course.rating_partial_percentage }}%
+                                                                                          stop-color=#ffffff></stop>
+                                                                                    <stop offset=100%
+                                                                                          stop-color=#ffffff></stop>
+                                                                                </lineargradient>
+                                                                            </defs>
+                                                                        </svg>
+                                                                        {% else %}
+                                                                        <svg class="Course-Rating"
+                                                                             fill=#ffffff
+                                                                             stroke=#a2ccb6>
+                                                                            <use xlink:href=#star></use>
+                                                                        </svg>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                    <span class="Course-Review-Quantity Reviews">{{ course.reviews_count }} reviews</span>
+                                                                </div>
+                                                            </a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="Course-Description-Content"
+                                                             size=3
+                                                             spacing=0>
+                                                            <div class="Course-Description-Outer"
+                                                                 size=3
+                                                                 spacing=0>
+                                                                <div class="Course-Description-Inner">
+                                                                    <p class="Course-Description" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">{{ course.course_desc }}
+                                                                    <div class="">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <a class="Anchor-byh49a-0 Read-More READ-MORE ReadMore card-more"
+                                                                   href="{% url 'course_detail' course.pk %}">Read
+                                                                    More »</a></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="Course-Card-Inner-Container Cost-And-Hours-And-Keywords">
+                                                        <div class="Course-Card-Inner-Container Cost-Hours-Keywords QuickStatHug">
+                                                            <dl>
+                                                                <div>
+                                                                    <dt class=label-wrapper>Cost
+                                                                    <dd class="Cost-Hours-Keywords-Text">
+                                                                        Cost: ${{ course.cost }}
+                                                                </div>
+                                                            </dl>
+                                                        </div>
+
+                                                        <div class="Course-Card-Inner-Container Cost-Hours-Keywords QuickStatHug">
+                                                            <dl>
+                                                                <div>
+                                                                    <dt class=label-wrapper>Classroom Hours
+                                                                    <dd class="Cost-Hours-Keywords-Text">
+                                                                        Classroom Hours: {{ course.classroom_hours }}
+                                                                </div>
+                                                            </dl>
+                                                        </div>
+
+                                                        <div class="Course-Card-Inner-Container Cost-Hours-Keywords QuickStatHug">
+                                                            <dl>
+                                                                <div>
+                                                                    <dt class=label-wrapper>Keywords
+                                                                    <dd class="Cost-Hours-Keywords-Text">
+                                                                        Keywords: {{ course.keywords }}
+                                                                </div>
+                                                            </dl>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="Card__ActionContainer-sc-1ra20i5-13 Course-Card-Inner-Container Course-Actions">
+
+                                                    <div class="Course-Card-Inner-Container">
+                                                        <span class="Add-To-Compare-Border">
+                                                            <label class="Add-To-Compare-Outer size-small">
+                                                                <input class="Hidden-Input"
+                                                                    name="compare-{{ course.pk }}"
+                                                                    type=checkbox
+                                                                    value="{{ course.pk }}">
+                                                                <span class="compare-checkbox-control Add-To-Compare-Check">
+                                                                    <svg viewBox="0 0 100 100">
+                                                                        <path d="M12.1 52.1l24.4 24.4 53-53" fill=none
+                                                                            stroke-linecap=round
+                                                                            stroke-linejoin=round
+                                                                            stroke-miterlimit=10
+                                                                            stroke-width=13>
+                                                                        </path>
+                                                                    </svg>
+                                                                </span>
+                                                                <span class="input__LabelSpan-sc-1ie8rf0-2 Add-To-Compare-Outline">
+                                                                    <span>
+                                                                        <span class="Span-sc-19wk4id-0 Add-To-Compare" size=3>Add To Compare</span>
+                                                                    </span>
+                                                                </span>
+                                                            </label>
+                                                        </span>
+                                                    </div>
+
+
+
+
+
+                                    {% if user.is_authenticated %}
+  <button class="BookmarkButton size-small"
+          onclick="openBookmarkModal({{ course.pk }}, '{{ course.name|escapejs }}')">
+    Add Bookmark
+  </button>
+{% else %}
+  <button class="BookmarkButton size-small"
+          onclick="window.location.href='/accounts/login/'">
+    Add Bookmark
+  </button>
+{% endif %}
+
+
+                                                </div>
+                                            </div>
+                                        </li>
+                                        {% endfor %}
+                                    </ol>
