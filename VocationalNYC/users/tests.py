@@ -174,6 +174,7 @@ class TrainingProviderBackendTests(TestCase):
             password="testpass123",
             role="training_provider",
             is_active=False,
+            is_active=False,
         )
 
     def test_user_can_authenticate_provider(self):
@@ -187,12 +188,15 @@ class TrainingProviderBackendTests(TestCase):
     def test_authenticate_success(self):
         authenticated_user = self.backend.authenticate(
             None, username="provider", password="testpass123"
+            None, username="provider", password="testpass123"
         )
         self.assertEqual(authenticated_user, self.user)
+        self.assertTrue(hasattr(authenticated_user, "_verified_inactive_provider"))
         self.assertTrue(hasattr(authenticated_user, "_verified_inactive_provider"))
 
     def test_authenticate_wrong_password(self):
         authenticated_user = self.backend.authenticate(
+            None, username="provider", password="wrongpass"
             None, username="provider", password="wrongpass"
         )
         self.assertIsNone(authenticated_user)
@@ -211,6 +215,7 @@ class MyAccountAdapterTests(TestCase):
             password="testpass123",
             role="training_provider",
             is_active=False,
+            is_active=False,
         )
         self.regular_user = get_user_model().objects.create_user(
             username="user",
@@ -218,13 +223,16 @@ class MyAccountAdapterTests(TestCase):
             password="testpass123",
             role="career_changer",
             is_active=True,
+            is_active=True,
         )
 
     def test_is_open_for_login_provider(self):
         request = self.factory.get("/")
+        request = self.factory.get("/")
         self.assertTrue(self.adapter.is_open_for_login(request, self.provider_user))
 
     def test_is_open_for_login_regular(self):
+        request = self.factory.get("/")
         request = self.factory.get("/")
         self.assertTrue(self.adapter.is_open_for_login(request, self.regular_user))
         self.regular_user.is_active = False
@@ -232,6 +240,7 @@ class MyAccountAdapterTests(TestCase):
         self.assertFalse(self.adapter.is_open_for_login(request, self.regular_user))
 
     def test_get_login_redirect_url_provider(self):
+        request = self.factory.get("/")
         request = self.factory.get("/")
         request.user = self.provider_user
         response = self.adapter.get_login_redirect_url(request)
@@ -245,7 +254,9 @@ class MyAccountAdapterTests(TestCase):
             password="testpass123",
             role="career_changer",
             is_active=True,
+            is_active=True,
         )
+        request = self.factory.get("/")
         request = self.factory.get("/")
         request.user = user
         url = self.adapter.get_login_redirect_url(request)
@@ -253,7 +264,9 @@ class MyAccountAdapterTests(TestCase):
 
     def test_respond_inactive_provider(self):
         request = self.factory.get("/")
+        request = self.factory.get("/")
         url = self.adapter.respond_inactive(request, self.provider_user)
+        self.assertEqual(url, reverse("provider_verification"))
         self.assertEqual(url, reverse("provider_verification"))
 
 
@@ -269,16 +282,20 @@ class ProviderVerificationViewTests(TestCase):
             password="testpass123",
             role="training_provider",
             is_active=False,
+            is_active=False,
         )
         self.client.login(username="provider", password="testpass123")
 
     def test_verification_view_get(self):
         response = self.client.get(reverse("provider_verification"))
+        response = self.client.get(reverse("provider_verification"))
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "account/provider_verification.html")
         self.assertTemplateUsed(response, "account/provider_verification.html")
 
     def test_verification_with_existing_provider(self):
         Provider.objects.create(
+            name="Existing Provider", phone_num="1234567890", address="Test Address"
             name="Existing Provider", phone_num="1234567890", address="Test Address"
         )
         data = {
@@ -286,9 +303,15 @@ class ProviderVerificationViewTests(TestCase):
             "phone_num": "1234567890",
             "address": "Test Address",
             "confirm_existing": "true",
+            "name": "Existing Provider",
+            "phone_num": "1234567890",
+            "address": "Test Address",
+            "confirm_existing": "true",
         }
         response = self.client.post(reverse("provider_verification"), data)
+        response = self.client.post(reverse("provider_verification"), data)
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "account/provider_verification_success.html")
         self.assertTemplateUsed(response, "account/provider_verification_success.html")
 
     def test_verification_invalid_form(self):
@@ -298,7 +321,10 @@ class ProviderVerificationViewTests(TestCase):
             "address": "Test Address",
         }
         response = self.client.post(reverse("provider_verification"), data)
+        response = self.client.post(reverse("provider_verification"), data)
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "account/provider_verification.html")
+        self.assertTrue(response.context["form"].errors)
         self.assertTemplateUsed(response, "account/provider_verification.html")
         self.assertTrue(response.context["form"].errors)
 
@@ -306,10 +332,12 @@ class ProviderVerificationViewTests(TestCase):
         self.provider_user.role = "career_changer"
         self.provider_user.save()
         response = self.client.get(reverse("provider_verification"))
+        response = self.client.get(reverse("provider_verification"))
         self.assertEqual(response.status_code, 302)
 
     def test_verification_invalid_certificate(self):
         large_file = SimpleUploadedFile(
+            "large.pdf", b"x" * (5 * 1024 * 1024 + 1)  # 5MB + 1 byte
             "large.pdf", b"x" * (5 * 1024 * 1024 + 1)  # 5MB + 1 byte
         )
         data = {
@@ -317,7 +345,12 @@ class ProviderVerificationViewTests(TestCase):
             "phone_num": "1234567890",
             "address": "Test Address",
             "certificate": large_file,
+            "name": "Test Provider",
+            "phone_num": "1234567890",
+            "address": "Test Address",
+            "certificate": large_file,
         }
+        response = self.client.post(reverse("provider_verification"), data)
         response = self.client.post(reverse("provider_verification"), data)
         self.assertEqual(response.status_code, 200)
         self.assertIn("certificate", response.context["form"].errors)
@@ -331,6 +364,7 @@ class ProfileViewTests(TestCase):
         self.client = Client()
         self.user = get_user_model().objects.create_user(
             username="testuser", email="test@test.com", password="testpass123"
+            username="testuser", email="test@test.com", password="testpass123"
         )
         self.client.login(username="testuser", password="testpass123")
 
@@ -338,12 +372,14 @@ class ProfileViewTests(TestCase):
         self.user.role = "career_changer"
         self.user.save()
         response = self.client.get(reverse("profile"))
+        response = self.client.get(reverse("profile"))
         self.assertEqual(response.status_code, 200)
         self.assertIn("student_form", response.context)
 
     def test_profile_view_provider(self):
         self.user.role = "training_provider"
         self.user.save()
+        response = self.client.get(reverse("profile"))
         response = self.client.get(reverse("profile"))
         self.assertEqual(response.status_code, 200)
         self.assertIn("provider_verification_form", response.context)
@@ -355,7 +391,11 @@ class ProfileViewTests(TestCase):
 
         data = {"student_form": "1", "bio": "New bio"}
         response = self.client.post(reverse("profile"), data)
+
+        data = {"student_form": "1", "bio": "New bio"}
+        response = self.client.post(reverse("profile"), data)
         self.assertEqual(response.status_code, 302)
+        self.assertEqual(Student.objects.get(user=self.user).bio, "New bio")
         self.assertEqual(Student.objects.get(user=self.user).bio, "New bio")
 
     def test_tag_operations_edge_cases(self):
@@ -368,17 +408,21 @@ class ProfileViewTests(TestCase):
         student.tags.add(tag)
         response = self.client.post(
             reverse("add_tag"), {"tag": "python"}, content_type="application/json"
+            reverse("add_tag"), {"tag": "python"}, content_type="application/json"
         )
         self.assertEqual(response.status_code, 200)
         data = response.json()
+        self.assertFalse(data["success"])
         self.assertFalse(data["success"])
 
         # Test adding empty tag
         response = self.client.post(
             reverse("add_tag"), {"tag": ""}, content_type="application/json"
+            reverse("add_tag"), {"tag": ""}, content_type="application/json"
         )
         self.assertEqual(response.status_code, 200)
         data = response.json()
+        self.assertFalse(data["success"])
         self.assertFalse(data["success"])
 
         # Test removing non-existent tag
@@ -386,9 +430,13 @@ class ProfileViewTests(TestCase):
             reverse("remove_tag"),
             {"tag": "nonexistent"},
             content_type="application/json",
+            reverse("remove_tag"),
+            {"tag": "nonexistent"},
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
         data = response.json()
+        self.assertTrue(data["success"])
         self.assertTrue(data["success"])
 
 
@@ -400,13 +448,16 @@ class CustomUserManagerTests(TestCase):
         # Import here to avoid circular imports
         from users.managers import CustomUserManager
 
+
         manager = CustomUserManager()
+
 
         # Test missing required fields
         with self.assertRaises(ValueError):
             manager.create_superuser(
                 username="", email="admin@test.com", password="testpass123"
             )
+
 
         # Test is_staff=False
         with self.assertRaises(ValueError):
@@ -415,7 +466,9 @@ class CustomUserManagerTests(TestCase):
                 email="admin@test.com",
                 password="testpass123",
                 is_staff=False,
+                is_staff=False,
             )
+
 
         # Test is_superuser=False
         with self.assertRaises(ValueError):
@@ -423,6 +476,7 @@ class CustomUserManagerTests(TestCase):
                 username="admin",
                 email="admin@test.com",
                 password="testpass123",
+                is_superuser=False,
                 is_superuser=False,
             )
 
@@ -439,18 +493,27 @@ class CustomSignupFormTests(TestCase):
             "password1": "testpass123",
             "password2": "testpass123",
             "role": "career_changer",
+            "username": "testuser",
+            "email": "test@example.com",
+            "password1": "testpass123",
+            "password2": "testpass123",
+            "role": "career_changer",
         }
         form = CustomSignupForm(data=form_data)
         self.assertTrue(form.is_valid())
 
+
         # Test invalid role
         invalid_form_data = form_data.copy()
+        invalid_form_data["role"] = "invalid_role"
         invalid_form_data["role"] = "invalid_role"
         form = CustomSignupForm(data=invalid_form_data)
         self.assertFalse(form.is_valid())
 
+
         # Test missing email
         invalid_form_data = form_data.copy()
+        invalid_form_data["email"] = ""
         invalid_form_data["email"] = ""
         form = CustomSignupForm(data=invalid_form_data)
         self.assertFalse(form.is_valid())
@@ -463,7 +526,9 @@ class ProviderVerificationFormTests(TestCase):
     def setUp(self):
         self.provider = Provider.objects.create(
             name="Test Provider", phone_num="1234567890", address="Test Address"
+            name="Test Provider", phone_num="1234567890", address="Test Address"
         )
+
 
     def test_provider_verification_form_validation(self):
         # Test valid data
@@ -472,24 +537,34 @@ class ProviderVerificationFormTests(TestCase):
             "phone_num": "1234567890",
             "address": "Test Address",
             "website": "https://test.com",
+            "name": "New Provider",
+            "phone_num": "1234567890",
+            "address": "Test Address",
+            "website": "https://test.com",
         }
         form = ProviderVerificationForm(data=form_data)
         self.assertTrue(form.is_valid())
 
+
         # Test invalid phone number
         invalid_form_data = form_data.copy()
+        invalid_form_data["phone_num"] = "123"
         invalid_form_data["phone_num"] = "123"
         form = ProviderVerificationForm(data=invalid_form_data)
         self.assertFalse(form.is_valid())
 
+
         # Test invalid website URL
         invalid_form_data = form_data.copy()
+        invalid_form_data["website"] = "not-a-url"
         invalid_form_data["website"] = "not-a-url"
         form = ProviderVerificationForm(data=invalid_form_data)
         self.assertFalse(form.is_valid())
 
+
         # Test existing provider name
         invalid_form_data = form_data.copy()
+        invalid_form_data["name"] = "Test Provider"
         invalid_form_data["name"] = "Test Provider"
         form = ProviderVerificationForm(data=invalid_form_data)
         self.assertFalse(form.is_valid())
@@ -503,16 +578,23 @@ class StudentProfileFormTests(TestCase):
         student = Student.objects.create(
             user=get_user_model().objects.create_user(
                 username="testuser", email="test@example.com", password="testpass123"
+                username="testuser", email="test@example.com", password="testpass123"
             )
         )
         # Test valid data
         form_data = {"bio": "Test bio"}
+        form_data = {"bio": "Test bio"}
         form = StudentProfileForm(data=form_data, instance=student)
         self.assertTrue(form.is_valid())
 
+
         # Test long bio
         invalid_form_data = {"bio": "x" * 1001}
+        invalid_form_data = {"bio": "x" * 1001}
         form = StudentProfileForm(data=invalid_form_data, instance=student)
+        self.assertFalse(
+            form.is_valid(), "Form should be invalid with bio > 1000 characters"
+        )
         self.assertFalse(
             form.is_valid(), "Form should be invalid with bio > 1000 characters"
         )
@@ -525,7 +607,18 @@ class CustomSignupViewTests(TestCase):
     def setUp(self):
         self.client = Client()
 
+
     def test_signup_career_changer(self):
+        response = self.client.post(
+            reverse("account_signup"),
+            {
+                "username": "newuser",
+                "email": "newuser@example.com",
+                "password1": "testpass123",
+                "password2": "testpass123",
+                "role": "career_changer",
+            },
+        )
         response = self.client.post(
             reverse("account_signup"),
             {
@@ -539,6 +632,8 @@ class CustomSignupViewTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(get_user_model().objects.filter(username="newuser").exists())
 
+        self.assertTrue(get_user_model().objects.filter(username="newuser").exists())
+
     def test_signup_provider(self):
         response = self.client.post(
             reverse("account_signup"),
@@ -550,7 +645,18 @@ class CustomSignupViewTests(TestCase):
                 "role": "training_provider",
             },
         )
+        response = self.client.post(
+            reverse("account_signup"),
+            {
+                "username": "newprovider",
+                "email": "provider@example.com",
+                "password1": "testpass123",
+                "password2": "testpass123",
+                "role": "training_provider",
+            },
+        )
         self.assertEqual(response.status_code, 302)
+        user = get_user_model().objects.get(username="newprovider")
         user = get_user_model().objects.get(username="newprovider")
         self.assertFalse(user.is_active)
 
@@ -571,8 +677,10 @@ class ProfileViewTestsExtra(TestCase):
             email="test@example.com",
             password="testpass123",
             role="career_changer",
+            role="career_changer",
         )
         self.client.login(username="testuser", password="testpass123")
+
 
     def test_profile_view_post_student(self):
         # Example test
@@ -580,8 +688,13 @@ class ProfileViewTestsExtra(TestCase):
         response = self.client.post(
             reverse("profile"), {"student_form": "1", "bio": "Updated bio"}
         )
+        response = self.client.post(
+            reverse("profile"), {"student_form": "1", "bio": "Updated bio"}
+        )
         self.assertEqual(response.status_code, 302)
         student.refresh_from_db()
+        self.assertEqual(student.bio, "Updated bio")
+
         self.assertEqual(student.bio, "Updated bio")
 
     def test_profile_view_post_provider(self):
@@ -593,6 +706,16 @@ class ProfileViewTestsExtra(TestCase):
             name="Test Provider",
             phone_num="1234567890",
             address="Test Address",
+            address="Test Address",
+        )
+        response = self.client.post(
+            reverse("profile"),
+            {
+                "provider_form": "1",
+                "name": "Updated Provider",
+                "phone_num": "0987654321",
+                "address": "New Address",
+            },
         )
         response = self.client.post(
             reverse("profile"),
@@ -605,6 +728,7 @@ class ProfileViewTestsExtra(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         provider.refresh_from_db()
+        self.assertEqual(provider.name, "Updated Provider")
         self.assertEqual(provider.name, "Updated Provider")
 
 
@@ -619,33 +743,44 @@ class TagOperationsTests(TestCase):
             email="test@example.com",
             password="testpass123",
             role="career_changer",
+            role="career_changer",
         )
         self.student = Student.objects.create(user=self.user)
         self.client.login(username="testuser", password="testpass123")
+
 
     def test_add_existing_tag(self):
         tag = Tag.objects.create(name="python")
         self.student.tags.add(tag)
         response = self.client.post(
             reverse("add_tag"), {"tag": "python"}, content_type="application/json"
+            reverse("add_tag"), {"tag": "python"}, content_type="application/json"
         )
         data = response.json()
+        self.assertFalse(data["success"])
+
         self.assertFalse(data["success"])
 
     def test_add_tag_unauthenticated(self):
         self.client.logout()
         response = self.client.post(
             reverse("add_tag"), {"tag": "python"}, content_type="application/json"
+            reverse("add_tag"), {"tag": "python"}, content_type="application/json"
         )
         self.assertEqual(response.status_code, 302)
+
 
     def test_remove_nonexistent_tag(self):
         response = self.client.post(
             reverse("remove_tag"),
             {"tag": "nonexistent"},
             content_type="application/json",
+            reverse("remove_tag"),
+            {"tag": "nonexistent"},
+            content_type="application/json",
         )
         data = response.json()
+        self.assertTrue(data["success"])
         self.assertTrue(data["success"])
 
 
@@ -661,6 +796,7 @@ class MyAccountAdapterTestsExtra(TestCase):
         self.adapter = MyAccountAdapter()
         self.factory = RequestFactory()
 
+
     def test_get_login_redirect_url_regular_user(self):
         user = get_user_model().objects.create_user(
             username="regular2",
@@ -668,10 +804,13 @@ class MyAccountAdapterTestsExtra(TestCase):
             password="testpass123",
             role="career_changer",
             is_active=True,
+            is_active=True,
         )
+        request = self.factory.get("/")
         request = self.factory.get("/")
         request.user = user
         url = self.adapter.get_login_redirect_url(request)
+        self.assertEqual(url, "/profile/")
         self.assertEqual(url, "/profile/")
 
 
@@ -685,6 +824,7 @@ class ModelTests(TestCase):
             email="test@example.com",
             password="testpass123",
             role="career_changer",
+            role="career_changer",
         )
 
     def test_provider_model_methods(self):
@@ -693,8 +833,10 @@ class ModelTests(TestCase):
             name="Test Provider",
             phone_num="1234567890",
             address="Test Address",
+            address="Test Address",
         )
         self.assertEqual(str(provider), "Test Provider - None")
+
 
         # Test with website
         provider.website = "https://test.com"
@@ -734,22 +876,31 @@ class ViewsTests(TestCase):
             email="test@example.com",
             password="testpass123",
             role="career_changer",
+            role="career_changer",
         )
         self.client.login(username="testuser", password="testpass123")
 
     def test_provider_detail_view(self):
         provider = Provider.objects.create(
             name="Test Provider", phone_num="1234567890", address="Test Address"
+            name="Test Provider", phone_num="1234567890", address="Test Address"
+        )
+        response = self.client.get(
+            reverse("provider_detail", kwargs={"pk": provider.pk})
         )
         response = self.client.get(
             reverse("provider_detail", kwargs={"pk": provider.pk})
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "profile/provider_detail.html")
+        self.assertTemplateUsed(response, "profile/provider_detail.html")
 
     def test_add_tag_unauthenticated(self):
         self.client.logout()
         response = self.client.post(
+            reverse("add_tag"),
+            data=json.dumps({"tag": "python"}),
+            content_type="application/json",
             reverse("add_tag"),
             data=json.dumps({"tag": "python"}),
             content_type="application/json",
@@ -759,17 +910,21 @@ class ViewsTests(TestCase):
     def test_add_tag_invalid_json(self):
         response = self.client.post(
             reverse("add_tag"), "invalid json", content_type="application/json"
+            reverse("add_tag"), "invalid json", content_type="application/json"
         )
         self.assertEqual(response.status_code, 200)
         data = response.json()
+        self.assertFalse(data["success"])
         self.assertFalse(data["success"])
 
     def test_remove_tag_invalid_json(self):
         response = self.client.post(
             reverse("remove_tag"), "invalid json", content_type="application/json"
+            reverse("remove_tag"), "invalid json", content_type="application/json"
         )
         self.assertEqual(response.status_code, 200)
         data = response.json()
+        self.assertFalse(data["success"])
         self.assertFalse(data["success"])
 
 
@@ -785,19 +940,27 @@ class AdapterTests(TestCase):
             email="test@example.com",
             password="testpass123",
             role="career_changer",
+            role="career_changer",
         )
 
     def test_is_open_for_signup(self):
+        request = self.factory.get("/")
         request = self.factory.get("/")
         self.assertTrue(self.adapter.is_open_for_signup(request))
 
     def test_save_user(self):
         request = self.factory.get("/")
+        request = self.factory.get("/")
         user = get_user_model()()
+
 
         # Create a mock form with cleaned_data
         mock_form = Mock()
         mock_form.cleaned_data = {
+            "username": "newuser",
+            "email": "new@test.com",
+            "password1": "testpass123",
+            "role": "career_changer",
             "username": "newuser",
             "email": "new@test.com",
             "password1": "testpass123",
@@ -807,8 +970,12 @@ class AdapterTests(TestCase):
         self.assertEqual(user.username, "newuser")
         self.assertEqual(user.email, "new@test.com")
         self.assertEqual(user.role, "career_changer")
+        self.assertEqual(user.username, "newuser")
+        self.assertEqual(user.email, "new@test.com")
+        self.assertEqual(user.role, "career_changer")
 
     def test_respond_inactive_regular_user(self):
+        request = self.factory.get("/")
         request = self.factory.get("/")
         user = get_user_model().objects.create_user(
             username="inactive",
@@ -816,17 +983,21 @@ class AdapterTests(TestCase):
             password="testpass123",
             role="career_changer",
             is_active=False,
+            is_active=False,
         )
         response = self.adapter.respond_inactive(request, user)
         self.assertIsNone(response)
 
     def test_get_login_redirect_url_admin(self):
         request = self.factory.get("/")
+        request = self.factory.get("/")
         user = get_user_model().objects.create_superuser(
+            username="admin", email="admin@test.com", password="testpass123"
             username="admin", email="admin@test.com", password="testpass123"
         )
         request.user = user
         url = self.adapter.get_login_redirect_url(request)
+        self.assertEqual(url, "/profile/")
         self.assertEqual(url, "/profile/")
 
 
@@ -841,9 +1012,12 @@ class ViewsIntegrationTests(TestCase):
             email="test@example.com",
             password="testpass123",
             role="career_changer",
+            role="career_changer",
         )
         self.client.login(username="testuser", password="testpass123")
 
+    @patch("django.template.response.SimpleTemplateResponse.render")
+    @patch("users.views.requests.get")
     @patch("django.template.response.SimpleTemplateResponse.render")
     @patch("users.views.requests.get")
     def test_provider_list_api_integration(self, mock_get, mock_render):
@@ -863,7 +1037,10 @@ class ViewsIntegrationTests(TestCase):
         response = self.client.get(reverse("provider_list"))
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Provider.objects.filter(name="Test API Provider").exists())
+        self.assertTrue(Provider.objects.filter(name="Test API Provider").exists())
 
+    @patch("django.template.response.SimpleTemplateResponse.render")
+    @patch("users.views.requests.get")
     @patch("django.template.response.SimpleTemplateResponse.render")
     @patch("users.views.requests.get")
     def test_provider_list_api_failure(self, mock_get, mock_render):
@@ -881,7 +1058,9 @@ class ViewsIntegrationTests(TestCase):
         mock_get.return_value.status_code = 200
         mock_get.return_value.json.return_value = []
         response = self.client.get(reverse("provider_list"))
+        response = self.client.get(reverse("provider_list"))
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "profile/provider_list.html")
         self.assertTemplateUsed(response, "profile/provider_list.html")
         self.assertEqual(Provider.objects.count(), 0)
 
@@ -894,7 +1073,10 @@ class ViewsIntegrationTests(TestCase):
         mock_get.return_value.status_code = 200
         mock_get.return_value.json.return_value = [{"organization_name": ""}]
         response = self.client.get(reverse("provider_list"))
+        mock_get.return_value.json.return_value = [{"organization_name": ""}]
+        response = self.client.get(reverse("provider_list"))
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "profile/provider_list.html")
         self.assertTemplateUsed(response, "profile/provider_list.html")
         self.assertEqual(Provider.objects.count(), 0)
 
@@ -906,12 +1088,24 @@ class ViewsIntegrationTests(TestCase):
 
     def test_profile_view_provider_update(self):
         self.user.role = "training_provider"
+        self.user.role = "training_provider"
         self.user.save()
         provider = Provider.objects.create(
             user=self.user,
             name="Test Provider",
             phone_num="1234567890",
             address="Test Address",
+            address="Test Address",
+        )
+        response = self.client.post(
+            reverse("profile"),
+            {
+                "provider_form": "1",
+                "name": "Updated Provider",
+                "phone_num": "0987654321",
+                "address": "New Address",
+                "website": "https://test.com",
+            },
         )
         response = self.client.post(
             reverse("profile"),
@@ -926,16 +1120,22 @@ class ViewsIntegrationTests(TestCase):
         self.assertEqual(response.status_code, 302)
         provider.refresh_from_db()
         self.assertEqual(provider.website, "https://test.com")
+        self.assertEqual(provider.website, "https://test.com")
 
     def test_profile_view_invalid_role(self):
         self.user.role = "invalid_role"
+        self.user.role = "invalid_role"
         self.user.save()
+        response = self.client.get(reverse("profile"))
         response = self.client.get(reverse("profile"))
         self.assertEqual(response.status_code, 200)
         self.assertNotIn("provider_verification_form", response.context)
         self.assertNotIn("student_form", response.context)
+        self.assertNotIn("provider_verification_form", response.context)
+        self.assertNotIn("student_form", response.context)
 
     def test_provider_verification_form_invalid(self):
+        self.user.role = "training_provider"
         self.user.role = "training_provider"
         self.user.save()
         response = self.client.post(
@@ -953,7 +1153,21 @@ class ViewsIntegrationTests(TestCase):
     @patch(
         "allauth.account.adapter.DefaultAccountAdapter.respond_email_verification_sent"
     )
+    @patch(
+        "allauth.account.adapter.DefaultAccountAdapter.respond_email_verification_sent"
+    )
     def test_signup_view_email_verification(self, mock_respond):
+        mock_respond.return_value = HttpResponseRedirect("/")
+        response = self.client.post(
+            reverse("account_signup"),
+            {
+                "username": "newuser2",
+                "email": "newuser2@example.com",
+                "password1": "testpass123",
+                "password2": "testpass123",
+                "role": "career_changer",
+            },
+        )
         mock_respond.return_value = HttpResponseRedirect("/")
         response = self.client.post(
             reverse("account_signup"),
@@ -970,8 +1184,10 @@ class ViewsIntegrationTests(TestCase):
     def test_add_tag_json_validation(self):
         response = self.client.post(
             reverse("add_tag"), "invalid json", content_type="application/json"
+            reverse("add_tag"), "invalid json", content_type="application/json"
         )
         self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.json()["success"])
         self.assertFalse(response.json()["success"])
 
     def test_profile_view_post_invalid_form(self):
@@ -983,7 +1199,13 @@ class ViewsIntegrationTests(TestCase):
 
         # Initialize form before POST request
         response = self.client.get(reverse("profile"))
+        response = self.client.get(reverse("profile"))
         self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(
+            reverse("profile"),
+            {"student_form": "1", "bio": "x" * 1001},  # Invalid: too long
+        )
 
         response = self.client.post(
             reverse("profile"),
@@ -995,6 +1217,7 @@ class ViewsIntegrationTests(TestCase):
 
     def test_provider_form_post_invalid(self):
         """Test provider form submission with invalid data"""
+        self.user.role = "training_provider"
         self.user.role = "training_provider"
         self.user.save()
         response = self.client.post(
@@ -1012,7 +1235,9 @@ class ViewsIntegrationTests(TestCase):
     def test_provider_verification_unbound_form(self):
         """Test provider verification with unbound form"""
         self.user.role = "training_provider"
+        self.user.role = "training_provider"
         self.user.save()
+        response = self.client.post(reverse("provider_verification"))
         response = self.client.post(reverse("provider_verification"))
         self.assertEqual(response.status_code, 200)
         self.assertIn("form", response.context)
@@ -1023,12 +1248,17 @@ class ViewsIntegrationTests(TestCase):
         response = self.client.get(
             reverse("check_provider_name"), {"name": "NonExistent"}
         )
+        response = self.client.get(
+            reverse("check_provider_name"), {"name": "NonExistent"}
+        )
         self.assertEqual(response.status_code, 200)
         data = response.json()
+        self.assertFalse(data["exists"])
         self.assertFalse(data["exists"])
 
         # Test with existing provider
         Provider.objects.create(
+            name="Existing Provider", phone_num="1234567890", address="Test Address"
             name="Existing Provider", phone_num="1234567890", address="Test Address"
         )
         response = self.client.get(
@@ -1042,9 +1272,17 @@ class ViewsIntegrationTests(TestCase):
         """Test signup view handles bookmark creation error correctly"""
         with patch("users.views.BookmarkList.objects.create") as mock_create:
             mock_create.side_effect = Exception("Database error")
+        with patch("users.views.BookmarkList.objects.create") as mock_create:
+            mock_create.side_effect = Exception("Database error")
             response = self.client.post(
                 reverse("account_signup"),
+                reverse("account_signup"),
                 {
+                    "username": "newuser3",
+                    "email": "newuser3@example.com",
+                    "password1": "testpass123",
+                    "password2": "testpass123",
+                    "role": "career_changer",
                     "username": "newuser3",
                     "email": "newuser3@example.com",
                     "password1": "testpass123",
@@ -1060,8 +1298,10 @@ class ViewsIntegrationTests(TestCase):
     def test_provider_verification_with_certificate(self):
         """Test provider verification with valid certificate"""
         self.user.role = "training_provider"
+        self.user.role = "training_provider"
         self.user.save()
         test_file = SimpleUploadedFile(
+            "test.pdf", b"file_content", content_type="application/pdf"
             "test.pdf", b"file_content", content_type="application/pdf"
         )
         response = self.client.post(
@@ -1080,5 +1320,6 @@ class ViewsIntegrationTests(TestCase):
 
     def test_provider_detail_404(self):
         """Test provider detail view with non-existent provider"""
+        response = self.client.get(reverse("provider_detail", kwargs={"pk": 99999}))
         response = self.client.get(reverse("provider_detail", kwargs={"pk": 99999}))
         self.assertEqual(response.status_code, 404)
