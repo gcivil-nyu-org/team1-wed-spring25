@@ -341,7 +341,7 @@ color: #a2ccb6!important;
 
         <p class="provider-info">
             🏫 <strong>Provider:</strong>
-            <a href="{{ course.provider.website }}" target="_blank">{{ course.provider.name }}</a>
+            <a href="{% url 'provider_detail' course.provider_id %}" target="_blank">{{ course.provider.name }}</a>
             {% if course.provider.verification_status %}
                 <span class="VerificationIcon" data-tooltip="Verified Provider">
                     <img src="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/verified.png" srcset alt="Verified">
