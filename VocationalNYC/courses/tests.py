@@ -220,36 +220,36 @@ class CourseDetailViewTest(TestCase):
 
 def mock_filterCourses(request):
     # Create test provider
-    # provider = Provider.objects.create(
-    #     name="Test Provider",
-    #     phone_num="1234567890",
-    #     address="123 Test St, New York, NY, 10001",
-    # )
+    provider = Provider.objects.create(
+        name="Test Provider",
+        phone_num="1234567890",
+        address="123 Test St, New York, NY, 10001",
+    )
 
     # Create test courses
-    # course1 = Course.objects.create(
-    #     name="Course A",
-    #     provider=provider,
-    #     cost=1000,
-    #     classroom_hours=40,
-    #     location="123 Test St, New York, NY, 10001",
-    # )
+    Course.objects.create(
+        name="Course A",
+        provider=provider,
+        cost=1000,
+        classroom_hours=40,
+        location="123 Test St, New York, NY, 10001",
+    )
 
-    # course2 = Course.objects.create(
-    #     name="Course B",
-    #     provider=provider,
-    #     cost=2000,
-    #     classroom_hours=60,
-    #     location="456 Test Ave, Brooklyn, NY, 11201",
-    # )
+    Course.objects.create(
+        name="Course B",
+        provider=provider,
+        cost=2000,
+        classroom_hours=60,
+        location="456 Test Ave, Brooklyn, NY, 11201",
+    )
 
-    # course3 = Course.objects.create(
-    #     name="Course C",
-    #     provider=provider,
-    #     cost=1500,
-    #     classroom_hours=50,
-    #     location="789 Test Blvd, Queens, NY, 11301",
-    # )
+    Course.objects.create(
+        name="Course C",
+        provider=provider,
+        cost=1500,
+        classroom_hours=50,
+        location="789 Test Blvd, Queens, NY, 11301",
+    )
 
     return {"courses": Course.objects.all()}
 
