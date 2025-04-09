@@ -2,8 +2,9 @@ import requests
 import logging
 import re
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views import generic
 from django.db.models import Q, Avg, Count
@@ -13,6 +14,7 @@ import hashlib
 
 from users.models import Provider
 from .models import Course
+from .forms import CourseForm
 from django.http import JsonResponse
 from bookmarks.models import BookmarkList
 
@@ -351,3 +353,28 @@ def sort_by(request):
 
     # Render full HTML for the page (not just partial updates)
     return render(request, "courses/courses_section.html", {"courses": courses})
+
+
+@login_required
+def post_new_course(request):
+    if request.method == "POST":
+        form = CourseForm(request.POST)
+        if form.is_valid():
+            course = form.save(commit=False)
+            course.provider = request.user.provider_profile
+            if not course.location:
+                course.location = course.provider.address
+            course.save()
+            return redirect("course_list")
+    else:
+        form = CourseForm()
+    return render(request, "courses/new_course.html", {"form": form})
+
+
+# @login_required
+# def delete_course(request, course_id):
+#     course = get_object_or_404(Course, course_id=course_id, provider=request.user.provider)
+#     if request.method == 'POST':
+#         course.delete()
+#         return redirect('course_list')
+#     return render(request, 'courses/confirm_delete_course.html', {'course': course})

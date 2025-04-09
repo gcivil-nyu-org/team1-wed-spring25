@@ -21,6 +21,7 @@ before_install:
   - docker-compose -f docker-compose.ci.yml version
   - gem update --system
   - gem install bundler
+  - pip install coveralls
 
 install:
   - docker-compose -f docker-compose.ci.yml build
@@ -41,7 +42,13 @@ script:
   - docker-compose -f docker-compose.ci.yml exec -T -u root app flake8 .
   - docker-compose -f docker-compose.ci.yml exec -T -u root app coverage run --source=vocationalnyc manage.py test
 
-after_success:
+after_success:  
+  - docker-compose -f docker-compose.ci.yml exec -T -u root app bash -c "apt-get update && apt-get install -y git && git init && git config --global user.name 'Travis CI' && git config --global user.email 'travis@example.com' && git add . && git commit -m 'Initial commit'"
+  - docker-compose -f docker-compose.ci.yml exec -T -u root app bash -c "git checkout -b $TRAVIS_BRANCH"
+
+  # run coveralls inside the docker container
+  - docker-compose -f docker-compose.ci.yml exec -T -e TRAVIS=true -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID -e TRAVIS_BRANCH=$TRAVIS_BRANCH -e CI=true -e TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST -u root app pip install coveralls
+  - docker-compose -f docker-compose.ci.yml exec -T -e TRAVIS=true -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID -e TRAVIS_BRANCH=$TRAVIS_BRANCH -e CI=true -e TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST -u root app coveralls --verbose
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker-compose -f docker-compose.prod.yml build
   - docker-compose -f docker-compose.prod.yml push
