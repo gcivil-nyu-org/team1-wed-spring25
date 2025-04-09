@@ -5,11 +5,6 @@
 
 <link rel="stylesheet" href="{% static 'css/bookmark.css' %}">
 
-<style>
-
-
-
-</style>
 <div class="bookmark-container">
     <h1 class="bookmark-header">📌 My Bookmark List</h1>
 
@@ -17,13 +12,13 @@
         ➕ Create New List
     </button>
 
-    {% if messages %}
-        <div class="alert alert-info">
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
-        </div>
-    {% endif %}
+{% if messages %}
+  <div class="alert alert-info">
+    {% for message in messages %}
+      <p>{{ message }}</p>
+    {% endfor %}
+  </div>
+{% endif %}
 
 
     <div class="bookmark-meta">
@@ -35,12 +30,38 @@
     <a class="bookmark-left" href="{% url 'bookmark_list_detail' list.list_id %}">
       {{ list.name }}
     </a>
-    <form method="post" action="{% url 'delete_bookmark_list' list.list_id %}">
-      {% csrf_token %}
-      <button type="submit" class="delete-button" onclick="return confirm('Are you sure you want to delete this list?');">
-        🗑️ Delete
-      </button>
-    </form>
+   <div class="button-group">
+  <!-- RENAME button triggers prompt() and sends POST -->
+  <form method="post" action="{% url 'rename_bookmark_list' list.list_id %}" onsubmit="return handleRename(this);">
+    {% csrf_token %}
+    <input type="hidden" name="name">
+    <button type="submit" class="rename-button">
+      ✏️ Rename
+    </button>
+  </form>
+
+  <!-- DELETE button shows confirm() and submits form -->
+  <form method="post" action="{% url 'delete_bookmark_list' list.list_id %}" onsubmit="return confirm('Are you sure you want to delete this list?');">
+    {% csrf_token %}
+    <button type="submit" class="delete-button">
+      🗑️ Delete
+    </button>
+  </form>
+</div>
+<script>
+  function handleRename(form) {
+    const currentName = form.closest('.bookmark-entry').querySelector('.bookmark-left').textContent.trim();
+    const newName = prompt("Please enter the new name for this bookmark list:", currentName);
+
+    if (newName === null || newName.trim() === "") {
+      alert("You must enter a name to rename this list.");
+      return false;
+    }
+
+    form.querySelector('input[name="name"]').value = newName;
+    return true;
+  }
+</script>
   </div>
 </li>
                 {% endfor %}

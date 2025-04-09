@@ -25,4 +25,9 @@ urlpatterns = [
     path(
         "courses/<int:course_id>/add_bookmark/", views.add_bookmark, name="add_bookmark"
     ),
+    path(
+        "bookmark_list/<int:list_id>/rename/",
+        views.rename_bookmark_list,
+        name="rename_bookmark_list",
+    ),
 ]

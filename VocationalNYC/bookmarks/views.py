@@ -121,3 +121,31 @@ def delete_bookmark_list(request, list_id):
         messages.success(request, "Bookmark list deleted successfully.")
 
     return redirect("bookmark_list")  # ← remove render() and always redirect
+
+
+@login_required
+def rename_bookmark_list(request, list_id):
+    bookmark_list = get_object_or_404(BookmarkList, list_id=list_id, user=request.user)
+
+    if request.method == "POST":
+        new_name = request.POST.get("name", "").strip()
+
+        if not new_name:
+            messages.error(request, "Please enter a new name.")
+            return redirect("bookmark_list")
+
+        # Check for duplicate name
+        if (
+            BookmarkList.objects.filter(user=request.user, name__iexact=new_name)
+            .exclude(list_id=list_id)
+            .exists()
+        ):
+            messages.error(request, "A bookmark list with this name already exists.")
+            return redirect("bookmark_list")
+
+        bookmark_list.name = new_name
+        bookmark_list.save()
+        messages.success(request, "Bookmark list renamed successfully.")
+        return redirect("bookmark_list")
+
+    return redirect("bookmark_list")

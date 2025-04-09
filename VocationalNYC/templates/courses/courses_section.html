@@ -21,7 +21,7 @@
                                                                 </a>
                                                             </div>
                                                             <p class="Course-Provider provider-info">
-                                                                <a href="{{ course.provider.website }}" target="_blank" style="color: black; text-decoration: none;">
+                                                                <a href="{% url 'provider_detail' course.provider_id %}" target="_blank" style="color: black; text-decoration: none;">
                                                                     {{ course.provider.name }}
                                                                 </a>
                                                                 {% if course.provider.verification_status %}

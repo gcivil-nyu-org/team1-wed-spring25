@@ -175,7 +175,7 @@
 
             <div class="mb-3">
                 <label for="provider_desc" class="form-label">Business Description (Optional)</label>
-                <textarea class="text-area-form-control" name="provider_desc" id="provider_desc"
+                <textarea class="form-control {% if form.provider_desc.errors %}is-invalid{% endif %}" name="provider_desc" style="resize: none;" id="provider_desc"
                     placeholder="Enter business description" rows="1">{{ form.provider_desc.value|default:'' }}</textarea>
             </div>
 
