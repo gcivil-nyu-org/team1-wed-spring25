@@ -303,10 +303,8 @@ class SearchResultTest(TestCase):
         self.assertEqual(len(response.context["courses"]), 1)
         self.assertEqual(response.context["courses"][0], self.course3)
 
-    def test_filter_by_classroom_hours(self):
-        response = self.client.get(
-            reverse("search_result"), {"min_classroom_hours": "50"}
-        )
+    def test_filter_by_total_hours(self):
+        response = self.client.get(reverse("search_result"), {"min_hours": "50"})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context["courses"]), 1)
         self.assertEqual(response.context["courses"][0], self.course2)
@@ -315,7 +313,7 @@ class SearchResultTest(TestCase):
         response = self.client.get(
             reverse("search_result"),
             {
-                "q": "python",
+                "keywords": "python",
                 "min_cost": "1500",
                 "max_cost": "2500",
                 "location": "New York",
