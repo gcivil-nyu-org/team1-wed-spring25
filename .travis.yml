@@ -10,11 +10,12 @@ branches:
   only:
     - develop
     - main
+    - victor
 
 env:
   global:
     - DJANGO_SETTINGS_MODULE=vocationalnyc.settings
-    - PYTHONPATH=$PYTHONPATH:$(pwd)/VocationalNYC
+    - PYTHONPATH=$(pwd)/VocationalNYC
 
 before_install:
   - cd VocationalNYC
