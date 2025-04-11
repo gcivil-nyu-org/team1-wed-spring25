@@ -1,4 +1,4 @@
-main:[![Build Status](https://app.travis-ci.com/gcivil-nyu-org/team1-wed-spring25.svg?token=dZycGtqUCL7r5eEaxTBe&branch=main)](https://app.travis-ci.com/gcivil-nyu-org/team1-wed-spring25) [![Coverage Status](https://coveralls.io/repos/github/gcivil-nyu-org/team1-wed-spring25/badge.svg?branch=main)](https://coveralls.io/github/gcivil-nyu-org/team1-wed-spring25?branch=main)
+main:[![Build Status](https://app.travis-ci.com/gcivil-nyu-org/team1-wed-spring25.svg?token=dZycGtqUCL7r5eEaxTBe&branch=main)](https://app.travis-ci.com/gcivil-nyu-org/team1-wed-spring25) [![Coverage Status](https://coveralls.io/repos/github/gcivil-nyu-org/team1-wed-spring25/badge.svg)](https://coveralls.io/github/gcivil-nyu-org/team1-wed-spring25)
 
 develop:[![Build Status](https://app.travis-ci.com/gcivil-nyu-org/team1-wed-spring25.svg?token=dZycGtqUCL7r5eEaxTBe&branch=develop)](https://app.travis-ci.com/gcivil-nyu-org/team1-wed-spring25) [![Coverage Status](https://coveralls.io/repos/github/gcivil-nyu-org/team1-wed-spring25/badge.svg?branch=develop)](https://coveralls.io/github/gcivil-nyu-org/team1-wed-spring25?branch=develop)
 
