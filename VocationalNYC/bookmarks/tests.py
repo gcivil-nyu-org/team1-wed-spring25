@@ -20,7 +20,9 @@ class BookmarkListTests(TestCase):
 
         # create default bookmark list for the user
         self.default_list = BookmarkList.objects.create(user=self.user, name="default")
-        self.custom_list = BookmarkList.objects.create(user=self.user, name="My Courses")
+        self.custom_list = BookmarkList.objects.create(
+            user=self.user, name="My Courses"
+        )
 
         # create a test provider
         self.provider = Provider.objects.create(
@@ -39,7 +41,7 @@ class BookmarkListTests(TestCase):
             name="Web Development",
             provider=self.provider,
         )
-    
+
         Bookmark.objects.create(
             bookmark_list=self.default_list,
             course=self.course1,
@@ -54,40 +56,44 @@ class BookmarkListTests(TestCase):
         self.other_user = User.objects.create_user(
             username="otheruser", email="other@example.com", password="other123"
         )
-        self.other_list = BookmarkList.objects.create(user=self.other_user, name="Other List")
+        self.other_list = BookmarkList.objects.create(
+            user=self.other_user, name="Other List"
+        )
 
     def test_bookmark_list_view(self):
-        response = self.client.get(reverse('bookmark_list'))
-        
+        response = self.client.get(reverse("bookmark_list"))
+
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'bookmarks/bookmark_list.html')
-        
-        self.assertIn('lists', response.context)
-        self.assertEqual(len(response.context['lists']), 2)
-        
-        list_ids = [lst.list_id for lst in response.context['lists']]
+        self.assertTemplateUsed(response, "bookmarks/bookmark_list.html")
+
+        self.assertIn("lists", response.context)
+        self.assertEqual(len(response.context["lists"]), 2)
+
+        list_ids = [lst.list_id for lst in response.context["lists"]]
         self.assertIn(self.default_list.list_id, list_ids)
         self.assertIn(self.custom_list.list_id, list_ids)
         self.assertNotIn(self.other_list.list_id, list_ids)
 
     def test_bookmark_list_detail_view(self):
         response = self.client.get(
-            reverse('bookmark_list_detail', kwargs={'list_id': self.default_list.list_id})
+            reverse(
+                "bookmark_list_detail", kwargs={"list_id": self.default_list.list_id}
+            )
         )
-        
+
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'bookmarks/bookmark_list_detail.html')
-        
-        self.assertIn('bookmark_list', response.context)
-        self.assertEqual(response.context['bookmark_list'], self.default_list)
-        
+        self.assertTemplateUsed(response, "bookmarks/bookmark_list_detail.html")
+
+        self.assertIn("bookmark_list", response.context)
+        self.assertEqual(response.context["bookmark_list"], self.default_list)
+
         response = self.client.get(
-            reverse('bookmark_list_detail', kwargs={'list_id': self.other_list.list_id})
+            reverse("bookmark_list_detail", kwargs={"list_id": self.other_list.list_id})
         )
         self.assertEqual(response.status_code, 404)
 
     def test_unauthenticated_access(self):
-         # test unauthorized access to the list detail
+        # test unauthorized access to the list detail
 
         response = self.client.get(
             reverse("bookmark_list_detail", kwargs={"list_id": self.other_list.list_id})
@@ -96,21 +102,21 @@ class BookmarkListTests(TestCase):
         self.assertEqual(response.status_code, 404)
 
         self.client.logout()
-        
-        response = self.client.get(reverse('bookmark_list'))
+
+        response = self.client.get(reverse("bookmark_list"))
         self.assertRedirects(
-            response, 
-            f"{reverse('account_login')}?next={reverse('bookmark_list')}"
-        )
-        
-        response = self.client.get(
-            reverse('bookmark_list_detail', kwargs={'list_id': self.default_list.list_id})
+            response, f"{reverse('account_login')}?next={reverse('bookmark_list')}"
         )
 
-        
+        response = self.client.get(
+            reverse(
+                "bookmark_list_detail", kwargs={"list_id": self.default_list.list_id}
+            )
+        )
+
         self.assertRedirects(
-            response, 
-            f"{'/accounts/login/'}?next={reverse('bookmark_list_detail', kwargs={'list_id': self.default_list.list_id})}"
+            response,
+            f"{'/accounts/login/'}?next={reverse('bookmark_list_detail', kwargs={'list_id': self.default_list.list_id})}",
         )
 
     def test_create_bookmark_list(self):
@@ -180,27 +186,31 @@ class BookmarkListTests(TestCase):
                 bookmark_list=self.default_list, course=self.course1
             ).exists()
         )
-    
+
     def test_add_bookmark_duplicate(self):
         Bookmark.objects.create(
             bookmark_list=self.default_list,
             course=self.course3,
             time=timezone.now().date(),
         )
-        
+
         response = self.client.post(
-            reverse('add_bookmark', kwargs={'course_id': self.course3.course_id}),
-            {'bookmark_list': self.default_list.list_id},
+            reverse("add_bookmark", kwargs={"course_id": self.course3.course_id}),
+            {"bookmark_list": self.default_list.list_id},
         )
-        
+
         self.assertEqual(response.status_code, 200)
-        
+
         messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'This course is already in the bookmark list.')
-        
         self.assertEqual(
-            Bookmark.objects.filter(bookmark_list=self.default_list, course=self.course1).count(), 
-            1
+            str(messages[0]), "This course is already in the bookmark list."
+        )
+
+        self.assertEqual(
+            Bookmark.objects.filter(
+                bookmark_list=self.default_list, course=self.course1
+            ).count(),
+            1,
         )
 
     def test_delete_bookmark(self):
@@ -238,7 +248,7 @@ class BookmarkListTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertFalse(Bookmark.objects.filter(id=bookmark.id).exists())
 
-    
+
 class RenameBookmarkListTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -248,70 +258,86 @@ class RenameBookmarkListTests(TestCase):
         self.client.login(username="testuser", password="password123")
 
         self.default_list = BookmarkList.objects.create(user=self.user, name="default")
-        self.custom_list = BookmarkList.objects.create(user=self.user, name="My Courses")
-        self.another_list = BookmarkList.objects.create(user=self.user, name="Another List")
+        self.custom_list = BookmarkList.objects.create(
+            user=self.user, name="My Courses"
+        )
+        self.another_list = BookmarkList.objects.create(
+            user=self.user, name="Another List"
+        )
 
     def test_rename_bookmark_list_success(self):
         response = self.client.post(
-            reverse('rename_bookmark_list', kwargs={'list_id': self.custom_list.list_id}),
-            {'name': 'Renamed List'}
+            reverse(
+                "rename_bookmark_list", kwargs={"list_id": self.custom_list.list_id}
+            ),
+            {"name": "Renamed List"},
         )
-        
-        self.assertRedirects(response, reverse('bookmark_list'))
-        
+
+        self.assertRedirects(response, reverse("bookmark_list"))
+
         self.custom_list.refresh_from_db()
-        self.assertEqual(self.custom_list.name, 'Renamed List')
-        
+        self.assertEqual(self.custom_list.name, "Renamed List")
+
         messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'Bookmark list renamed successfully.')
+        self.assertEqual(str(messages[0]), "Bookmark list renamed successfully.")
 
     def test_rename_bookmark_list_empty_name(self):
         response = self.client.post(
-            reverse('rename_bookmark_list', kwargs={'list_id': self.custom_list.list_id}),
-            {'name': '  '} 
+            reverse(
+                "rename_bookmark_list", kwargs={"list_id": self.custom_list.list_id}
+            ),
+            {"name": "  "},
         )
-        
-        self.assertRedirects(response, reverse('bookmark_list'))
-        
+
+        self.assertRedirects(response, reverse("bookmark_list"))
+
         self.custom_list.refresh_from_db()
-        self.assertEqual(self.custom_list.name, 'My Courses')
-        
+        self.assertEqual(self.custom_list.name, "My Courses")
+
         messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'Please enter a new name.')
+        self.assertEqual(str(messages[0]), "Please enter a new name.")
 
     def test_rename_bookmark_list_duplicate_name(self):
         response = self.client.post(
-            reverse('rename_bookmark_list', kwargs={'list_id': self.custom_list.list_id}),
-            {'name': 'Another List'} 
+            reverse(
+                "rename_bookmark_list", kwargs={"list_id": self.custom_list.list_id}
+            ),
+            {"name": "Another List"},
         )
-        
-        self.assertRedirects(response, reverse('bookmark_list'))
-        
+
+        self.assertRedirects(response, reverse("bookmark_list"))
+
         self.custom_list.refresh_from_db()
-        self.assertEqual(self.custom_list.name, 'My Courses')
-        
+        self.assertEqual(self.custom_list.name, "My Courses")
+
         messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'A bookmark list with this name already exists.')
+        self.assertEqual(
+            str(messages[0]), "A bookmark list with this name already exists."
+        )
 
     def test_rename_bookmark_list_case_insensitive(self):
         response = self.client.post(
-            reverse('rename_bookmark_list', kwargs={'list_id': self.custom_list.list_id}),
-            {'name': 'another list'} 
+            reverse(
+                "rename_bookmark_list", kwargs={"list_id": self.custom_list.list_id}
+            ),
+            {"name": "another list"},
         )
-        
-        self.assertRedirects(response, reverse('bookmark_list'))
-        
+
+        self.assertRedirects(response, reverse("bookmark_list"))
+
         self.custom_list.refresh_from_db()
-        self.assertEqual(self.custom_list.name, 'My Courses')
-        
+        self.assertEqual(self.custom_list.name, "My Courses")
+
         messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'A bookmark list with this name already exists.')
+        self.assertEqual(
+            str(messages[0]), "A bookmark list with this name already exists."
+        )
 
     def test_rename_nonexistent_list(self):
         # use unexisting list_id
         response = self.client.post(
-            reverse('rename_bookmark_list', kwargs={'list_id': 9999}),
-            {'name': 'New Name'}
+            reverse("rename_bookmark_list", kwargs={"list_id": 9999}),
+            {"name": "New Name"},
         )
-        
+
         self.assertEqual(response.status_code, 404)
