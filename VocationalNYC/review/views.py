@@ -5,9 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.core.serializers import serialize
 from .models import ReviewReply
-from .models import Review
+from .models import Review, ReviewVote
 from courses.models import Course
-from django.views.decorators.http import require_POST
 
 # from django.urls import reverse
 
@@ -89,11 +88,18 @@ class ReviewDeleteView(View):
         return redirect("course_detail", pk=course_id)
 
 
-@method_decorator([login_required, require_POST], name="dispatch")
 class ReviewVoteView(View):
     def post(self, request, pk):
         review = get_object_or_404(Review, pk=pk)
         action = request.POST.get("action")
+
+        existing_vote = ReviewVote.objects.filter(
+            review=review, user=request.user
+        ).first()
+        if existing_vote:
+            return JsonResponse(
+                {"error": "You’ve already voted on this review."}, status=400
+            )
 
         if action == "upvote":
             review.helpful_count += 1
@@ -103,7 +109,8 @@ class ReviewVoteView(View):
             return JsonResponse({"error": "Invalid vote action"}, status=400)
 
         review.save()
-        print("Vote view hit:", request.POST.get("action"))
+        ReviewVote.objects.create(review=review, user=request.user, action=action)
+
         return JsonResponse(
             {
                 "helpful_count": review.helpful_count,

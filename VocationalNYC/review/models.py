@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings  # ✅ Import settings to get the custom user model
 from courses.models import Course  # ✅ Import the Course model from courses app
+from django.contrib.auth import get_user_model
 
 
 class Review(models.Model):
@@ -40,3 +41,18 @@ class ReviewReply(models.Model):
 
     def __str__(self):
         return f"Reply {self.reply_id} to Review {self.review.review_id}"
+
+
+User = get_user_model()
+
+
+class ReviewVote(models.Model):
+    review = models.ForeignKey("Review", on_delete=models.CASCADE, related_name="votes")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    action = models.CharField(
+        max_length=10, choices=[("upvote", "Upvote"), ("downvote", "Downvote")]
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("review", "user")

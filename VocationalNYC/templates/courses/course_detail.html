@@ -485,7 +485,8 @@ Posted on {{ review.created_at|date:"l, F j, Y \\a\\t g:i:s A" }}    {% endtimez
                         form.querySelector('.helpful-count').textContent = data.helpful_count;
                         form.querySelector('.not-helpful-count').textContent = data.not_helpful_count;
                     } else {
-                        alert("Vote failed.");
+                        const err = await response.json();
+                        alert(err.error || "Vote failed.");
                     }
                 });
             });
