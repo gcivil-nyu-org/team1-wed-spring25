@@ -371,7 +371,6 @@ color: #a2ccb6!important;
 
     <div class="review-section" id="student-review-section">
         <h2>💬 Student Reviews</h2>
-
         {% if reviews %}
             <ul class="review-list">
 {% for review in reviews %}
@@ -406,6 +405,16 @@ color: #a2ccb6!important;
         <div class="review-timestamp">
     {% timezone "America/New_York" %}
 Posted on {{ review.created_at|date:"l, F j, Y \\a\\t g:i:s A" }}    {% endtimezone %}
+</div>
+
+<div class="review-votes">
+    <form class="vote-form" data-review-id="{{ review.pk }}">
+        {% csrf_token %}
+        <button type="button" data-action="upvote" class="vote-btn">👍</button>
+        <span class="vote-count helpful-count">{{ review.helpful_count }}</span>
+        <button type="button" data-action="downvote" class="vote-btn">👎</button>
+        <span class="vote-count not-helpful-count">{{ review.not_helpful_count }}</span>
+    </form>
 </div>
     </div>
 
@@ -448,5 +457,41 @@ Posted on {{ review.created_at|date:"l, F j, Y \\a\\t g:i:s A" }}    {% endtimez
         {% endif %}
     </section>
 </div>
+
+<script>
+    window.onload = function () {
+        console.log("Vote JS loaded!");
+    
+        document.querySelectorAll('.vote-form').forEach(form => {
+            const reviewId = form.dataset.reviewId;
+            const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+            form.querySelectorAll('.vote-btn').forEach(button => {
+                button.addEventListener('click', async function () {
+                    const action = button.dataset.action;
+                    console.log(`Clicked ${action} on review ${reviewId}`);
+    
+                    const response = await fetch(`/reviews/${reviewId}/vote/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': csrfToken,
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({ action })
+                    });
+    
+                    if (response.ok) {
+                        const data = await response.json();
+                        form.querySelector('.helpful-count').textContent = data.helpful_count;
+                        form.querySelector('.not-helpful-count').textContent = data.not_helpful_count;
+                    } else {
+                        const err = await response.json();
+                        alert(err.error || "Vote failed.");
+                    }
+                });
+            });
+        });
+    };
+    </script>
 
 {% endblock %}

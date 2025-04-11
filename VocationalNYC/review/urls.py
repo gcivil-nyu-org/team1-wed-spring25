@@ -6,7 +6,9 @@ from .views import (
     ReviewReplyDetailView,
     ReviewCreateView,
     ReviewDeleteView,
+    ReviewVoteView,
 )
+
 
 urlpatterns = [
     path("reviews/", ReviewListView.as_view(), name="review-list"),
@@ -17,4 +19,5 @@ urlpatterns = [
     ),
     path("submit/<int:pk>/", ReviewCreateView.as_view(), name="review-create"),
     path("delete/<int:pk>/", ReviewDeleteView.as_view(), name="review-delete"),
+    path("<int:pk>/vote/", ReviewVoteView.as_view(), name="review-vote"),
 ]
