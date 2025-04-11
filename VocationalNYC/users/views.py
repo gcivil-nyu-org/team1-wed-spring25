@@ -175,26 +175,26 @@ def provider_verification_view(request):
     if request.user.role != "training_provider":
         return redirect("profile")
 
-    print("provider_verification_view called")
+    # print("provider_verification_view called")
     if request.method == "POST":
         confirm_existing = request.POST.get("confirm_existing") == "true"
 
         # Pass the confirm_existing value to the form's initial data
         form = ProviderVerificationForm(request.POST, request.FILES)
         if form.is_valid():
-            print("Form is valid")
+            # print("Form is valid")
             name = form.cleaned_data.get("name")
             confirm_existing = form.cleaned_data.get("confirm_existing", False)
 
-            print(f"Confirm existing (from cleaned_data): {confirm_existing}")
-            print(f"Name: {name}")
+            # print(f"Confirm existing (from cleaned_data): {confirm_existing}")
+            # print(f"Name: {name}")
 
             try:
                 existing_provider = Provider.objects.get(name=name)
             except Provider.DoesNotExist:
                 existing_provider = None
 
-            print(f"Existing provider: {existing_provider}")
+            # print(f"Existing provider: {existing_provider}")
             sys.stdout.flush()
 
             if (
@@ -226,8 +226,8 @@ def provider_verification_view(request):
                 {"provider": provider},
             )
         else:
-            print("Form is not valid")
-            print("Form errors:", form.errors)
+            # print("Form is not valid")
+            # print("Form errors:", form.errors)
             sys.stdout.flush()
 
     else:
@@ -240,7 +240,7 @@ def check_provider_name(request):
     name = request.GET.get("name", "")
     try:
         provider = Provider.objects.get(name=name)
-        print(f"Provider found: {provider}")
+        # print(f"Provider found: {provider}")
         sys.stdout.flush()
         return JsonResponse(
             {
@@ -249,7 +249,7 @@ def check_provider_name(request):
             }
         )
     except Provider.DoesNotExist:
-        print("Provider not found")
+        # print("Provider not found")
         sys.stdout.flush()
         return JsonResponse({"exists": False})
 
