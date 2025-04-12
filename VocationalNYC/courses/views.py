@@ -431,6 +431,7 @@ def post_new_course(request):
     except Provider.DoesNotExist:
         messages.error(request, "You do not have a training provider profile.")
         return redirect("home")
+
     if request.method == "POST":
         form = CourseForm(request.POST)
         if form.is_valid():
@@ -442,21 +443,21 @@ def post_new_course(request):
                         course.location = course.provider.address
                     course.save()
 
-                    # get tags from keywords
-                    # if 'keywords' in form.cleaned_data and form.cleaned_data['keywords']:
-                    #     course.set_keywords_as_tags(form.cleaned_data['keywords'])
-
                     messages.success(
                         request, f"Course '{course.name}' has been successfully posted."
                     )
-                    return redirect("manage_courses")
             except Exception as e:
                 logger.error(f"Error creating course: {str(e)}")
                 messages.error(request, "An error occurred while creating the course.")
-                return redirect("manage_courses")
-    else:
-        form = CourseForm()
-    return render(request, "courses/new_course.html", {"form": form})
+        else:
+            messages.error(
+                request, "Invalid data. Please check the form and try again."
+            )
+
+        return redirect("manage_courses")
+
+    # block GET access to this view, since modal handles it
+    return redirect("manage_courses")
 
 
 @login_required
@@ -466,7 +467,7 @@ def delete_course(request, course_id):
         if course.provider != request.user.provider_profile:
             return HttpResponseForbidden("You can't delete this course.")
         course.delete()
-    return redirect("course_list")
+    return redirect("manage_courses")
 
 
 @login_required
