@@ -28,7 +28,7 @@ def root_redirect(request):
         request.user.is_superuser or request.user.is_staff
     ):
         return redirect("admin:index")
-    return redirect("course_list")
+    return redirect("admin:index")
 
 
 # from allauth.account.decorators import secure_admin_login
