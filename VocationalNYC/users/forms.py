@@ -75,36 +75,6 @@ class ProviderVerificationForm(forms.ModelForm):
             raise forms.ValidationError("Please enter a valid 10-digit phone number.")
         return phone
 
-    # def clean_name(self):
-    #     name = self.cleaned_data.get("name")
-
-    #     if len(name) < 3:
-    #         raise forms.ValidationError(
-    #             "Business name must be at least 3 characters long."
-    #         )
-
-    #     confirm_existing = False
-    #     if self.data.get("confirm_existing") == "true":
-    #         confirm_existing = True
-    #     if confirm_existing:
-    #         return name
-    #     try:
-    #         existing_provider = Provider.objects.get(name=name)
-    #     except Provider.DoesNotExist:
-    #         return name
-
-    #     if existing_provider.user is None:
-    #         if not confirm_existing:
-    #             raise forms.ValidationError(
-    #                 "An unregistered provider with this name exists. "
-    #                 "If this is your organization, please confirm to bind your account."
-    #             )
-    #         return name
-    #     else:
-    #         raise forms.ValidationError(
-    #             "The name of the organization already exists. Please modify the name."
-    #         )
-
     def clean_name(self):
         name = self.cleaned_data.get("name", "").strip()
 
