@@ -914,7 +914,7 @@ class ManageCourseTest(TestCase):
     def test_post_new_course_get(self):
         """Test GET request to post_new_course view"""
         response = self.client.get(reverse("new_course"))
-        
+
         # Check that response redirects to manage_courses
         self.assertRedirects(response, reverse("manage_courses"))
 
@@ -971,7 +971,6 @@ class ManageCourseTest(TestCase):
         self.assertEqual(
             str(messages[0]), "Invalid data. Please check the form and try again."
         )
-
 
     @patch("logging.Logger.error")
     def test_post_new_course_exception(self, mock_logger):
