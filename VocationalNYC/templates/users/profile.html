@@ -22,23 +22,30 @@
                         <p><strong>Joined:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
                         <button type="button" id="edit-user-btn" class="btn btn-secondary mt-3">Edit Profile</button>
                     </div>
-                    <form id="user-form" method="post" style="display: none;">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        {% if form.errors %}
-                            <div class="alert alert-danger">
-                                <ul>
-                                    {% for field in form %}
-                                        {% for error in field.errors %}
-                                            <li>{{ error }}</li>
-                                        {% endfor %}
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        {% endif %}
-                        <button type="submit" class="btn btn-primary">Save</button>
-                        <button type="button" id="cancel-user-btn" class="btn btn-secondary">Cancel</button>
-                    </form>
+
+                    <!-- Wrapped user-form inside a card -->
+                    <div class="card mt-3 shadow-sm" id="user-form-card" style="display: none;">
+                        <div class="card-body">
+                            <h5 class="card-title">Edit User Profile</h5>
+                            <form id="user-form" method="post">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                {% if form.errors %}
+                                    <div class="alert alert-danger">
+                                        <ul>
+                                            {% for field in form %}
+                                                {% for error in field.errors %}
+                                                    <li>{{ error }}</li>
+                                                {% endfor %}
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancel-user-btn" class="btn btn-secondary">Cancel</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -72,31 +79,45 @@
                                         <p><strong>Business Hours:</strong> {{ provider.open_time }}</p>
                                     {% endif %}
                                     {% if provider.provider_desc %}
-                                    <p><strong>Description:</strong> {{ provider.provider_desc }}</p>
+                                        <p><strong>Description:</strong> {{ provider.provider_desc }}</p>
+                                    {% endif %}
+                                    {% if provider.certificate %}
+                                        <p><strong>Current Certificate:</strong>
+                                            <a href="{{ provider.certificate.url }}" target="_blank">View File</a>
+                                        </p>
                                     {% endif %}
                                 </div>
                                 <button id="edit-provider-btn" class="btn btn-secondary mt-3">Edit Provider Details</button>
                             </div>
-                            <form id="provider-form" method="post" enctype="multipart/form-data" style="display: {% if provider_verification_form.errors %}block{% else %}none{% endif %};" onsubmit="return validateProviderForm()">
-                                {% csrf_token %}
-                                <input type="hidden" name="provider_form" value="1">
-                                {% for field in provider_verification_form %}
-                                    <div class="mb-3">
-                                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}{% if field.field.required %}<span style="color: red;">*</span>{% endif %}</label>
-                                        {{ field }}
-                                        <div class="invalid-feedback" id="{{ field.id_for_label }}-error"></div>
-                                        {% if field.errors %}
-                                            <div class="text-danger">
-                                                {% for error in field.errors %}
-                                                    {{ error }}
-                                                {% endfor %}
+
+                            <!-- Wrapped provider-form inside a card -->
+                            <div class="card mt-3 shadow-sm" id="provider-form-card" style="display: {% if provider_verification_form.errors %}block{% else %}none{% endif %};">
+                                <div class="card-body">
+                                    <h5 class="card-title">Update Provider Details</h5>
+                                    <form id="provider-form" method="post" enctype="multipart/form-data" onsubmit="return validateProviderForm()">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="provider_form" value="1">
+                                        {% for field in provider_verification_form %}
+                                            <div class="mb-3">
+                                                <label for="{{ field.id_for_label }}" class="form-label">
+                                                    {{ field.label }}{% if field.field.required %}<span style="color: red;">*</span>{% endif %}
+                                                </label>
+                                                {{ field }}
+                                                <div class="invalid-feedback" id="{{ field.id_for_label }}-error"></div>
+                                                {% if field.errors %}
+                                                    <div class="text-danger">
+                                                        {% for error in field.errors %}
+                                                            {{ error }}
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endif %}
                                             </div>
-                                        {% endif %}
-                                    </div>
-                                {% endfor %}
-                                <button type="submit" class="btn btn-primary">Save</button>
-                                <button type="button" id="cancel-provider-btn" class="btn btn-secondary">Cancel</button>
-                            </form>
+                                        {% endfor %}
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                        <button type="button" id="cancel-provider-btn" class="btn btn-secondary">Cancel</button>
+                                    </form>
+                                </div>
+                            </div>
                         {% else %}
                             <div class="alert alert-warning">
                                 Please complete your provider verification to access all features.
@@ -109,7 +130,6 @@
                         {% if student %}
                             <div id="student-details" class="student-details">
                                 <div class="bio-section mb-4">
-                                    <!-- <h5>Bio</h5> -->
                                     <div id="bio-display">
                                         {% if student.bio %}
                                             <p>{{ student.bio }}</p>
@@ -138,26 +158,32 @@
                                 <button type="button" id="edit-student-btn" class="btn btn-secondary" onclick="toggleStudentForm()">Edit Profile</button>
                             </div>
 
-                            <form id="student-form" method="post" style="display: none;">
-                                {% csrf_token %}
-                                <input type="hidden" name="student_form" value="1">
-                                <div class="mb-3">
-                                    <label for="student-bio" class="form-label">Bio</label>
-                                    <textarea class="form-control" id="student-bio" name="bio" rows="4">{{ student.bio }}</textarea>
+                            <!-- Wrapped student-form inside a card -->
+                            <div class="card mt-3 shadow-sm" id="student-form-card" style="display: none;">
+                                <div class="card-body">
+                                    <h5 class="card-title">Edit Student Profile</h5>
+                                    <form id="student-form" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="student_form" value="1">
+                                        <div class="mb-3">
+                                            <label for="student-bio" class="form-label">Bio</label>
+                                            <textarea class="form-control" id="student-bio" name="bio" rows="4">{{ student.bio }}</textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="tag" class="form-label">Add Tag</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="tag" name="tag">
+                                                <button type="button" class="btn btn-outline-secondary" onclick="addTag()">Add</button>
+                                            </div>
+                                            <small class="text-muted">Click "Add" to add a tag</small>
+                                        </div>
+                                        <div class="mt-3">
+                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            <button type="button" id="cancel-student-btn" class="btn btn-secondary">Cancel</button>
+                                        </div>
+                                    </form>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="tag" class="form-label">Add Tag</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="tag" name="tag">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="addTag()">Add</button>
-                                    </div>
-                                    <small class="text-muted">Click Add to add a tag</small>
-                                </div>
-                                <div class="mt-3">
-                                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                                    <button type="button" id="cancel-student-btn" class="btn btn-secondary">Cancel</button>
-                                </div>
-                            </form>
+                            </div>
                         {% endif %}
 
                         <div class="bookmark-section mt-4">
@@ -189,7 +215,6 @@
 
                         <div class="reviews-section mt-4">
                             <h5>My Reviews</h5>
-                            <!-- Debug Information -->
                             {% if debug %}
                             <div class="alert alert-info">
                                 <h6>Debug Info:</h6>
@@ -293,49 +318,50 @@
 </style>
 
 <script>
+    // Toggle user form
     document.getElementById('edit-user-btn').addEventListener('click', function() {
         document.getElementById('user-details').style.display = 'none';
-        document.getElementById('user-form').style.display = 'block';
+        document.getElementById('user-form-card').style.display = 'block';
     });
 
     document.getElementById('cancel-user-btn').addEventListener('click', function() {
-        document.getElementById('user-form').style.display = 'none';
+        document.getElementById('user-form-card').style.display = 'none';
         document.getElementById('user-details').style.display = 'block';
     });
 
+    // Toggle provider form
     document.getElementById('edit-provider-btn').addEventListener('click', function() {
         document.getElementById('provider-details').style.display = 'none';
-        document.getElementById('provider-form').style.display = 'block';
+        document.getElementById('provider-form-card').style.display = 'block';
     });
 
     document.getElementById('cancel-provider-btn').addEventListener('click', function() {
-        document.getElementById('provider-form').style.display = 'none';
+        document.getElementById('provider-form-card').style.display = 'none';
         document.getElementById('provider-details').style.display = 'block';
     });
 
+    // Toggle student form
     function toggleStudentForm() {
         const detailsElement = document.getElementById('student-details');
-        const formElement = document.getElementById('student-form');
+        const formCard = document.getElementById('student-form-card');
         const editButton = document.getElementById('edit-student-btn');
         const editOnlyElements = document.querySelectorAll('.edit-only');
         const bioDisplay = document.getElementById('bio-display');
         
-        if (!detailsElement || !formElement) {
+        if (!detailsElement || !formCard) {
             console.error('Student form elements not found');
             return;
         }
 
-        if (formElement.style.display === 'none') {
+        if (formCard.style.display === 'none') {
             editButton.style.display = 'none';
-            formElement.style.display = 'block';
+            formCard.style.display = 'block';
             bioDisplay.style.display = 'none';
-            // Show remove buttons when in edit mode
             editOnlyElements.forEach(el => el.style.display = 'inline-block');
         } else {
-            formElement.style.display = 'none';
+            formCard.style.display = 'none';
             editButton.style.display = 'block';
             bioDisplay.style.display = 'block';
-            // Hide remove buttons when not in edit mode
             editOnlyElements.forEach(el => el.style.display = 'none');
         }
     }
@@ -344,9 +370,35 @@
         toggleStudentForm();
     });
 
+    // Validate provider form (includes certificate file checks)
     function validateProviderForm() {
         let isValid = true;
         const form = document.getElementById('provider-form');
+        const certificateInput = form.querySelector('input[type="file"]');
+        
+        if (certificateInput && certificateInput.files.length > 0) {
+            const file = certificateInput.files[0];
+            const fileSize = file.size / 1024 / 1024; // size in MB
+            const fileType = file.type;
+            const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+            
+            if (fileSize > 5) {
+                const errorDiv = document.getElementById(`${certificateInput.id}-error`);
+                certificateInput.classList.add('is-invalid');
+                errorDiv.textContent = 'File size must be less than 5MB';
+                errorDiv.style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!allowedTypes.includes(fileType)) {
+                const errorDiv = document.getElementById(`${certificateInput.id}-error`);
+                certificateInput.classList.add('is-invalid');
+                errorDiv.textContent = 'File must be PDF, JPG, or PNG';
+                errorDiv.style.display = 'block';
+                isValid = false;
+            }
+        }
+        
         const requiredFields = form.querySelectorAll('[required]');
 
         requiredFields.forEach(field => {
@@ -377,7 +429,7 @@
                     }
                 } catch (e) {
                     field.classList.add('is-invalid');
-                    errorDiv.textContent = 'Please enter a valid URL starting with http:// or https:// (e.g., https://www.google.com)';
+                    errorDiv.textContent = 'Please enter a valid URL starting with http:// or https://';
                     errorDiv.style.display = 'block';
                     isValid = false;
                 }
@@ -400,6 +452,7 @@
         });
     });
 
+    // Add tag
     function addTag() {
         const tagInput = document.getElementById('tag');
         const tagName = tagInput.value.trim().toLowerCase();
@@ -432,7 +485,6 @@
             })
             .then(data => {
                 if (data.success) {
-                    // Create and add new tag element
                     const tagsContainer = document.getElementById('tags-container');
                     const noTagsMessage = document.getElementById('no-tags-message');
                     if (noTagsMessage) {
@@ -461,6 +513,7 @@
         tagInput.value = '';
     }
 
+    // Remove tag
     function removeTag(tagName) {
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         fetch('/api/student/remove-tag/', {
@@ -482,7 +535,7 @@
             if (data.success) {
                 // Find and remove the tag element
                 const tagElement = Array.from(document.querySelectorAll('.badge')).find(
-                    el => el.textContent.trim().includes(tagName)
+                    el => el.textContent.trim().toLowerCase().includes(tagName)
                 );
                 if (tagElement) {
                     tagElement.remove();
@@ -508,7 +561,7 @@
         });
     }
 
-    // Ensure tag input works with both Enter key and button click
+    // Ensure tag input works with Enter
     document.getElementById('tag').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
