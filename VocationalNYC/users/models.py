@@ -75,6 +75,14 @@ class Student(models.Model):
         return f"Student: {self.user.username}"
 
 
+def certificate_file_path(instance, filename):
+    # Get the file extension
+    ext = filename.split('.')[-1]
+    # Create new filename using user id
+    filename = f'certificate_user{instance.user.id}.{ext}'
+    return f'provider_certificates/{filename}'
+
+
 class Provider(models.Model):
     provider_id = models.AutoField(primary_key=True)
     user = models.OneToOneField(
@@ -94,10 +102,10 @@ class Provider(models.Model):
     website = models.URLField(blank=True, null=True)
     verification_status = models.BooleanField(default=False)
     certificate = models.FileField(
-        upload_to="provider_certificates/",
+        upload_to=certificate_file_path,
         null=True,
         blank=True,
-        help_text="Upload your business certificate (PDF, JPG, PNG)",
+        help_text="Upload your business certificate (PDF, JPG, PNG). Size limit: 5MB",
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

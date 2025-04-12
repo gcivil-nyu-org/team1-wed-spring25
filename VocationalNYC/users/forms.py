@@ -65,6 +65,9 @@ class ProviderVerificationForm(forms.ModelForm):
             "certificate",
             "confirm_existing",
         ]
+        widgets = {
+            "certificate": forms.FileInput(attrs={"class": "form-control"}),
+        }
 
     def clean_phone_num(self):
         phone = self.cleaned_data.get("phone_num")
@@ -72,35 +75,74 @@ class ProviderVerificationForm(forms.ModelForm):
             raise forms.ValidationError("Please enter a valid 10-digit phone number.")
         return phone
 
-    def clean_name(self):
-        name = self.cleaned_data.get("name")
+    # def clean_name(self):
+    #     name = self.cleaned_data.get("name")
 
+    #     if len(name) < 3:
+    #         raise forms.ValidationError(
+    #             "Business name must be at least 3 characters long."
+    #         )
+
+    #     confirm_existing = False
+    #     if self.data.get("confirm_existing") == "true":
+    #         confirm_existing = True
+    #     if confirm_existing:
+    #         return name
+    #     try:
+    #         existing_provider = Provider.objects.get(name=name)
+    #     except Provider.DoesNotExist:
+    #         return name
+
+    #     if existing_provider.user is None:
+    #         if not confirm_existing:
+    #             raise forms.ValidationError(
+    #                 "An unregistered provider with this name exists. "
+    #                 "If this is your organization, please confirm to bind your account."
+    #             )
+    #         return name
+    #     else:
+    #         raise forms.ValidationError(
+    #             "The name of the organization already exists. Please modify the name."
+    #         )
+
+    def clean_name(self):
+        name = self.cleaned_data.get("name", "").strip()
+
+        # 1. Minimum length check
         if len(name) < 3:
             raise forms.ValidationError(
                 "Business name must be at least 3 characters long."
             )
 
-        confirm_existing = False
-        if self.data.get("confirm_existing") == "true":
-            confirm_existing = True
-        if confirm_existing:
-            return name
-        try:
-            existing_provider = Provider.objects.get(name=name)
-        except Provider.DoesNotExist:
+        # 2. Allow it when updating the Provider profile.
+        if self.instance.pk and self.instance.name.lower() == name.lower():
             return name
 
+        confirm_existing = (self.data.get("confirm_existing") == "true")
+
+        # 3. Try to find *another* Provider with the same name.
+        try:
+            existing_provider = Provider.objects.exclude(pk=self.instance.pk).get(name__iexact=name)
+        except Provider.DoesNotExist:
+            # No conflict => name is valid
+            return name
+
+        # 4. We found a conflicting Provider with the same name
         if existing_provider.user is None:
+            # If user is not confirmed that it's truly the same business, raise:
             if not confirm_existing:
                 raise forms.ValidationError(
                     "An unregistered provider with this name exists. "
                     "If this is your organization, please confirm to bind your account."
                 )
+            # Otherwise, user is confirming it belongs to them => allow name
             return name
         else:
+            # If the conflicting Provider is already bound to *some* user
             raise forms.ValidationError(
                 "The name of the organization already exists. Please modify the name."
             )
+
 
     def clean_certificate(self):
         certificate = self.cleaned_data.get("certificate")
