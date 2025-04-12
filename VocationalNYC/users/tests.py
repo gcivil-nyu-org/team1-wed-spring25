@@ -827,7 +827,7 @@ class AdapterTests(TestCase):
         )
         request.user = user
         url = self.adapter.get_login_redirect_url(request)
-        self.assertEqual(url, "/profile/")
+        self.assertEqual(url, "/admin/")
 
 
 # ------------------------------------------------------------------------------

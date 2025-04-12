@@ -1,6 +1,7 @@
 import requests
 import sys
 import logging
+import os
 
 from django.shortcuts import render, redirect
 from django.views import generic
@@ -54,7 +55,7 @@ class CustomSignupView(SignupView):
             with transaction.atomic():
                 BookmarkList.objects.create(user=user, name="default")
                 messages.success(
-                    self.request, "Default bookmark list created successfully."
+                    # self.request, "Default bookmark list created successfully."
                 )
         except Exception as e:
             messages.error(
@@ -84,21 +85,66 @@ class CustomSignupView(SignupView):
 
 @login_required
 def profile_view(request):
+    logger.debug("Profile view accessed")
     form = None  # Ensure 'form' is defined
     if request.method == "POST":
         if "provider_form" in request.POST and request.user.role == "training_provider":
-            provider_form = ProviderVerificationForm(
-                request.POST,
-                request.FILES,
-                instance=getattr(request.user, "provider_profile", None),
+            logger.debug("Processing provider form submission")
+            provider = getattr(request.user, "provider_profile", None)
+            logger.debug(
+                f"Current provider certificate: {provider.certificate if provider else 'None'}"
             )
-            # Keep form for user info as fallback
+            logger.debug(f"Files in request: {request.FILES}")
+
+            provider_form = ProviderVerificationForm(
+                request.POST, request.FILES, instance=provider
+            )
             form = ProfileUpdateForm(instance=request.user)
+
             if provider_form.is_valid():
+                logger.debug("Provider form is valid")
                 provider = provider_form.save(commit=False)
+
+                if "certificate" in request.FILES:
+                    logger.debug("New certificate file detected")
+                    if provider.certificate:
+                        # Store old certificate path
+                        old_certificate_path = (
+                            provider.certificate.path if provider.certificate else None
+                        )
+                        # Clear the certificate field without saving
+                        provider.certificate = None
+
+                        # Delete the old file if it exists
+                        if old_certificate_path and os.path.isfile(
+                            old_certificate_path
+                        ):
+                            try:
+                                os.remove(old_certificate_path)
+                                logger.debug(
+                                    f"Old certificate deleted: {old_certificate_path}"
+                                )
+                            except Exception as e:
+                                logger.error(
+                                    f"Error deleting old certificate file: {e}"
+                                )
+
+                    # Assign new certificate
+                    provider.certificate = request.FILES["certificate"]
+                    logger.debug(
+                        f"New certificate assigned: {provider.certificate.name}"
+                    )
+
                 provider.user = request.user
                 provider.save()
+                logger.debug("Provider profile saved successfully")
+                messages.success(request, "Profile updated successfully!")
                 return redirect("profile")
+            else:
+                logger.error(f"Provider form errors: {provider_form.errors}")
+                messages.error(
+                    request, f"Error updating profile. {provider_form.errors}"
+                )
 
         elif "student_form" in request.POST and request.user.role == "career_changer":
             student_form = StudentProfileForm(
@@ -175,26 +221,26 @@ def provider_verification_view(request):
     if request.user.role != "training_provider":
         return redirect("profile")
 
-    print("provider_verification_view called")
+    # print("provider_verification_view called")
     if request.method == "POST":
         confirm_existing = request.POST.get("confirm_existing") == "true"
 
         # Pass the confirm_existing value to the form's initial data
         form = ProviderVerificationForm(request.POST, request.FILES)
         if form.is_valid():
-            print("Form is valid")
+            # print("Form is valid")
             name = form.cleaned_data.get("name")
             confirm_existing = form.cleaned_data.get("confirm_existing", False)
 
-            print(f"Confirm existing (from cleaned_data): {confirm_existing}")
-            print(f"Name: {name}")
+            # print(f"Confirm existing (from cleaned_data): {confirm_existing}")
+            # print(f"Name: {name}")
 
             try:
                 existing_provider = Provider.objects.get(name=name)
             except Provider.DoesNotExist:
                 existing_provider = None
 
-            print(f"Existing provider: {existing_provider}")
+            # print(f"Existing provider: {existing_provider}")
             sys.stdout.flush()
 
             if (
@@ -226,8 +272,8 @@ def provider_verification_view(request):
                 {"provider": provider},
             )
         else:
-            print("Form is not valid")
-            print("Form errors:", form.errors)
+            # print("Form is not valid")
+            # print("Form errors:", form.errors)
             sys.stdout.flush()
 
     else:
@@ -240,7 +286,7 @@ def check_provider_name(request):
     name = request.GET.get("name", "")
     try:
         provider = Provider.objects.get(name=name)
-        print(f"Provider found: {provider}")
+        # print(f"Provider found: {provider}")
         sys.stdout.flush()
         return JsonResponse(
             {
@@ -249,7 +295,7 @@ def check_provider_name(request):
             }
         )
     except Provider.DoesNotExist:
-        print("Provider not found")
+        # print("Provider not found")
         sys.stdout.flush()
         return JsonResponse({"exists": False})
 

@@ -17,8 +17,19 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic.base import RedirectView
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
+from django.shortcuts import redirect
+
+
+def root_redirect(request):
+    if request.user.is_authenticated and (
+        request.user.is_superuser or request.user.is_staff
+    ):
+        return redirect("admin:index")
+    return redirect("course_list")
+
 
 # from allauth.account.decorators import secure_admin_login
 
@@ -26,8 +37,8 @@ admin.autodiscover()
 # admin.site.login = secure_admin_login(admin.site.login)
 
 urlpatterns = [
-    # Redirect the root URL to the courses homepage
-    path("", RedirectView.as_view(url="/courses/", permanent=False), name="home"),
+    # Root URL now uses our custom redirect view
+    path("", root_redirect, name="home"),
     # Account-related URLs
     path("accounts/", include("users.urls")),
     path("", include("users.urls")),
@@ -47,3 +58,6 @@ urlpatterns = [
     path("chat/", include("message.urls")),
     path("bookmarks/", include("bookmarks.urls")),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
