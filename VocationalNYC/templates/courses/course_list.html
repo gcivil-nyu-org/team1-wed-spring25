@@ -227,61 +227,63 @@ body::-webkit-scrollbar {
 
                                         <script>
                                             document.addEventListener('DOMContentLoaded', function() {
-                                                const clearFiltersBtn = document.querySelector('button.Filters');
+                                                const clearFiltersBtn = document.querySelector('button.Filters span.Filters-Inside').closest('button');
                                                 if (clearFiltersBtn) {
                                                   clearFiltersBtn.addEventListener('click', function() {
                                                     window.location.href = window.location.pathname;
                                                   });
                                                 }
+                                                
                                               
                                                 // deal with single filter
-                                                const appliedFilters = document.querySelectorAll('.Applied-Filters');
+                                                const appliedFilters = document.querySelectorAll('button.Applied-Filters');
                                                 appliedFilters.forEach(filter => {
                                                   filter.addEventListener('click', function() {
                                                     // get the current URL and its parameters
                                                     const url = new URL(window.location.href);
                                                     const params = url.searchParams;
+                                                    const paramNames = Array.from(params.keys());
                                                     
                                                     // get the filter text and split it to get the parameter name
                                                     const filterText = this.querySelector('.Filters-Inside').textContent;
                                                     const filterParts = filterText.split(':');
                                                     
                                                     if (filterParts.length >= 2) {
-                                                      const filterType = filterParts[0].trim().toLowerCase();
+                                                        const filterType = filterParts[0].trim().toLowerCase();
+                                                        
+                                                        // add the filter type to the URL parameters
+                                                        let paramName;
+                                                        switch (filterType) {
+                                                            case 'keywords':
+                                                            paramName = 'keywords';
+                                                            break;
+                                                            case 'provider':
+                                                            paramName = 'provider';
+                                                            break;
+                                                            case 'min rating':
+                                                            paramName = 'min_rating';
+                                                            break;
+                                                            case 'min cost':
+                                                            paramName = 'min_cost';
+                                                            break;
+                                                            case 'max cost':
+                                                            paramName = 'max_cost';
+                                                            break;
+                                                            case 'location':
+                                                            paramName = 'location';
+                                                            break;
+                                                            case 'min hours':
+                                                            paramName = 'min_hours';
+                                                            break;
+                                                            default:
+                                                            paramName = filterType;
+                                                        }
+                                                        
+                                                        // set the parameter as "" from the URL
+                                                        params.set(paramName, '');
+
+                                                        window.location.href = url.toString();
                                                       
-                                                      // add the filter type to the URL parameters
-                                                      let paramName;
-                                                      switch (filterType) {
-                                                        case 'keywords':
-                                                          paramName = 'keywords';
-                                                          break;
-                                                        case 'provider':
-                                                          paramName = 'provider';
-                                                          break;
-                                                        case 'min rating':
-                                                          paramName = 'min_rating';
-                                                          break;
-                                                        case 'min cost':
-                                                          paramName = 'min_cost';
-                                                          break;
-                                                        case 'max cost':
-                                                          paramName = 'max_cost';
-                                                          break;
-                                                        case 'location':
-                                                          paramName = 'location';
-                                                          break;
-                                                        case 'min hours':
-                                                          paramName = 'min_hours';
-                                                          break;
-                                                        default:
-                                                          paramName = filterType;
-                                                      }
-                                                      
-                                                      // delete the parameter from the URL
-                                                      params.delete(paramName);
-                                                      
-                                                      // redirect to the new URL
-                                                      window.location.href = url.toString();
                                                     }
                                                   });
                                                 });
