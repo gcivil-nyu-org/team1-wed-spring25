@@ -125,6 +125,7 @@ body::-webkit-scrollbar {
                                                         class="Filters"><span
                                                         class="Filters-Inside">Clear Filters</span>
                                                 </button>
+                                                
                                             {% if keywords %}
                                             <li class="Applied-Filters-Outline">
                                                 <button aria-label="Remove Keywords filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
@@ -224,8 +225,77 @@ body::-webkit-scrollbar {
                                             </li>
                                             {% endif %}
 
-                                            
-
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function() {
+                                                const clearFiltersBtn = document.querySelector('button.Filters');
+                                                if (clearFiltersBtn) {
+                                                  clearFiltersBtn.addEventListener('click', function() {
+                                                    window.location.href = window.location.pathname;
+                                                  });
+                                                }
+                                              
+                                                // deal with single filter
+                                                const appliedFilters = document.querySelectorAll('.Applied-Filters');
+                                                appliedFilters.forEach(filter => {
+                                                  filter.addEventListener('click', function() {
+                                                    // get the current URL and its parameters
+                                                    const url = new URL(window.location.href);
+                                                    const params = url.searchParams;
+                                                    
+                                                    // get the filter text and split it to get the parameter name
+                                                    const filterText = this.querySelector('.Filters-Inside').textContent;
+                                                    const filterParts = filterText.split(':');
+                                                    
+                                                    if (filterParts.length >= 2) {
+                                                      const filterType = filterParts[0].trim().toLowerCase();
+                                                      
+                                                      // add the filter type to the URL parameters
+                                                      let paramName;
+                                                      switch (filterType) {
+                                                        case 'keywords':
+                                                          paramName = 'keywords';
+                                                          break;
+                                                        case 'provider':
+                                                          paramName = 'provider';
+                                                          break;
+                                                        case 'min rating':
+                                                          paramName = 'min_rating';
+                                                          break;
+                                                        case 'min cost':
+                                                          paramName = 'min_cost';
+                                                          break;
+                                                        case 'max cost':
+                                                          paramName = 'max_cost';
+                                                          break;
+                                                        case 'location':
+                                                          paramName = 'location';
+                                                          break;
+                                                        case 'min hours':
+                                                          paramName = 'min_hours';
+                                                          break;
+                                                        default:
+                                                          paramName = filterType;
+                                                      }
+                                                      
+                                                      // delete the parameter from the URL
+                                                      params.delete(paramName);
+                                                      
+                                                      // redirect to the new URL
+                                                      window.location.href = url.toString();
+                                                    }
+                                                  });
+                                                });
+                                                
+                                                const filterIcons = document.querySelectorAll('.Applied-Filters-Icon');
+                                                filterIcons.forEach(icon => {
+                                                  icon.addEventListener('click', function(event) {
+                                                    event.stopPropagation();
+                                                    
+                                                    this.closest('.Applied-Filters').click();
+                                                  });
+                                                });
+                                              });
+                                            </script>
                                         </ul>
                                     </div>
                                 </div>

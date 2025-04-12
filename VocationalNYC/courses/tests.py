@@ -572,43 +572,38 @@ class PostNewCourseTest(TestCase):
 
         self.client.login(username="testuser", password="testpass123")
 
-    # def test_post_new_course_get(self):
-    #     response = self.client.get(reverse("new_course"))
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, "courses/new_course.html")
+    # def test_post_new_course_post_valid(self):
+    #     data = {
+    #         "name": "New Test Course",
+    #         "keywords": "test, course",
+    #         "course_desc": "Test course description",
+    #         "cost": 1000,
+    #         "location": "123 Test St, New York, NY, 10001",
+    #         "classroom_hours": 40,
+    #         "lab_hours": 20,
+    #         "internship_hours": 10,
+    #         "practical_hours": 15,
+    #     }
 
-    def test_post_new_course_post_valid(self):
-        data = {
-            "name": "New Test Course",
-            "keywords": "test, course",
-            "course_desc": "Test course description",
-            "cost": 1000,
-            "location": "123 Test St, New York, NY, 10001",
-            "classroom_hours": 40,
-            "lab_hours": 20,
-            "internship_hours": 10,
-            "practical_hours": 15,
-        }
+    #     response = self.client.post(reverse("new_course"), data)
+    #     self.assertEqual(response.status_code, 302)  # Should redirect
+    #     self.assertTrue(Course.objects.filter(name="New Test Course").exists())
 
-        response = self.client.post(reverse("new_course"), data)
-        self.assertEqual(response.status_code, 302)  # Should redirect
-        self.assertTrue(Course.objects.filter(name="New Test Course").exists())
+    # def test_post_new_course_post_invalid(self):
+    #     data = {
+    #         "name": "",  # Invalid: empty name
+    #         "course_desc": "Test course description",
+    #         "cost": -100,  # Invalid: negative cost
+    #         "location": "123 Test St, New York, NY, 10001",
+    #         "classroom_hours": -40,  # Invalid: negative hours
+    #         "lab_hours": 20,
+    #     }
 
-    def test_post_new_course_post_invalid(self):
-        data = {
-            "name": "",  # Invalid: empty name
-            "course_desc": "Test course description",
-            "cost": -100,  # Invalid: negative cost
-            "location": "123 Test St, New York, NY, 10001",
-            "classroom_hours": -40,  # Invalid: negative hours
-            "lab_hours": 20,
-        }
-
-        response = self.client.post(reverse("new_course"), data)
-        self.assertEqual(response.status_code, 200)  # Should stay on form page
-        self.assertFalse(
-            Course.objects.filter(course_desc="Test course description").exists()
-        )
+    #     response = self.client.post(reverse("new_course"), data)
+    #     self.assertEqual(response.status_code, 200)  # Should stay on form page
+    #     self.assertFalse(
+    #         Course.objects.filter(course_desc="Test course description").exists()
+    #     )
 
 
 # class CourseListViewBookmarksTest(TestCase):
@@ -916,18 +911,12 @@ class ManageCourseTest(TestCase):
             str(messages[0]), "You do not have a training provider profile."
         )
 
-    # def test_post_new_course_get(self):
-    #     """Test GET request to post_new_course view"""
-    #     response = self.client.get(reverse("new_course"))
-    #
-    #     # Check that response is 200 OK
-    #     self.assertEqual(response.status_code, 200)
-    #
-    #     # Check that correct template is used
-    #     self.assertTemplateUsed(response, "courses/new_course.html")
-    #
-    #     # Check that form is in context
-    #     self.assertIn("form", response.context)
+    def test_post_new_course_get(self):
+        """Test GET request to post_new_course view"""
+        response = self.client.get(reverse("new_course"))
+
+        # Check that response redirects to manage_courses
+        self.assertRedirects(response, reverse("manage_courses"))
 
     def test_post_new_course_post_valid(self):
         """Test POST request to post_new_course view with valid data"""
@@ -973,12 +962,15 @@ class ManageCourseTest(TestCase):
         # Post the data
         response = self.client.post(reverse("new_course"), course_data)
 
-        # Should stay on the same page
-        self.assertEqual(response.status_code, 200)
+        # Should redirect to manage_courses page (even with form errors)
+        self.assertRedirects(response, reverse("manage_courses"))
 
-        # Check that form is in context and has errors
-        self.assertIn("form", response.context)
-        self.assertTrue(response.context["form"].errors)
+        # Check that error message was shown
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(
+            str(messages[0]), "Invalid data. Please check the form and try again."
+        )
 
     @patch("logging.Logger.error")
     def test_post_new_course_exception(self, mock_logger):
@@ -1022,7 +1014,7 @@ class ManageCourseTest(TestCase):
         )
 
         # Should redirect to course_list
-        self.assertRedirects(response, reverse("course_list"))
+        self.assertRedirects(response, reverse("manage_courses"))
 
         # Check that course was deleted
         self.assertFalse(Course.objects.filter(pk=self.course1.pk).exists())
