@@ -1,8 +1,21 @@
+ :root {
 
+    }
 
         :root {
 
             font-family: system-ui;
+
+        --primary: #a2ccb6;
+        --primary-light: #eaf4ef;
+        --primary-dark: #5b9b82;
+        --glass-bg: rgba(255, 255, 255, 0.4);
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --neon-glow: 0 0 12px rgba(162, 204, 182, 0.65);
+        --green: #74b49b;
+        --peach: #fbc7a7;
+        --light-peach: #ffecd9;
+        --sand: #f4e1d2;
 
             --color1: #ffecd9;
             --color2: #ffecd9;
@@ -38,10 +51,6 @@
             --blue-05: #EFF8FF;
             --blue-01: #F8FCFF;
 
-            --green: #a2ccb6;
-                --light-peach: #ffecd9;
-                --peach: #ee786e;
-                --sand: #fceeb5;
 
             -webkit-font-smoothing: antialiased;
             text-rendering: optimizelegibility;
@@ -748,7 +757,7 @@ margin-top: 0rem;  /* Negative margin to counteract padding */
 
         .Filter-Section-Action-Outer {
             margin: 1rem 0px 0px;
-            transition: max-height 300ms ease-in-out
+            transition: max-height 300ms ease-in-out;
             max-height:none;
             overflow:visible;
         }
@@ -1363,15 +1372,27 @@ visibility: hidden !important;
     padding: 1rem;
     margin-bottom: 1.5rem;
     border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-    background-color: var(--white-00);
 
-}
+    transition: all 0.3s ease;
+
+
+
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08), inset 0 0 2px #fff;}
 
 .Course-Cards:hover {
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--primary);
+  box-shadow: 0 0 12px var(--primary), inset 0 0 4px #fff;
 }
+
+
+
+    .provider-details-container {
+
+        /*overflow: hidden;*/
+    }
 
         .ReadMore {
 

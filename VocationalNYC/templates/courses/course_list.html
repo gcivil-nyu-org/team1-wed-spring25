@@ -61,8 +61,13 @@ body::-webkit-scrollbar {
 
 
         <!--top horizontal header-->
-        {% include 'includes/header.html' %}
-
+        {% if user.role == "career_changer" %}
+            {% include 'includes/student_header.html' %}
+        {% elif user.role == "training_provider" %}
+            {% include 'includes/provider_header.html' %}
+        {% else %}
+            {% include 'includes/default_header.html' %}
+        {% endif %}
 
         <!--main content-->
         <article compass="[object Object]">
@@ -607,7 +612,7 @@ body::-webkit-scrollbar {
                                             </div>
                                         </legend>
                                         
-                                        <div class="Filter-Section-Action-Outer">
+                                        <div class="Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
                                             <div class="Filter-Section-Action-Inner">
                                                 <button type="submit" class="Apply-Filters-Button">
                                                     Filter Your Search

@@ -1,30 +1,75 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Provider Details{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    {% if error_message %}
-        <p class="error">{{ error_message }}</p>
-    {% elif provider %}
-        <h2>{{ provider.name }}</h2>
-        <p class="info"><strong>Phone:</strong> {{ provider.phone_num }}</p>
-        <p class="info"><strong>Address:</strong> {{ provider.address }}</p>
-        {% if provider.website %}
-            <p class="info"><strong>Website:</strong> <a href="{{ provider.website }}" target="_blank">{{ provider.website }}</a></p>
-        {% endif %}
-        <p class="info"><strong>Courses:</strong></p>
-            {% for course in courses %}
-                <li>
-                    <a href="{% url 'course_detail' course.course_id %}">
-                        {{ course.name }}
-                    </a>
-                </li>
-            {% empty %}
-                <li>No courses yet</li>
-            {% endfor %}
-    {% else %}
-        <p class="error">Provider not found.</p>
-    {% endif %}
+<link rel="stylesheet" href="{% static 'css/provider_details.css' %}">
+
+<div class="provider-details-container">
+
+  <h1 class="provider-details-header">{{ provider.name }}
+      {% if provider.verification_status %}
+          <span class="VerificationIcon" data-tooltip="Verified Provider">
+              <img src="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/verified.png" srcset alt="Verified">
+          </span>
+      {% endif %}
+  </h1>
+
+  {% if error_message %}
+    <div class="alert alert-danger">{{ error_message }}</div>
+  {% elif provider %}
+
+      <div class="provider-meta">
+
+          <p class="provider-info">
+
+              <strong>📞 Phone:</strong>
+              <a href="tel:{{ provider.phone_num }}"> {{ provider.phone_num }}</a>
+          </p>
+
+          <p>
+            📍 <strong>Location: </strong>
+            <a href="javascript:void(0)">{{ provider.address }}</a>
+          </p>
+
+          {% if provider.website %}
+              <p>
+                  <strong>🌐 Website:</strong>
+                  <a href="{{ provider.website }}" target="_blank">{{ provider.website }}</a>
+              </p>
+          {% endif %}
+
+      </div>
+
+      {% if provider.provider_desc %}
+          <div class="provider-description">
+              <h2>📝 Description</h2>
+              <p>{{ provider.provider_desc }}</p>
+          </div>
+      {% endif %}
+
+
+    <div class="provider-details-meta" style="margin-top: 5rem;">
+      <h2>📚 Courses</h2>
+      {% if courses %}
+        <ul>
+          {% for course in courses %}
+            <li class="provider-details-entry">
+              <div class="provider-details-content">
+                <a class="provider-details-left" href="{% url 'course_detail' course.course_id %}">
+                  {{ course.name }}
+                </a>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-gray-500 italic">No courses available for this provider.</p>
+      {% endif %}
+    </div>
+  {% else %}
+    <p class="text-gray-500 italic">Provider not found.</p>
+  {% endif %}
 </div>
 {% endblock %}
