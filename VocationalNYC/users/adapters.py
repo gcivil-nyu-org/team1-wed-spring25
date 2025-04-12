@@ -20,12 +20,14 @@ class MyAccountAdapter(DefaultAccountAdapter):
 
     def get_login_redirect_url(self, request):
         user = request.user
+        if user.is_superuser or user.is_staff:
+            return '/admin/'
         if getattr(user, "role", "") == "training_provider" and not user.is_active:
             logger.debug(
                 f"Redirecting training_provider {user.username} to provider_verification."
             )
             return HttpResponseRedirect(reverse("provider_verification"))
-        return reverse("profile")  # Always redirect to profile for consistency
+        return reverse("profile")
 
     def respond_inactive(self, request, user):
         if getattr(user, "role", None) == "training_provider":
