@@ -137,8 +137,8 @@ def profile_view(request):
 
                 provider.user = request.user
                 provider.save()
-                logger.debug("Provider profile saved successfully")
-                messages.success(request, "Profile updated successfully!")
+                # logger.debug("Provider profile saved successfully")
+                # messages.success(request, "Profile updated successfully!")
                 return redirect("profile")
             else:
                 logger.error(f"Provider form errors: {provider_form.errors}")
@@ -152,7 +152,7 @@ def profile_view(request):
             )
             if student_form.is_valid():
                 student_form.save()
-                messages.success(request, "Profile updated successfully!")
+                # messages.success(request, "Profile updated successfully!")
                 return redirect("profile")
             else:
                 messages.error(

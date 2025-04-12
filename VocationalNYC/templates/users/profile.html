@@ -1,572 +1,314 @@
 {% extends "base.html" %}
+{% load static %}
+{% load tz %}  {# Load timezone utilities #}
 
 {% block title %}Profile | VocationalNYC{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row">
-        <!-- Left Column - User Info -->
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <div class="text-center mb-4">
-                        <div class="avatar-circle mb-3">
-                            {{ user.username|make_list|first|upper }}
-                        </div>
-                        <h4>{{ user.get_full_name|default:user.username }}</h4>
-                        <span class="badge bg-primary">{{ user.role|title }}</span>
-                    </div>
-                    <hr>
-                    <div id="user-details">
-                        <p><strong>Email:</strong> {{ user.email }}</p>
-                        <p><strong>Joined:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
-                        <button type="button" id="edit-user-btn" class="btn btn-secondary mt-3">Edit Profile</button>
-                    </div>
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
 
-                    <!-- Wrapped user-form inside a card -->
-                    <div class="card mt-3 shadow-sm" id="user-form-card" style="display: none;">
-                        <div class="card-body">
-                            <h5 class="card-title">Edit User Profile</h5>
-                            <form id="user-form" method="post">
-                                {% csrf_token %}
-                                {{ form.as_p }}
-                                {% if form.errors %}
-                                    <div class="alert alert-danger">
-                                        <ul>
-                                            {% for field in form %}
-                                                {% for error in field.errors %}
-                                                    <li>{{ error }}</li>
-                                                {% endfor %}
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                {% endif %}
-                                <button type="submit" class="btn btn-primary">Save</button>
-                                <button type="button" id="cancel-user-btn" class="btn btn-secondary">Cancel</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!--svg icons-->
+    <svg aria-hidden=true id=__SVG_SPRITE_NODE__ style=position:absolute;width:0;height:0>
+        <symbol id=user-circle viewBox="10 11 44 44">
+            <defs>
+                <path d="M32 11c12.2 0 22 9.9 22 22s-9.9 22-22 22-22-9.9-22-22 9.9-22 22-22zm12.046 34.645c3.349-3.194 5.454-7.681 5.454-12.646 0-9.625-7.795-17.5-17.5-17.5-9.625 0-17.5 7.876-17.5 17.5 0 4.965 2.105 9.453 5.454 12.645.047-1.822.46-5.573.722-6.425.29-.943.652-1.813 1.087-2.465a5.475 5.475 0 011.74-1.667c.726-.436 1.595-.653 2.538-.653 0 0 0 .002.002.002l.026-.002c1.665 1.592 3.618 2.389 5.93 2.393 2.315-.005 4.268-.801 5.932-2.392h.027c.944 0 1.814.216 2.539.651a5.482 5.482 0 011.74 1.668c.435.653.797 1.523 1.087 2.465.262.852.675 4.603.722 6.425zM39.25 28.416a7.25 7.25 0 11-14.5 0 7.25 7.25 0 0114.5 0z"
+                      id=user-circle_a></path>
+            </defs>
+            <use xlink:href=#user-circle_a></use>
+        </symbol>
+        <symbol id=caret viewBox="0 0 113.2 63.1">
+            <path d="M6.7 0C2.9 0 0 2.9 0 6.7c0 1.9 1 3.8 1.9 4.8l49.7 49.7c1 1 2.9 1.9 4.8 1.9s3.8-1 4.8-1.9l50.1-49.7c1-1 1.9-2.9 1.9-4.8 0-3.8-2.9-6.7-6.7-6.7"></path>
+        </symbol>
+        <symbol id=star viewBox="0 0 64 64" xmlns=http://www.w3.org/2000/svg>
+            <path d="M54 27.277c0-.652-.492-1.06-1.48-1.218l-13.275-1.931-5.949-12.042C32.962 11.36 32.529 11 32 11s-.962.361-1.296 1.086l-5.949 12.042-13.275 1.93c-.988.16-1.48.567-1.48 1.219 0 .37.222.793.661 1.27l9.625 9.368-2.274 13.232a4.162 4.162 0 00-.053.53c0 .37.093.683.277.939.186.255.463.384.833.384.318 0 .671-.106 1.058-.317L32 46.437l11.873 6.246c.37.21.724.317 1.058.317.353 0 .621-.13.805-.384.186-.256.279-.569.279-.94 0-.228-.01-.406-.027-.529l-2.274-13.232 9.599-9.368c.458-.46.687-.883.687-1.27"></path>
+        </symbol>
+    </svg>
+
+    <div class="profile-container">
+
+        <div class="profile-header-row">
+
+            <h1 class="profile-header">
+                {% if role == "training_provider" %}
+                    {{ provider.contact_firstname }} {{ provider.contact_lastname }}
+                {% elif role == "career_changer" %}
+                    {{ user.get_full_name|default:user.username }}
+                {% endif %}
+            </h1>
+
+            {% if role == "training_provider" %}
+                <button type="button" class="edit-profile-button-inline" data-bs-toggle="modal"
+                        data-bs-target="#editProviderModal">
+                    ✏️ Edit Profile
+                </button>
+            {% elif role == "career_changer" %}
+                <button type="button" class="edit-profile-button-inline" data-bs-toggle="modal"
+                        data-bs-target="#editUserModal">
+                    ✏️ Edit Profile
+                </button>
+            {% endif %}
+
+
         </div>
 
-        <!-- Right Column - Role Specific Info -->
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <hr>
-                    {% if role == "training_provider" %}
-                        {% if provider %}
-                            <h3>Provider Information</h3>
-                            <div class="provider-status mb-4">
-                                <strong>Verification Status:</strong>
-                                {% if provider.verification_status %}
-                                    <span class="badge bg-success">Verified</span>
-                                {% else %}
-                                    <span class="badge bg-warning">Pending Verification</span>
-                                {% endif %}
-                            </div>
-                            <div id="provider-details">
-                                <div class="provider-details">
-                                    <p><strong>Business Name:</strong> {{ provider.name }}</p>
-                                    <p><strong>Contact:</strong> {{ provider.contact_firstname }} {{ provider.contact_lastname }}</p>
-                                    <p><strong>Phone:</strong> {{ provider.phone_num }}</p>
-                                    <p><strong>Address:</strong> {{ provider.address }}</p>
-                                    {% if provider.website %}
-                                        <p><strong>Website:</strong> <a href="{{ provider.website }}" target="_blank">{{ provider.website }}</a></p>
-                                    {% endif %}
-                                    {% if provider.open_time %}
-                                        <p><strong>Business Hours:</strong> {{ provider.open_time }}</p>
-                                    {% endif %}
-                                    {% if provider.provider_desc %}
-                                        <p><strong>Description:</strong> {{ provider.provider_desc }}</p>
-                                    {% endif %}
-                                    {% if provider.certificate %}
-                                        <p><strong>Current Certificate:</strong>
-                                            <a href="{{ provider.certificate.url }}" target="_blank">View File</a>
-                                        </p>
-                                    {% endif %}
-                                </div>
-                                <button id="edit-provider-btn" class="btn btn-secondary mt-3">Edit Provider Details</button>
-                            </div>
+        <div class="profile-meta">
 
-                            <!-- Wrapped provider-form inside a card -->
-                            <div class="card mt-3 shadow-sm" id="provider-form-card" style="display: {% if provider_verification_form.errors %}block{% else %}none{% endif %};">
-                                <div class="card-body">
-                                    <h5 class="card-title">Update Provider Details</h5>
-                                    <form id="provider-form" method="post" enctype="multipart/form-data" onsubmit="return validateProviderForm()">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="provider_form" value="1">
-                                        {% for field in provider_verification_form %}
-                                            <div class="mb-3">
-                                                <label for="{{ field.id_for_label }}" class="form-label">
-                                                    {{ field.label }}{% if field.field.required %}<span style="color: red;">*</span>{% endif %}
-                                                </label>
-                                                {{ field }}
-                                                <div class="invalid-feedback" id="{{ field.id_for_label }}-error"></div>
-                                                {% if field.errors %}
-                                                    <div class="text-danger">
-                                                        {% for error in field.errors %}
-                                                            {{ error }}
-                                                        {% endfor %}
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-                                        {% endfor %}
-                                        <button type="submit" class="btn btn-primary">Save</button>
-                                        <button type="button" id="cancel-provider-btn" class="btn btn-secondary">Cancel</button>
-                                    </form>
-                                </div>
-                            </div>
-                        {% else %}
-                            <div class="alert alert-warning">
-                                Please complete your provider verification to access all features.
-                                <a href="{% url 'provider_verification' %}" class="btn btn-primary mt-3">Complete Verification</a>
-                            </div>
-                        {% endif %}
+            <p>
+                👤 <strong>Username:</strong>
+                <a href="javascript:void(0)">@{{ user.username }}</a>
+            </p>
 
-                    {% elif role == "career_changer" %}
-                        <h3>Career Changer Profile</h3>
-                        {% if student %}
-                            <div id="student-details" class="student-details">
-                                <div class="bio-section mb-4">
-                                    <div id="bio-display">
-                                        {% if student.bio %}
-                                            <p>{{ student.bio }}</p>
-                                        {% else %}
-                                            <p class="text-muted">No bio added yet.</p>
-                                        {% endif %}
-                                    </div>
-                                </div>
+            <p>
+                🧩 <strong>Role:</strong>
+                <a href="javascript:void(0)">
+                    {% if user.role == "training_provider" %}
+                        Training Provider (i.e., School Representative)
+                    {% elif user.role == "career_changer" %}
+                        Career Changer (i.e., Student)
+                    {% endif %}
+                </a>
+            </p>
 
-                                <div class="tags-section mb-4">
-                                    <h5>My Tags</h5>
-                                    <div class="tags-container" id="tags-container">
-                                        {% for tag in student.tags.all %}
-                                            <span class="badge bg-secondary me-2 mb-2">
-                                                {{ tag.name }}
-                                                <button type="button" class="btn-close btn-close-white ms-2 edit-only" 
-                                                        onclick="removeTag('{{ tag.name }}')"
-                                                        style="font-size: 0.5rem; display: none;"></button>
-                                            </span>
-                                        {% empty %}
-                                            <p class="text-muted" id="no-tags-message">No tags added yet.</p>
-                                        {% endfor %}
-                                    </div>
-                                </div>
+            <p>
+                📧 <strong>Email:</strong>
+                <a href="mailto:{{ user.email }}">{{ user.email }}</a>
+            </p>
 
-                                <button type="button" id="edit-student-btn" class="btn btn-secondary" onclick="toggleStudentForm()">Edit Profile</button>
-                            </div>
+            <p>
+                📆 <strong>Joined:</strong>
+                <a href="javascript:void(0)">{{ user.date_joined|date:"F j, Y" }}</a>
+            </p>
 
-                            <!-- Wrapped student-form inside a card -->
-                            <div class="card mt-3 shadow-sm" id="student-form-card" style="display: none;">
-                                <div class="card-body">
-                                    <h5 class="card-title">Edit Student Profile</h5>
-                                    <form id="student-form" method="post">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="student_form" value="1">
-                                        <div class="mb-3">
-                                            <label for="student-bio" class="form-label">Bio</label>
-                                            <textarea class="form-control" id="student-bio" name="bio" rows="4">{{ student.bio }}</textarea>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="tag" class="form-label">Add Tag</label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" id="tag" name="tag">
-                                                <button type="button" class="btn btn-outline-secondary" onclick="addTag()">Add</button>
-                                            </div>
-                                            <small class="text-muted">Click "Add" to add a tag</small>
-                                        </div>
-                                        <div class="mt-3">
-                                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                                            <button type="button" id="cancel-student-btn" class="btn btn-secondary">Cancel</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        {% endif %}
+        </div>
 
-                        <div class="bookmark-section mt-4">
-                            <h5>My Bookmarked Courses</h5>
-                            {% if bookmark_lists %}
-                                {% for list in bookmark_lists %}
-                                    <div class="bookmark-list mb-3">
-                                        <h6>{{ list.name }}</h6>
-                                        <ul class="list-group">
-                                            {% for bookmark in list.bookmark.all %}
-                                                <li class="list-group-item">
-                                                    <a href="{% url 'course_detail' bookmark.course.course_id %}">
-                                                        {{ bookmark.course.name }}
-                                                    </a>
-                                                    <small class="text-muted d-block">
-                                                        Bookmarked on: {{ bookmark.time|date:"F j, Y" }}
-                                                    </small>
-                                                </li>
-                                            {% empty %}
-                                                <li class="list-group-item text-muted">No courses in this list</li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                {% endfor %}
+        {% if role == "training_provider" and provider %}
+
+            <div class="provider-details-section">
+
+                <h2>📄 Provider Details</h2>
+
+                <div class="profile-meta">
+
+                    <p>
+                        🏢 <strong>Business Name:</strong>
+                        <a href="{% url 'provider_detail' provider.provider_id %}">
+                            {{ provider.name }}
+                        </a>
+                    </p>
+
+                    <p>
+                        📍 <strong>Business Address:</strong>
+                        <a href="javascript:void(0)">
+                            {{ provider.address }}
+                        </a>
+                    </p>
+
+                    <p>
+                        ☑️ <strong>Verification Status:</strong>
+                        <a href="javascript:void(0)">
+                            {% if provider.verification_status %}
+                                Verified
                             {% else %}
-                                <p class="text-muted">No bookmark lists found</p>
+                                Pending Verification
                             {% endif %}
-                        </div>
+                        </a>
+                    </p>
 
-                        <div class="reviews-section mt-4">
-                            <h5>My Reviews</h5>
-                            {% if debug %}
-                            <div class="alert alert-info">
-                                <h6>Debug Info:</h6>
-                                <p>User ID: {{ user.id }}</p>
-                                <p>Role: {{ user.role }}</p>
-                                <p>Reviews Count: {{ reviews|length }}</p>
-                                <p>Raw Reviews Data:</p>
-                                <ul>
-                                {% for review in reviews %}
-                                    <li>ID: {{ review.review_id }} - Course: {{ review.course.name|default:"No course" }}</li>
+                    {% if provider.website %}
+                        <p>
+                            🌐 <strong>Website:</strong>
+                            <a href="{{ provider.website }}" target="_blank">
+                                {{ provider.website }}
+                            </a>
+                        </p>
+                    {% endif %}
+
+                    {% if provider.provider_desc %}
+                        <div class="provider-description">
+                            <h2>📝 Description</h2>
+                            <p>{{ provider.provider_desc }}</p>
+                        </div>
+                    {% endif %}
+
+                    <p>
+                        📞 <strong>Contact Number:</strong>
+                        <a href="tel:{{ provider.phone_num }}">
+                            {{ provider.phone_num }}
+                        </a>
+                    </p>
+
+                    {% if provider.open_time %}
+                        <p>
+                            ⏰ <strong>Business Hours:</strong>
+                            <a href="javascript:void(0)">
+                                {{ provider.open_time }}
+                            </a>
+                        </p>
+                    {% endif %}
+
+                    {% if provider.certificate %}
+                        <p>
+                            📎 <strong>Business Certificate:</strong>
+                            <a href="{{ provider.certificate.url }}" target="_blank">View File</a>
+                        </p>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+        {% if role == "career_changer" %}
+
+            <div class="bookmark-section">
+                <h2>📌 My Bookmark List</h2>
+                {% if bookmark_lists %}
+                    {% for list in bookmark_lists %}
+                        <div class="bookmark-list-block">
+                            <h3>{{ list.name }}</h3>
+                            <ul class="bookmark-list-items">
+                                {% for bookmark in list.bookmark.all %}
+                                    <li>
+                                        <a href="{% url 'course_detail' bookmark.course.course_id %}">
+                                            {{ bookmark.course.name }}
+                                        </a>
+                                        {% timezone "America/New_York" %}
+                                            <small>Added on {{ bookmark.time|date:"l, F j, Y \\a\\t g:i:s A" }}</small>
+                                        {% endtimezone %}
+                                    </li>
+                                {% empty %}
+                                    <li class="bookmark-entry empty-message">The bookmark list is empty.</li>
                                 {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">You don't have any bookmark lists yet.</p>
+                {% endif %}
+            </div>
+
+            <div class="review-section">
+                <h2>💬 My Reviews</h2>
+                {% if reviews %}
+                    <ul class="review-list">
+                        {% for review in reviews %}
+                            <li class="review-item">
+                                <div class="review-header-row">
+                                    <div class="review-header-text">
+                                        <a class="review-username"
+                                           href="{% url 'course_detail' review.course.course_id %}">{{ review.course.name }}</a>
+                                        <div class="review-stars">
+                                            {% for i in "12345"|make_list %}
+                                                {% if forloop.counter <= review.score_rating %}
+                                                    <svg class="Course-Rating" fill="currentColor"
+                                                         stroke="currentColor">
+                                                        <use xlink:href="#star"></use>
+                                                    </svg>
+                                                {% else %}
+                                                    <svg class="Course-Rating" fill="white" stroke="currentColor">
+                                                        <use xlink:href="#star"></use>
+                                                    </svg>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <span class="review-score">({{ review.score_rating }}/5)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="review-body">
+                                    <p>{{ review.content }}</p>
+                                    <div class="review-timestamp">
+                                        {% timezone "America/New_York" %}
+                                            Posted on
+                                            {{ review.created_at|date:"l, F j, Y \\a\\t g:i:s A" }}    {% endtimezone %}                                </div>
+                                    {% if review.attachment_url %}
+                                        <a href="{{ review.attachment_url }}" target="_blank"
+                                           class="btn btn-sm btn-outline-secondary mt-2">View Attachment</a>
+                                    {% endif %}
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">No reviews posted yet</p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+    </div>
+
+    <!-- USER PROFILE MODAL -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-modal">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title modal-header-text" id="editUserModalLabel">✏️ Edit Profile</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        {{ form.as_p }}
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                <ul>
+                                    {% for field in form %}
+                                        {% for error in field.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    {% endfor %}
                                 </ul>
                             </div>
-                            {% endif %}
-                            {% if reviews %}
-                                <div class="reviews-list">
-                                    {% for review in reviews %}
-                                        <div class="review-card card mb-3">
-                                            <div class="card-body">
-                                                <h6 class="card-title">
-                                                    <a href="{% url 'course_detail' review.course.course_id %}">
-                                                        {{ review.course.name }}
-                                                    </a>
-                                                </h6>
-                                                <div class="rating mb-2">
-                                                    {% for i in "12345"|make_list %}
-                                                        {% if forloop.counter <= review.score_rating %}
-                                                            <span class="text-warning">★</span>
-                                                        {% else %}
-                                                            <span class="text-muted">☆</span>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </div>
-                                                <p class="card-text">{{ review.content }}</p>
-                                                <small class="text-muted">Posted on: {{ review.created_at|date:"F j, Y" }}</small>
-                                                {% if review.attachment_url %}
-                                                    <div class="mt-2">
-                                                        <a href="{{ review.attachment_url }}" target="_blank" class="btn btn-sm btn-outline-secondary">
-                                                            View Attachment
-                                                        </a>
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                <p class="text-muted">No reviews posted yet</p>
-                            {% endif %}
+                        {% endif %}
+                        <div class="modal-footer aligned-footer border-0">
+                            <button type="button" class="cancel-button" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="create-button">Save</button>
                         </div>
-
-                        <div class="activity-section mt-4">
-                            <h5>Recent Activity</h5>
-                            <!-- Add recent activity, saved courses, etc. -->
-                        </div>
-                    {% elif user.role == "administrator" %}
-                        <h3>Administrator Profile</h3>
-                        <p>Check /admin</p>
-                    {% endif %}
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+
+    <!-- PROVIDER MODAL -->
+    {% if role == "training_provider" and provider %}
+        <div class="modal fade" id="editProviderModal" tabindex="-1" aria-labelledby="editProviderModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content glass-modal">
+                    <form method="post" enctype="multipart/form-data" onsubmit="return validateProviderForm()">
+                        {% csrf_token %}
+                        <input type="hidden" name="provider_form" value="1">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title modal-header-text" id="editProviderModalLabel">✏️ Edit Provider
+                                Details</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            {% for field in provider_verification_form %}
+                                <label class="modal-label" for="{{ field.id_for_label }}">
+                                    {{ field.label }}{% if field.field.required %}
+                                        <span style="color: red;">*</span>{% endif %}
+                                </label>
+                                {{ field }}
+                                <div class="invalid-feedback" id="{{ field.id_for_label }}-error"></div>
+                                {% if field.errors %}
+                                    <div class="text-danger">
+                                        {% for error in field.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                            <div class="modal-footer aligned-footer border-0">
+                                <button type="button" class="cancel-button" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="create-button">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
 </div>
+    {% endif %}
 
-<style>
-    .avatar-circle {
-        width: 80px;
-        height: 80px;
-        background-color: #a2ccb6;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2em;
-        color: white;
-        margin: 0 auto;
-    }
-    .badge {
-        padding: 8px 16px;
-        font-size: 0.9em;
-    }
-    .provider-status {
-        padding: 15px;
-        background-color: #f8f9fa;
-        border-radius: 8px;
-    }
-    .provider-details p {
-        margin-bottom: 0.5rem;
-    }
-    .is-invalid {
-        border-color: #dc3545 !important;
-        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
-    }
-    .invalid-feedback {
-        display: none;
-        color: #dc3545;
-        font-size: 0.875em;
-        margin-top: 0.25rem;
-    }
-</style>
-
-<script>
-    // Toggle user form
-    document.getElementById('edit-user-btn').addEventListener('click', function() {
-        document.getElementById('user-details').style.display = 'none';
-        document.getElementById('user-form-card').style.display = 'block';
-    });
-
-    document.getElementById('cancel-user-btn').addEventListener('click', function() {
-        document.getElementById('user-form-card').style.display = 'none';
-        document.getElementById('user-details').style.display = 'block';
-    });
-
-    // Toggle provider form
-    document.getElementById('edit-provider-btn').addEventListener('click', function() {
-        document.getElementById('provider-details').style.display = 'none';
-        document.getElementById('provider-form-card').style.display = 'block';
-    });
-
-    document.getElementById('cancel-provider-btn').addEventListener('click', function() {
-        document.getElementById('provider-form-card').style.display = 'none';
-        document.getElementById('provider-details').style.display = 'block';
-    });
-
-    // Toggle student form
-    function toggleStudentForm() {
-        const detailsElement = document.getElementById('student-details');
-        const formCard = document.getElementById('student-form-card');
-        const editButton = document.getElementById('edit-student-btn');
-        const editOnlyElements = document.querySelectorAll('.edit-only');
-        const bioDisplay = document.getElementById('bio-display');
-        
-        if (!detailsElement || !formCard) {
-            console.error('Student form elements not found');
-            return;
-        }
-
-        if (formCard.style.display === 'none') {
-            editButton.style.display = 'none';
-            formCard.style.display = 'block';
-            bioDisplay.style.display = 'none';
-            editOnlyElements.forEach(el => el.style.display = 'inline-block');
-        } else {
-            formCard.style.display = 'none';
-            editButton.style.display = 'block';
-            bioDisplay.style.display = 'block';
-            editOnlyElements.forEach(el => el.style.display = 'none');
-        }
-    }
-
-    document.getElementById('cancel-student-btn').addEventListener('click', function() {
-        toggleStudentForm();
-    });
-
-    // Validate provider form (includes certificate file checks)
-    function validateProviderForm() {
-        let isValid = true;
-        const form = document.getElementById('provider-form');
-        const certificateInput = form.querySelector('input[type="file"]');
-        
-        if (certificateInput && certificateInput.files.length > 0) {
-            const file = certificateInput.files[0];
-            const fileSize = file.size / 1024 / 1024; // size in MB
-            const fileType = file.type;
-            const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
-            
-            if (fileSize > 5) {
-                const errorDiv = document.getElementById(`${certificateInput.id}-error`);
-                certificateInput.classList.add('is-invalid');
-                errorDiv.textContent = 'File size must be less than 5MB';
-                errorDiv.style.display = 'block';
-                isValid = false;
-            }
-            
-            if (!allowedTypes.includes(fileType)) {
-                const errorDiv = document.getElementById(`${certificateInput.id}-error`);
-                certificateInput.classList.add('is-invalid');
-                errorDiv.textContent = 'File must be PDF, JPG, or PNG';
-                errorDiv.style.display = 'block';
-                isValid = false;
-            }
-        }
-        
-        const requiredFields = form.querySelectorAll('[required]');
-
-        requiredFields.forEach(field => {
-            const errorDiv = document.getElementById(`${field.id}-error`);
-            field.classList.remove('is-invalid');
-            
-            if (!field.value.trim()) {
-                field.classList.add('is-invalid');
-                errorDiv.textContent = 'This field is required';
-                errorDiv.style.display = 'block';
-                isValid = false;
-            } else if (field.type === 'tel') {
-                const phoneRegex = /^\d{10}$/;
-                if (!phoneRegex.test(field.value)) {
-                    field.classList.add('is-invalid');
-                    errorDiv.textContent = 'Please enter a valid 10-digit phone number';
-                    errorDiv.style.display = 'block';
-                    isValid = false;
-                }
-            } else if (field.type === 'url' && field.value) {
-                try {
-                    const url = new URL(field.value);
-                    if (!url.protocol.startsWith('http')) {
-                        throw new Error('Invalid protocol');
-                    }
-                    if (!field.value.includes('.')) {
-                        throw new Error('Invalid domain');
-                    }
-                } catch (e) {
-                    field.classList.add('is-invalid');
-                    errorDiv.textContent = 'Please enter a valid URL starting with http:// or https://';
-                    errorDiv.style.display = 'block';
-                    isValid = false;
-                }
-            }
-        });
-
-        if (!isValid) {
-            event.preventDefault();
-        }
-        return isValid;
-    }
-
-    document.querySelectorAll('#provider-form input, #provider-form textarea').forEach(field => {
-        field.addEventListener('input', function() {
-            this.classList.remove('is-invalid');
-            const errorDiv = document.getElementById(`${this.id}-error`);
-            if (errorDiv) {
-                errorDiv.style.display = 'none';
-            }
-        });
-    });
-
-    // Add tag
-    function addTag() {
-        const tagInput = document.getElementById('tag');
-        const tagName = tagInput.value.trim().toLowerCase();
-        if (tagName) {
-            // Check if tag already exists
-            const existingTags = Array.from(document.querySelectorAll('.badge')).map(
-                el => el.textContent.trim().toLowerCase()
-            );
-            if (existingTags.includes(tagName)) {
-                alert('This tag already exists');
-                tagInput.value = '';
-                return;
-            }
-
-            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-            fetch('/api/student/add-tag/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
-                },
-                body: JSON.stringify({ tag: tagName }),
-                credentials: 'same-origin'
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    const tagsContainer = document.getElementById('tags-container');
-                    const noTagsMessage = document.getElementById('no-tags-message');
-                    if (noTagsMessage) {
-                        noTagsMessage.remove();
-                    }
-
-                    const tagSpan = document.createElement('span');
-                    tagSpan.className = 'badge bg-secondary me-2 mb-2';
-                    tagSpan.innerHTML = `
-                        ${tagName}
-                        <button type="button" class="btn-close btn-close-white ms-2 edit-only" 
-                                onclick="removeTag('${tagName}')"
-                                style="font-size: 0.5rem; display: inline-block;"></button>
-                    `;
-                    tagsContainer.appendChild(tagSpan);
-                } else {
-                    console.error('Failed to add tag:', data.error);
-                    alert(data.error || 'Failed to add tag. Please try again.');
-                }
-            })
-            .catch(error => {
-                console.error('Error adding tag:', error);
-                alert('Error adding tag. Please try again.');
-            });
-        }
-        tagInput.value = '';
-    }
-
-    // Remove tag
-    function removeTag(tagName) {
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        fetch('/api/student/remove-tag/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            body: JSON.stringify({ tag: tagName }),
-            credentials: 'same-origin'
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                // Find and remove the tag element
-                const tagElement = Array.from(document.querySelectorAll('.badge')).find(
-                    el => el.textContent.trim().toLowerCase().includes(tagName)
-                );
-                if (tagElement) {
-                    tagElement.remove();
-                }
-                
-                // If no tags left, show the "No tags" message
-                const tagsContainer = document.getElementById('tags-container');
-                if (tagsContainer.children.length === 0) {
-                    const noTagsMessage = document.createElement('p');
-                    noTagsMessage.className = 'text-muted';
-                    noTagsMessage.id = 'no-tags-message';
-                    noTagsMessage.textContent = 'No tags added yet.';
-                    tagsContainer.appendChild(noTagsMessage);
-                }
-            } else {
-                console.error('Failed to remove tag:', data.error);
-                alert('Failed to remove tag. Please try again.');
-            }
-        })
-        .catch(error => {
-            console.error('Error removing tag:', error);
-            alert('Error removing tag. Please try again.');
-        });
-    }
-
-    // Ensure tag input works with Enter
-    document.getElementById('tag').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            addTag();
-        }
-    });
-</script>
 {% endblock %}

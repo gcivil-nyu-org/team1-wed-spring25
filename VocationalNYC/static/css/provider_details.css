@@ -558,3 +558,16 @@ box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08), inset 0 0 4px #fff;
         position: relative;
         z-index: 2;
     }
+
+        .provider-details-section {
+        margin-top: 5rem;
+    }
+
+    .provider-details-section h2 {
+        font-size: 2.25rem;
+        font-weight: 900;
+        color: #0f172a;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 2;
+    }
