@@ -92,24 +92,43 @@ class ReviewVoteView(View):
     def post(self, request, pk):
         review = get_object_or_404(Review, pk=pk)
         action = request.POST.get("action")
+        user = request.user
 
-        existing_vote = ReviewVote.objects.filter(
-            review=review, user=request.user
-        ).first()
-        if existing_vote:
-            return JsonResponse(
-                {"error": "You’ve already voted on this review."}, status=400
-            )
-
-        if action == "upvote":
-            review.helpful_count += 1
-        elif action == "downvote":
-            review.not_helpful_count += 1
-        else:
+        if action not in ["upvote", "downvote"]:
             return JsonResponse({"error": "Invalid vote action"}, status=400)
 
+        existing_vote = ReviewVote.objects.filter(review=review, user=user).first()
+
+        if not existing_vote:
+            # No vote exists yet — create one
+            if action == "upvote":
+                review.helpful_count += 1
+            else:
+                review.not_helpful_count += 1
+            ReviewVote.objects.create(review=review, user=user, action=action)
+
+        else:
+            if existing_vote.action == action:
+                # Same vote clicked again — undo it
+                if action == "upvote":
+                    review.helpful_count -= 1
+                else:
+                    review.not_helpful_count -= 1
+                existing_vote.delete()
+
+            else:
+                # Switching vote
+                if action == "upvote":
+                    review.helpful_count += 1
+                    review.not_helpful_count -= 1
+                else:
+                    review.helpful_count -= 1
+                    review.not_helpful_count += 1
+
+                existing_vote.action = action
+                existing_vote.save()
+
         review.save()
-        ReviewVote.objects.create(review=review, user=request.user, action=action)
 
         return JsonResponse(
             {

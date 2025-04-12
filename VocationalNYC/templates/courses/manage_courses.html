@@ -1,188 +1,185 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Manage Courses{% endblock %}
 {% block content %}
-<div class="container mt-4">
-    <div class="row mb-4">
-        <div class="col">
-            <h1>Manage Courses</h1>
-            <p class="lead">Post, Edit and Delete Courses</p>
-        </div>
-        <div class="col-auto">
-            <a href="{% url 'new_course' %}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Post new course
-            </a>
-        </div>
+
+<link rel="stylesheet" href="{% static 'css/manage_courses.css' %}">
+
+<div class="manage-courses-container">
+  <h1 class="manage-courses-header">🎓 Manage Courses</h1>
+
+  <button type="button" class="cta-button" data-bs-toggle="modal" data-bs-target="#createCourseModal">
+    ➕ Post New Course
+  </button>
+
+  {% if messages %}
+    <div class="alert alert-info">
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
     </div>
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {% endfor %}
-{% endif %}
+  {% endif %}
 
-<div class="row">
-    <div class="col">
-        <style>
-        .table thead th {
-            background-color: transparent;
-        }
-        .table tbody tr{
-            background-color:transparent;
-        }
-        .table tbody td{
-            background-color:transparent;
-        }
-        </style>
-        {% if courses %}
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>Course Name</th>
-                            <th>Rating</th>
-                            <th>Cost</th>
-                            <th>Location</th>
-                            <th>Total hours</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for course in courses %}
-                            <tr>
-                                <td>
-                                    <a href="{% url 'course_detail' course.course_id %}">
-                                        {{ course.name }}
-                                    </a>
-                                </td>
-                                <td>{{ course.rating }}</td>
-                                <td>¥{{ course.cost }}</td>
-                                <td>{{ course.location }}</td>
-                                <td>{{ course.total_hours }} hours</td>
-                                <td>
-                                    <button type="button" class="btn btn-sm btn-outline-primary edit-course-btn" 
-                                        data-bs-toggle="modal" data-bs-target="#editCourseModal" 
-                                        data-course-id="{{ course.course_id }}"
-                                        data-course-name="{{ course.name }}"
-                                        data-course-keywords="{{ course.keywords }}"
-                                        data-course-desc="{{ course.course_desc }}"
-                                        data-course-cost="{{ course.cost }}"
-                                        data-course-location="{{ course.location }}"
-                                        data-course-classroom="{{ course.classroom_hours }}"
-                                        data-course-lab="{{ course.lab_hours }}"
-                                        data-course-internship="{{ course.internship_hours }}"
-                                        data-course-practical="{{ course.practical_hours }}">
-                                        <i class="fas fa-edit"></i> ✏️ Edit
-                                    </button>
+  <div class="manage-courses-meta">
+    {% if courses %}
+      <ul>
+        {% for course in courses %}
+          <li class="manage-courses-entry">
+            <div class="manage-courses-content">
+              <a class="manage-courses-left" href="{% url 'course_detail' course.course_id %}">
+                {{ course.name }}
+                  {% if course.rating != 0 %}
+                  ({{ course.rating }}/5)
+                      {% endif %}
 
-                                    <div class="modal fade" id="editCourseModal" tabindex="-1" aria-labelledby="editCourseModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                            <form id="editCourseForm" method="post" action="">
-                                                {% csrf_token %}
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="editCourseModalLabel">Edit Course</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <input type="hidden" id="course_id" name="course_id">
-                                                    
-                                                    <div class="mb-3">
-                                                        <label for="course_name" class="form-label">Course Name</label>
-                                                        <input type="text" class="form-control" id="course_name" name="name">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="course_keywords" class="form-label">Keywords</label>
-                                                        <input type="text" class="form-control" id="course_keywords" name="keywords">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="course_desc" class="form-label">Description</label>
-                                                        <textarea class="form-control" id="course_desc" name="course_desc"></textarea>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="course_cost" class="form-label">Cost</label>
-                                                        <input type="text" class="form-control" id="course_cost" name="cost">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="course_location" class="form-label">Location</label>
-                                                        <input type="text" class="form-control" id="course_location" name="location">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="course_classroom_hours" class="form-label">Classroom Hours</label>
-                                                        <input type="text" class="form-control" id="course_classroom_hours" name="classroom_hours">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="course_lab_hours" class="form-label">Lab Hours</label>
-                                                        <input type="text" class="form-control" id="course_lab_hours" name="lab_hours">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="course_internship_hours" class="form-label">Internship Hours</label>
-                                                        <input type="text" class="form-control" id="course_internship_hours" name="internship_hours">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="course_practical_hours" class="form-label">Practical Hours</label>
-                                                        <input type="text" class="form-control" id="course_practical_hours" name="practical_hours">
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                    <button type="submit" class="btn btn-primary">Save changes</button>
-                                                </div>
-                                            </form>
-                                            </div>
-                                        </div>
-                                    </div>
+              </a>
+              <div class="button-group">
+                <button type="button" class="rename-button" data-bs-toggle="modal" data-bs-target="#editCourseModal"
+                  data-course-id="{{ course.course_id }}"
+                  data-course-name="{{ course.name }}"
+                  data-course-keywords="{{ course.keywords }}"
+                  data-course-desc="{{ course.course_desc }}"
+                  data-course-cost="{{ course.cost }}"
+                  data-course-location="{{ course.location }}"
+                  data-course-classroom="{{ course.classroom_hours }}"
+                  data-course-lab="{{ course.lab_hours }}"
+                  data-course-internship="{{ course.internship_hours }}"
+                  data-course-practical="{{ course.practical_hours }}">
+                  ✏️ Edit
+                </button>
 
-                                    <script>
-                                        var editCourseModal = document.getElementById('editCourseModal');
-                                        editCourseModal.addEventListener('show.bs.modal', function (event) {
-                                            var button = event.relatedTarget; 
-
-                                            var course_id = button.getAttribute('data-course-id');
-                                            var course_name = button.getAttribute('data-course-name');
-                                            var course_keywords = button.getAttribute('data-course-keywords');
-                                            var course_desc = button.getAttribute('data-course-desc');
-                                            var course_cost = button.getAttribute('data-course-cost');
-                                            var course_location = button.getAttribute('data-course-location');
-                                            var course_classroom = button.getAttribute('data-course-classroom');
-                                            var course_lab = button.getAttribute('data-course-lab');
-                                            var course_internship = button.getAttribute('data-course-internship');
-                                            var course_practical = button.getAttribute('data-course-practical');
-
-                                            var modal = this;
-                                            modal.querySelector('#course_id').value = course_id;
-                                            modal.querySelector('#course_name').value = course_name;
-                                            modal.querySelector('#course_keywords').value = course_keywords;
-                                            modal.querySelector('#course_desc').value = course_desc;
-                                            modal.querySelector('#course_cost').value = course_cost;
-                                            modal.querySelector('#course_location').value = course_location;
-                                            modal.querySelector('#course_classroom_hours').value = course_classroom;
-                                            modal.querySelector('#course_lab_hours').value = course_lab;
-                                            modal.querySelector('#course_internship_hours').value = course_internship;  
-                                            modal.querySelector('#course_practical_hours').value = course_practical;
-
-                                            var form = modal.querySelector('#editCourseForm');
-                                            form.action = "{% url 'edit_course' course.course_id %}";
-                                        });
-                                    </script>
-
-                                    <form method="post" action="{% url 'delete_course' course.course_id %}" style="display: inline;">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-sm btn-outline-danger ms-2" onclick="return confirm('Delete this course?');">
-                                        🗑️ Delete
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <form method="post" action="{% url 'delete_course' course.course_id %}" onsubmit="return confirm('Delete this course?');">
+                  {% csrf_token %}
+                  <button type="submit" class="delete-button">🗑️ Delete</button>
+                </form>
+              </div>
             </div>
-        {% else %}
-            <div class="alert alert-info">
-                You don't have any courses yet. Click the button above to post a new course.
-            </div>
-        {% endif %}
-    </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-gray-500 italic">You don’t have any courses yet.</p>
+    {% endif %}
+  </div>
 </div>
+
+<!-- Create Course Modal (same style as manage-courses modal) -->
+<div class="modal fade" id="createCourseModal" tabindex="-1" aria-labelledby="createCourseModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content glass-modal">
+      <form method="post" action="{% url 'new_course' %}">
+        {% csrf_token %}
+        <div class="modal-header border-0">
+          <h5 class="modal-title modal-header-text" id="createCourseModalLabel">➕ Post New Course</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <label class="modal-label">Name</label>
+          <input type="text" class="modal-input" name="name" required>
+
+          <label class="modal-label">Keywords</label>
+          <textarea class="modal-input" name="keywords"></textarea>
+
+          <label class="modal-label">Description</label>
+          <textarea class="modal-input" name="course_desc" required></textarea>
+
+          <label class="modal-label">Cost</label>
+          <input type="number" class="modal-input" name="cost" min="0" required>
+
+          <label class="modal-label">Location</label>
+          <input type="text" class="modal-input" name="location">
+
+          <label class="modal-label">Classroom Hours</label>
+          <input type="number" class="modal-input" name="classroom_hours" min="0">
+
+          <label class="modal-label">Lab Hours</label>
+          <input type="number" class="modal-input" name="lab_hours" min="0">
+
+          <label class="modal-label">Internship Hours</label>
+          <input type="number" class="modal-input" name="internship_hours" min="0">
+
+          <label class="modal-label">Practical Hours</label>
+          <input type="number" class="modal-input" name="practical_hours" min="0">
+
+          <div class="modal-footer aligned-footer border-0">
+            <button type="button" class="cancel-button" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="create-button">Create</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal (structure same as above, values populated via JS) -->
+<div class="modal fade" id="editCourseModal" tabindex="-1" aria-labelledby="editCourseModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content glass-modal">
+      <form id="editCourseForm" method="post" action="">
+        {% csrf_token %}
+        <div class="modal-header border-0">
+          <h5 class="modal-title modal-header-text" id="editCourseModalLabel">✏️ Edit Course</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="course_id" name="course_id">
+
+          <label class="modal-label">Name</label>
+          <input type="text" class="modal-input" id="course_name" name="name" required>
+
+          <label class="modal-label">Keywords</label>
+          <textarea class="modal-input" id="course_keywords" name="keywords"></textarea>
+
+          <label class="modal-label">Description</label>
+          <textarea class="modal-input" id="course_desc" name="course_desc" required></textarea>
+
+          <label class="modal-label">Cost</label>
+          <input type="number" class="modal-input" id="course_cost" name="cost" min="0" required>
+
+          <label class="modal-label">Location</label>
+          <input type="text" class="modal-input" id="course_location" name="location">
+
+          <label class="modal-label">Classroom Hours</label>
+          <input type="number" class="modal-input" id="course_classroom_hours" name="classroom_hours" min="0">
+
+          <label class="modal-label">Lab Hours</label>
+          <input type="number" class="modal-input" id="course_lab_hours" name="lab_hours" min="0">
+
+          <label class="modal-label">Internship Hours</label>
+          <input type="number" class="modal-input" id="course_internship_hours" name="internship_hours" min="0">
+
+          <label class="modal-label">Practical Hours</label>
+          <input type="number" class="modal-input" id="course_practical_hours" name="practical_hours" min="0">
+
+          <div class="modal-footer aligned-footer border-0">
+            <button type="button" class="cancel-button" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="create-button">Save</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  const editCourseModal = document.getElementById('editCourseModal');
+  editCourseModal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget;
+
+    // Populate each field based on its full ID
+    editCourseModal.querySelector('#course_id').value = button.getAttribute('data-course-id') || '';
+    editCourseModal.querySelector('#course_name').value = button.getAttribute('data-course-name') || '';
+    editCourseModal.querySelector('#course_keywords').value = button.getAttribute('data-course-keywords') || '';
+    editCourseModal.querySelector('#course_desc').value = button.getAttribute('data-course-desc') || '';
+    editCourseModal.querySelector('#course_cost').value = button.getAttribute('data-course-cost') || '';
+    editCourseModal.querySelector('#course_location').value = button.getAttribute('data-course-location') || '';
+    editCourseModal.querySelector('#course_classroom_hours').value = button.getAttribute('data-course-classroom') || '';
+    editCourseModal.querySelector('#course_lab_hours').value = button.getAttribute('data-course-lab') || '';
+    editCourseModal.querySelector('#course_internship_hours').value = button.getAttribute('data-course-internship') || '';
+    editCourseModal.querySelector('#course_practical_hours').value = button.getAttribute('data-course-practical') || '';
+
+    const form = editCourseModal.querySelector('#editCourseForm');
+form.action = "{% url 'edit_course' 0 %}".replace("0", button.getAttribute("data-course-id"));  });
+</script>
+
 {% endblock %}

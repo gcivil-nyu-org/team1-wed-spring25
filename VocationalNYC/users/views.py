@@ -55,7 +55,7 @@ class CustomSignupView(SignupView):
             with transaction.atomic():
                 BookmarkList.objects.create(user=user, name="default")
                 messages.success(
-                    self.request, "Default bookmark list created successfully."
+                    # self.request, "Default bookmark list created successfully."
                 )
         except Exception as e:
             messages.error(

@@ -24,7 +24,13 @@
     <div style=width:inherit>
 
         <!--top horizontal header-->
-        {% include 'includes/header.html' %}
+        {% if user.role == "career_changer" %}
+            {% include 'includes/student_header.html' %}
+        {% elif user.role == "training_provider" %}
+            {% include 'includes/provider_header.html' %}
+        {% else %}
+            {% include 'includes/default_header.html' %}
+        {% endif %}
 
         <!--main content-->
         <article compass="[object Object]">
