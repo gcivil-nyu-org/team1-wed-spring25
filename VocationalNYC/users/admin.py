@@ -59,10 +59,10 @@ class ProviderAdmin(admin.ModelAdmin):
         """
         if obj.certificate:
             return format_html(
-                "<a href='{}' target='_blank'>View</a>",
-                obj.certificate.url
+                "<a href='{}' target='_blank'>View</a>", obj.certificate.url
             )
         return "-"
+
     certificate_link.short_description = "Certificate"
 
 

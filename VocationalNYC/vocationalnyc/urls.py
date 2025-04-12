@@ -17,16 +17,19 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic.base import RedirectView
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import redirect
 
+
 def root_redirect(request):
-    if request.user.is_authenticated and (request.user.is_superuser or request.user.is_staff):
-        return redirect('admin:index')
-    return redirect('course_list')
+    if request.user.is_authenticated and (
+        request.user.is_superuser or request.user.is_staff
+    ):
+        return redirect("admin:index")
+    return redirect("course_list")
+
 
 # from allauth.account.decorators import secure_admin_login
 

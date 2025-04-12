@@ -88,11 +88,13 @@ class ProviderVerificationForm(forms.ModelForm):
         if self.instance.pk and self.instance.name.lower() == name.lower():
             return name
 
-        confirm_existing = (self.data.get("confirm_existing") == "true")
+        confirm_existing = self.data.get("confirm_existing") == "true"
 
         # 3. Try to find *another* Provider with the same name.
         try:
-            existing_provider = Provider.objects.exclude(pk=self.instance.pk).get(name__iexact=name)
+            existing_provider = Provider.objects.exclude(pk=self.instance.pk).get(
+                name__iexact=name
+            )
         except Provider.DoesNotExist:
             # No conflict => name is valid
             return name
@@ -112,7 +114,6 @@ class ProviderVerificationForm(forms.ModelForm):
             raise forms.ValidationError(
                 "The name of the organization already exists. Please modify the name."
             )
-
 
     def clean_certificate(self):
         certificate = self.cleaned_data.get("certificate")
