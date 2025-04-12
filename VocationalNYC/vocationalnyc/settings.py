@@ -200,6 +200,8 @@ ACCOUNT_FORMS = {
     "signup": "users.forms.CustomSignupForm",
 }
 
+ACCOUNT_LOGOUT_ON_GET = True
+
 # Multi-Factor Authentication (MFA)
 MFA_SUPPORTED_TYPES = ["webauthn", "totp", "recovery_codes"]
 MFA_PASSKEY_LOGIN_ENABLED = True

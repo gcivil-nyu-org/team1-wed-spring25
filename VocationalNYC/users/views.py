@@ -1,6 +1,7 @@
 import requests
 import sys
 import logging
+import os
 
 from django.shortcuts import render, redirect
 from django.views import generic
@@ -84,21 +85,66 @@ class CustomSignupView(SignupView):
 
 @login_required
 def profile_view(request):
+    logger.debug("Profile view accessed")
     form = None  # Ensure 'form' is defined
     if request.method == "POST":
         if "provider_form" in request.POST and request.user.role == "training_provider":
-            provider_form = ProviderVerificationForm(
-                request.POST,
-                request.FILES,
-                instance=getattr(request.user, "provider_profile", None),
+            logger.debug("Processing provider form submission")
+            provider = getattr(request.user, "provider_profile", None)
+            logger.debug(
+                f"Current provider certificate: {provider.certificate if provider else 'None'}"
             )
-            # Keep form for user info as fallback
+            logger.debug(f"Files in request: {request.FILES}")
+
+            provider_form = ProviderVerificationForm(
+                request.POST, request.FILES, instance=provider
+            )
             form = ProfileUpdateForm(instance=request.user)
+
             if provider_form.is_valid():
+                logger.debug("Provider form is valid")
                 provider = provider_form.save(commit=False)
+
+                if "certificate" in request.FILES:
+                    logger.debug("New certificate file detected")
+                    if provider.certificate:
+                        # Store old certificate path
+                        old_certificate_path = (
+                            provider.certificate.path if provider.certificate else None
+                        )
+                        # Clear the certificate field without saving
+                        provider.certificate = None
+
+                        # Delete the old file if it exists
+                        if old_certificate_path and os.path.isfile(
+                            old_certificate_path
+                        ):
+                            try:
+                                os.remove(old_certificate_path)
+                                logger.debug(
+                                    f"Old certificate deleted: {old_certificate_path}"
+                                )
+                            except Exception as e:
+                                logger.error(
+                                    f"Error deleting old certificate file: {e}"
+                                )
+
+                    # Assign new certificate
+                    provider.certificate = request.FILES["certificate"]
+                    logger.debug(
+                        f"New certificate assigned: {provider.certificate.name}"
+                    )
+
                 provider.user = request.user
                 provider.save()
+                logger.debug("Provider profile saved successfully")
+                messages.success(request, "Profile updated successfully!")
                 return redirect("profile")
+            else:
+                logger.error(f"Provider form errors: {provider_form.errors}")
+                messages.error(
+                    request, f"Error updating profile. {provider_form.errors}"
+                )
 
         elif "student_form" in request.POST and request.user.role == "career_changer":
             student_form = StudentProfileForm(
