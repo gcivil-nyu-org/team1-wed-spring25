@@ -22,6 +22,9 @@ class CustomSignupForm(SignupForm):
 
 
 class ProviderVerificationForm(forms.ModelForm):
+
+    confirm_existing = forms.BooleanField(required=False, widget=forms.HiddenInput())
+
     class Meta:
         model = Provider
         fields = [
@@ -90,6 +93,24 @@ class ProviderVerificationForm(forms.ModelForm):
         self.fields["website"].required = False
         self.fields["certificate"].required = True
 
+    def clean_name(self):
+        name = self.cleaned_data.get("name")
+        confirm_existing = self.cleaned_data.get("confirm_existing")
+
+        if Provider.objects.filter(name=name).exists() and not confirm_existing:
+            raise forms.ValidationError("A provider with this name already exists.")
+        return name
+
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get("name")
+        confirm_existing = cleaned_data.get("confirm_existing")
+
+        # if provider already exists and confirm_existing is not explicitly True, form is invalid
+        if name and Provider.objects.filter(name=name).exists():
+            if not confirm_existing:
+                self.add_error("name", "A provider with this name already exists. Please confirm you're affiliated.")
+
 
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
@@ -106,9 +127,12 @@ class ProfileUpdateForm(forms.ModelForm):
 
 
 class StudentProfileForm(forms.ModelForm):
+    bio = forms.CharField(
+        widget=forms.Textarea(attrs={"class": "form-control", "rows": 4}),
+        max_length=1000,
+        required=False,
+    )
+
     class Meta:
         model = Student
         fields = ["bio"]
-        widgets = {
-            "bio": forms.Textarea(attrs={"class": "form-control", "rows": 4}),
-        }
