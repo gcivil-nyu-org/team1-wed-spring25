@@ -7,7 +7,6 @@ from asgiref.sync import async_to_sync
 from .models import Chat, Message
 
 import socket
-import unittest
 
 # Create your tests here.
 

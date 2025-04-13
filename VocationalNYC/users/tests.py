@@ -290,11 +290,6 @@ class ProviderVerificationViewTests(TestCase):
         Provider.objects.create(
             name="Existing Provider", phone_num="1234567890", address="Test Address"
         )
-        file_data = {
-            "certificate": SimpleUploadedFile(
-                "test.pdf", b"file_content", content_type="application/pdf"
-            ),
-        }
         data = {
             "name": "Existing Provider",
             "phone_num": "1234567890",
@@ -490,14 +485,7 @@ class ProviderVerificationFormTests(TestCase):
 
     def test_provider_verification_form_validation(self):
         # Test valid data
-        form_data = {
-            "name": "New Provider",
-            "phone_num": "1234567890",
-            "address": "Test Address",
-            "website": "https://test.com",
-            "contact_firstname": "Alice",
-            "contact_lastname": "Smith",
-        }
+
         file_data = {
             "certificate": SimpleUploadedFile(
                 "test.pdf", b"file_content", content_type="application/pdf"
