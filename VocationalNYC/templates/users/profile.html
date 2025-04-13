@@ -168,8 +168,11 @@
                 {% if bookmark_lists %}
                     {% for list in bookmark_lists %}
                         <div class="bookmark-list-block">
-                            <h3>{{ list.name }}</h3>
-                            <ul class="bookmark-list-items">
+<a href="{% url 'bookmark_list_detail' list.list_id %}"
+      style="text-decoration: none; cursor: pointer;">
+
+  <h3>{{ list.name }}</h3>
+</a>                            <ul class="bookmark-list-items">
                                 {% for bookmark in list.bookmark.all %}
                                     <li>
                                         <a href="{% url 'course_detail' bookmark.course.course_id %}">
