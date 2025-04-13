@@ -109,7 +109,10 @@ class ProviderVerificationForm(forms.ModelForm):
         # if provider already exists and confirm_existing is not explicitly True, form is invalid
         if name and Provider.objects.filter(name=name).exists():
             if not confirm_existing:
-                self.add_error("name", "A provider with this name already exists. Please confirm you're affiliated.")
+                self.add_error(
+                    "name",
+                    "A provider with this name already exists. Please confirm you're affiliated.",
+                )
 
 
 class ProfileUpdateForm(forms.ModelForm):

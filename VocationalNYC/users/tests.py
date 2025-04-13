@@ -125,7 +125,9 @@ class FormTests(TestCase):
             "contact_lastname": "Doe",
         }
         file_data = {
-            "certificate": SimpleUploadedFile("test.pdf", b"file_content", content_type="application/pdf"),
+            "certificate": SimpleUploadedFile(
+                "test.pdf", b"file_content", content_type="application/pdf"
+            ),
         }
         form = ProviderVerificationForm(data=form_data, files=file_data)
         print("FORM ERRORS:", form.errors)
@@ -289,7 +291,9 @@ class ProviderVerificationViewTests(TestCase):
             name="Existing Provider", phone_num="1234567890", address="Test Address"
         )
         file_data = {
-            "certificate": SimpleUploadedFile("test.pdf", b"file_content", content_type="application/pdf"),
+            "certificate": SimpleUploadedFile(
+                "test.pdf", b"file_content", content_type="application/pdf"
+            ),
         }
         data = {
             "name": "Existing Provider",
@@ -340,6 +344,7 @@ class ProviderVerificationViewTests(TestCase):
     #     # Ensure form is in context if the view handles large files properly
     #     self.assertIn("form", response.context)
     #     self.assertIn("certificate", response.context["form"].errors)
+
 
 # ------------------------------------------------------------------------------
 #  8) ProfileViewTests (FIRST)  <-- Keep the one from line ~304
@@ -494,7 +499,9 @@ class ProviderVerificationFormTests(TestCase):
             "contact_lastname": "Smith",
         }
         file_data = {
-            "certificate": SimpleUploadedFile("test.pdf", b"file_content", content_type="application/pdf"),
+            "certificate": SimpleUploadedFile(
+                "test.pdf", b"file_content", content_type="application/pdf"
+            ),
         }
 
         # Test valid form
@@ -523,6 +530,7 @@ class ProviderVerificationFormTests(TestCase):
         self.assertFalse(conflict_form.is_valid())
         self.assertIn("name", conflict_form.errors)
         self.assertIn("already exists", conflict_form.errors["name"][0].lower())
+
 
 # ------------------------------------------------------------------------------
 # 12) StudentProfileForm Tests
@@ -632,7 +640,9 @@ class ProfileViewTestsExtra(TestCase):
                 "address": "New Address",
                 "contact_firstname": "Alice",
                 "contact_lastname": "Smith",
-                "certificate": SimpleUploadedFile("test.pdf", b"dummy", content_type="application/pdf"),
+                "certificate": SimpleUploadedFile(
+                    "test.pdf", b"dummy", content_type="application/pdf"
+                ),
             },
         )
         self.assertEqual(response.status_code, 302)
@@ -955,7 +965,9 @@ class ViewsIntegrationTests(TestCase):
                 "website": "https://test.com",
                 "contact_firstname": "Alice",
                 "contact_lastname": "Smith",
-                "certificate": SimpleUploadedFile("test.pdf", b"dummy", content_type="application/pdf"),
+                "certificate": SimpleUploadedFile(
+                    "test.pdf", b"dummy", content_type="application/pdf"
+                ),
             },
         )
         self.assertEqual(response.status_code, 302)
@@ -1119,4 +1131,3 @@ class ViewsIntegrationTests(TestCase):
         """Test provider detail view with non-existent provider"""
         response = self.client.get(reverse("provider_detail", kwargs={"pk": 99999}))
         self.assertEqual(response.status_code, 404)
-
