@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
+{% load widget_tweaks %}
+
 {% load tz %}  {# Load timezone utilities #}
 
 {% block title %}Profile | VocationalNYC{% endblock %}
@@ -116,7 +118,7 @@
 
                     {% if provider.website %}
                         <p>
-                            🌐 <strong>Website:</strong>
+                            🌐 <strong>Business Website:</strong>
                             <a href="{{ provider.website }}" target="_blank">
                                 {{ provider.website }}
                             </a>
@@ -243,32 +245,50 @@
             <div class="modal-content glass-modal">
                 <form method="post">
                     {% csrf_token %}
+                <input type="hidden" name="user_profile_form" value="1">
                     <div class="modal-header border-0">
                         <h5 class="modal-title modal-header-text" id="editUserModalLabel">✏️ Edit Profile</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        {{ form.as_p }}
-                        {% if form.errors %}
-                            <div class="alert alert-danger">
-                                <ul>
-                                    {% for field in form %}
-                                        {% for error in field.errors %}
-                                            <li>{{ error }}</li>
-                                        {% endfor %}
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        {% endif %}
+
+    <!-- First Name -->
+    <label for="{{ form.first_name.id_for_label }}" class="modal-label">First Name</label>
+    {{ form.first_name|add_class:"modal-input" }}
+
+    {% if form.first_name.errors %}
+      <div>
+        {% for error in form.first_name.errors %}
+          {{ error }}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- Last Name -->
+    <label for="{{ form.last_name.id_for_label }}" class="modal-label">Last Name</label>
+    {{ form.last_name|add_class:"modal-input" }}
+
+    {% if form.last_name.errors %}
+      <div>
+        {% for error in form.last_name.errors %}
+          {{ error }}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+
                         <div class="modal-footer aligned-footer border-0">
                             <button type="button" class="cancel-button" data-bs-dismiss="modal">Cancel</button>
                             <button type="submit" class="create-button">Save</button>
                         </div>
                     </div>
+
+
                 </form>
             </div>
         </div>
     </div>
+
 
     <!-- PROVIDER MODAL -->
     {% if role == "training_provider" and provider %}
@@ -284,22 +304,117 @@
                                 Details</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
-                        <div class="modal-body">
-                            {% for field in provider_verification_form %}
-                                <label class="modal-label" for="{{ field.id_for_label }}">
-                                    {{ field.label }}{% if field.field.required %}
-                                        <span style="color: red;">*</span>{% endif %}
-                                </label>
-                                {{ field }}
-                                <div class="invalid-feedback" id="{{ field.id_for_label }}-error"></div>
-                                {% if field.errors %}
-                                    <div class="text-danger">
-                                        {% for error in field.errors %}
-                                            {{ error }}
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
+                        <div class="modal-body"> 
+                            
+                            <!-- Business Name -->
+                            <label for="{{ provider_verification_form.name.id_for_label }}" class="modal-label">Business Name</label>
+                            {{ provider_verification_form.name }}
+                            {% if provider_verification_form.name.errors %}
+                                <div>
+                                    {% for error in provider_verification_form.name.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                          <!-- Business Address -->
+  <label for="{{ provider_verification_form.address.id_for_label }}" class="modal-label">Business Address</label>
+  {{ provider_verification_form.address }}
+  {% if provider_verification_form.address.errors %}
+    <div>
+      {% for error in provider_verification_form.address.errors %}
+        {{ error }}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+                          <!-- Website -->
+  <label for="{{ provider_verification_form.website.id_for_label }}" class="modal-label">Business Website (Optional)</label>
+  {{ provider_verification_form.website }}
+  {% if provider_verification_form.website.errors %}
+    <div>
+      {% for error in provider_verification_form.website.errors %}
+        {{ error }}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+
+ <!-- Description -->
+  <label for="{{ provider_verification_form.provider_desc.id_for_label }}" class="modal-label">Business Description (Optional)</label>
+  {{ provider_verification_form.provider_desc }}
+  {% if provider_verification_form.provider_desc.errors %}
+    <div>
+      {% for error in provider_verification_form.provider_desc.errors %}
+        {{ error }}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+
+
+  <label class="modal-label">Contact Person</label>
+                          <!-- Contact First Name -->
+
+  {{ provider_verification_form.contact_firstname }}
+  {% if provider_verification_form.contact_firstname.errors %}
+    <div>
+      {% for error in provider_verification_form.contact_firstname.errors %}
+        {{ error }}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Contact Last Name -->
+  {{ provider_verification_form.contact_lastname }}
+  {% if provider_verification_form.contact_lastname.errors %}
+    <div>
+      {% for error in provider_verification_form.contact_lastname.errors %}
+        {{ error }}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Phone Number -->
+  <label for="{{ provider_verification_form.phone_num.id_for_label }}" class="modal-label">Contact Number</label>
+  {{ provider_verification_form.phone_num }}
+  {% if provider_verification_form.phone_num.errors %}
+    <div>
+      {% for error in provider_verification_form.phone_num.errors %}
+        {{ error }}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+
+
+  <!-- Business Hours -->
+  <label for="{{ provider_verification_form.open_time.id_for_label }}" class="modal-label">Business Hours</label>
+  {{ provider_verification_form.open_time }}
+  {% if provider_verification_form.open_time.errors %}
+    <div>
+      {% for error in provider_verification_form.open_time.errors %}
+        {{ error }}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+
+
+
+  <!-- Business Certificate -->
+<label for="{{ provider_verification_form.certificate.id_for_label }}" class="modal-label">Business Certificate</label>
+{{ provider_verification_form.certificate }}
+
+{% if provider_verification_form.certificate.errors %}
+  <div>
+    {% for error in provider_verification_form.certificate.errors %}
+      {{ error }}
+    {% endfor %}
+  </div>
+{% endif %}
+
+
                             <div class="modal-footer aligned-footer border-0">
                                 <button type="button" class="cancel-button" data-bs-dismiss="modal">Cancel</button>
                                 <button type="submit" class="create-button">Save</button>

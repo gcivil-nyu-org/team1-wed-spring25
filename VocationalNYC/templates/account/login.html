@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -148,7 +150,8 @@
             <button type="submit" class="btn btn-custom">Login</button>
 
             <div class="mt-4 text-center">
-                <a href="{% url 'account_reset_password' %}">Forgot Password?</a>
+<a href="#" class="openResetPasswordModal" data-url="{% url 'account_reset_password' %}">Forgot Password?</a>
+                <script src="{% static 'js/reset_password_modal.js' %}"></script>
             </div>
 
             <div class="mt-3 text-center">
