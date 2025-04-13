@@ -360,7 +360,7 @@ body::-webkit-scrollbar {
                                     
                                     <fieldset
                                         class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
-                                        name="schoolName">
+                                        name="keywords">
                                         <legend class=" Filter-Section-Title-Outer">
                                             <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
                                                 Keywords
@@ -439,7 +439,7 @@ body::-webkit-scrollbar {
                                                             class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
                                                             placeholder="Min Rating"
                                                             name="min_rating"
-                                                            type="number" step="0.1"  min="0" max="5"
+                                                            type="number" step="0.1" min="0" max="5"
                                                             value="{{ min_rating }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 role=listbox></div>
@@ -514,7 +514,7 @@ body::-webkit-scrollbar {
                                     
                                     <fieldset
                                         class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
-                                        name='location'>
+                                        name="location">
                                         <legend class=" Filter-Section-Title-Outer">
                                             <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
                                                 Location
@@ -536,25 +536,11 @@ body::-webkit-scrollbar {
                                                             value="{{ location }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 id=location-input
-                                                                role=listbox></div>
+                                                                role=listbox>
+                                                            </div>
                                                     </div>
                                                 </div>
                                                 <div style="margin-bottom: 0.5rem !important;"></div>
-                                                <span class="select__Container-sc-i9bbt3-3 All-Distances-Outer-Frame"
-                                                    style="--width:100%">
-                                                    <label class="select__LabelStyled-sc-i9bbt3-0 All-Distances-Inner-Frame">
-                                                        <select class="select__SelectStyled-sc-i9bbt3-1 All-Distances-Content-Box" name="distance">
-                                                            <option selected value>(Not Working) All Distances
-                                                            <option value=25>Within 25 miles
-                                                            <option value=50>Within 50 miles
-                                                            <option value=100>Within 100 miles
-                                                            <option value=250>Within 250 miles
-                                                        </select>
-                                                    <svg class="Small-Icon Dropdown-Icon" fill=var(--gray-30) viewBox="0 0 64 64">
-                                                        <path d="M33.3,39.8l13.1-13.1c0.4-0.4,0.6-0.8,0.6-1.3c0-1-0.9-1.9-1.9-1.9H18.8c-1,0-1.9,0.8-1.9,1.9  c0,0.5,0.2,1,0.6,1.3l13.1,13.1c0.4,0.4,0.8,0.6,1.3,0.6S33,40.2,33.3,39.8"></path>
-                                                    </svg>
-                                                </label>
-                                                </span>
                                             </div>
                                         </div>
                                         <script>
@@ -574,76 +560,6 @@ body::-webkit-scrollbar {
 
                                         </script>
                                     </fieldset>
-                                    
-                                    {% comment %}
-                                    <fieldset
-                                        class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
-                                        name=area-of-study>
-                                        <legend class=" Filter-Section-Title-Outer">
-                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
-                                                Area of Study
-                                            </div>
-                                        </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
-                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
-                                                <span class="select__Container-sc-i9bbt3-3 All-Distances-Outer-Frame"
-                                                    style=--width:100%><label
-                                                        class="select__LabelStyled-sc-i9bbt3-0 All-Distances-Inner-Frame"><select
-                                                            class="select__SelectStyled-sc-i9bbt3-1 All-Distances-Content-Box"
-                                                            name=study><option
-                                                                selected value>All Areas of Study<option
-                                                                    value="Agriculture, Agriculture Operations, and Related Sciences">Agriculture<option
-                                                                        value="Architecture and Related Services">Architecture<option
-                                                                            value="Basic Skills and Developmental/Remedial Education">Basic Skills and Developmental/Remedial Education<option
-                                                                                value="Biological and Biomedical Sciences">Biological and Biomedical Sciences<option
-                                                                                    value="Business, Management, Marketing, and Related Support Services">Business, Management and Marketing<option
-                                                                                        value="Citizenship Activities">Citizenship Activities<option
-                                                                                            value="Communication, Journalism, and Related Programs">Communication / Journalism<option
-                                                                                                value="Communications Technologies/Technicians and Support Services">Communications Technologies/Technicians<option
-                                                                                                    value="Computer and Information Sciences and Support Services">Computer and Information Sciences<option
-                                                                                                        value="Construction Trades">Construction Trades<option
-                                                                                                            value=Education>Education<option value=Engineering>Engineering<option
-                                                                                                                value="Engineering Technologies and Engineering-Related Fields">Engineering Technologies and Related Fields<option
-                                                                                                                    value="English Language and Literature/Letters">English Language and Literature<option
-                                                                                                                        value="Area, Ethnic, Cultural, Gender, and Group Studies">Ethnic, Cultural, Gender, and Group Studies<option
-                                                                                                                            value="Family and Consumer Sciences/Human Sciences">Family, Consumer and Human Sciences<option
-                                                                                                                                value="Foreign Languages, Literatures, and Linguistics">Foreign Languages, Literatures, and Linguistics<option
-                                                                                                                                    value="Health Professions and Related Programs">Health Professions<option
-                                                                                                                                        value="Health-Related Knowledge and Skills">Health-Related Knowledge and Skills<option
-                                                                                                                                            value="High School/Secondary Diplomas and Certificates">High School/Secondary Diplomas and Certificates<option
-                                                                                                                                                value=History>History<option
-                                                                                                                                                    value="Homeland Security, Law Enforcement, Firefighting and Related Protective Services">Homeland Security, Law Enforcement, Firefighting and Related Services<option
-                                                                                                                                                        value="Interpersonal and Social Skills">Interpersonal and Social Skills<option
-                                                                                                                                                            value="Legal Professions and Studies">Legal Professions and Studies<option
-                                                                                                                                                                value="Leisure and Recreational Activities">Leisure and Recreational Activities<option
-                                                                                                                                                                    value="Liberal Arts and Sciences, General Studies and Humanities">Liberal Arts and Humanities<option
-                                                                                                                                                                        value="Library Science">Library Science<option
-                                                                                                                                                                            value="Mathematics and Statistics">Mathematics and Statistics<option
-                                                                                                                                                                                value="Mechanic and Repair Technologies/Technicians">Mechanic and Repair Technologies/Technicians<option
-                                                                                                                                                                                    value="Military Science, Leadership and Operational Art">Military Science, Leadership and Operations<option
-                                                                                                                                                                                        value="Military Technologies and Applied Sciences">Military Technologies and Applied Sciences<option
-                                                                                                                                                                                            value="Multi/Interdisciplinary Studies">Multi/Interdisciplinary Studies<option
-                                                                                                                                                                                            value="Natural Resources and Conservation">Natural Resources and Conservation<option
-                                                                                                                                                                                            value="Parks, Recreation, Leisure, and Fitness Studies">Parks, Recreation, Leisure, and Fitness Studies<option
-                                                                                                                                                                                            value="Personal and Culinary Services">Personal and Culinary Services<option
-                                                                                                                                                                                            value="Philosophy and Religious Studies">Philosophy and Religious Studies<option
-                                                                                                                                                                                            value="Physical Sciences">Physical Sciences<option
-                                                                                                                                                                                            value="Precision Production">Precision Production<option
-                                                                                                                                                                                            value=Psychology>Psychology<option
-                                                                                                                                                                                            value="Public Administration and Social Service Professions">Public Administration and Social Service Professions<option
-                                                                                                                                                                                            value="Residency Programs">Residency Programs<option
-                                                                                                                                                                                            value="Science Technologies/Technicians">Science Technologies/Technicians<option
-                                                                                                                                                                                            value="Social Sciences">Social Sciences<option
-                                                                                                                                                                                            value="Theology and Religious Vocations">Theology and Religious Vocations<option
-                                                                                                                                                                                            value="Transportation and Materials Moving">Transportation and Materials Moving</select><svg
-                                                                                                                                                                                                class="Small-Icon Dropdown-Icon"
-                                                                                                                                                                                                fill=var(--gray-30)
-                                                                                                                                                                                                viewBox="0 0 64 64"><path
-                                                                                                                                                                                                    d="M33.3,39.8l13.1-13.1c0.4-0.4,0.6-0.8,0.6-1.3c0-1-0.9-1.9-1.9-1.9H18.8c-1,0-1.9,0.8-1.9,1.9  c0,0.5,0.2,1,0.6,1.3l13.1,13.1c0.4,0.4,0.8,0.6,1.3,0.6S33,40.2,33.3,39.8"></path></svg></label></span>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                    {% endcomment %}
                                     
                                     <fieldset
                                         class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
