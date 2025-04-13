@@ -1,0 +1,996 @@
+
+    :root {
+        --primary: #a2ccb6;
+        --primary-light: #eaf4ef;
+        --primary-dark: #5b9b82;
+        --glass-bg: rgba(255, 255, 255, 0.4);
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --neon-glow: 0 0 12px rgba(162, 204, 182, 0.65);
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+        color: #1f2937;
+        overflow-x: hidden;
+    }
+
+    .profile-container {
+            width: 1212px!important;
+
+        margin-top: 12px;
+margin-right: auto;
+margin-bottom: -4px;
+margin-left: auto;
+        padding: 4rem;
+        border-radius: 3rem;
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 35px 80px rgba(0, 0, 0, 0.08), inset 0 0 8px #fff;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .profile-container::before {
+        content: '';
+        position: absolute;
+        top: -100px;
+        left: -100px;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, var(--primary), transparent 70%);
+        filter: blur(120px);
+        z-index: 0;
+    }
+
+
+
+    .profile-meta,
+    .course-stats,
+    .course-description {
+        position: relative;
+        z-index: 2;
+    }
+
+    .profile-meta p,
+    .course-stats p {
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+        line-height: 1.6;
+    }
+
+    .profile-meta a {
+        color: var(--primary-dark);
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .profile-meta a:hover {
+        text-decoration: underline;
+        color: var(--primary);
+    }
+
+      .course-description a {
+        color: var(--primary-dark);
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .course-description a:hover {
+        text-decoration: underline;
+        color: var(--primary);
+    }
+
+    .course-description {
+        margin: 3rem 0;
+        padding: 2rem;
+        border-left: 6px solid var(--primary);
+        background: var(--primary-light);
+        border-radius: 1.5rem;
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.04);
+    }
+
+    .course-description h2 {
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+    }
+
+        /* Bookmarks */
+    .bookmark-section {
+        margin-top: 5rem;
+    }
+
+    .bookmark-section h2 {
+        font-size: 2.25rem;
+        font-weight: 900;
+        color: #0f172a;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Reviews */
+    .review-section {
+        margin-top: 5rem;
+    }
+
+    .review-section h2 {
+        font-size: 2.25rem;
+        font-weight: 900;
+        color: #0f172a;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .provider-details-section {
+        margin-top: 5rem;
+    }
+
+    .provider-details-section h2 {
+        font-size: 2.25rem;
+        font-weight: 900;
+        color: #0f172a;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+
+    .review-list {
+        list-style: none;
+        padding-left: 0;
+        display: grid;
+        gap: 2rem;
+    }
+
+    .review-item {
+        background: rgba(255, 255, 255, 0.75);
+        border-radius: 1.5rem;
+        border: 1px solid #d1d5db;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+        transition: background 0.3s ease, border-color 0.3s ease;
+    }
+
+    .review-item:hover {
+        border-color: var(--primary);
+        background: #f4fdf8;
+        box-shadow: var(--neon-glow);
+    }
+
+
+    .review-username {
+        font-weight: 700;
+        font-size: 1.2rem;
+  color: var(--primary-dark);
+  text-decoration: none;
+}
+
+.review-username:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+    .review-rating {
+        font-size: 1rem;
+        font-weight: bold;
+        color: #f59e0b;
+    }
+
+    .review-body p {
+        font-style: italic;
+        margin-top: 0.75rem;
+        color: #374151;
+    }
+
+    .review-timestamp {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-top: 0.5rem;
+    }
+
+    .review-user-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+
+.review-stars {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+color: #a2ccb6!important;
+}
+
+.review-score {
+    font-size: 0.9rem;
+    color: #4b5563;
+    margin-left: 0.5rem;
+}
+
+.review-header-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.review-user-icon {
+    flex-shrink: 0;
+    background: var(--primary-light);
+    border-radius: 50%;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.review-header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.Course-Rating {
+            height: 1.125rem;
+            width: 1.125rem;
+            align-self: center;
+            vertical-align: middle;
+            margin-right: 0rem;
+            stroke: #a2ccb6;
+            stroke-width: 4px
+}
+
+    .delete-button {
+        margin-top: 1rem;
+        padding: 0.5rem 1rem;
+        background-color: #fecaca;
+        color: #991b1b;
+        border: none;
+        border-radius: 9999px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+
+    .delete-button:hover {
+        background-color: #fca5a5;
+    }
+
+    /* Review Submission */
+    .review-submission {
+        margin-top: 6rem;
+        padding: 3rem;
+        border-radius: 2rem;
+        background: #f0fdf4;
+        border: 2px dashed var(--primary);
+        position: relative;
+        z-index: 2;
+    }
+
+    .review-submission header p {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 2rem;
+    }
+
+    .review-submission label {
+        font-size: 0.95rem;
+        font-weight: 700;
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #334155;
+        letter-spacing: 0.02em;
+    }
+
+    .review-submission input,
+    .review-submission textarea {
+        width: 100%;
+        padding: 1rem;
+        margin-bottom: 2rem;
+        font-size: 1rem;
+        border-radius: 0.75rem;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        transition: border 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .review-submission input:focus,
+    .review-submission textarea:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--neon-glow);
+        outline: none;
+    }
+
+    .cta-button {
+        display: inline-block;
+        padding: 0.9rem 2.2rem;
+        font-weight: 800;
+        font-size: 1rem;
+        border: none;
+        border-radius: 100px;
+        background: linear-gradient(to right, var(--green) 0%, var(--sand) 50%, var(--peach) 100%);
+        background-size: 500%;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+
+    .cta-button:hover {
+                    animation: gradient 2s forwards;
+
+    }
+
+
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100%;
+            }
+        }
+
+.vote-btn {
+  background: transparent;
+  border: none;
+  padding: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.vote-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  filter: drop-shadow(0 0 1px var(--glass-border));
+  transition: fill 0.3s ease, filter 0.3s ease;
+}
+
+.vote-up .vote-icon {
+  fill: green; /* Upvotes are typically positive */
+}
+
+.vote-down .vote-icon {
+  fill: red; /* Downvotes are typically negative */
+}
+
+/* Hover effect */
+.vote-up:hover .vote-icon {
+  fill: limegreen; /* Brighter green for interactive hover */
+}
+
+.vote-down:hover .vote-icon {
+  fill: crimson; /* Deeper red for hover feedback */
+}
+
+.vote-count {
+  margin: 0 1.2rem 0 0;
+  font-weight: 700;
+  color: #1f2937;
+      display: flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.review-votes .vote-form {
+  display: flex;
+  align-items: center;
+}
+
+
+.bookmark-list-block {
+  margin-bottom: 3rem;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+.bookmark-list-block h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  color: #1f2937;
+}
+
+.bookmark-list-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.bookmark-list-items li {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid #e5e7eb;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bookmark-list-items li:hover {
+  background: #f4fdf8;
+  box-shadow: var(--neon-glow);
+}
+
+.bookmark-list-items a {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--primary-dark);
+  text-decoration: none;
+}
+
+.bookmark-list-items a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.bookmark-list-items small {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+.bookmark-list-items .empty {
+  font-style: italic;
+  color: #9ca3af;
+  background: none;
+  border: none;
+}
+
+
+
+    :root {
+        --primary: #a2ccb6;
+        --primary-light: #eaf4ef;
+        --primary-dark: #5b9b82;
+        --glass-bg: rgba(255, 255, 255, 0.4);
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --neon-glow: 0 0 12px rgba(162, 204, 182, 0.65);
+        --green: #74b49b;
+        --peach: #fbc7a7;
+        --sand: #f4e1d2;
+    }
+
+    .manage-courses-container {
+        width: 1212px !important;
+margin-top: 10.5px;
+margin-right: auto;
+margin-bottom: 129.5px!important;
+margin-left: auto;        padding: 4rem;
+        border-radius: 3rem;
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 35px 80px rgba(0, 0, 0, 0.08), inset 0 0 8px #fff;
+        position: relative;
+        /*overflow: hidden;*/
+    }
+
+.glass-modal {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 2rem;
+  box-shadow: 0 35px 80px rgba(0, 0, 0, 0.08), inset 0 0 8px #fff;
+  position: relative;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+.glass-modal::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  left: -100px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, var(--primary), transparent 70%);
+  filter: blur(120px);
+  z-index: 0;
+}
+
+.modal-header-text {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(to right, var(--primary-dark) 70%, var(--primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  z-index: 2;
+      padding: 0 !important; /* remove all internal padding */
+
+}
+
+.glass-modal .modal-body,
+.glass-modal .modal-footer {
+  z-index: 2;
+  position: relative;
+}
+
+    .manage-courses-container::before {
+        content: '';
+        position: absolute;
+        top: -100px;
+        left: -100px;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, var(--primary), transparent 70%);
+        filter: blur(120px);
+        z-index: 0;
+    }
+
+    h1.manage-courses-header {
+        font-size: 3.5rem;
+        font-weight: 900;
+        line-height: 1.1;
+        background: linear-gradient(to right, var(--primary-dark), var(--primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .manage-courses-meta {
+        position: relative;
+        z-index: 2;
+    }
+
+    .manage-courses-meta ul {
+        list-style: none;
+        padding-left: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    /*.manage-courses-meta li {*/
+    /*    background: rgba(255, 255, 255, 0.75);*/
+    /*    border-radius: 1.5rem;*/
+    /*    border: 1px solid #d1d5db;*/
+    /*    padding: 1.5rem 2rem;*/
+    /*    display: flex;*/
+    /*    justify-content: space-between;*/
+    /*    align-items: center;*/
+    /*    transition: background 0.3s ease, border-color 0.3s ease;*/
+    /*}*/
+
+    .manage-courses-meta li:hover {
+        border-color: var(--primary);
+        background: #f4fdf8;
+        box-shadow: var(--neon-glow);
+    }
+
+    .manage-courses-meta a {
+        font-weight: 700;
+        text-decoration: none;
+        color: var(--primary-dark);
+    }
+
+    .manage-courses-meta a:hover {
+        text-decoration: underline;
+        color: var(--primary);
+    }
+
+
+
+    @keyframes gradient {
+        0% {
+            background-position: 0% 50%;
+        }
+        100% {
+            background-position: 100%;
+        }
+    }
+
+    .alert.alert-info {
+        font-weight: 600;
+        font-size: 1rem;
+        border-radius: 1rem;
+        padding: 1rem 1.5rem;
+        background: var(--primary-light);
+        border: 1px solid var(--primary);
+        color: #1e3a2a;
+        margin-bottom: 2rem;
+            align-items: center; /* vertical centering */
+
+    }
+
+.alert.alert-info p {
+    margin-bottom: 0;
+}
+
+
+    .manage-courses-meta li {
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 1.5rem;
+  border: 1px solid #d1d5db;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.manage-courses-text {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1f2937;
+  line-height: 1.5;
+}
+
+.manage-courses-entry {
+
+}
+
+
+.manage-courses-left {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.manage-courses-entry {
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 1.5rem;
+  border: 1px solid #d1d5db;
+  padding: 1.5rem 2rem;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.manage-courses-entry:hover {
+  border-color: var(--primary);
+  background: #f4fdf8;
+  box-shadow: var(--neon-glow);
+}
+
+/* NEW: structure inside each li */
+.manage-courses-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+      width: 100%; /* ← this ensures full horizontal stretch */
+
+}
+
+/* Ensures text block is centered vertically */
+.manage-courses-left {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1f2937;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+}
+
+/* Form aligns button properly */
+.manage-courses-entry form {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.rename-button {
+  padding: 0.5rem 1rem;
+ background-color: #fde68a; /* soft yellow */
+  color: #92400e; /* dark amber text */
+  border: none;
+  border-radius: 9999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rename-button:hover {
+  background-color: #fcd34d; /* brighter yellow on hover */
+}
+
+    .delete-button {
+  padding: 0.5rem 1rem;
+  background-color: #fecaca;
+  color: #991b1b;
+  border: none;
+  border-radius: 9999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-button:hover {
+  background-color: #fca5a5;
+}
+.button-group {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-left: auto; /* push button group to the right edge */
+}
+
+.delete-button {
+  margin-left: auto; /* this ensures space between buttons and right edge */
+}
+/* Optional: style for empty message */
+.empty-message {
+  font-style: italic;
+  color: #6b7280;
+}
+
+
+
+
+.modal-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-top: 1rem; /* <- was 0.5rem */
+  display: block;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  font-size: 1rem;
+  color: #1f2937;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+.modal-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(162, 204, 182, 0.2);
+
+}
+
+
+           .modal-select {
+                 height: 45.1875px !important;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--glass-border);
+background: rgba(255, 255, 255, 0.6);
+
+               backdrop-filter: blur(10px);
+                 font-size: 1rem;
+  color: #1f2937;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+            appearance: none;
+            outline: none;
+            background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB2aWV3Qm94PSIwIDAgMTEzLjIgNjMuMSIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTEzLjIgNjMuMTsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8cGF0aCBkPSJNNi43LDBDMi45LDAsMCwyLjksMCw2LjdjMCwxLjksMSwzLjgsMS45LDQuOGw0OS43LDQ5LjdjMSwxLDIuOSwxLjksNC44LDEuOXMzLjgtMSw0LjgtMS45bDUwLjEtNDkuN2MxLTEsMS45LTIuOSwxLjktNC44CgljMC0zLjgtMi45LTYuNy02LjctNi43Ii8+Cjwvc3ZnPgo=);
+            background-position: calc(100% - 9px) center;
+            background-repeat: no-repeat;
+            background-size: 0.5rem 0.5rem
+        }
+
+
+
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between; /* ← NOW BUTTONS WILL GO LEFT & RIGHT */
+  align-items: center;
+  padding: 0; /* Optional: trim any extra spacing */
+  margin-top: 1.5rem; /* Optional: spacing from input */
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.aligned-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.cancel-button,
+.create-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 3.2rem;
+  min-width: 8rem;
+  padding: 0.9rem 2.2rem;
+  font-weight: 800;
+  font-size: 1rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  border-radius: 1rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.08);
+}
+
+
+.create-button {
+  background: linear-gradient(to right, var(--green) 0%, var(--sand) 50%, var(--peach) 100%);
+  background-size: 500%;
+  color: white;
+  transition: all 0.3s ease;
+    margin-right: 0!important;
+
+}
+
+.create-button:hover {
+  animation: gradient 2s forwards;
+}
+
+.cancel-button {
+  background: linear-gradient(to right, #e5e7eb 0%, #d1d5db 50%, #9ca3af 100%);
+  background-size: 500%;
+      color: white;
+  transition: background 0.3s ease;
+margin-left: 0!important;
+}
+
+.cancel-button:hover {
+  animation: gradient 2s forwards;
+}
+
+
+    .cta-button {
+        display: inline-block;
+        padding: 0.9rem 2.2rem;
+        font-weight: 800;
+        font-size: 1rem;
+        border: none;
+        border-radius: 100px;
+        background: linear-gradient(to right, var(--green) 0%, var(--sand) 50%, var(--peach) 100%);
+        background-size: 500%;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.15);
+        margin-bottom: 2rem;
+    }
+
+    .cta-button:hover {
+        animation: gradient 2s forwards;
+    }
+
+
+       .Main-Body-Area,
+.Lower-Main-Body-Area,
+     .main,
+     .body {
+  height: auto !important;
+  overflow: visible !important;
+  flex-grow: 0 !important;
+  flex-shrink: 1 !important;
+       min-height: auto !important;
+    }
+
+
+     main {
+         margin-bottom: 0!important;
+     }
+
+
+
+.profile-header-row {
+  display: flex;
+  align-items: center; /* ← This is the key fix */
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
+
+/*.profile-header {*/
+/*  font-size: 3.5rem;*/
+/*  font-weight: 900;*/
+/*  line-height: 1.1;*/
+/*  background: linear-gradient(to right, var(--primary-dark), var(--primary));*/
+/*  -webkit-background-clip: text;*/
+/*  -webkit-text-fill-color: transparent;*/
+/*  margin: 0;*/
+/*}*/
+
+    h1.profile-header {
+        font-size: 3.5rem;
+        font-weight: 900;
+        line-height: 1.1;
+        background: linear-gradient(to right, var(--primary-dark), var(--primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        /*margin-bottom: 20rem;*/
+         display: flex;
+  align-items: center;
+        position: relative;
+        z-index: 2;
+    }
+
+.edit-profile-button-inline {
+  font-size: 1rem;
+  padding: 0.6rem 1.2rem;
+    margin: 0!important;
+  font-weight: 700;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+background-color: #fde68a; /* soft yellow */   color: #92400e; /* dark amber text */
+  background-size: 500%;
+
+  transition: all 0.3s ease;
+
+}
+
+.edit-profile-button-inline:hover {
+    background-color: #fcd34d; /* brighter yellow on hover */}
+
+
+
+         .provider-meta,
+    .provider-stats,
+    .provider-description {
+        position: relative;
+        z-index: 2;
+    }
+
+             .provider-description {
+        margin: 3rem 0;
+        padding: 2rem;
+        border-left: 6px solid var(--primary);
+        background: var(--primary-light);
+        border-radius: 1.5rem;
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.04);
+    }
+
+    .provider-description h2 {
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+    }
