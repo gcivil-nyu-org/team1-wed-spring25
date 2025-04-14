@@ -335,6 +335,11 @@ def course_map(request):
     return render(request, "courses/course_map.html")
 
 
+def course_comparison(request):
+    """Render the course comparison page"""
+    return render(request, "courses/course_comparison_page.html")
+
+
 def course_data(request):
     """Fetch course data and get lat/lng dynamically"""
     courses = Course.objects.all()

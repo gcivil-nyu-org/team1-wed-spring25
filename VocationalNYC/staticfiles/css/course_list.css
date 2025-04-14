@@ -1302,7 +1302,7 @@ visibility: hidden !important;
 
         .Course-Location-Outer-Icon.has-badge::before {
 
-      background-image: url("https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/Google_Maps.png");
+background-image: url("/static/images/Google_Maps.png");
 
 
 
