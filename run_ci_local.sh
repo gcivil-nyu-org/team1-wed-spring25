@@ -11,10 +11,6 @@ cd VocationalNYC
 python3.12 -m venv venv
 source venv/bin/activate
 
-pip install --upgrade pip setuptools
-pip install -r requirements.txt
-pip install coveralls black flake8
-
 echo "▶ Running migrations and collecting static files"
 python manage.py makemigrations --noinput
 python manage.py migrate --noinput
@@ -23,10 +19,16 @@ python manage.py collectstatic --noinput
 echo "▶ Running tests and linters"
 python manage.py test
 black --check .
-flake8 .
+flake8 . --exclude=venv
 coverage run --source=. manage.py test
 
 echo "▶ Sending coverage to coveralls"
-coveralls --verbose
+
+if [[ -n "$COVERALLS_REPO_TOKEN" ]]; then
+  echo "▶ Sending coverage to coveralls"
+  coveralls --verbose
+else
+  echo "⚠️  COVERALLS_REPO_TOKEN not set; skipping coveralls upload"
+fi
 
 echo "✅ Local CI complete"

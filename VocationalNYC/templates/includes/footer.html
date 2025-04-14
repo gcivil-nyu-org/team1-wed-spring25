@@ -1,9 +1,10 @@
-       <footer class="Entire-Footer">
+{% load static %}
+<footer class="Entire-Footer">
                 <div class=" Introduction content" style="display: flex; justify-content: center;">
                     <div class="Main-Footer">
                         <a href="{% url 'home' %}">
                             <img style="margin-bottom: 1rem !important;" height=40px
-                            src=https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/favicon.png
+                            src="{% static 'images/favicon.png' %}"
                             width=40px>
                         </a>
                         <div class="Main-Footer-Content">
