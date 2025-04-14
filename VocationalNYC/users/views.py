@@ -252,15 +252,12 @@ def provider_verification_view(request):
                 backend="allauth.account.auth_backends.AuthenticationBackend",
             )
 
-            return render(
-                request,
-                "account/provider_verification_success.html",
-                {"provider": provider},
-            )
+            return JsonResponse({"success": True})
         else:
             # print("Form is not valid")
             # print("Form errors:", form.errors)
             sys.stdout.flush()
+            return JsonResponse({"success": False, "errors": form.errors}, status=400)
 
     else:
         form = ProviderVerificationForm()
