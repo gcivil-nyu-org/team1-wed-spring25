@@ -97,7 +97,7 @@ body {
     margin: 0;
     padding: 0;
     font-size: 0.875rem;
-    font-family: var(--font-family-primary);
+            font-family: system-ui;
     color: var(--body-fg);
     background: var(--body-bg);
 }
@@ -233,7 +233,7 @@ blockquote {
 }
 
 code, pre {
-    font-family: var(--font-family-monospace);
+            font-family: system-ui;
     color: var(--body-quiet-color);
     font-size: 0.75rem;
     overflow-x: auto;
@@ -477,7 +477,7 @@ input, textarea, select, .form-row p, form .button {
     margin: 2px 0;
     padding: 2px 3px;
     vertical-align: middle;
-    font-family: var(--font-family-primary);
+            font-family: system-ui;
     font-weight: normal;
     font-size: 0.8125rem;
 }
@@ -988,7 +988,7 @@ a.deletelink:focus, a.deletelink:hover {
     background: none;
     border: 0;
     cursor: pointer;
-    font-family: var(--font-family-primary);
+            font-family: system-ui;
 }
 
 #user-tools {
