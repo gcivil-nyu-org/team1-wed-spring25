@@ -41,9 +41,6 @@
 
     <div style=width:inherit>
 
-
-
-
         <!--top horizontal header-->
         {% if user.role == "career_changer" %}
             {% include 'includes/student_header.html' %}
@@ -52,7 +49,6 @@
         {% else %}
             {% include 'includes/default_header.html' %}
         {% endif %}
-
 
         <!--main content-->
         <article compass="[object Object]">
@@ -424,7 +420,7 @@
                                                             name="min_cost"
                                                             placeholder="Min Cost"
                                                             type="number"
-                                                            step="1"
+                                                            step="1" min="0"
                                                             value="{{ min_cost }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 role=listbox></div>
@@ -453,7 +449,7 @@
                                                             autocomplete=off
                                                             class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
                                                             name="max_cost"
-                                                            placeholder="Max Cost"
+                                                            placeholder="Max Cost"  min="0"
                                                             type="number"
                                                             step="1"
                                                             value="{{ max_cost }}">
@@ -552,7 +548,7 @@
                                                             name="min_hours"
                                                             placeholder="Min Hours"
                                                             type="number"
-                                                            step="1"
+                                                            step="1"  min="0"
                                                             value="{{min_hours}}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 role=listbox></div>

@@ -281,6 +281,18 @@ def filterCourses(request):
         "location": location,
         "min_hours": min_hours,
     }
+
+    # Inject bookmark lists
+    if request.user.is_authenticated:
+        bookmark_lists = BookmarkList.objects.filter(user=request.user)
+        default_bookmark_list = bookmark_lists.first()
+    else:
+        bookmark_lists = []
+        default_bookmark_list = None
+
+    context["bookmark_lists"] = bookmark_lists
+    context["default_bookmark_list"] = default_bookmark_list
+
     return context
 
 

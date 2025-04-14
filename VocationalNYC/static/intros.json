@@ -26,5 +26,10 @@
     "provider_detail": {
     "title": "Provider Overview",
   "content": "Explore detailed information about this training provider, including their contact details, course offerings, and verified status. Learn about their specialties and program types, and discover how they support students through practical, career-oriented education."
-  }
+  },
+      "profile": {
+  "title": "Your Profile",
+  "content": "View and update your personal or provider details, including your name, role, and contact information. Career changers can manage bookmarks and reviews, while providers can edit business info and certificates."
+}
+
 }
