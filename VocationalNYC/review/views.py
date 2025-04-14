@@ -144,9 +144,11 @@ class ReviewReplyCreateView(View):
     def post(self, request, pk):
 
         try:
-            request.user.provider_profile  
+            request.user.provider_profile
         except Provider.DoesNotExist:
-            return JsonResponse({"error": "Only providers can reply to reviews."}, status=403)
+            return JsonResponse(
+                {"error": "Only providers can reply to reviews."}, status=403
+            )
 
         review = get_object_or_404(Review, pk=pk)
         content = request.POST.get("content")
