@@ -37,7 +37,7 @@
 
             {% if course.provider.verification_status %}
                 <span class="VerificationIcon" data-tooltip="Verified Provider">
-                    <img src="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/verified.png" srcset alt="Verified">
+                    <img src="{% static 'images/verified.png' %}" srcset alt="Verified">
                 </span>
             {% endif %}
 
