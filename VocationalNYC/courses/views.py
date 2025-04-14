@@ -274,7 +274,7 @@ def filterCourses(request):
     context = {
         "courses": courses,
         "keywords": keywords,
-        "provider_name": provider_name,
+        "provider": provider_name,
         "min_rating": min_rating,
         "min_cost": min_cost,
         "max_cost": max_cost,
@@ -373,7 +373,7 @@ def course_data(request):
         "courses": courses,
         "courses": courses,
         "keywords": keywords,
-        "provider_name": provider,
+        "provider": provider,
         "min_rating": min_rating,
         "min_cost": min_cost,
         "max_cost": max_cost,
