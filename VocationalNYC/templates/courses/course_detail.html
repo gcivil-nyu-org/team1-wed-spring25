@@ -122,6 +122,23 @@ Posted on {{ review.created_at|date:"l, F j, Y \\a\\t g:i:s A" }}    {% endtimez
     </form>
 </div>
     </div>
+    {% for reply in review.replies.all %}
+    <div class="provider-reply">
+        <strong>{{ reply.user.provider_profile.name }} replied:</strong>
+        <p>{{ reply.content }}</p>
+        <small>{{ reply.created_at }}</small>
+    </div>
+{% endfor %}
+
+{% if user.is_authenticated and user.provider_profile %}
+    <form method="POST" action="{% url 'review-reply-create' review.pk %}" class="provider-reply-form">
+        {% csrf_token %}
+        <label for="reply-{{ review.pk }}">💬 Provider Reply:</label>
+        <textarea name="content" id="reply-{{ review.pk }}" rows="3" placeholder="Reply to this review..." required></textarea>
+        <button type="submit" class="cta-button">📢 Reply as Provider</button>
+    </form>
+{% endif %}
+
 
     {% if user == review.user %}
 <form method="POST" action="{% url 'review-delete' review.pk %}" class="delete-review-form">

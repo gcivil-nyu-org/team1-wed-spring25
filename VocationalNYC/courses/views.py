@@ -198,7 +198,13 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        reviews = Review.objects.filter(course=self.object).order_by("-created_at")
+
+        reviews = (
+            Review.objects.filter(course=self.object)
+            .order_by("-created_at")
+            .prefetch_related("replies")  # 👈 this line prefetches replies efficiently
+        )
+
         context["reviews"] = reviews
         return context
 

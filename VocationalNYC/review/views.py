@@ -7,6 +7,7 @@ from django.core.serializers import serialize
 from .models import ReviewReply
 from .models import Review, ReviewVote
 from courses.models import Course
+from users.models import Provider
 
 # from django.urls import reverse
 
@@ -136,3 +137,28 @@ class ReviewVoteView(View):
                 "not_helpful_count": review.not_helpful_count,
             }
         )
+
+
+@method_decorator(login_required, name="dispatch")
+class ReviewReplyCreateView(View):
+    def post(self, request, pk):
+
+        try:
+            request.user.provider_profile
+        except Provider.DoesNotExist:
+            return JsonResponse(
+                {"error": "Only providers can reply to reviews."}, status=403
+            )
+
+        review = get_object_or_404(Review, pk=pk)
+        content = request.POST.get("content")
+
+        if not content:
+            return JsonResponse({"error": "Reply content cannot be empty."}, status=400)
+
+        ReviewReply.objects.create(
+            review=review,
+            user=request.user,
+            content=content,
+        )
+        return redirect("course_detail", pk=review.course.pk)
