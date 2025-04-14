@@ -182,7 +182,12 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        reviews = Review.objects.filter(course=self.object).order_by("-created_at")
+        reviews = (
+            Review.objects.filter(course=self.object)
+            .order_by("-created_at")
+            .prefetch_related("replies")  # 👈 this line prefetches replies efficiently
+        )
+
         context["reviews"] = reviews
 
         reviews_count = reviews.count()
@@ -330,6 +335,11 @@ def get_coordinates(address):
         logger.error("Geocoding API error: %s", e)
 
     return None, None
+
+
+def course_comparison(request):
+    """Render the course comparison page"""
+    return render(request, "courses/course_comparison_page.html")
 
 
 def course_data(request):

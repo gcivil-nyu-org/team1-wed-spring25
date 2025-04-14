@@ -37,7 +37,7 @@
 
             {% if course.provider.verification_status %}
                 <span class="VerificationIcon" data-tooltip="Verified Provider">
-                    <img src="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/verified.png" srcset alt="Verified">
+                    <img src="{% static 'images/verified.png' %}" srcset alt="Verified">
                 </span>
             {% endif %}
 
@@ -64,7 +64,7 @@
     </div>
 
     <div class="review-section" id="student-review-section">
-        <h2>💬 Student Reviews</h2>
+        <h2>💬 Ratings & Reviews</h2>
         <div aria-label="{{ course.rating }} out of 5"
             class="Course-Reviews-Inner-Container Course-Rating-And-Reviews kiGUEr"
             spacing=0>
@@ -105,6 +105,7 @@
             {% endfor %}
             <span class="Course-Review-Quantity Reviews">{{ reviews_count }} reviews</span>
         </div>
+
         {% if reviews %}
             <ul class="review-list">
                 {% for review in reviews %}
@@ -169,6 +170,23 @@ Posted on {{ review.created_at|date:"l, F j, Y \\a\\t g:i:s A" }}    {% endtimez
     </form>
 </div>
     </div>
+    {% for reply in review.replies.all %}
+    <div class="provider-reply">
+        <strong>{{ reply.user.provider_profile.name }} replied:</strong>
+        <p>{{ reply.content }}</p>
+        <small>{{ reply.created_at }}</small>
+    </div>
+{% endfor %}
+
+{% if user.is_authenticated and user.provider_profile %}
+    <form method="POST" action="{% url 'review-reply-create' review.pk %}" class="provider-reply-form">
+        {% csrf_token %}
+        <label for="reply-{{ review.pk }}">💬 Provider Reply:</label>
+        <textarea name="content" id="reply-{{ review.pk }}" rows="3" placeholder="Reply to this review..." required></textarea>
+        <button type="submit" class="cta-button">📢 Reply as Provider</button>
+    </form>
+{% endif %}
+
 
     {% if user == review.user %}
 <form method="POST" action="{% url 'review-delete' review.pk %}" class="delete-review-form">

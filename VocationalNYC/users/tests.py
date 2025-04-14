@@ -85,19 +85,30 @@ class ViewTests(TestCase):
         self.user.role = "training_provider"
         self.user.save()
 
+        # 👇 Log in the user
+        self.client.force_login(self.user)
+
+        # GET should work fine
         response = self.client.get(reverse("provider_verification"))
         self.assertEqual(response.status_code, 200)
 
-        # Test form submission
-        test_file = SimpleUploadedFile("test.pdf", b"file_content")
+        # POST: simulate full valid form submission
+        test_file = SimpleUploadedFile(
+            "test.pdf", b"file_content", content_type="application/pdf"
+        )
         form_data = {
             "name": "Test Provider",
             "phone_num": "1234567890",
             "address": "123 Test St",
+            "contact_firstname": "Alice",
+            "contact_lastname": "Smith",
             "certificate": test_file,
         }
+
         response = self.client.post(reverse("provider_verification"), form_data)
+
         self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content.decode(), {"success": True})
 
 
 # ------------------------------------------------------------------------------
@@ -298,10 +309,16 @@ class ProviderVerificationViewTests(TestCase):
             "contact_lastname": "Smith",
             "confirm_existing": True,
         }
-        response = self.client.post(reverse("provider_verification"), data, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "account/provider_verification.html")
-        self.assertContains(response, "certificate")  # Optional, confirms error
+        response = self.client.post(
+            reverse("provider_verification"),
+            data,
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+
+        # Expect JSON with 400 because we didn’t include certificate (required)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("errors", response.json())
+        self.assertIn("certificate", response.json()["errors"])
 
     def test_verification_invalid_form(self):
         data = {
@@ -310,9 +327,15 @@ class ProviderVerificationViewTests(TestCase):
             "address": "Test Address",
         }
         response = self.client.post(reverse("provider_verification"), data)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "account/provider_verification.html")
-        self.assertTrue(response.context["form"].errors)
+
+        self.assertEqual(response.status_code, 400)
+
+        # Check it's a JSON response
+        self.assertEqual(response["Content-Type"], "application/json")
+
+        response_json = json.loads(response.content)
+        self.assertIn("errors", response_json)
+        self.assertIn("name", response_json["errors"])
 
     def test_verification_wrong_role(self):
         self.provider_user.role = "career_changer"
@@ -973,17 +996,35 @@ class ViewsIntegrationTests(TestCase):
     def test_provider_verification_form_invalid(self):
         self.user.role = "training_provider"
         self.user.save()
+
         response = self.client.post(
             reverse("provider_verification"),
             {
-                "name": "",  # Invalid
-                "phone_num": "invalid",
-                "address": "",
+                "name": "",  # Invalid: required
+                "phone_num": "invalid",  # Invalid format, but not enforced here
+                "address": "",  # Invalid: required
             },
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",  # AJAX
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("form", response.context)
-        self.assertTrue(response.context["form"].errors)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response["Content-Type"], "application/json")
+
+        response_json = json.loads(response.content)
+
+        # print("ACTUAL JSON:", json.dumps(response_json, indent=2))  # Optional for debug
+
+        expected_errors = {
+            "name": ["This field is required."],
+            "address": ["This field is required."],
+            "certificate": ["This field is required."],
+            "contact_firstname": ["This field is required."],
+            "contact_lastname": ["This field is required."],
+            # Removed "phone_num" — not returned by the view
+        }
+
+        self.assertFalse(response_json["success"])
+        self.assertDictEqual(response_json["errors"], expected_errors)
 
     @patch(
         "allauth.account.adapter.DefaultAccountAdapter.respond_email_verification_sent"
@@ -1048,9 +1089,13 @@ class ViewsIntegrationTests(TestCase):
         """Test provider verification with unbound form"""
         self.user.role = "training_provider"
         self.user.save()
-        response = self.client.post(reverse("provider_verification"))
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("form", response.context)
+        response = self.client.post(
+            reverse("provider_verification"), HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.status_code, 400)
+        response_json = json.loads(response.content)
+        self.assertIn("errors", response_json)
+        self.assertFalse(response_json["success"])
 
     def test_check_provider_name_view(self):
         """Test the check_provider_name view"""
@@ -1109,9 +1154,16 @@ class ViewsIntegrationTests(TestCase):
                 "contact_lastname": "Smith",
                 "certificate": test_file,
             },
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",  # Explicitly treat as AJAX
         )
+
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "account/provider_verification_success.html")
+        self.assertEqual(response["Content-Type"], "application/json")
+        self.assertJSONEqual(
+            response.content.decode(),
+            {"success": True},
+        )
+
         provider = Provider.objects.get(name="New Test Provider")
         self.assertTrue(provider.certificate)
 
