@@ -230,8 +230,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Favicon Handling (Ensure favicon.ico is inside static/)
 FAVICON_PATH = STATIC_URL + "favicon.ico"
 
-LOGIN_URL = "/accounts/login/"
+LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/"
+
 
 GOOGLE_MAPS_API_KEY = env("GOOGLE_MAPS_API_KEY", default="")
 

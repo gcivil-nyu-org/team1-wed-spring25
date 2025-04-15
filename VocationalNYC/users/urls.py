@@ -14,6 +14,7 @@ from .views import CustomPasswordResetView
 
 
 urlpatterns = [
+    path("login/", views.CustomLoginView.as_view(), name="account_login"),
     path("signup/", CustomSignupView.as_view(), name="account_signup"),
     path(
         "provider_verification/",
@@ -34,5 +35,5 @@ urlpatterns = [
         CustomPasswordResetView.as_view(),
         name="account_reset_password",
     ),
-    path("", include("allauth.urls")),
+    # path("", include("allauth.urls")),
 ]

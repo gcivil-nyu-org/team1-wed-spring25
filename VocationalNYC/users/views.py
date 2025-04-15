@@ -1,11 +1,10 @@
 import requests
-import sys
 import logging
 import os
 
 from django.shortcuts import render, redirect
 from django.views import generic
-from allauth.account.views import SignupView
+from allauth.account.views import SignupView, LoginView
 from .forms import (
     CustomSignupForm,
     ProviderVerificationForm,
@@ -26,7 +25,8 @@ from bookmarks.models import BookmarkList
 from review.models import Review
 
 from allauth.account.views import PasswordResetView
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
+from django.urls import reverse
 
 logger = logging.getLogger(__name__)
 
@@ -35,13 +35,19 @@ def login(request):
     return render(request, "users/login.html")
 
 
-# class MyLoginView(LoginView):
-#     def form_valid(self, form):
-#         response = super().form_valid(form)
-#         user = self.request.user
-#         if getattr(user, "role", None) == "training_provider" and not user.is_active:
-#             return redirect("provider_verification")
-#         return response
+class CustomLoginView(LoginView):
+    def form_valid(self, form):
+        user = form.user
+        auth_login(self.request, user)
+
+        if getattr(user, "role", "") == "training_provider":
+            if not user.is_active:
+                print(f"Redirecting inactive provider {user.username} to verification")
+                return HttpResponseRedirect(reverse("provider_verification"))
+            else:
+                print(f"Redirecting active provider {user.username} to manage courses")
+                return HttpResponseRedirect(reverse("manage_courses"))
+        return super().form_valid(form)
 
 
 class CustomSignupView(SignupView):
@@ -193,9 +199,13 @@ def profile_view(request):
 
 def provider_verification_required(function):
     def wrap(request, *args, **kwargs):
-        if request.user.is_authenticated and request.user.role == "training_provider":
+        if not request.user.is_authenticated:
+            return redirect("account_login")
+
+        if getattr(request.user, "role", "") == "training_provider":
             return function(request, *args, **kwargs)
-        return redirect("account_login")
+        else:
+            return redirect("home")
 
     wrap.__doc__ = function.__doc__
     wrap.__name__ = function.__name__
@@ -205,7 +215,9 @@ def provider_verification_required(function):
 @provider_verification_required
 def provider_verification_view(request):
     if request.user.role != "training_provider":
-        return redirect("profile")
+        return redirect("home")
+    elif request.user.is_active:
+        return redirect("manage_courses")
 
     if request.method == "POST":
         form = ProviderVerificationForm(request.POST, request.FILES)
@@ -243,7 +255,6 @@ def provider_verification_view(request):
 
             return JsonResponse({"success": True})
         else:
-            sys.stdout.flush()
             return JsonResponse({"success": False, "errors": form.errors}, status=400)
 
     else:
