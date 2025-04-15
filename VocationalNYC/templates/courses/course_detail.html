@@ -65,7 +65,11 @@
 
     <div class="review-section" id="student-review-section">
 
-        <h2>💬 Ratings & Reviews ({{ rating }} · {{ reviews_count }} reviews)</h2>
+        <h2>💬 Ratings & Reviews
+            {% if reviews_count != 0 %}
+                ({{ rating }} · {{ reviews_count }} reviews)
+            {% endif %}
+        </h2>
 
 
         {% if reviews %}
