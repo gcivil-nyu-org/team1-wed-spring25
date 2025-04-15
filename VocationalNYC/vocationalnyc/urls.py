@@ -24,8 +24,10 @@ from django.shortcuts import redirect
 
 
 def root_redirect(request):
-    if request.user.is_authenticated and (
-        request.user.is_superuser or request.user.is_staff
+    if (
+        hasattr(request, "user")
+        and request.user.is_authenticated
+        and (request.user.is_superuser or request.user.is_staff)
     ):
         return redirect("admin:index")
     return redirect("course_list")

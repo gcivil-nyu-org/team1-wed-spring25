@@ -1,7 +1,6 @@
 # import unittest
 from unittest.mock import patch
-
-# import json
+import json
 
 from django.test import TestCase, RequestFactory, Client
 from django.urls import reverse
@@ -547,17 +546,17 @@ class CourseMapTest(TestCase):
             }
         )
 
-        response = self.client.get(reverse("course_data"))
+        response = self.client.get(reverse("course_map"))
         self.assertEqual(response.status_code, 200)
 
         # Parse the JSON response
-        response_data = response.json()
+        course_map_data_str = response.context.get("course_map_data")
+        response_data = json.loads(course_map_data_str)
 
         # Verify the response data structure
         self.assertEqual(len(response_data), 1)
         self.assertEqual(response_data[0]["name"], "Test Course")
         self.assertEqual(response_data[0]["course_id"], self.course.course_id)
-        self.assertEqual(response_data[0]["course_desc"], "")
         self.assertEqual(response_data[0]["latitude"], 40.7128)
         self.assertEqual(response_data[0]["longitude"], -74.0060)
 

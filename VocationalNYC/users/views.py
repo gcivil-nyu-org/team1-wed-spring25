@@ -1,15 +1,15 @@
 import requests
-import sys
 import logging
 import os
 
 from django.shortcuts import render, redirect
 from django.views import generic
-from allauth.account.views import SignupView
+from allauth.account.views import SignupView, LoginView
 from .forms import (
     CustomSignupForm,
     ProviderVerificationForm,
     ProfileUpdateForm,
+    ProviderUpdateForm,
     StudentProfileForm,
 )
 from django.contrib.auth.decorators import login_required
@@ -26,7 +26,8 @@ from bookmarks.models import BookmarkList
 from review.models import Review
 
 from allauth.account.views import PasswordResetView
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
+from django.urls import reverse
 
 logger = logging.getLogger(__name__)
 
@@ -35,13 +36,23 @@ def login(request):
     return render(request, "users/login.html")
 
 
-# class MyLoginView(LoginView):
-#     def form_valid(self, form):
-#         response = super().form_valid(form)
-#         user = self.request.user
-#         if getattr(user, "role", None) == "training_provider" and not user.is_active:
-#             return redirect("provider_verification")
-#         return response
+class CustomLoginView(LoginView):
+    def form_valid(self, form):
+        user = form.user
+        auth_login(self.request, user)
+
+        # Always redirect admin to admin dashboard
+        if getattr(user, "role", "") == "administrator":
+            return HttpResponseRedirect("/admin/")
+
+        if getattr(user, "role", "") == "training_provider":
+            if not user.is_active:
+                print(f"Redirecting inactive provider {user.username} to verification")
+                return HttpResponseRedirect(reverse("provider_verification"))
+            else:
+                print(f"Redirecting active provider {user.username} to manage courses")
+                return HttpResponseRedirect(reverse("manage_courses"))
+        return super().form_valid(form)
 
 
 class CustomSignupView(SignupView):
@@ -57,7 +68,7 @@ class CustomSignupView(SignupView):
             with transaction.atomic():
                 BookmarkList.objects.create(user=user, name="default")
                 messages.success(
-                    # self.request, "Default bookmark list created successfully."
+                    self.request, "Default bookmark list created successfully."
                 )
         except Exception as e:
             messages.error(
@@ -95,7 +106,7 @@ def profile_view(request):
         if "provider_form" in request.POST and request.user.role == "training_provider":
             logger.debug("Processing provider form submission")
             provider = getattr(request.user, "provider_profile", None)
-            provider_form = ProviderVerificationForm(
+            provider_form = ProviderUpdateForm(
                 request.POST, request.FILES, instance=provider
             )
             form = ProfileUpdateForm(instance=request.user)
@@ -162,11 +173,9 @@ def profile_view(request):
         try:
             provider = Provider.objects.get(user=request.user)
             context["provider"] = provider
-            context["provider_verification_form"] = ProviderVerificationForm(
-                instance=provider
-            )
+            context["provider_update_form"] = ProviderUpdateForm(instance=provider)
         except Provider.DoesNotExist:
-            context["provider_verification_form"] = ProviderVerificationForm()
+            context["provider_update_form"] = ProviderUpdateForm()
 
     # Career changer data
     elif request.user.role == "career_changer":
@@ -193,9 +202,13 @@ def profile_view(request):
 
 def provider_verification_required(function):
     def wrap(request, *args, **kwargs):
-        if request.user.is_authenticated and request.user.role == "training_provider":
+        if not request.user.is_authenticated:
+            return redirect("account_login")
+
+        if getattr(request.user, "role", "") == "training_provider":
             return function(request, *args, **kwargs)
-        return redirect("account_login")
+        else:
+            return redirect("home")
 
     wrap.__doc__ = function.__doc__
     wrap.__name__ = function.__name__
@@ -205,29 +218,20 @@ def provider_verification_required(function):
 @provider_verification_required
 def provider_verification_view(request):
     if request.user.role != "training_provider":
-        return redirect("profile")
+        return redirect("home")
+    elif request.user.is_active:
+        return redirect("manage_courses")
 
-    # print("provider_verification_view called")
     if request.method == "POST":
-        confirm_existing = request.POST.get("confirm_existing") == "true"
-
-        # Pass the confirm_existing value to the form's initial data
         form = ProviderVerificationForm(request.POST, request.FILES)
         if form.is_valid():
-            # print("Form is valid")
             name = form.cleaned_data.get("name")
             confirm_existing = form.cleaned_data.get("confirm_existing", False)
-
-            # print(f"Confirm existing (from cleaned_data): {confirm_existing}")
-            # print(f"Name: {name}")
 
             try:
                 existing_provider = Provider.objects.get(name=name)
             except Provider.DoesNotExist:
                 existing_provider = None
-
-            # print(f"Existing provider: {existing_provider}")
-            sys.stdout.flush()
 
             if (
                 existing_provider
@@ -254,9 +258,6 @@ def provider_verification_view(request):
 
             return JsonResponse({"success": True})
         else:
-            # print("Form is not valid")
-            # print("Form errors:", form.errors)
-            sys.stdout.flush()
             return JsonResponse({"success": False, "errors": form.errors}, status=400)
 
     else:
@@ -269,17 +270,21 @@ def check_provider_name(request):
     name = request.GET.get("name", "")
     try:
         provider = Provider.objects.get(name=name)
-        # print(f"Provider found: {provider}")
-        sys.stdout.flush()
         return JsonResponse(
             {
                 "exists": True,
-                "user": provider.user is not None,
+                "user": provider.user_id is not None,
+                "details": {
+                    "name": provider.name,
+                    "address": provider.address,
+                    "phone_num": provider.phone_num,
+                    "website": provider.website or "",
+                    "contact_firstname": provider.contact_firstname or "",
+                    "contact_lastname": provider.contact_lastname or "",
+                },
             }
         )
     except Provider.DoesNotExist:
-        # print("Provider not found")
-        sys.stdout.flush()
         return JsonResponse({"exists": False})
 
 

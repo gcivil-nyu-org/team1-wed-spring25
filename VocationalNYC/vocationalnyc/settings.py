@@ -108,7 +108,8 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",  # Authentication middleware
+    "users.middleware.AdminRedirectMiddleware",
     "users.middleware.TrainingProviderMiddleware",  # Custom middleware for training provider verification
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -258,8 +259,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Favicon Handling (Ensure favicon.ico is inside static/)
 FAVICON_PATH = STATIC_URL + "favicon.ico"
 
-LOGIN_URL = "/accounts/login/"
+LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/"
+
 
 GOOGLE_MAPS_API_KEY = env("GOOGLE_MAPS_API_KEY", default="")
 
