@@ -394,7 +394,7 @@ class ProfileViewTests(TestCase):
         self.user.save()
         response = self.client.get(reverse("profile"))
         self.assertEqual(response.status_code, 200)
-        self.assertIn("provider_verification_form", response.context)
+        self.assertIn("provider_update_form", response.context)
 
     def test_profile_update_student(self):
         self.user.role = "career_changer"
@@ -513,7 +513,7 @@ class ProviderVerificationFormTests(TestCase):
             name="Test Provider", phone_num="1234567890", address="Test Address"
         )
 
-    def test_provider_verification_form_validation(self):
+    def test_providerverification_form_validation(self):
         # Test valid data
 
         file_data = {

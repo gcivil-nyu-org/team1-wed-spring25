@@ -310,33 +310,33 @@
                         <div class="modal-body"> 
                             
                             <!-- Business Name -->
-                            <label for="{{ provider_verification_form.name.id_for_label }}" class="modal-label">Business Name</label>
-                            {{ provider_verification_form.name }}
-                            {% if provider_verification_form.name.errors %}
+                            <label for="{{ provider_update_form.name.id_for_label }}" class="modal-label">Business Name</label>
+                            {{ provider_update_form.name }}
+                            {% if provider_update_form.name.errors %}
                                 <div>
-                                    {% for error in provider_verification_form.name.errors %}
+                                    {% for error in provider_update_form.name.errors %}
                                         {{ error }}
                                     {% endfor %}
                                 </div>
                             {% endif %}
 
                           <!-- Business Address -->
-  <label for="{{ provider_verification_form.address.id_for_label }}" class="modal-label">Business Address</label>
-  {{ provider_verification_form.address }}
-  {% if provider_verification_form.address.errors %}
+  <label for="{{ provider_update_form.address.id_for_label }}" class="modal-label">Business Address</label>
+  {{ provider_update_form.address }}
+  {% if provider_update_form.address.errors %}
     <div>
-      {% for error in provider_verification_form.address.errors %}
+      {% for error in provider_update_form.address.errors %}
         {{ error }}
       {% endfor %}
     </div>
   {% endif %}
 
                           <!-- Website -->
-  <label for="{{ provider_verification_form.website.id_for_label }}" class="modal-label">Business Website (Optional)</label>
-  {{ provider_verification_form.website }}
-  {% if provider_verification_form.website.errors %}
+  <label for="{{ provider_update_form.website.id_for_label }}" class="modal-label">Business Website (Optional)</label>
+  {{ provider_update_form.website }}
+  {% if provider_update_form.website.errors %}
     <div>
-      {% for error in provider_verification_form.website.errors %}
+      {% for error in provider_update_form.website.errors %}
         {{ error }}
       {% endfor %}
     </div>
@@ -344,11 +344,11 @@
 
 
  <!-- Description -->
-  <label for="{{ provider_verification_form.provider_desc.id_for_label }}" class="modal-label">Business Description (Optional)</label>
-  {{ provider_verification_form.provider_desc }}
-  {% if provider_verification_form.provider_desc.errors %}
+  <label for="{{ provider_update_form.provider_desc.id_for_label }}" class="modal-label">Business Description (Optional)</label>
+  {{ provider_update_form.provider_desc }}
+  {% if provider_update_form.provider_desc.errors %}
     <div>
-      {% for error in provider_verification_form.provider_desc.errors %}
+      {% for error in provider_update_form.provider_desc.errors %}
         {{ error }}
       {% endfor %}
     </div>
@@ -359,31 +359,31 @@
   <label class="modal-label">Contact Person</label>
                           <!-- Contact First Name -->
 
-  {{ provider_verification_form.contact_firstname }}
-  {% if provider_verification_form.contact_firstname.errors %}
+  {{ provider_update_form.contact_firstname }}
+  {% if provider_update_form.contact_firstname.errors %}
     <div>
-      {% for error in provider_verification_form.contact_firstname.errors %}
+      {% for error in provider_update_form.contact_firstname.errors %}
         {{ error }}
       {% endfor %}
     </div>
   {% endif %}
 
   <!-- Contact Last Name -->
-  {{ provider_verification_form.contact_lastname }}
-  {% if provider_verification_form.contact_lastname.errors %}
+  {{ provider_update_form.contact_lastname }}
+  {% if provider_update_form.contact_lastname.errors %}
     <div>
-      {% for error in provider_verification_form.contact_lastname.errors %}
+      {% for error in provider_update_form.contact_lastname.errors %}
         {{ error }}
       {% endfor %}
     </div>
   {% endif %}
 
   <!-- Phone Number -->
-  <label for="{{ provider_verification_form.phone_num.id_for_label }}" class="modal-label">Contact Number</label>
-  {{ provider_verification_form.phone_num }}
-  {% if provider_verification_form.phone_num.errors %}
+  <label for="{{ provider_update_form.phone_num.id_for_label }}" class="modal-label">Contact Number</label>
+  {{ provider_update_form.phone_num }}
+  {% if provider_update_form.phone_num.errors %}
     <div>
-      {% for error in provider_verification_form.phone_num.errors %}
+      {% for error in provider_update_form.phone_num.errors %}
         {{ error }}
       {% endfor %}
     </div>
@@ -392,11 +392,11 @@
 
 
   <!-- Business Hours -->
-  <label for="{{ provider_verification_form.open_time.id_for_label }}" class="modal-label">Business Hours</label>
-  {{ provider_verification_form.open_time }}
-  {% if provider_verification_form.open_time.errors %}
+  <label for="{{ provider_update_form.open_time.id_for_label }}" class="modal-label">Business Hours</label>
+  {{ provider_update_form.open_time }}
+  {% if provider_update_form.open_time.errors %}
     <div>
-      {% for error in provider_verification_form.open_time.errors %}
+      {% for error in provider_update_form.open_time.errors %}
         {{ error }}
       {% endfor %}
     </div>
@@ -406,12 +406,12 @@
 
 
   <!-- Business Certificate -->
-<label for="{{ provider_verification_form.certificate.id_for_label }}" class="modal-label">Business Certificate</label>
-{{ provider_verification_form.certificate }}
+<label for="{{ provider_update_form.certificate.id_for_label }}" class="modal-label">Business Certificate</label>
+{{ provider_update_form.certificate }}
 
-{% if provider_verification_form.certificate.errors %}
+{% if provider_update_form.certificate.errors %}
   <div>
-    {% for error in provider_verification_form.certificate.errors %}
+    {% for error in provider_update_form.certificate.errors %}
       {{ error }}
     {% endfor %}
   </div>
