@@ -35,7 +35,7 @@ before_script:
   - sleep 10
   # Run migrations and collect static files inside the app container (as root)
   - docker-compose -f docker-compose.ci.yml exec -T -u root app python manage.py makemigrations --noinput
-  - docker-compose -f docker-compose.ci.yml exec -T -u root app python manage.py migrate --noinput
+  - docker-compose -f docker-compose.ci.yml exec -T -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY app python manage.py migrate --noinput
   - docker-compose -f docker-compose.ci.yml exec -T -u root app python manage.py collectstatic --noinput
 
 script:
