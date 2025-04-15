@@ -36,3 +36,6 @@ services:
       - 5000:5000
     environment:
       DJANGO_ENV: travis
+      PYTHONPATH: /vocationalnyc
+      DJANGO_SETTINGS_MODULE: vocationalnyc.settings
+      SECRET_KEY: 2kr32wckkxtv&_r+p7!)o+1(jtupvk#z^uzp#y$h-=#3*7p5zr

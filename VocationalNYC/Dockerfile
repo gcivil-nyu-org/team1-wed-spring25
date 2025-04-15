@@ -3,6 +3,7 @@
 
     ENV PYTHONDONTWRITEBYTECODE=1 \
         PYTHONUNBUFFERED=1 \
+        PYTHONPATH=/vocationalnyc \
         SECRET_KEY="2kr32wckkxtv&_r+p7!)o+1(jtupvk#z^uzp#y$h-=#3*7p5zr"
     
     RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -24,7 +25,8 @@
     FROM python:3.12.9-slim
     
     ENV PYTHONDONTWRITEBYTECODE=1 \
-        PYTHONUNBUFFERED=1
+        PYTHONUNBUFFERED=1 \
+        PYTHONPATH=/vocationalnyc
     
     RUN apt-get update && apt-get install -y --no-install-recommends \
         libpq5 \
