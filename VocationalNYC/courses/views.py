@@ -182,10 +182,13 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        course = self.get_object()  # This gets the course object
+        user = self.request.user  # This gets the logged-in user
+
         reviews = (
             Review.objects.filter(course=self.object)
             .order_by("-created_at")
-            .prefetch_related("replies")  # 👈 this line prefetches replies efficiently
+            .prefetch_related("replies")  # prefetches replies efficiently
         )
 
         context["reviews"] = reviews
@@ -209,6 +212,14 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
         context["rating_full_stars"] = rating_full_stars
         context["rating_partial_star_position"] = rating_partial_star_position
         context["rating_partial_percentage"] = rating_partial_percentage
+
+        if user.is_authenticated:
+            context["user_has_reviewed"] = Review.objects.filter(
+                course=course, user=user
+            ).exists()
+        else:
+            context["user_has_reviewed"] = False
+
         return context
 
 
