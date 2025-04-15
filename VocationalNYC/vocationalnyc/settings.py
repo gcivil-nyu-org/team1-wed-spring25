@@ -82,7 +82,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",  # Authentication middleware
-    "vocationalnyc.urls.AdminRedirectMiddleware",
+    "users.middleware.AdminRedirectMiddleware",
     "users.middleware.TrainingProviderMiddleware",  # Custom middleware for training provider verification
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
