@@ -57,7 +57,7 @@ class CustomSignupView(SignupView):
             with transaction.atomic():
                 BookmarkList.objects.create(user=user, name="default")
                 messages.success(
-                    # self.request, "Default bookmark list created successfully."
+                    self.request, "Default bookmark list created successfully."
                 )
         except Exception as e:
             messages.error(
@@ -207,27 +207,16 @@ def provider_verification_view(request):
     if request.user.role != "training_provider":
         return redirect("profile")
 
-    # print("provider_verification_view called")
     if request.method == "POST":
-        confirm_existing = request.POST.get("confirm_existing") == "true"
-
-        # Pass the confirm_existing value to the form's initial data
         form = ProviderVerificationForm(request.POST, request.FILES)
         if form.is_valid():
-            # print("Form is valid")
             name = form.cleaned_data.get("name")
             confirm_existing = form.cleaned_data.get("confirm_existing", False)
-
-            # print(f"Confirm existing (from cleaned_data): {confirm_existing}")
-            # print(f"Name: {name}")
 
             try:
                 existing_provider = Provider.objects.get(name=name)
             except Provider.DoesNotExist:
                 existing_provider = None
-
-            # print(f"Existing provider: {existing_provider}")
-            sys.stdout.flush()
 
             if (
                 existing_provider
@@ -254,8 +243,6 @@ def provider_verification_view(request):
 
             return JsonResponse({"success": True})
         else:
-            # print("Form is not valid")
-            # print("Form errors:", form.errors)
             sys.stdout.flush()
             return JsonResponse({"success": False, "errors": form.errors}, status=400)
 
@@ -269,17 +256,21 @@ def check_provider_name(request):
     name = request.GET.get("name", "")
     try:
         provider = Provider.objects.get(name=name)
-        # print(f"Provider found: {provider}")
-        sys.stdout.flush()
         return JsonResponse(
             {
                 "exists": True,
-                "user": provider.user is not None,
+                "user": provider.user_id is not None,
+                "details": {
+                    "name": provider.name,
+                    "address": provider.address,
+                    "phone_num": provider.phone_num,
+                    "website": provider.website or "",
+                    "contact_firstname": provider.contact_firstname or "",
+                    "contact_lastname": provider.contact_lastname or "",
+                },
             }
         )
     except Provider.DoesNotExist:
-        # print("Provider not found")
-        sys.stdout.flush()
         return JsonResponse({"exists": False})
 
 

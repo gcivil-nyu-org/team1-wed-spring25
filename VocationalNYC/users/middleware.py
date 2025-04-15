@@ -1,6 +1,6 @@
 # users/middleware.py
 from django.shortcuts import redirect
-from django.urls import reverse
+from django.urls import reverse, resolve, Resolver404
 
 
 class TrainingProviderMiddleware:
@@ -13,6 +13,13 @@ class TrainingProviderMiddleware:
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         user = request.user
+
+        try:
+            url_name = resolve(request.path_info).url_name
+            if url_name == "check_provider_name":
+                return None
+        except Resolver404:
+            pass
 
         if (
             user.is_authenticated
