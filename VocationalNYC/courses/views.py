@@ -37,7 +37,9 @@ class CourseListView(generic.ListView):
         logger.info("Starting course data refresh check")
         API_URL = "https://data.cityofnewyork.us/resource/fgq8-am2v.json"
         logger.info(cache.get("courses_last_updated"))
-        if not cache.get("courses_last_updated"):
+
+        existing_courses_count = Course.objects.count()
+        if existing_courses_count == 0 and not cache.get("courses_last_updated"):
             try:
                 logger.info("Fetching courses from API")
                 response = requests.get(API_URL, timeout=10)
@@ -288,6 +290,13 @@ def filterCourses(request):
         else:
             course.rating_partial_star_position = 0
             course.rating_partial_percentage = 0
+
+        course.total_hours = (
+            course.classroom_hours
+            + course.lab_hours
+            + course.internship_hours
+            + course.practical_hours
+        )
 
     context = {
         "courses": courses,
