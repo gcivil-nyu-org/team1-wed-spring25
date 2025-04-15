@@ -16,6 +16,7 @@ from pathlib import Path
 import environ
 import json
 
+
 USE_TZ = True
 TIME_ZONE = "America/New_York"
 
@@ -36,8 +37,8 @@ def get_secret(secret_name):
         client = session.client(
             service_name='secretsmanager',
             region_name=region_name,
-            aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
-            aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY')
+            aws_access_key_id=environ.get('AWS_ACCESS_KEY_ID'),
+            aws_secret_access_key=environ.get('AWS_SECRET_ACCESS_KEY')
         )
 
         try:
