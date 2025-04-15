@@ -38,7 +38,7 @@ before_script:
 
 script:
   - gem list logger
-  - docker-compose -f docker-compose.ci.yml exec -T -u root app python manage.py test
+  # - docker-compose -f docker-compose.ci.yml exec -T -u root app python manage.py test
   - docker-compose -f docker-compose.ci.yml exec -T -u root app black --check .
   - docker-compose -f docker-compose.ci.yml exec -T -u root app flake8 .
   - docker-compose -f docker-compose.ci.yml exec -T -u root app coverage run --source=. manage.py test
