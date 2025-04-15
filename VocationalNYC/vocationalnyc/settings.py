@@ -96,6 +96,7 @@ INSTALLED_APPS = [
     "review",
     "message",
     "bookmarks",
+    "widget_tweaks",
 ]
 
 

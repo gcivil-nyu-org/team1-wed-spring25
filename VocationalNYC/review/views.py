@@ -7,8 +7,10 @@ from django.core.serializers import serialize
 from .models import ReviewReply
 from .models import Review, ReviewVote
 from courses.models import Course
+from users.models import Provider
 
 # from django.urls import reverse
+from django.shortcuts import render
 
 
 class ReviewListView(View):
@@ -63,6 +65,10 @@ class ReviewCreateView(View):
         if not content or not score_rating:
             return JsonResponse({"error": "All fields are required."}, status=400)
 
+        # Prevent duplicate reviews by the same user on the same course
+        if Review.objects.filter(course=course, user=request.user).exists():
+            return redirect("course_detail", pk=pk)
+
         Review.objects.create(
             course=course,
             user=request.user,
@@ -70,6 +76,25 @@ class ReviewCreateView(View):
             score_rating=int(score_rating),
         )
         return redirect("course_detail", pk=pk)
+
+
+def course_detail(request, pk):
+    course = get_object_or_404(Course, pk=pk)
+    reviews = Review.objects.filter(course=course)
+
+    user_has_reviewed = False
+    if request.user.is_authenticated:
+        user_has_reviewed = reviews.filter(user=request.user).exists()
+
+    return render(
+        request,
+        "courses/course_detail.html",
+        {
+            "course": course,
+            "reviews": reviews,
+            "user_has_reviewed": user_has_reviewed,
+        },
+    )
 
 
 @method_decorator(login_required, name="dispatch")
@@ -136,3 +161,28 @@ class ReviewVoteView(View):
                 "not_helpful_count": review.not_helpful_count,
             }
         )
+
+
+@method_decorator(login_required, name="dispatch")
+class ReviewReplyCreateView(View):
+    def post(self, request, pk):
+
+        try:
+            request.user.provider_profile
+        except Provider.DoesNotExist:
+            return JsonResponse(
+                {"error": "Only providers can reply to reviews."}, status=403
+            )
+
+        review = get_object_or_404(Review, pk=pk)
+        content = request.POST.get("content")
+
+        if not content:
+            return JsonResponse({"error": "Reply content cannot be empty."}, status=400)
+
+        ReviewReply.objects.create(
+            review=review,
+            user=request.user,
+            content=content,
+        )
+        return redirect("course_detail", pk=review.course.pk)

@@ -11,6 +11,8 @@ from .views import (
     # MyLoginView,
 )
 from . import views
+from .views import CustomPasswordResetView
+
 
 urlpatterns = [
     path("signup/", CustomSignupView.as_view(), name="account_signup"),
@@ -28,4 +30,10 @@ urlpatterns = [
     path("check_provider_name/", check_provider_name, name="check_provider_name"),
     path("api/student/add-tag/", views.add_tag, name="add_tag"),
     path("api/student/remove-tag/", views.remove_tag, name="remove_tag"),
+    path(
+        "password/reset/",
+        CustomPasswordResetView.as_view(),
+        name="account_reset_password",
+    ),
+    path("", include("allauth.urls")),
 ]
