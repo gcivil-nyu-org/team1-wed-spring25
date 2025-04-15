@@ -29,16 +29,20 @@ class AdminRedirectMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if request.user.is_authenticated and (request.user.is_superuser or request.user.is_staff):
-            if not request.path.startswith('/admin/'):
-                return HttpResponseRedirect('/admin/')
+        if request.user.is_authenticated and (
+            request.user.is_superuser or request.user.is_staff
+        ):
+            if not request.path.startswith("/admin/"):
+                return HttpResponseRedirect("/admin/")
         return self.get_response(request)
 
 
 def root_redirect(request):
-    if request.user.is_authenticated and (request.user.is_superuser or request.user.is_staff):
-        return redirect('admin:index')
-    return redirect('course_list')
+    if request.user.is_authenticated and (
+        request.user.is_superuser or request.user.is_staff
+    ):
+        return redirect("admin:index")
+    return redirect("course_list")
 
 
 # from allauth.account.decorators import secure_admin_login
