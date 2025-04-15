@@ -513,7 +513,7 @@ class ProviderVerificationFormTests(TestCase):
             name="Test Provider", phone_num="1234567890", address="Test Address"
         )
 
-    def test_provider_update_form_validation(self):
+    def test_providerverification_form_validation(self):
         # Test valid data
 
         file_data = {
