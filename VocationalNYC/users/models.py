@@ -87,7 +87,7 @@ class Provider(models.Model):
     provider_id = models.AutoField(primary_key=True)
     user = models.OneToOneField(
         CustomUser,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name="provider_profile",

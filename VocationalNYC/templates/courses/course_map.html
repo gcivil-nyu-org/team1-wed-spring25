@@ -6,9 +6,8 @@
 
     <meta charset="UTF-8">
     <title>Discover Courses</title>
-      <link rel="icon"
-        href="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/favicon.png"
-        type="image/png">
+              <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+
      <link rel="stylesheet" href="{% static 'css/course_list.css' %}">
 
              <link rel="stylesheet" href="{% static 'css/globals.css' %}">
@@ -41,9 +40,6 @@
 
     <div style=width:inherit>
 
-
-
-
         <!--top horizontal header-->
         {% if user.role == "career_changer" %}
             {% include 'includes/student_header.html' %}
@@ -52,7 +48,6 @@
         {% else %}
             {% include 'includes/default_header.html' %}
         {% endif %}
-
 
         <!--main content-->
         <article compass="[object Object]">
@@ -109,7 +104,7 @@
                                     {{courses.count}}
                                 </span>
                                 <span>
-                                    results (Not Working)
+                                    results
                                 </span>
                             </div>
                             <div class="Horizontal-Filters-Area-Outer-Container">
@@ -121,18 +116,179 @@
                                                         class="Filters"><span
                                                         class="Filters-Inside">Clear Filters</span>
                                                 </button>
+                                                
+                                            {% if keywords %}
                                             <li class="Applied-Filters-Outline">
-                                                <button aria-label="Clear Ranking filter."
-                                                        class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
-                                                    <span class="Filters-Inside">filter 1</span><span
-                                                        class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon"><svg
-                                                        aria-hidden=true class="Small-Icon"
-                                                        fill=var(--color) height=8px
-                                                        viewBox="0 0 38 38" width=8px><g
-                                                        fill-rule=evenodd stroke=none stroke-width=1><polygon
-                                                        fill-rule=nonzero
-                                                        points="33.4 0 19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38 38 33.399 23.6 18.999 38 4.6"></polygon></g></svg></span>
+                                                <button aria-label="Remove Keywords filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
+                                                    <span class="Filters-Inside">Keywords: {{ keywords }}</span>
+                                                    <span class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon">
+                                                        <svg aria-hidden="true" class="Small-Icon" fill="var(--color)" height="8px" viewBox="0 0 38 38" width="8px">
+                                                            <g fill-rule="evenodd" stroke="none" stroke-width="1">
+                                                                <polygon fill-rule="nonzero" points="33.4 0 19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38 38 33.399 23.6 18.999 38 4.6"></polygon>
+                                                            </g>
+                                                        </svg>
+                                                    </span>
                                                 </button>
+                                            </li>
+                                            {% endif %}
+                                            {% if provider %}
+                                            <li class="Applied-Filters-Outline">
+                                                <button aria-label="Remove Provider filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
+                                                    <span class="Filters-Inside">Provider: {{ provider }}</span>
+                                                    <span class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon">
+                                                        <svg aria-hidden="true" class="Small-Icon" fill="var(--color)" height="8px" viewBox="0 0 38 38" width="8px">
+                                                            <g fill-rule="evenodd" stroke="none" stroke-width="1">
+                                                                <polygon fill-rule="nonzero" points="33.4 0 19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38 38 33.399 23.6 18.999 38 4.6"></polygon>
+                                                            </g>
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                            </li>
+                                            {% endif %}
+                                            {% if min_rating %}
+                                            <li class="Applied-Filters-Outline">
+                                                <button aria-label="Remove Min Rating filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
+                                                    <span class="Filters-Inside">Min Rating: {{ min_rating }}</span>
+                                                    <span class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon">
+                                                        <svg aria-hidden="true" class="Small-Icon" fill="var(--color)" height="8px" viewBox="0 0 38 38" width="8px">
+                                                            <g fill-rule="evenodd" stroke="none" stroke-width="1">
+                                                                <polygon fill-rule="nonzero" points="33.4 0 19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38 38 33.399 23.6 18.999 38 4.6"></polygon>
+                                                            </g>
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                            </li>
+                                            {% endif %}
+                                            {% if min_cost %}
+                                            <li class="Applied-Filters-Outline">
+                                                <button aria-label="Remove Min Cost filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
+                                                    <span class="Filters-Inside">Min Cost: {{ min_cost }}</span>
+                                                    <span class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon">
+                                                        <svg aria-hidden="true" class="Small-Icon" fill="var(--color)" height="8px" viewBox="0 0 38 38" width="8px">
+                                                            <g fill-rule="evenodd" stroke="none" stroke-width="1">
+                                                                <polygon fill-rule="nonzero" points="33.4 0 19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38 38 33.399 23.6 18.999 38 4.6"></polygon>
+                                                            </g>
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                            </li>
+                                            {% endif %}
+                                            {% if max_cost %}
+                                            <li class="Applied-Filters-Outline">
+                                                <button aria-label="Remove Max Cost filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
+                                                    <span class="Filters-Inside">Max Cost: {{ max_cost }}</span>
+                                                    <span class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon">
+                                                        <svg aria-hidden="true" class="Small-Icon" fill="var(--color)" height="8px" viewBox="0 0 38 38" width="8px">
+                                                            <g fill-rule="evenodd" stroke="none" stroke-width="1">
+                                                                <polygon fill-rule="nonzero" points="33.4 0 19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38 38 33.399 23.6 18.999 38 4.6"></polygon>
+                                                            </g>
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                            </li>
+                                            {% endif %}
+                                            {% if location %}
+                                            <li class="Applied-Filters-Outline">
+                                                <button aria-label="Remove Location filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
+                                                    <span class="Filters-Inside">Location: {{ location }}</span>
+                                                    <span class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon">
+                                                        <svg aria-hidden="true" class="Small-Icon" fill="var(--color)" height="8px" viewBox="0 0 38 38" width="8px">
+                                                            <g fill-rule="evenodd" stroke="none" stroke-width="1">
+                                                                <polygon fill-rule="nonzero" points="33.4 0 19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38 38 33.399 23.6 18.999 38 4.6"></polygon>
+                                                            </g>
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                            </li>
+                                            {% endif %}
+                                            {% if min_hours %}
+                                            <li class="Applied-Filters-Outline">
+                                                <button aria-label="Remove Min Hours filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
+                                                    <span class="Filters-Inside">Min Hours: {{ min_hours }}</span>
+                                                    <span class="chip__IconContainer-sc-mc0uv4-1 Applied-Filters-Icon">
+                                                        <svg aria-hidden="true" class="Small-Icon" fill="var(--color)" height="8px" viewBox="0 0 38 38" width="8px">
+                                                            <g fill-rule="evenodd" stroke="none" stroke-width="1">
+                                                                <polygon fill-rule="nonzero" points="33.4 0 19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38 38 33.399 23.6 18.999 38 4.6"></polygon>
+                                                            </g>
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                            </li>
+                                            {% endif %}
+
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function() {
+                                                const clearFiltersBtn = document.querySelector('button.Filters span.Filters-Inside').closest('button');
+                                                if (clearFiltersBtn) {
+                                                  clearFiltersBtn.addEventListener('click', function() {
+                                                    window.location.href = window.location.pathname;
+                                                  });
+                                                }
+                                                
+                                              
+                                                // deal with single filter
+                                                const appliedFilters = document.querySelectorAll('button.Applied-Filters');
+                                                appliedFilters.forEach(filter => {
+                                                  filter.addEventListener('click', function() {
+                                                    // get the current URL and its parameters
+                                                    const url = new URL(window.location.href);
+                                                    const params = url.searchParams;
+                                                    const paramNames = Array.from(params.keys());
+                                                    
+                                                    // get the filter text and split it to get the parameter name
+                                                    const filterText = this.querySelector('.Filters-Inside').textContent;
+                                                    const filterParts = filterText.split(':');
+                                                    
+                                                    if (filterParts.length >= 2) {
+                                                        const filterType = filterParts[0].trim().toLowerCase();
+                                                        
+                                                        // add the filter type to the URL parameters
+                                                        let paramName;
+                                                        switch (filterType) {
+                                                            case 'keywords':
+                                                            paramName = 'keywords';
+                                                            break;
+                                                            case 'provider':
+                                                            paramName = 'provider';
+                                                            break;
+                                                            case 'min rating':
+                                                            paramName = 'min_rating';
+                                                            break;
+                                                            case 'min cost':
+                                                            paramName = 'min_cost';
+                                                            break;
+                                                            case 'max cost':
+                                                            paramName = 'max_cost';
+                                                            break;
+                                                            case 'location':
+                                                            paramName = 'location';
+                                                            break;
+                                                            case 'min hours':
+                                                            paramName = 'min_hours';
+                                                            break;
+                                                            default:
+                                                            paramName = filterType;
+                                                        }
+                                                        
+                                                        // set the parameter as "" from the URL
+                                                        params.set(paramName, '');
+
+                                                        window.location.href = url.toString();
+                                                      
+                                                    }
+                                                  });
+                                                });
+                                                
+                                                const filterIcons = document.querySelectorAll('.Applied-Filters-Icon');
+                                                filterIcons.forEach(icon => {
+                                                  icon.addEventListener('click', function(event) {
+                                                    event.stopPropagation();
+                                                    
+                                                    this.closest('.Applied-Filters').click();
+                                                  });
+                                                });
+                                              });
+                                            </script>
                                         </ul>
                                     </div>
                                 </div>
@@ -149,14 +305,14 @@
                             <div class="Lower-Main-Body-Area-Content">
 
                                 <!--left-side filters-->
-                                <form id="filter-form">
+                                <form action="{% url 'course_map' %}" method="GET" id="searchForm">
 
                                     <fieldset
                                         class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
                                         name="schoolName">
                                         <legend class=" Filter-Section-Title-Outer">
                                             <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
-                                                Keywords (Not Working)
+                                                Keywords
                                             </div>
                                         </legend>
                                         <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
@@ -170,9 +326,9 @@
                                                             autocomplete=off
                                                             class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
                                                             placeholder="Keywords"
-                                                            name="query"
+                                                            name="keywords"
                                                             type=text
-                                                            value>
+                                                            value="{{ keywords }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 id=react-auto
                                                                 role=listbox></div>
@@ -187,7 +343,7 @@
                                         name="schoolName">
                                         <legend class=" Filter-Section-Title-Outer">
                                             <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
-                                                Provider (Not Working)
+                                                Provider
                                             </div>
                                         </legend>
                                         <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
@@ -203,7 +359,7 @@
                                                             placeholder="Provider"
                                                             name="provider"
                                                             type=text
-                                                            value>
+                                                            value="{{ provider }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 role=listbox></div>
                                                     </div>
@@ -214,7 +370,7 @@
 
                                     <fieldset
                                         class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
-                                        name="schoolName">
+                                        name="min rating">
                                         <legend class=" Filter-Section-Title-Outer">
                                             <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
                                                 Min Rating
@@ -231,8 +387,9 @@
                                                             autocomplete=off
                                                             class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
                                                             placeholder="Min Rating"
-                                                            type="number" step="0.1" name="min_rating" min="0" max="5"
-                                                            value>
+                                                            name="min_rating"
+                                                            type="number" step="0.1" min="0" max="5"
+                                                            value="{{ min_rating }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 role=listbox></div>
                                                     </div>
@@ -243,7 +400,7 @@
 
                                     <fieldset
                                         class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
-                                        name="schoolName">
+                                        name="min cost">
                                         <legend class=" Filter-Section-Title-Outer">
                                             <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
                                                 Min Cost
@@ -262,8 +419,8 @@
                                                             name="min_cost"
                                                             placeholder="Min Cost"
                                                             type="number"
-                                                            step="1"  min="0"
-                                                            value>
+                                                            step="1" min="0"
+                                                            value="{{ min_cost }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 role=listbox></div>
                                                     </div>
@@ -274,7 +431,7 @@
 
                                     <fieldset
                                         class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
-                                        name="schoolName">
+                                        name="max cost">
                                         <legend class=" Filter-Section-Title-Outer">
                                             <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
                                                 Max Cost
@@ -294,7 +451,7 @@
                                                             placeholder="Max Cost"  min="0"
                                                             type="number"
                                                             step="1"
-                                                            value>
+                                                            value="{{ max_cost }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 role=listbox></div>
                                                     </div>
@@ -305,7 +462,7 @@
 
                                     <fieldset
                                         class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
-                                        name=location>
+                                        name="location">
                                         <legend class=" Filter-Section-Title-Outer">
                                             <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
                                                 Location
@@ -324,13 +481,15 @@
                                                             name="location"
                                                             placeholder="City, State or ZIP"
                                                             type=text
-                                                            value>
+                                                            value="{{ location }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 id=location-input
-                                                                role=listbox></div>
+                                                                role=listbox>
+                                                            </div>
                                                     </div>
                                                 </div>
                                                 <div style="margin-bottom: 0.5rem !important;"></div>
+                                                {%comment %}
                                                 <span class="select__Container-sc-i9bbt3-3 All-Distances-Outer-Frame"
                                                     style="--width:100%">
                                                     <label class="select__LabelStyled-sc-i9bbt3-0 All-Distances-Inner-Frame">
@@ -346,6 +505,7 @@
                                                     </svg>
                                                 </label>
                                                 </span>
+                                                {% endcomment %}
                                             </div>
                                         </div>
                                         <script>
@@ -366,82 +526,12 @@
                                         </script>
                                     </fieldset>
 
-                                    {% comment %}
                                     <fieldset
                                         class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
-                                        name=area-of-study>
+                                        name="min hours">
                                         <legend class=" Filter-Section-Title-Outer">
                                             <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
-                                                Area of Study
-                                            </div>
-                                        </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
-                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
-                                                <span class="select__Container-sc-i9bbt3-3 All-Distances-Outer-Frame"
-                                                    style=--width:100%><label
-                                                        class="select__LabelStyled-sc-i9bbt3-0 All-Distances-Inner-Frame"><select
-                                                            class="select__SelectStyled-sc-i9bbt3-1 All-Distances-Content-Box"
-                                                            name=study><option
-                                                                selected value>All Areas of Study<option
-                                                                    value="Agriculture, Agriculture Operations, and Related Sciences">Agriculture<option
-                                                                        value="Architecture and Related Services">Architecture<option
-                                                                            value="Basic Skills and Developmental/Remedial Education">Basic Skills and Developmental/Remedial Education<option
-                                                                                value="Biological and Biomedical Sciences">Biological and Biomedical Sciences<option
-                                                                                    value="Business, Management, Marketing, and Related Support Services">Business, Management and Marketing<option
-                                                                                        value="Citizenship Activities">Citizenship Activities<option
-                                                                                            value="Communication, Journalism, and Related Programs">Communication / Journalism<option
-                                                                                                value="Communications Technologies/Technicians and Support Services">Communications Technologies/Technicians<option
-                                                                                                    value="Computer and Information Sciences and Support Services">Computer and Information Sciences<option
-                                                                                                        value="Construction Trades">Construction Trades<option
-                                                                                                            value=Education>Education<option value=Engineering>Engineering<option
-                                                                                                                value="Engineering Technologies and Engineering-Related Fields">Engineering Technologies and Related Fields<option
-                                                                                                                    value="English Language and Literature/Letters">English Language and Literature<option
-                                                                                                                        value="Area, Ethnic, Cultural, Gender, and Group Studies">Ethnic, Cultural, Gender, and Group Studies<option
-                                                                                                                            value="Family and Consumer Sciences/Human Sciences">Family, Consumer and Human Sciences<option
-                                                                                                                                value="Foreign Languages, Literatures, and Linguistics">Foreign Languages, Literatures, and Linguistics<option
-                                                                                                                                    value="Health Professions and Related Programs">Health Professions<option
-                                                                                                                                        value="Health-Related Knowledge and Skills">Health-Related Knowledge and Skills<option
-                                                                                                                                            value="High School/Secondary Diplomas and Certificates">High School/Secondary Diplomas and Certificates<option
-                                                                                                                                                value=History>History<option
-                                                                                                                                                    value="Homeland Security, Law Enforcement, Firefighting and Related Protective Services">Homeland Security, Law Enforcement, Firefighting and Related Services<option
-                                                                                                                                                        value="Interpersonal and Social Skills">Interpersonal and Social Skills<option
-                                                                                                                                                            value="Legal Professions and Studies">Legal Professions and Studies<option
-                                                                                                                                                                value="Leisure and Recreational Activities">Leisure and Recreational Activities<option
-                                                                                                                                                                    value="Liberal Arts and Sciences, General Studies and Humanities">Liberal Arts and Humanities<option
-                                                                                                                                                                        value="Library Science">Library Science<option
-                                                                                                                                                                            value="Mathematics and Statistics">Mathematics and Statistics<option
-                                                                                                                                                                                value="Mechanic and Repair Technologies/Technicians">Mechanic and Repair Technologies/Technicians<option
-                                                                                                                                                                                    value="Military Science, Leadership and Operational Art">Military Science, Leadership and Operations<option
-                                                                                                                                                                                        value="Military Technologies and Applied Sciences">Military Technologies and Applied Sciences<option
-                                                                                                                                                                                            value="Multi/Interdisciplinary Studies">Multi/Interdisciplinary Studies<option
-                                                                                                                                                                                            value="Natural Resources and Conservation">Natural Resources and Conservation<option
-                                                                                                                                                                                            value="Parks, Recreation, Leisure, and Fitness Studies">Parks, Recreation, Leisure, and Fitness Studies<option
-                                                                                                                                                                                            value="Personal and Culinary Services">Personal and Culinary Services<option
-                                                                                                                                                                                            value="Philosophy and Religious Studies">Philosophy and Religious Studies<option
-                                                                                                                                                                                            value="Physical Sciences">Physical Sciences<option
-                                                                                                                                                                                            value="Precision Production">Precision Production<option
-                                                                                                                                                                                            value=Psychology>Psychology<option
-                                                                                                                                                                                            value="Public Administration and Social Service Professions">Public Administration and Social Service Professions<option
-                                                                                                                                                                                            value="Residency Programs">Residency Programs<option
-                                                                                                                                                                                            value="Science Technologies/Technicians">Science Technologies/Technicians<option
-                                                                                                                                                                                            value="Social Sciences">Social Sciences<option
-                                                                                                                                                                                            value="Theology and Religious Vocations">Theology and Religious Vocations<option
-                                                                                                                                                                                            value="Transportation and Materials Moving">Transportation and Materials Moving</select><svg
-                                                                                                                                                                                                class="Small-Icon Dropdown-Icon"
-                                                                                                                                                                                                fill=var(--gray-30)
-                                                                                                                                                                                                viewBox="0 0 64 64"><path
-                                                                                                                                                                                                    d="M33.3,39.8l13.1-13.1c0.4-0.4,0.6-0.8,0.6-1.3c0-1-0.9-1.9-1.9-1.9H18.8c-1,0-1.9,0.8-1.9,1.9  c0,0.5,0.2,1,0.6,1.3l13.1,13.1c0.4,0.4,0.8,0.6,1.3,0.6S33,40.2,33.3,39.8"></path></svg></label></span>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                    {% endcomment %}
-
-                                    <fieldset
-                                        class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
-                                        name="schoolName">
-                                        <legend class=" Filter-Section-Title-Outer">
-                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
-                                                Min Classroom Hours
+                                                Min Hours
                                             </div>
                                         </legend>
                                         <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer">
@@ -458,7 +548,7 @@
                                                             placeholder="Min Hours"
                                                             type="number"
                                                             step="1"  min="0"
-                                                            value>
+                                                            value="{{min_hours}}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 role=listbox></div>
                                                     </div>
@@ -523,6 +613,7 @@
         let map;
         let markers = [];
 
+
         function initMap() {
             const nyc = { lat: 40.7128, lng: -74.0060 };
             map = new google.maps.Map(document.getElementById("map"), {
@@ -531,70 +622,62 @@
             });
 
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const courseId = urlParams.get("course_id");
-
-            const initialFilters = {};
-            if (courseId) {
-                initialFilters["course_id"] = courseId;
-                // document.getElementById("filter-form").style.display = "none";  // Optional: hide form for course_id links
-            }
-
-            loadCourses(initialFilters);
-        }
-
-        function loadCourses(filters = {}) {
-
+            // use data passed from Django template
+            const courseMapData = JSON.parse('{{ course_map_data|escapejs }}');
+            
+            // clear all markers
             markers.forEach(marker => marker.setMap(null));
             markers = [];
 
-            const fetchUrl = new URL("{% url 'course_data' %}", window.location.origin);
-            Object.entries(filters).forEach(([key, value]) => {
-                if (value) fetchUrl.searchParams.append(key, value);
-            });
+            if (courseMapData.length === 0) {
+                const mapContainer = document.getElementById("map");
+                mapContainer.innerHTML = '<div style="display: flex; justify-content: center; align-items: center; height: 100%; background-color: #f8f9fa;"><p style="font-size: 18px; color: #6c757d;">没有找到符合条件的课程位置</p></div>';
+                return;
+            }
 
-            fetch(fetchUrl)
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach((course, index) => {
-                        if (course.latitude && course.longitude) {
-                            const marker = new google.maps.Marker({
-                                position: { lat: course.latitude, lng: course.longitude },
-                                map: map,
-                                title: course.name
-                            });
-
-                            const infoWindow = new google.maps.InfoWindow({
-                                content: `<a href="/courses/${course.course_id}/" target="_blank" style="font-weight: bold; text-decoration: none;">${course.name}</a>`
-                            });
-
-                            marker.addListener("click", function () {
-                                infoWindow.open(map, marker);
-                            });
-
-                            markers.push(marker);
-
-                            if (index === 0) {
-                                map.setCenter({ lat: course.latitude, lng: course.longitude });
-                            }
-                        }
+            // add markers to the map
+            courseMapData.forEach((course, index) => {
+                if (course.latitude && course.longitude) {
+                    const marker = new google.maps.Marker({
+                        position: { lat: course.latitude, lng: course.longitude },
+                        map: map,
+                        title: course.name
                     });
+
+                    const infoWindow = new google.maps.InfoWindow({
+                        content: `<a href="/courses/${course.course_id}/" target="_blank" style="font-weight: bold; text-decoration: none;">${course.name}</a>`
+                    });
+
+                    marker.addListener("click", function () {
+                        infoWindow.open(map, marker);
+                    });
+
+                    markers.push(marker);
+
+                    if (index === 0 && markers.length > 0) {
+                        map.setCenter({ lat: course.latitude, lng: course.longitude });
+                    }
+                }
+            });
+            
+            if (markers.length > 0) {
+                const bounds = new google.maps.LatLngBounds();
+                markers.forEach(marker => {
+                    bounds.extend(marker.getPosition());
                 });
+                map.fitBounds(bounds);
+
+                google.maps.event.addListenerOnce(map, 'bounds_changed', function() {
+                    if (map.getZoom() > 14) map.setZoom(14);
+                    if (map.getZoom() < 10) map.setZoom(10);
+
+                    map.setCenter(nyc);
+                });
+            } 
         }
 
-
-        document.getElementById("filter-form").addEventListener("submit", function (e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            const filters = {};
-            for (const [key, value] of formData.entries()) {
-                if (value.trim() !== "") {
-                    filters[key] = value.trim();
-                }
-            }
-            loadCourses(filters);
+        document.getElementById("searchForm").addEventListener("submit", function(e) {
         });
-
         window.onload = initMap;
     </script>
 

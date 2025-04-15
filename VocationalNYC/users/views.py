@@ -18,13 +18,15 @@ from django.contrib import messages
 from django.db import transaction
 
 # from allauth.account.views import LoginView
-from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 import json
 
 from users.models import Provider, Student, Tag
 from bookmarks.models import BookmarkList
 from review.models import Review
+
+from allauth.account.views import PasswordResetView
+from django.http import JsonResponse
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +57,7 @@ class CustomSignupView(SignupView):
             with transaction.atomic():
                 BookmarkList.objects.create(user=user, name="default")
                 messages.success(
-                    # self.request, "Default bookmark list created successfully."
+                    self.request, "Default bookmark list created successfully."
                 )
         except Exception as e:
             messages.error(
@@ -86,79 +88,57 @@ class CustomSignupView(SignupView):
 @login_required
 def profile_view(request):
     logger.debug("Profile view accessed")
-    form = None  # Ensure 'form' is defined
+    form = None  # Default value
+
     if request.method == "POST":
+        # Handle provider form (training_provider)
         if "provider_form" in request.POST and request.user.role == "training_provider":
             logger.debug("Processing provider form submission")
             provider = getattr(request.user, "provider_profile", None)
-            logger.debug(
-                f"Current provider certificate: {provider.certificate if provider else 'None'}"
-            )
-            logger.debug(f"Files in request: {request.FILES}")
-
             provider_form = ProviderVerificationForm(
                 request.POST, request.FILES, instance=provider
             )
             form = ProfileUpdateForm(instance=request.user)
 
             if provider_form.is_valid():
-                logger.debug("Provider form is valid")
                 provider = provider_form.save(commit=False)
 
                 if "certificate" in request.FILES:
-                    logger.debug("New certificate file detected")
                     if provider.certificate:
-                        # Store old certificate path
-                        old_certificate_path = (
-                            provider.certificate.path if provider.certificate else None
-                        )
-                        # Clear the certificate field without saving
+                        old_certificate_path = provider.certificate.path
                         provider.certificate = None
-
-                        # Delete the old file if it exists
-                        if old_certificate_path and os.path.isfile(
-                            old_certificate_path
-                        ):
+                        if os.path.isfile(old_certificate_path):
                             try:
                                 os.remove(old_certificate_path)
-                                logger.debug(
-                                    f"Old certificate deleted: {old_certificate_path}"
-                                )
                             except Exception as e:
                                 logger.error(
                                     f"Error deleting old certificate file: {e}"
                                 )
-
-                    # Assign new certificate
                     provider.certificate = request.FILES["certificate"]
-                    logger.debug(
-                        f"New certificate assigned: {provider.certificate.name}"
-                    )
 
                 provider.user = request.user
                 provider.save()
-                logger.debug("Provider profile saved successfully")
-                messages.success(request, "Profile updated successfully!")
                 return redirect("profile")
             else:
-                logger.error(f"Provider form errors: {provider_form.errors}")
                 messages.error(
                     request, f"Error updating profile. {provider_form.errors}"
                 )
 
+        # Handle student form (career_changer)
         elif "student_form" in request.POST and request.user.role == "career_changer":
             student_form = StudentProfileForm(
                 request.POST, instance=request.user.student_profile
             )
             if student_form.is_valid():
                 student_form.save()
-                messages.success(request, "Profile updated successfully!")
                 return redirect("profile")
             else:
                 messages.error(
                     request, "Error updating profile. Please check your input."
                 )
-        else:
+
+        # Handle user profile form (modal)
+        elif request.POST.get("user_profile_form") is not None:
             form = ProfileUpdateForm(request.POST, instance=request.user)
             if form.is_valid():
                 form.save()
@@ -168,11 +148,16 @@ def profile_view(request):
                     request, "Error updating profile. Please check your input."
                 )
     else:
-        # GET request
+        # GET request: populate initial form
         form = ProfileUpdateForm(instance=request.user)
 
-    context = {"user": request.user, "role": request.user.role, "form": form}
+    context = {
+        "user": request.user,
+        "role": request.user.role,
+        "form": form,
+    }
 
+    # Provider data
     if request.user.role == "training_provider":
         try:
             provider = Provider.objects.get(user=request.user)
@@ -183,6 +168,7 @@ def profile_view(request):
         except Provider.DoesNotExist:
             context["provider_verification_form"] = ProviderVerificationForm()
 
+    # Career changer data
     elif request.user.role == "career_changer":
         try:
             student = request.user.student_profile
@@ -191,7 +177,7 @@ def profile_view(request):
         context["student"] = student
         context["student_form"] = StudentProfileForm(instance=student)
 
-        # Add bookmark lists
+        # Bookmarks
         bookmark_lists = request.user.bookmark_list.all().prefetch_related(
             "bookmark__course"
         )
@@ -221,27 +207,16 @@ def provider_verification_view(request):
     if request.user.role != "training_provider":
         return redirect("profile")
 
-    # print("provider_verification_view called")
     if request.method == "POST":
-        confirm_existing = request.POST.get("confirm_existing") == "true"
-
-        # Pass the confirm_existing value to the form's initial data
         form = ProviderVerificationForm(request.POST, request.FILES)
         if form.is_valid():
-            # print("Form is valid")
             name = form.cleaned_data.get("name")
             confirm_existing = form.cleaned_data.get("confirm_existing", False)
-
-            # print(f"Confirm existing (from cleaned_data): {confirm_existing}")
-            # print(f"Name: {name}")
 
             try:
                 existing_provider = Provider.objects.get(name=name)
             except Provider.DoesNotExist:
                 existing_provider = None
-
-            # print(f"Existing provider: {existing_provider}")
-            sys.stdout.flush()
 
             if (
                 existing_provider
@@ -266,15 +241,10 @@ def provider_verification_view(request):
                 backend="allauth.account.auth_backends.AuthenticationBackend",
             )
 
-            return render(
-                request,
-                "account/provider_verification_success.html",
-                {"provider": provider},
-            )
+            return JsonResponse({"success": True})
         else:
-            # print("Form is not valid")
-            # print("Form errors:", form.errors)
             sys.stdout.flush()
+            return JsonResponse({"success": False, "errors": form.errors}, status=400)
 
     else:
         form = ProviderVerificationForm()
@@ -286,17 +256,21 @@ def check_provider_name(request):
     name = request.GET.get("name", "")
     try:
         provider = Provider.objects.get(name=name)
-        # print(f"Provider found: {provider}")
-        sys.stdout.flush()
         return JsonResponse(
             {
                 "exists": True,
-                "user": provider.user is not None,
+                "user": provider.user_id is not None,
+                "details": {
+                    "name": provider.name,
+                    "address": provider.address,
+                    "phone_num": provider.phone_num,
+                    "website": provider.website or "",
+                    "contact_firstname": provider.contact_firstname or "",
+                    "contact_lastname": provider.contact_lastname or "",
+                },
             }
         )
     except Provider.DoesNotExist:
-        # print("Provider not found")
-        sys.stdout.flush()
         return JsonResponse({"exists": False})
 
 
@@ -388,3 +362,13 @@ def remove_tag(request):
         return JsonResponse({"success": True})
     except Exception as e:
         return JsonResponse({"success": False, "error": str(e)})
+
+
+class CustomPasswordResetView(PasswordResetView):
+    template_name = "account/password_reset.html"
+
+    def form_valid(self, form):
+        form.save(self.request)
+
+        # Always respond with empty JSON — handled entirely in JS
+        return JsonResponse({"success": True})

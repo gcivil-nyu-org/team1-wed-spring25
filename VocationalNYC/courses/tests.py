@@ -1,7 +1,6 @@
 # import unittest
 from unittest.mock import patch
-
-# import json
+import json
 
 from django.test import TestCase, RequestFactory, Client
 from django.urls import reverse
@@ -388,6 +387,10 @@ class FilterCoursesTest(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
 
+        self.user = get_user_model().objects.create_user(
+            username="testuser", email="test@example.com", password="testpassword"
+        )
+
         # Create test providers
         self.provider1 = Provider.objects.create(
             name="Provider One",
@@ -434,6 +437,7 @@ class FilterCoursesTest(TestCase):
 
     def test_filter_by_keywords_name(self):
         request = self.factory.get("/search/", {"keywords": "Python"})
+        request.user = self.user
         context = filterCourses(request)
         self.assertEqual(len(context["courses"]), 2)
         self.assertIn(self.course1, context["courses"])
@@ -441,12 +445,14 @@ class FilterCoursesTest(TestCase):
 
     def test_filter_by_keywords_description(self):
         request = self.factory.get("/search/", {"keywords": "data science"})
+        request.user = self.user
         context = filterCourses(request)
         self.assertEqual(len(context["courses"]), 1)
         self.assertEqual(context["courses"][0], self.course2)
 
     def test_filter_by_keywords_keywords(self):
         request = self.factory.get("/search/", {"keywords": "web"})
+        request.user = self.user
         context = filterCourses(request)
         self.assertEqual(len(context["courses"]), 2)
         self.assertIn(self.course1, context["courses"])
@@ -454,6 +460,7 @@ class FilterCoursesTest(TestCase):
 
     def test_filter_by_provider(self):
         request = self.factory.get("/search/", {"provider": "Provider One"})
+        request.user = self.user
         context = filterCourses(request)
         self.assertEqual(len(context["courses"]), 2)
         self.assertIn(self.course1, context["courses"])
@@ -461,18 +468,21 @@ class FilterCoursesTest(TestCase):
 
     def test_filter_by_cost_range(self):
         request = self.factory.get("/search/", {"min_cost": "900", "max_cost": "1500"})
+        request.user = self.user
         context = filterCourses(request)
         self.assertEqual(len(context["courses"]), 1)
         self.assertEqual(context["courses"][0], self.course1)
 
     def test_filter_by_location(self):
         request = self.factory.get("/search/", {"location": "Boston"})
+        request.user = self.user
         context = filterCourses(request)
         self.assertEqual(len(context["courses"]), 1)
         self.assertEqual(context["courses"][0], self.course3)
 
     def test_filter_by_classroom_hours(self):
         request = self.factory.get("/search/", {"min_hours": "50"})
+        request.user = self.user
         context = filterCourses(request)
         self.assertEqual(len(context["courses"]), 1)
         self.assertEqual(context["courses"][0], self.course2)
@@ -487,12 +497,14 @@ class FilterCoursesTest(TestCase):
                 "location": "New York",
             },
         )
+        request.user = self.user
         context = filterCourses(request)
         self.assertEqual(len(context["courses"]), 1)
         self.assertEqual(context["courses"][0], self.course2)
 
     def test_no_filters(self):
         request = self.factory.get("/search/")
+        request.user = self.user
         context = filterCourses(request)
         self.assertEqual(len(context["courses"]), 3)
         self.assertIn(self.course1, context["courses"])
@@ -534,17 +546,17 @@ class CourseMapTest(TestCase):
             }
         )
 
-        response = self.client.get(reverse("course_data"))
+        response = self.client.get(reverse("course_map"))
         self.assertEqual(response.status_code, 200)
 
         # Parse the JSON response
-        response_data = response.json()
+        course_map_data_str = response.context.get("course_map_data")
+        response_data = json.loads(course_map_data_str)
 
         # Verify the response data structure
         self.assertEqual(len(response_data), 1)
         self.assertEqual(response_data[0]["name"], "Test Course")
         self.assertEqual(response_data[0]["course_id"], self.course.course_id)
-        self.assertEqual(response_data[0]["course_desc"], "")
         self.assertEqual(response_data[0]["latitude"], 40.7128)
         self.assertEqual(response_data[0]["longitude"], -74.0060)
 
@@ -657,6 +669,11 @@ class PostNewCourseTest(TestCase):
 class SortByFunctionTest(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
+
+        self.user = get_user_model().objects.create_user(
+            username="sortuser", email="sort@example.com", password="testpass"
+        )
+
         # Create test courses
         self.course1 = Course.objects.create(
             name="Course A",
@@ -679,6 +696,7 @@ class SortByFunctionTest(TestCase):
 
     def test_sort_by_name_ascending(self):
         request = self.factory.get("/courses/sort/", {"sort": "name", "order": "asc"})
+        request.user = self.user
         response = sort_by(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
@@ -694,6 +712,7 @@ class SortByFunctionTest(TestCase):
 
     def test_sort_by_name_descending(self):
         request = self.factory.get("/courses/sort/", {"sort": "name", "order": "desc"})
+        request.user = self.user
         response = sort_by(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
@@ -709,6 +728,7 @@ class SortByFunctionTest(TestCase):
 
     def test_sort_by_cost_ascending(self):
         request = self.factory.get("/courses/sort/", {"sort": "cost", "order": "asc"})
+        request.user = self.user
         response = sort_by(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
@@ -724,6 +744,7 @@ class SortByFunctionTest(TestCase):
 
     def test_sort_by_cost_descending(self):
         request = self.factory.get("/courses/sort/", {"sort": "cost", "order": "desc"})
+        request.user = self.user
         response = sort_by(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
@@ -741,6 +762,7 @@ class SortByFunctionTest(TestCase):
         request = self.factory.get(
             "/courses/sort/", {"sort": "classroom_hours", "order": "asc"}
         )
+        request.user = self.user
         response = sort_by(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
@@ -758,6 +780,7 @@ class SortByFunctionTest(TestCase):
         request = self.factory.get(
             "/courses/sort/", {"sort": "classroom_hours", "order": "desc"}
         )
+        request.user = self.user
         response = sort_by(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")

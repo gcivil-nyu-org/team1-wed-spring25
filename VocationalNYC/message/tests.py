@@ -6,6 +6,8 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from .models import Chat, Message
 
+import socket
+
 # Create your tests here.
 
 User = get_user_model()
@@ -57,9 +59,15 @@ class MessageModelTests(TestCase):
 
 class RedisConnectivityTest(TestCase):
     def test_channel_layer_connectivity(self):
+        # Try to connect to Redis (host and port must match your settings)
+        try:
+            socket.create_connection(("localhost", 6379), timeout=1)
+        except (socket.error, socket.timeout):
+            self.skipTest("Redis is not running on localhost:6379")
+
+        # If we reach here, Redis is up — continue with test
         channel_layer = get_channel_layer()
         try:
-            # Attempt to send a test message to a dummy group.
             async_to_sync(channel_layer.group_send)(
                 "test_group", {"type": "test.message", "message": "hello"}
             )

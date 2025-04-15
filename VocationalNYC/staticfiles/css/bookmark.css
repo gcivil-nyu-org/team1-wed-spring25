@@ -11,7 +11,7 @@
         --sand: #f4e1d2;
     }
 
-    .provider-details-container {
+    .bookmark-container {
         width: 1212px !important;
 margin-top: 10.5px;
 margin-right: auto;
@@ -66,7 +66,7 @@ margin-left: auto;        padding: 4rem;
   position: relative;
 }
 
-    .provider-details-container::before {
+    .bookmark-container::before {
         content: '';
         position: absolute;
         top: -100px;
@@ -78,7 +78,7 @@ margin-left: auto;        padding: 4rem;
         z-index: 0;
     }
 
-    h1.provider-details-header {
+    h1.bookmark-header {
         font-size: 3.5rem;
         font-weight: 900;
         line-height: 1.1;
@@ -90,12 +90,12 @@ margin-left: auto;        padding: 4rem;
         z-index: 2;
     }
 
-    .provider-details-meta {
+    .bookmark-meta {
         position: relative;
         z-index: 2;
     }
 
-    .provider-details-meta ul {
+    .bookmark-meta ul {
         list-style: none;
         padding-left: 0;
         display: flex;
@@ -103,7 +103,7 @@ margin-left: auto;        padding: 4rem;
         gap: 1rem;
     }
 
-    /*.provider-details-meta li {*/
+    /*.bookmark-meta li {*/
     /*    background: rgba(255, 255, 255, 0.75);*/
     /*    border-radius: 1.5rem;*/
     /*    border: 1px solid #d1d5db;*/
@@ -114,19 +114,19 @@ margin-left: auto;        padding: 4rem;
     /*    transition: background 0.3s ease, border-color 0.3s ease;*/
     /*}*/
 
-    .provider-details-meta li:hover {
+    .bookmark-meta li:hover {
         border-color: var(--primary);
         background: #f4fdf8;
         box-shadow: var(--neon-glow);
     }
 
-    .provider-details-meta a {
+    .bookmark-meta a {
         font-weight: 700;
         text-decoration: none;
         color: var(--primary-dark);
     }
 
-    .provider-details-meta a:hover {
+    .bookmark-meta a:hover {
         text-decoration: underline;
         color: var(--primary);
     }
@@ -160,7 +160,7 @@ margin-left: auto;        padding: 4rem;
 }
 
 
-    .provider-details-meta li {
+    .bookmark-meta li {
   background: rgba(255, 255, 255, 0.75);
   border-radius: 1.5rem;
   border: 1px solid #d1d5db;
@@ -171,19 +171,19 @@ margin-left: auto;        padding: 4rem;
   transition: background 0.3s ease, border-color 0.3s ease;
 }
 
-.provider-details-text {
+.bookmark-text {
   font-size: 1rem;
   font-weight: 500;
   color: #1f2937;
   line-height: 1.5;
 }
 
-.provider-details-entry {
+.bookmark-entry {
 
 }
 
 
-.provider-details-left {
+.bookmark-left {
 
 }
 
@@ -200,7 +200,7 @@ margin-left: auto;        padding: 4rem;
 
 
 
-.provider-details-entry {
+.bookmark-entry {
   background: rgba(255, 255, 255, 0.75);
   border-radius: 1.5rem;
   border: 1px solid #d1d5db;
@@ -208,14 +208,14 @@ margin-left: auto;        padding: 4rem;
   transition: background 0.3s ease, border-color 0.3s ease;
 }
 
-.provider-details-entry:hover {
+.bookmark-entry:hover {
   border-color: var(--primary);
   background: #f4fdf8;
   box-shadow: var(--neon-glow);
 }
 
 /* NEW: structure inside each li */
-.provider-details-content {
+.bookmark-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -225,7 +225,7 @@ margin-left: auto;        padding: 4rem;
 }
 
 /* Ensures text block is centered vertically */
-.provider-details-left {
+.bookmark-left {
   font-size: 1rem;
   font-weight: 500;
   color: #1f2937;
@@ -235,7 +235,7 @@ margin-left: auto;        padding: 4rem;
 }
 
 /* Form aligns button properly */
-.provider-details-entry form {
+.bookmark-entry form {
   display: flex;
   align-items: center;
   margin: 0;
@@ -302,7 +302,7 @@ margin-left: auto;        padding: 4rem;
   font-size: 1rem;
   font-weight: 600;
   color: #1f2937;
-  margin-top: 1rem; /* <- was 0.5rem */
+  margin-bottom: 1rem; /* <- was 0.5rem */
   display: block;
 }
 
@@ -457,117 +457,3 @@ margin-left: 0!important;
          margin-bottom: 0!important;
      }
 
-     
-         .provider-meta,
-    .provider-stats,
-    .provider-description {
-        position: relative;
-        z-index: 2;
-    }
-
-             .provider-description {
-        margin: 3rem 0;
-        padding: 2rem;
-        border-left: 6px solid var(--primary);
-        background: var(--primary-light);
-        border-radius: 1.5rem;
-        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.04);
-    }
-
-    .provider-description h2 {
-        font-size: 1.5rem;
-        font-weight: 800;
-        margin-bottom: 1rem;
-    }
-
-    .provider-meta p,
-    .provider-stats p {
-        font-size: 1.25rem;
-        margin-bottom: 0.75rem;
-        line-height: 1.6;
-    }
-
-    .provider-meta a {
-        color: var(--primary-dark);
-        font-weight: 700;
-        text-decoration: none;
-    }
-
-    .provider-meta a:hover {
-        text-decoration: underline;
-        color: var(--primary);
-    }
-
-
-    .VerificationIcon {
-  position: relative;
-  display: inline-block;
-  height: 2rem!important;
-}
-
-.VerificationIcon img {
-  height: 100%;
-  width: auto;
-  display: block;
-}
-
-/* Tooltip with EXACT same style, but resized */
-.VerificationIcon::after {
-  content: attr(data-tooltip)!important;
-  position: absolute;
-
-top: 50%;
-    left: 100%;
-transform: translateY(-50%);
-    margin-left: 8px; /* spacing between icon and tooltip */
-
-  /* Core styling */
-  padding: 0.75rem 1.25rem;
-  border-radius: 2rem;
-  font-size: 0.75rem;
-  white-space: nowrap;
-  color: black !important;
-
-  -webkit-text-fill-color: black !important;
-  font-weight: normal !important;
-
-  background: var(--glass-bg)!important;
-  backdrop-filter: blur(5px);
-  border: 1px solid var(--glass-border)!important;
-box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08), inset 0 0 4px #fff;
-    position: absolute;
-
-  /* Tooltip visibility */
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-  z-index: 1999;
-}
-
-/* Hover trigger */
-.VerificationIcon:hover::after,
-.VerificationIcon:hover::before {
-  opacity: 1;
-}
-
-    .provider-details-meta h2 {
-        font-size: 2.25rem;
-        font-weight: 900;
-        color: #0f172a;
-        margin-bottom: 2rem;
-        position: relative;
-        z-index: 2;
-    }
-
-        .provider-details-section {
-        margin-top: 5rem;
-    }
-
-    .provider-details-section h2 {
-        font-size: 2.25rem;
-        font-weight: 900;
-        color: #0f172a;
-        margin-bottom: 2rem;
-        position: relative;
-        z-index: 2;
-    }

@@ -1,6 +1,7 @@
 import requests
 import logging
 import re
+import json
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -14,10 +15,11 @@ from review.models import Review
 from django.db import transaction
 import hashlib
 
+
 from users.models import Provider
 from .models import Course
 from .forms import CourseForm
-from django.http import JsonResponse, HttpResponseForbidden
+from django.http import HttpResponseForbidden
 from bookmarks.models import BookmarkList
 
 
@@ -60,7 +62,7 @@ class CourseListView(generic.ListView):
                     )
 
                     # Get or create the provider
-                    provider, created = Provider.objects.get_or_create(
+                    provider, created = Provider.objects.update_or_create(
                         name=provider_name,
                         defaults={
                             "phone_num": course.get("phone1", "0000000000"),
@@ -68,6 +70,8 @@ class CourseListView(generic.ListView):
                             "open_time": course.get("open_time", ""),
                             "provider_desc": course.get("provider_description", ""),
                             "website": course.get("website", ""),
+                            "contact_firstname": course.get("contact_firstname", ""),
+                            "contact_lastname": course.get("contact_lastname", ""),
                         },
                     )
 
@@ -116,25 +120,6 @@ class CourseListView(generic.ListView):
                     # logger.info(
                     #     f"Course {'created' if created else 'updated'}: {course_name}"
                     # )
-                    # course_obj, created = Course.objects.get_or_create(
-                    #     name=course_name,
-                    #     provider=provider,
-                    #     defaults=course_defaults
-                    # )
-
-                    # if created:
-                    #     logger.info(f"Course created: {course_name}")
-                    # else:
-                    #     has_changed = False
-                    #     for field, new_value in course_defaults.items():
-                    #         old_value = getattr(course_obj, field)
-                    #         if old_value != new_value:
-                    #             has_changed = True
-                    #             setattr(course_obj, field, new_value)
-
-                    #     if has_changed:
-                    #         course_obj.save()
-                    #         logger.info(f"Course updated: {course_name}")
 
                     # Convert keywords to tags
                     # if course_defaults["keywords"]:
@@ -198,15 +183,50 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        reviews = Review.objects.filter(course=self.object).order_by("-created_at")
+
+        course = self.get_object()  # This gets the course object
+        user = self.request.user  # This gets the logged-in user
+
+        reviews = (
+            Review.objects.filter(course=self.object)
+            .order_by("-created_at")
+            .prefetch_related("replies")  # prefetches replies efficiently
+        )
+
         context["reviews"] = reviews
+
+        reviews_count = reviews.count()
+        context["reviews_count"] = reviews_count
+
+        avg_score = reviews.aggregate(Avg("score_rating"))["score_rating__avg"]
+        if avg_score is None:
+            avg_score = 0
+        rating = round(avg_score, 1)
+        rating_full_stars = int(avg_score)
+        if avg_score - int(avg_score) > 0:
+            rating_partial_star_position = rating_full_stars + 1
+            rating_partial_percentage = int((avg_score - int(avg_score)) * 100)
+        else:
+            rating_partial_star_position = 0
+            rating_partial_percentage = 0
+
+        context["rating"] = rating
+        context["rating_full_stars"] = rating_full_stars
+        context["rating_partial_star_position"] = rating_partial_star_position
+        context["rating_partial_percentage"] = rating_partial_percentage
+
+        if user.is_authenticated:
+            context["user_has_reviewed"] = Review.objects.filter(
+                course=course, user=user
+            ).exists()
+        else:
+            context["user_has_reviewed"] = False
+
         return context
 
 
 def filterCourses(request):
-    # query = request.GET.get("query", "").strip()
     keywords = request.GET.get("keywords", "").strip()
-
     provider_name = request.GET.get("provider", "")
     min_rating = request.GET.get("min_rating", None)
     min_cost = request.GET.get("min_cost", None)
@@ -272,13 +292,25 @@ def filterCourses(request):
     context = {
         "courses": courses,
         "keywords": keywords,
-        "provider_name": provider_name,
+        "provider": provider_name,
         "min_rating": min_rating,
         "min_cost": min_cost,
         "max_cost": max_cost,
         "location": location,
         "min_hours": min_hours,
     }
+
+    # Inject bookmark lists
+    if request.user.is_authenticated:
+        bookmark_lists = BookmarkList.objects.filter(user=request.user)
+        default_bookmark_list = bookmark_lists.first()
+    else:
+        bookmark_lists = []
+        default_bookmark_list = None
+
+    context["bookmark_lists"] = bookmark_lists
+    context["default_bookmark_list"] = default_bookmark_list
+
     return context
 
 
@@ -318,9 +350,9 @@ def get_coordinates(address):
     return None, None
 
 
-def course_map(request):
-    """Render the course map page"""
-    return render(request, "courses/course_map.html")
+def course_comparison(request):
+    """Render the course comparison page"""
+    return render(request, "courses/course_comparison_page.html")
 
 
 def course_data(request):
@@ -331,13 +363,13 @@ def course_data(request):
     if course_id and course_id.isdigit():
         courses = courses.filter(course_id=course_id)
 
-    keywords = request.GET.get("keywords")
-    min_cost = request.GET.get("min_cost")
-    max_cost = request.GET.get("max_cost")
-    min_rating = request.GET.get("min_rating")
-    provider = request.GET.get("provider")
-    location = request.GET.get("location")
-    min_hours = request.GET.get("min_hours")
+    keywords = request.GET.get("keywords", "")
+    provider = request.GET.get("provider", "")
+    min_rating = request.GET.get("min_rating", None)
+    min_cost = request.GET.get("min_cost", None)
+    max_cost = request.GET.get("max_cost", None)
+    location = request.GET.get("location", "")
+    min_hours = request.GET.get("min_hours", None)
 
     if keywords:
         courses = courses.filter(Q(name__icontains=keywords))
@@ -359,21 +391,39 @@ def course_data(request):
         except ValueError:
             pass
 
-    data = []
+    course_map_data = []
     for course in courses:
         lat, lng = get_coordinates(course.location)
         if lat and lng:
-            data.append(
+            course_map_data.append(
                 {
                     "course_id": course.course_id,
                     "name": course.name,
-                    "course_desc": course.course_desc,
                     "latitude": lat,
                     "longitude": lng,
                 }
             )
 
-    return JsonResponse(data, safe=False)
+    context = {
+        "courses": courses,
+        "courses": courses,
+        "keywords": keywords,
+        "provider": provider,
+        "min_rating": min_rating,
+        "min_cost": min_cost,
+        "max_cost": max_cost,
+        "location": location,
+        "min_hours": min_hours,
+        "course_map_data": json.dumps(course_map_data),
+    }
+
+    return context
+
+
+def course_map(request):
+    """Render the course map page"""
+    context = course_data(request)
+    return render(request, "courses/course_map.html", context)
 
 
 def sort_by(request):

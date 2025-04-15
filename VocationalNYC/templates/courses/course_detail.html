@@ -26,7 +26,7 @@
 
 <div class="course-container">
 
-    <h1 class="course-header">{{ course.name }}</h1>
+    <h1 class="course-header">{{ course.name }} </h1>
 
     <div class="course-meta">
 
@@ -37,7 +37,7 @@
 
             {% if course.provider.verification_status %}
                 <span class="VerificationIcon" data-tooltip="Verified Provider">
-                    <img src="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/verified.png" srcset alt="Verified">
+                    <img src="{% static 'images/verified.png' %}" srcset alt="Verified">
                 </span>
             {% endif %}
 
@@ -45,7 +45,7 @@
 
         <p onclick="location.href='/courses/map/?course_id={{ course.pk }}'" style="cursor:pointer;">
             📍 <strong>Location:</strong>
-            <a href="javascript:void()">{{ course.location }}</a>
+            <a href="javascript:void(0)">{{ course.location }}</a>
         </p>
 
     </div>
@@ -64,35 +64,135 @@
     </div>
 
     <div class="review-section" id="student-review-section">
-        <h2>💬 Student Reviews</h2>
-        {% if reviews %}
-            <ul class="review-list">
-{% for review in reviews %}
-<li class="review-item">
-    <div class="review-header-row">
-        <div class="review-user-icon">
-            <svg class="person-crop-circle" height="28" viewBox="0 0 64 64" width="28" xmlns="http://www.w3.org/2000/svg">
-                <path d="M29.9475268,59.5867724 C46.1333288,59.5867724 59.534715,46.15661 59.534715,29.9998218 C59.534715,13.8140198 46.1043387,0.412871288 29.9185367,0.412871288 C13.7617248,0.412871288 0.36059406,13.8140198 0.36059406,29.9998218 C0.36059406,46.15661 13.7907743,59.5867724 29.9475268,59.5867724 Z M29.9475268,39.8621585 C21.2165169,39.8621585 14.5159426,42.9948714 11.5572297,46.4756852 C7.67029902,42.0956436 5.32073466,36.3523367 5.32073466,29.9998218 C5.32073466,16.3085941 16.2273089,5.34403961 29.9185367,5.34403961 C43.6097644,5.34403961 54.5743189,16.3085941 54.6039513,29.9998218 C54.6325367,36.3523367 52.253804,42.1246337 48.3378832,46.4756852 C45.4081605,42.9948714 38.6785961,39.8621585 29.9475268,39.8621585 Z M29.9475268,34.9309902 C35.5458832,34.9889704 39.8968931,30.2318614 39.8968931,23.9954258 C39.8968931,18.1360396 35.5168337,13.291901 29.9475268,13.291901 C24.3782198,13.291901 19.9691703,18.1360396 19.9979358,23.9954258 C20.0272099,30.2318614 24.3782198,34.8729506 29.9475268,34.9309902 Z" transform="translate(2 2)"></path>
-            </svg>
+
+        <h2>💬 Ratings & Reviews</h2>
+        <div aria-label="{{ course.rating }} out of 5"
+            class="Course-Reviews-Inner-Container Course-Rating-And-Reviews kiGUEr"
+            spacing=0>
+            {% for i in "12345"|make_list %}
+                {% if forloop.counter <= course.rating_full_stars %}
+                <svg class="Course-Rating"
+                        fill=#a2ccb6
+                        stroke=#a2ccb6>
+                    <use xlink:href=#star></use>
+                </svg>
+                {% elif forloop.counter == course.rating_partial_star_position %}
+                <svg class="Course-Rating"
+                        fill=url(#course_rating)
+                        stroke=#a2ccb6>
+                    <use xlink:href=#star></use>
+                    <defs>
+                        <lineargradient
+                                id=course_rating
+                                x1=0% x2=100% y1=0% y2=0%>
+                            <stop offset=0%
+                                    stop-color=#a2ccb6></stop>
+                            <stop offset={{ course.rating_partial_percentage }}%
+                                    stop-color=#a2ccb6></stop>
+                            <stop offset={{ course.rating_partial_percentage }}%
+                                    stop-color=#ffffff></stop>
+                            <stop offset=100%
+                                    stop-color=#ffffff></stop>
+                        </lineargradient>
+                    </defs>
+                </svg>
+                {% else %}
+                <svg class="Course-Rating"
+                        fill=#ffffff
+                        stroke=#a2ccb6>
+                    <use xlink:href=#star></use>
+                </svg>
+                {% endif %}
+            {% endfor %}
+            <span class="Course-Review-Quantity Reviews">{{ reviews_count }} reviews</span>
         </div>
 
-        <div class="review-header-text">
-            <span class="review-username">{{ review.user.username }}</span>
-<div class="review-stars" aria-label="{{ review.score_rating }} out of 5">
-    {% for i in "12345"|make_list %}
-        {% if forloop.counter <= review.score_rating %}
-            <svg class="Course-Rating" fill="currentColor" stroke="currentColor">
-                <use xlink:href="#star"></use>
-            </svg>
-        {% else %}
-            <svg class="Course-Rating" fill="white" stroke="currentColor">
-                <use xlink:href="#star"></use>
-            </svg>
+        {% if reviews %}
+            <ul class="review-list">
+                {% for review in reviews %}
+                <li class="review-item">
+                    <div class="review-header-row">
+                        <div class="review-user-icon">
+                            <svg class="person-crop-circle" height="28" viewBox="0 0 64 64" width="28" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M29.9475268,59.5867724 C46.1333288,59.5867724 59.534715,46.15661 59.534715,29.9998218 C59.534715,13.8140198 46.1043387,0.412871288 29.9185367,0.412871288 C13.7617248,0.412871288 0.36059406,13.8140198 0.36059406,29.9998218 C0.36059406,46.15661 13.7907743,59.5867724 29.9475268,59.5867724 Z M29.9475268,39.8621585 C21.2165169,39.8621585 14.5159426,42.9948714 11.5572297,46.4756852 C7.67029902,42.0956436 5.32073466,36.3523367 5.32073466,29.9998218 C5.32073466,16.3085941 16.2273089,5.34403961 29.9185367,5.34403961 C43.6097644,5.34403961 54.5743189,16.3085941 54.6039513,29.9998218 C54.6325367,36.3523367 52.253804,42.1246337 48.3378832,46.4756852 C45.4081605,42.9948714 38.6785961,39.8621585 29.9475268,39.8621585 Z M29.9475268,34.9309902 C35.5458832,34.9889704 39.8968931,30.2318614 39.8968931,23.9954258 C39.8968931,18.1360396 35.5168337,13.291901 29.9475268,13.291901 C24.3782198,13.291901 19.9691703,18.1360396 19.9979358,23.9954258 C20.0272099,30.2318614 24.3782198,34.8729506 29.9475268,34.9309902 Z" transform="translate(2 2)"></path>
+                            </svg>
+                        </div>
+
+                        <div class="review-header-text">
+                            <span class="review-username">{{ review.user.username }}</span>
+                            <div class="review-stars" aria-label="{{ review.score_rating }} out of 5">
+                                {% for i in "12345"|make_list %}
+                                    {% if forloop.counter <= review.score_rating %}
+                                        <svg class="Course-Rating" fill="currentColor" stroke="currentColor">
+                                            <use xlink:href="#star"></use>
+                                        </svg>
+                                    {% else %}
+                                        <svg class="Course-Rating" fill="white" stroke="currentColor">
+                                            <use xlink:href="#star"></use>
+                                        </svg>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="review-score">
+                                    ({{ review.score_rating }}/5)
+                                </span>
+                            </div>       
+                         </div>
+                    </div>
+
+                        <div class="review-body">
+
+                            <p>"{{ review.content }}"</p>
+
+                            <div class="review-timestamp">
+                                {% timezone "America/New_York" %}
+                                    Posted on {{ review.created_at|date:"l, F j, Y \\a\\t g:i:s A" }}
+                                {% endtimezone %}
+                            </div>
+
+{#                            <div class="review-votes">#}
+{#                                <form class="vote-form" data-review-id="{{ review.pk }}">#}
+{#                                    {% csrf_token %}#}
+{##}
+{#                                    <!-- Upvote -->#}
+{#                                    <button type="button" data-action="upvote" class="vote-btn vote-up" aria-label="Upvote">#}
+{#                                        <svg class="vote-icon" viewBox="0 0 24 24" fill="currentColor">#}
+{#                                            <path d="M1 21h4V9H1v12zM23 10c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14 1 7.59 7.41C7.22 7.78 7 8.3 7 8.83V19c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1z"/>#}
+{#                                        </svg>#}
+{#                                    </button>#}
+{#                                    <span class="vote-count helpful-count">{{ review.helpful_count }}</span>#}
+{##}
+{#                                    <!-- Downvote -->#}
+{#                                    <button type="button" data-action="downvote" class="vote-btn vote-down" aria-label="Downvote">#}
+{#                                        <svg class="vote-icon" viewBox="0 0 24 24" fill="currentColor">#}
+{#                                            <path d="M15 3H6c-.83 0-1.54.5-1.84 1.22L1.14 11.27C1.05 11.5 1 11.74 1 12v1c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L10 23l6.41-6.41c.37-.37.59-.89.59-1.42V5c0-1.1-.9-2-2-2zM23 3h-4v12h4V3z"/>#}
+{#                                        </svg>#}
+{#                                    </button>#}
+{#                                    <span class="vote-count not-helpful-count">{{ review.not_helpful_count }}</span>#}
+{##}
+{#                                </form>#}
+{#                            </div>#}
+
+                        </div>
+
+
+                        {% for reply in review.replies.all %}
+                            <div class="provider-reply">
+                                <p class="provider-response-header">Provider Response:</p>
+                                <p class="provider-reply-content">"{{ reply.content }}"</p>
+                                <p class="reply-review-timestamp">
+                                    {% timezone "America/New_York" %}
+                                        Replied on {{ reply.created_at|date:"l, F j, Y \\a\\t g:i:s A" }}
+                                    {% endtimezone %}
+                                </p>
+                            </div>
+                        {% endfor %}
+
+
+        {% if review.user == user %}
+            <div class="review-edit">
+                <button type="button" class="edit-review-button" data-review-id="{{ review.pk }}">✏️ Edit</button>
+            </div>
         {% endif %}
-    {% endfor %}
-    <span class="review-score">({{ review.score_rating }}/5)</span>
-</div>        </div>
-    </div>
 
     <div class="review-body">
         <p>"{{ review.content }}"</p>
@@ -101,66 +201,81 @@
 Posted on {{ review.created_at|date:"l, F j, Y \\a\\t g:i:s A" }}    {% endtimezone %}
 </div>
 
-<div class="review-votes">
-    <form class="vote-form" data-review-id="{{ review.pk }}">
-        {% csrf_token %}
-        <!-- Upvote -->
-<button type="button" data-action="upvote" class="vote-btn vote-up" aria-label="Upvote">
-  <svg class="vote-icon" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M1 21h4V9H1v12zM23 10c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14 1 7.59 7.41C7.22 7.78 7 8.3 7 8.83V19c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1z"/>
-  </svg>
-</button>
-<span class="vote-count helpful-count">{{ review.helpful_count }}</span>
+                                                <div class="review-votes">
+                                <form class="vote-form" data-review-id="{{ review.pk }}">
+                                    {% csrf_token %}
 
-<!-- Downvote -->
-<button type="button" data-action="downvote" class="vote-btn vote-down" aria-label="Downvote">
-  <svg class="vote-icon" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M15 3H6c-.83 0-1.54.5-1.84 1.22L1.14 11.27C1.05 11.5 1 11.74 1 12v1c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L10 23l6.41-6.41c.37-.37.59-.89.59-1.42V5c0-1.1-.9-2-2-2zM23 3h-4v12h4V3z"/>
-  </svg>
-</button>
-<span class="vote-count not-helpful-count">{{ review.not_helpful_count }}</span>
-    </form>
-</div>
-    </div>
+                                    <!-- Upvote -->
+                                    <button type="button" data-action="upvote" class="vote-btn vote-up" aria-label="Upvote">
+                                        <svg class="vote-icon" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M1 21h4V9H1v12zM23 10c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14 1 7.59 7.41C7.22 7.78 7 8.3 7 8.83V19c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1z"/>
+                                        </svg>
+                                    </button>
+                                    <span class="vote-count helpful-count">{{ review.helpful_count }}</span>
 
-    {% if user == review.user %}
-<form method="POST" action="{% url 'review-delete' review.pk %}" class="delete-review-form">
-    {% csrf_token %}
-    <button type="submit"
-            class="delete-button"
-            onclick="return confirm('Are you sure you want to delete this review?');">
-        🗑️ Delete
-    </button>
-</form>    {% endif %}
-</li>{% endfor %}
+                                    <!-- Downvote -->
+                                    <button type="button" data-action="downvote" class="vote-btn vote-down" aria-label="Downvote">
+                                        <svg class="vote-icon" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M15 3H6c-.83 0-1.54.5-1.84 1.22L1.14 11.27C1.05 11.5 1 11.74 1 12v1c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L10 23l6.41-6.41c.37-.37.59-.89.59-1.42V5c0-1.1-.9-2-2-2zM23 3h-4v12h4V3z"/>
+                                        </svg>
+                                    </button>
+                                    <span class="vote-count not-helpful-count">{{ review.not_helpful_count }}</span>
+
+                                </form>
+                            </div>
+
+                     {% if user.is_authenticated and user.provider_profile and review.replies.count == 0%}
+
+                            <form method="POST" action="{% url 'review-reply-create' review.pk %}" class="provider-reply-form">
+                                {% csrf_token %}
+
+                                    <label for="content" class="your-reply">Your Reply:</label>
+                                    <textarea name="content" class="reply-review" id="reply-{{ review.pk }}" rows="5" required></textarea>
+                                    <button type="submit" class="reply-button">↩️ Reply</button>
+                            </form>
+                        {% endif %}
+
+                        {% if user == review.user %}
+                            <form method="POST" action="{% url 'review-delete' review.pk %}" class="delete-review-form">
+                                {% csrf_token %}
+                                <button type="submit" class="delete-button" onclick="return confirm('Are you sure you want to delete this review?');">
+                                    🗑️ Delete
+                                </button>
+                            </form>
+                        {% endif %}
+
+                    </li>
+                {% endfor %}
             </ul>
         {% else %}
             <p class="text-gray-500 italic">No reviews yet. Be the first to review!</p>
         {% endif %}
     </div>
 
-    <section class="review-submission">
-        {% if user.is_authenticated %}
-            <header>
-                <p>✍️ Leave a Review</p>
-            </header>
+{% if user.is_authenticated and user.role == "career_changer" and not user_has_reviewed %}
 
-            <form method="POST" action="{% url 'review-create' course.pk %}">
-                {% csrf_token %}
-                <label for="content">Your Review:</label>
-                <textarea name="content" rows="5" required></textarea>
+            <section class="review-submission">
 
-                <label for="score_rating">Rating (1–5):</label>
-                <input type="number" name="score_rating" min="1" max="5" required>
+                <header>
+                    <p>✍️ Leave a Review</p>
+                </header>
 
-                <button type="submit" class="cta-button">🚀 Submit Review</button>
-            </form>
-        {% else %}
-            <p class="text-gray-700 text-lg mt-6">
-                <a href="{% url 'login' %}" class="text-blue-600 hover:underline font-semibold">Log in</a> to submit a review.
-            </p>
+                <form method="POST" action="{% url 'review-create' course.pk %}">
+
+                    {% csrf_token %}
+                    <label for="content">Your Review:</label>
+                    <textarea name="content" rows="5" required></textarea>
+
+                    <label for="score_rating">Rating (1–5):</label>
+                    <input type="number" name="score_rating" min="1" max="5" required>
+
+                    <button type="submit" class="cta-button">🚀 Submit Review</button>
+
+                </form>
+
+            </section>
         {% endif %}
-    </section>
+
 
 </div>
 
