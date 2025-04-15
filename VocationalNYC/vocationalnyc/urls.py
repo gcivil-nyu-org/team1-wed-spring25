@@ -29,7 +29,7 @@ class AdminRedirectMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if request.user.is_authenticated and (
+        if hasattr(request, 'user') and request.user.is_authenticated and (
             request.user.role == "administrator" or
             request.user.is_superuser or 
             request.user.is_staff
@@ -40,7 +40,7 @@ class AdminRedirectMiddleware:
 
 
 def root_redirect(request):
-    if request.user.is_authenticated and (
+    if hasattr(request, 'user') and request.user.is_authenticated and (
         request.user.is_superuser or request.user.is_staff
     ):
         return redirect("admin:index")
