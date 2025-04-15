@@ -9,6 +9,7 @@ from .forms import (
     CustomSignupForm,
     ProviderVerificationForm,
     ProfileUpdateForm,
+    ProviderUpdateForm,
     StudentProfileForm,
 )
 from django.contrib.auth.decorators import login_required
@@ -101,7 +102,7 @@ def profile_view(request):
         if "provider_form" in request.POST and request.user.role == "training_provider":
             logger.debug("Processing provider form submission")
             provider = getattr(request.user, "provider_profile", None)
-            provider_form = ProviderVerificationForm(
+            provider_form = ProviderUpdateForm(
                 request.POST, request.FILES, instance=provider
             )
             form = ProfileUpdateForm(instance=request.user)
@@ -168,11 +169,9 @@ def profile_view(request):
         try:
             provider = Provider.objects.get(user=request.user)
             context["provider"] = provider
-            context["provider_verification_form"] = ProviderVerificationForm(
-                instance=provider
-            )
+            context["provider_update_form"] = ProviderUpdateForm(instance=provider)
         except Provider.DoesNotExist:
-            context["provider_verification_form"] = ProviderVerificationForm()
+            context["provider_update_form"] = ProviderUpdateForm()
 
     # Career changer data
     elif request.user.role == "career_changer":
