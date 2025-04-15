@@ -34,3 +34,4 @@ node_modules/
 **/migrations/
 
 db_script.sh
+VocationalNYC/.coverage

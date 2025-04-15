@@ -67,7 +67,11 @@
 
         <h2>💬 Ratings & Reviews
             {% if reviews_count != 0 %}
-                ({{ rating }} · {{ reviews_count }} reviews)
+                {% if reviews_count == 1 %}
+                    ({{ rating }} · {{ reviews_count }} review)
+                {% else %}
+                    ({{ rating }} · {{ reviews_count }} reviews)
+                {% endif %}
             {% endif %}
         </h2>
 
