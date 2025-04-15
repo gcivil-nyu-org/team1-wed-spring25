@@ -29,10 +29,14 @@ class AdminRedirectMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if hasattr(request, 'user') and request.user.is_authenticated and (
-            request.user.role == "administrator" or
-            request.user.is_superuser or 
-            request.user.is_staff
+        if (
+            hasattr(request, "user")
+            and request.user.is_authenticated
+            and (
+                request.user.role == "administrator"
+                or request.user.is_superuser
+                or request.user.is_staff
+            )
         ):
             if not request.path.startswith("/admin/"):
                 return HttpResponseRedirect("/admin/")
@@ -40,8 +44,10 @@ class AdminRedirectMiddleware:
 
 
 def root_redirect(request):
-    if hasattr(request, 'user') and request.user.is_authenticated and (
-        request.user.is_superuser or request.user.is_staff
+    if (
+        hasattr(request, "user")
+        and request.user.is_authenticated
+        and (request.user.is_superuser or request.user.is_staff)
     ):
         return redirect("admin:index")
     return redirect("course_list")

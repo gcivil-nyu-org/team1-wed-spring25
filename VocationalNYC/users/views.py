@@ -43,7 +43,7 @@ class CustomLoginView(LoginView):
         # Always redirect admin to admin dashboard
         if getattr(user, "role", "") == "administrator":
             return HttpResponseRedirect("/admin/")
-            
+
         if getattr(user, "role", "") == "training_provider":
             if not user.is_active:
                 print(f"Redirecting inactive provider {user.username} to verification")
