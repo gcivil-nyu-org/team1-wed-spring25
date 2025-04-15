@@ -116,7 +116,7 @@ class BookmarkListTests(TestCase):
 
         self.assertRedirects(
             response,
-            f"{'/accounts/login/'}?next={reverse('bookmark_list_detail', kwargs={'list_id': self.default_list.list_id})}",
+            f"{'/login/'}?next={reverse('bookmark_list_detail', kwargs={'list_id': self.default_list.list_id})}",
         )
 
     def test_create_bookmark_list(self):

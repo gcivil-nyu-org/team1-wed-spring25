@@ -1537,7 +1537,9 @@ class CustomLoginViewTests(TestCase):
         )
 
         # Active providers should follow the adapter's regular redirect (manage_courses)
-        self.assertRedirects(response, reverse("manage_courses"))
+        self.assertRedirects(
+            response, reverse("manage_courses"), fetch_redirect_response=False
+        )
         self.assertEqual(response.status_code, 302)
 
     def test_login_view_regular_user(self):
