@@ -22,6 +22,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import redirect
 
+
 def root_redirect(request):
     if (
         hasattr(request, "user")

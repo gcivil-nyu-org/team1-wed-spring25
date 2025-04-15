@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from django.urls import reverse, resolve, Resolver404
 from django.http import HttpResponseRedirect
 
+
 class AdminRedirectMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
@@ -20,7 +21,8 @@ class AdminRedirectMiddleware:
             if not request.path.startswith("/admin/"):
                 return HttpResponseRedirect("/admin/")
         return self.get_response(request)
-    
+
+
 class TrainingProviderMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
