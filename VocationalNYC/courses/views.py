@@ -198,8 +198,25 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        reviews = Review.objects.filter(course=self.object).order_by("-created_at")
+
+        course = self.get_object()  # This gets the course object
+        user = self.request.user  # This gets the logged-in user
+
+        reviews = (
+            Review.objects.filter(course=self.object)
+            .order_by("-created_at")
+            .prefetch_related("replies")  # prefetches replies efficiently
+        )
+
         context["reviews"] = reviews
+
+        if user.is_authenticated:
+            context["user_has_reviewed"] = Review.objects.filter(
+                course=course, user=user
+            ).exists()
+        else:
+            context["user_has_reviewed"] = False
+
         return context
 
 
@@ -279,6 +296,18 @@ def filterCourses(request):
         "location": location,
         "min_hours": min_hours,
     }
+
+    # Inject bookmark lists
+    if request.user.is_authenticated:
+        bookmark_lists = BookmarkList.objects.filter(user=request.user)
+        default_bookmark_list = bookmark_lists.first()
+    else:
+        bookmark_lists = []
+        default_bookmark_list = None
+
+    context["bookmark_lists"] = bookmark_lists
+    context["default_bookmark_list"] = default_bookmark_list
+
     return context
 
 
@@ -321,6 +350,11 @@ def get_coordinates(address):
 def course_map(request):
     """Render the course map page"""
     return render(request, "courses/course_map.html")
+
+
+def course_comparison(request):
+    """Render the course comparison page"""
+    return render(request, "courses/course_comparison_page.html")
 
 
 def course_data(request):

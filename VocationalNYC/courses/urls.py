@@ -10,6 +10,7 @@ urlpatterns = [
     path("api/course_data/", course_data, name="course_data"),
     path("sort/", views.sort_by, name="course_sort"),
     path("manage_courses/", views.manage_courses, name="manage_courses"),
+    path("course_comparison/", views.course_comparison, name="course_comparison"),
     path("new_course/", views.post_new_course, name="new_course"),
     path("delete_course/<int:course_id>/", views.delete_course, name="delete_course"),
     path("edit_course/<int:course_id>/", views.edit_course, name="edit_course"),

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,9 +8,8 @@
     <title>Provider Verification</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <link rel="icon"
-        href="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/favicon.png"
-        type="image/png">
+            <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+
 
     <style>
         @import url('https://fonts.googleapis.com/css?family=Raleway:500');
@@ -64,7 +64,7 @@
             /* Reduced font size */
             padding: 10px 11px 10px 11px;
             border-radius: 12px;/input field/ background: white;
-            border: 2px solid var (--green);
+            border: 2px solid var(--green);
             color: #333;
             margin-bottom: 0.8rem;
             /* Adjusted bottom margin */
@@ -100,10 +100,10 @@
             display: block;
             width: 100%;
             font-size: 1.2rem;
-            /* Reduced font size */
             padding: 12px 13px 12px 13px;
-            border-radius: 12px;/button/ border: none;
-            color: var (--white);
+            border-radius: 12px;
+            border: none;
+            color: var(--white);
             background: linear-gradient(to right, var(--green), var(--sand), var(--peach));
             background-size: 500%;
             box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.15);
@@ -240,7 +240,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="certificate" class="form-label">Upload Business Certificate <span
+                <label for="certificate" class="form-label">Business Certificate <span
                         style="color: red;">*</span></label>
                 <input type="file" class="form-control" name="certificate" id="certificate" accept=".pdf,.jpg,.png"
                     required>
@@ -257,38 +257,60 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        document.getElementById("provider_form").addEventListener("submit", function(e) {
-          e.preventDefault(); // prevent default form submission
-        
-          const name = document.getElementById("name").value;
-          // send AJAX to check
-          fetch(`/accounts/check_provider_name/?name=${encodeURIComponent(name)}`)
-            .then(res => res.json())
-            .then(data => {
-              if (data.exists && !data.user) {
-                // exists but not registered
-                if (confirm("A provider with this name exists but is not registered. Do you want to bind your account to it?")) {
-                  document.getElementById("id_confirm_existing").value = "true";
-                } 
-                else {
-                  alert("Please modify the provider name.");
-                  return; // not submit
-                }
-              } 
-              else if (data.exists && data.user) {
-                alert("The name of the organization already exists. Please modify the name.");
-                return; // not submit
-              }
-              // if the name is valid or user confirmed, submit the form
-              e.target.submit();
-            })
-            .catch(err => {
-              console.error(err);
-              e.target.submit();
-            });
-        });
-        </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("provider_form");
+
+  form.addEventListener("submit", function (e) {
+      {% comment %}console.log("Form submitted!");{% endcomment %}
+    e.preventDefault();
+
+    const name = document.getElementById("name").value;
+
+{% comment %}console.log("Sending form to:", window.location.href);{% endcomment %}
+
+fetch(window.location.href, {
+  method: "POST",
+  body: new FormData(form),
+  headers: {
+    "X-CSRFToken": form.querySelector('[name=csrfmiddlewaretoken]').value,
+  },
+})
+.then((res) => {
+  const contentType = res.headers.get("content-type") || "";
+  if (!res.ok || !contentType.includes("application/json")) {
+    return res.text().then(text => {
+      console.error("Non-JSON or error response:", text);
+      alert("Something went wrong. See console.");
+      return;
+    });
+  }
+  return res.json();
+})
+.then((data) => {
+  console.log("DATA REACHED:", data);
+
+  if (data && data.success) {
+    setTimeout(() => {
+      alert("Verification Status: Pending Review\n\nOur team will review your submission within 2–3 business days.");
+      window.location.href = "/profile/";
+    }, 50);
+  } else if (data && data.errors) {
+    const firstError = Object.values(data.errors)[0];
+    alert(Array.isArray(firstError) ? firstError[0] : firstError);
+  }
+})
+.catch((err) => {
+  console.error("Caught error in fetch:", err);
+  alert("An unexpected error occurred.");
+  });
+
+  });
+
+});
+
+</script>
+
 </body>
 
 </html>
