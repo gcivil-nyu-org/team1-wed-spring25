@@ -16,7 +16,7 @@ class TrainingProviderMiddleware:
 
         try:
             url_name = resolve(request.path_info).url_name
-            if url_name == "check_provider_name":
+            if url_name == "check_provider_name" or url_name == "account_logout":
                 return None
         except Resolver404:
             pass
@@ -26,11 +26,6 @@ class TrainingProviderMiddleware:
             and not user.is_active
             and getattr(user, "role", None) == "training_provider"
         ):
-
-            # if request.path.startswith('/accounts/provider_verification/'):
-            #     return None
-            # else:
-            #     return redirect('provider_verification')
             provider_verification_url = reverse("provider_verification")
             if request.path != provider_verification_url:
                 return redirect(provider_verification_url)

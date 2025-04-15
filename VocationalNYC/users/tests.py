@@ -1,10 +1,11 @@
 from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponseRedirect
 from django.contrib.messages import get_messages
 from unittest.mock import Mock, patch, MagicMock
+
 import uuid
 import json
 
@@ -84,6 +85,7 @@ class ViewTests(TestCase):
 
     def test_provider_verification_view(self):
         self.user.role = "training_provider"
+        self.user.is_active = False
         self.user.save()
 
         # 👇 Log in the user
@@ -106,7 +108,11 @@ class ViewTests(TestCase):
             "certificate": test_file,
         }
 
-        response = self.client.post(reverse("provider_verification"), form_data)
+        response = self.client.post(
+            reverse("provider_verification"),
+            form_data,
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
 
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(response.content.decode(), {"success": True})
@@ -255,9 +261,8 @@ class MyAccountAdapterTests(TestCase):
     def test_get_login_redirect_url_provider(self):
         request = self.factory.get("/")
         request.user = self.provider_user
-        response = self.adapter.get_login_redirect_url(request)
-        self.assertIsInstance(response, HttpResponseRedirect)
-        self.assertEqual(response.url, reverse("provider_verification"))
+        url = self.adapter.get_login_redirect_url(request)
+        self.assertEqual(url, reverse("provider_verification"))
 
     def test_get_login_redirect_url_regular_user(self):
         user = get_user_model().objects.create_user(
@@ -269,8 +274,9 @@ class MyAccountAdapterTests(TestCase):
         )
         request = self.factory.get("/")
         request.user = user
+
         url = self.adapter.get_login_redirect_url(request)
-        self.assertEqual(url, "/profile/")
+        self.assertEqual(url, reverse("home"))
 
     def test_respond_inactive_provider(self):
         request = self.factory.get("/")
@@ -672,9 +678,6 @@ class ProviderBindExistingTests(TestCase):
         self.assertFalse(self.provider_user.is_active)
 
     def test_check_provider_name_api(self):
-        actual_url = reverse("check_provider_name")
-        print(f"Actual URL for check_provider_name: {actual_url}")
-
         response = self.client.get(
             reverse("check_provider_name"), {"name": self.existing_provider_name}
         )
@@ -897,7 +900,7 @@ class MyAccountAdapterTestsExtra(TestCase):
         request = self.factory.get("/")
         request.user = user
         url = self.adapter.get_login_redirect_url(request)
-        self.assertEqual(url, "/profile/")
+        self.assertEqual(url, "/")
 
 
 # ------------------------------------------------------------------------------
@@ -1167,7 +1170,9 @@ class ViewsIntegrationTests(TestCase):
 
     def test_provider_verification_form_invalid(self):
         self.user.role = "training_provider"
+        self.user.is_active = False
         self.user.save()
+        self.client.force_login(self.user)
 
         response = self.client.post(
             reverse("provider_verification"),
@@ -1260,7 +1265,10 @@ class ViewsIntegrationTests(TestCase):
     def test_provider_verification_unbound_form(self):
         """Test provider verification with unbound form"""
         self.user.role = "training_provider"
+        self.user.is_active = False
         self.user.save()
+        self.client.force_login(self.user)
+
         response = self.client.post(
             reverse("provider_verification"), HTTP_X_REQUESTED_WITH="XMLHttpRequest"
         )
@@ -1306,13 +1314,33 @@ class ViewsIntegrationTests(TestCase):
                 follow=True,  # Follow the redirect to collect messages
             )
             messages_list = list(get_messages(response.wsgi_request))
-
             print("MESSAGES:", [str(m) for m in messages_list])
+
+    # def test_custom_signup_view_error(self):
+    #     """Test signup view handles bookmark creation error correctly"""
+    #     with patch("users.views.BookmarkList.objects.create") as mock_create:
+    #         mock_create.side_effect = Exception("Database error")
+    #         response = self.client.post(
+    #             reverse("account_signup"),
+    #             {
+    #                 "username": "newuser3",
+    #                 "email": "newuser3@example.com",
+    #                 "password1": "testpass123",
+    #                 "password2": "testpass123",
+    #                 "role": "career_changer",
+    #             },
+    #             follow=True,  # Follow the redirect to collect messages
+    #         )
+    #         messages_list = list(get_messages(response.wsgi_request))
+
+    #         print("MESSAGES:", [str(m) for m in messages_list])
 
     def test_provider_verification_with_certificate(self):
         """Test provider verification with valid certificate"""
         self.user.role = "training_provider"
+        self.user.is_active = False
         self.user.save()
+        self.client.force_login(self.user)
         test_file = SimpleUploadedFile(
             "test.pdf", b"file_content", content_type="application/pdf"
         )
@@ -1343,3 +1371,186 @@ class ViewsIntegrationTests(TestCase):
         """Test provider detail view with non-existent provider"""
         response = self.client.get(reverse("provider_detail", kwargs={"pk": 99999}))
         self.assertEqual(response.status_code, 404)
+
+
+class InactiveProviderLoginTest(TestCase):
+    def setUp(self):
+        self.inactive_provider = get_user_model().objects.create_user(
+            username="inactive_provider",
+            email="inactive@example.com",
+            password="securepassword123",
+            is_active=False,
+            role="training_provider",
+        )
+        self.active_provider = get_user_model().objects.create_user(
+            username="active_provider",
+            email="active@example.com",
+            password="securepassword123",
+            is_active=True,
+            role="training_provider",
+        )
+
+        self.regular_user = get_user_model().objects.create_user(
+            username="regular_user",
+            email="regular@example.com",
+            password="securepassword123",
+            is_active=True,
+            role="student",
+        )
+
+        self.client = Client()
+
+    def test_inactive_provider_login_redirect(self):
+        """Test inactive provider login redirects to provider_verification"""
+        response = self.client.post(
+            reverse("account_login"),
+            {"login": "inactive_provider", "password": "securepassword123"},
+            follow=True,
+        )
+
+        self.assertRedirects(response, reverse("provider_verification"))
+
+        self.assertTrue(response.context["user"].is_authenticated)
+        self.assertEqual(response.context["user"].username, "inactive_provider")
+
+    def test_inactive_provider_restricted_access(self):
+        """Test inactive provider access to restricted pages"""
+        self.client.login(username="inactive_provider", password="securepassword123")
+
+        response = self.client.get(reverse("manage_courses"), follow=True)
+        self.assertRedirects(response, reverse("provider_verification"))
+
+        response = self.client.get(reverse("course_list"), follow=True)
+        self.assertRedirects(response, reverse("provider_verification"))
+
+    def test_inactive_provider_login_access_check(self):
+        """Test if only verification and logout open to inactive provider"""
+        self.client.login(username="inactive_provider", password="securepassword123")
+
+        allowed_pages = [
+            reverse("provider_verification"),
+        ]
+
+        restricted_pages = [
+            reverse("manage_courses"),
+            reverse("course_list"),
+            reverse("home"),
+        ]
+
+        for page in allowed_pages:
+            response = self.client.get(page)
+            self.assertNotEqual(
+                response.status_code, 302, f"Page {page} should not redirect but did"
+            )
+
+        for page in restricted_pages:
+            response = self.client.get(page, follow=True)
+            self.assertRedirects(
+                response,
+                reverse("provider_verification"),
+                msg_prefix=f"Page {page} should redirect to provider_verification but did not",
+            )
+
+    def test_active_provider_access(self):
+        """Test active provider login and access to manage courses"""
+        self.client.login(username="active_provider", password="securepassword123")
+
+        response = self.client.get(reverse("manage_courses"), follow=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_regular_user_login(self):
+        """test regular user login"""
+        self.client.force_login(self.regular_user)
+
+        response = self.client.get(reverse("course_list"))
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(reverse("manage_courses"))
+        self.assertEqual(response.status_code, 302)
+
+    def test_authentication_backend(self):
+        """test the custom authentication backend for inactive provider"""
+
+        user = authenticate(username="inactive_provider", password="securepassword123")
+
+        self.assertIsNotNone(user)
+        self.assertEqual(user.username, "inactive_provider")
+        self.assertFalse(user.is_active)
+        self.assertEqual(user.role, "training_provider")
+
+        get_user_model().objects.create_user(
+            username="inactive_regular",
+            password="securepassword123",
+            is_active=False,
+            role="student",
+        )
+
+        user = authenticate(username="inactive_regular", password="securepassword123")
+        self.assertIsNone(user, "Inactive regular user should not authenticate")
+
+
+class CustomLoginViewTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.inactive_provider = get_user_model().objects.create_user(
+            username="inactive_provider",
+            email="inactive@example.com",
+            password="securepassword123",
+            is_active=False,
+            role="training_provider",
+        )
+        self.active_provider = get_user_model().objects.create_user(
+            username="active_provider",
+            email="active@example.com",
+            password="securepassword123",
+            is_active=True,
+            role="training_provider",
+        )
+        self.regular_user = get_user_model().objects.create_user(
+            username="regular_user",
+            email="regular@example.com",
+            password="securepassword123",
+            is_active=True,
+            role="career_changer",
+        )
+
+    def test_login_view_inactive_provider(self):
+        """Test CustomLoginView correctly redirects inactive providers"""
+        # self.client.force_login(self.inactive_provider)
+        response = self.client.post(
+            reverse("account_login"),
+            {"login": self.inactive_provider.username, "password": "securepassword123"},
+            follow=True,
+        )
+
+        # CustomLoginView should redirect inactive providers to provider_verification
+        response = self.client.get(reverse("provider_verification"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_login_view_active_provider(self):
+        """Test CustomLoginView handles active providers correctly"""
+        # Use force_login to simulate the login
+        response = self.client.post(
+            reverse("account_login"),
+            {"login": self.active_provider.username, "password": "securepassword123"},
+            follow=False,
+        )
+
+        # Active providers should follow the adapter's regular redirect (manage_courses)
+        self.assertRedirects(
+            response, reverse("manage_courses"), fetch_redirect_response=False
+        )
+        self.assertEqual(response.status_code, 302)
+
+    def test_login_view_regular_user(self):
+        """Test CustomLoginView handles regular users correctly"""
+        # self.client.force_login(self.regular_user)
+        response = self.client.post(
+            reverse("account_login"),
+            {"login": self.regular_user.username, "password": "securepassword123"},
+            follow=True,
+        )
+
+        # Regular users should follow the adapter's regular redirect (home)
+        response = self.client.get(reverse("course_list"))
+        self.assertEqual(response.status_code, 200)

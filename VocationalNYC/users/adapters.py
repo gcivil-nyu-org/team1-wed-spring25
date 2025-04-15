@@ -1,7 +1,6 @@
 import logging
 from allauth.account.adapter import DefaultAccountAdapter
 from django.urls import reverse
-from django.http import HttpResponseRedirect
 
 logger = logging.getLogger(__name__)
 
@@ -22,12 +21,18 @@ class MyAccountAdapter(DefaultAccountAdapter):
         user = request.user
         if user.is_superuser or user.is_staff:
             return "/admin/"
-        if getattr(user, "role", "") == "training_provider" and not user.is_active:
-            logger.debug(
-                f"Redirecting training_provider {user.username} to provider_verification."
-            )
-            return HttpResponseRedirect(reverse("provider_verification"))
-        return reverse("profile")
+        if getattr(user, "role", "") == "training_provider":
+            if user.is_active:
+                logger.debug(
+                    f"Active training_provider {user.username} redirected to profile."
+                )
+                return reverse("manage_courses")
+            else:
+                logger.debug(
+                    f"Inactive training_provider {user.username} redirected to provider_verification."
+                )
+                return reverse("provider_verification")
+        return reverse("home")
 
     def respond_inactive(self, request, user):
         if getattr(user, "role", None) == "training_provider":
