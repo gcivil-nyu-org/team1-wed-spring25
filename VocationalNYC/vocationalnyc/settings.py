@@ -77,6 +77,7 @@ INSTALLED_APPS = [
 
 
 MIDDLEWARE = [
+    "vocationalnyc.urls.AdminRedirectMiddleware", 
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",

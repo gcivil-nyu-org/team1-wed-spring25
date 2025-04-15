@@ -30,7 +30,9 @@ class AdminRedirectMiddleware:
 
     def __call__(self, request):
         if request.user.is_authenticated and (
-            request.user.is_superuser or request.user.is_staff
+            request.user.role == "administrator" or
+            request.user.is_superuser or 
+            request.user.is_staff
         ):
             if not request.path.startswith("/admin/"):
                 return HttpResponseRedirect("/admin/")
