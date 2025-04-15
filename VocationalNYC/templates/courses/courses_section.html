@@ -84,7 +84,13 @@
                                                                         </svg>
                                                                         {% endif %}
                                                                     {% endfor %}
-                                                                    <span class="Course-Review-Quantity Reviews">{{ course.reviews_count }} reviews</span>
+                                                                    <span class="Course-Review-Quantity Reviews">
+                                                                        {% if course.reviews_count == 1 %}
+                                                                            {{ course.reviews_count }} review
+                                                                        {% else %}
+                                                                            {{ course.reviews_count }} reviews
+                                                                        {% endif %}
+                                                                    </span>
                                                                 </div>
                                                             </a>
                                                             </div>
