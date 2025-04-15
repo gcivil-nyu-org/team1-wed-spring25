@@ -1,7 +1,6 @@
 from allauth.account.forms import SignupForm
 from django import forms
 from .models import Provider, CustomUser, Student
-import sys
 
 
 class CustomSignupForm(SignupForm):
@@ -112,23 +111,23 @@ class ProviderVerificationForm(forms.ModelForm):
 
         # if provider already exists and confirm_existing is not explicitly True, form is invalid
         if Provider.objects.filter(name=name).exists() and not confirm_existing:
-                self.add_error(
-                    "name",
-                    "A provider with this name already exists. Please confirm you're affiliated.",
-                )
+            self.add_error(
+                "name",
+                "A provider with this name already exists. Please confirm you're affiliated.",
+            )
 
     def validate_unique(self):
         """
         When confirm_existing is True, ignore the unique validation error of name.
         """
-        confirm_existing = self.cleaned_data.get('confirm_existing')
-        
+        confirm_existing = self.cleaned_data.get("confirm_existing")
+
         if not confirm_existing:
             try:
                 super().validate_unique()
             except forms.ValidationError as e:
-                if 'name' in e.error_dict:
-                    name = self.cleaned_data.get('name')
+                if "name" in e.error_dict:
+                    name = self.cleaned_data.get("name")
                     try:
                         provider = Provider.objects.get(name=name)
                         if provider.user is None:

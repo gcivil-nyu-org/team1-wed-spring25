@@ -543,6 +543,7 @@ class ProviderVerificationFormTests(TestCase):
         self.assertIn("name", conflict_form.errors)
         self.assertIn("already exists", conflict_form.errors["name"][0].lower())
 
+
 class ProviderBindExistingTests(TestCase):
     def setUp(self):
         self.client = Client()
@@ -551,24 +552,24 @@ class ProviderBindExistingTests(TestCase):
             email=f"provider_{uuid.uuid4().hex[:8]}@test.com",
             password="testpass123",
             role="training_provider",
-            is_active=False
+            is_active=False,
         )
-        
+
         self.existing_provider_name = f"Existing Provider {uuid.uuid4().hex[:8]}"
         self.existing_provider = Provider.objects.create(
             name=self.existing_provider_name,
             phone_num="1234567890",
             address="123 Test St",
-            user=None
+            user=None,
         )
-        
+
         self.client.login(username=self.provider_user.username, password="testpass123")
-    
+
     def test_bind_to_existing_provider(self):
         test_file = SimpleUploadedFile(
             "certificate.pdf", b"file_content", content_type="application/pdf"
         )
-        
+
         form_data = {
             "name": self.existing_provider_name,
             "contact_firstname": "John",
@@ -576,32 +577,32 @@ class ProviderBindExistingTests(TestCase):
             "phone_num": "9876543210",
             "address": "Updated Address",
             "certificate": test_file,
-            "confirm_existing": "true"
+            "confirm_existing": "true",
         }
-        
+
         response = self.client.post(
-            reverse("provider_verification"), 
+            reverse("provider_verification"),
             form_data,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
-        
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "application/json")
         self.assertJSONEqual(response.content.decode(), {"success": True})
-        
+
         self.existing_provider.refresh_from_db()
         self.assertEqual(self.existing_provider.user, self.provider_user)
         self.assertEqual(self.existing_provider.phone_num, "1234567890")
         self.assertEqual(self.existing_provider.address, "123 Test St")
-        
+
         self.provider_user.refresh_from_db()
         self.assertTrue(self.provider_user.is_active)
-        
+
     def test_reject_binding_to_existing_provider(self):
         test_file = SimpleUploadedFile(
             "certificate.pdf", b"file_content", content_type="application/pdf"
         )
-        
+
         form_data = {
             "name": self.existing_provider_name,
             "contact_firstname": "John",
@@ -609,41 +610,43 @@ class ProviderBindExistingTests(TestCase):
             "phone_num": "9876543210",
             "address": "Updated Address",
             "certificate": test_file,
-            "confirm_existing": "false"
+            "confirm_existing": "false",
         }
-        
+
         response = self.client.post(
-            reverse("provider_verification"), 
+            reverse("provider_verification"),
             form_data,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
-        
+
         self.assertEqual(response.status_code, 400)
         response_data = json.loads(response.content.decode())
         self.assertFalse(response_data["success"])
         self.assertIn("errors", response_data)
         self.assertIn("name", response_data["errors"])
-        
+
         self.existing_provider.refresh_from_db()
         self.assertIsNone(self.existing_provider.user)
-        
+
         self.provider_user.refresh_from_db()
         self.assertFalse(self.provider_user.is_active)
-    
-    @patch('users.views.ProviderVerificationForm')
+
+    @patch("users.views.ProviderVerificationForm")
     def test_bind_to_provider_with_user(self, mock_form):
         # use mock_form to simulate the form validation failure
         mock_form_instance = MagicMock()
         mock_form_instance.is_valid.return_value = False
         mock_form_instance.errors = {
-            'name': ['Training Provider with this Name already exists and is registered.']
+            "name": [
+                "Training Provider with this Name already exists and is registered."
+            ]
         }
         mock_form.return_value = mock_form_instance
-        
+
         test_file = SimpleUploadedFile(
             "certificate.pdf", b"file_content", content_type="application/pdf"
         )
-        
+
         form_data = {
             "name": "Provider With User Already Registered",
             "contact_firstname": "John",
@@ -651,62 +654,60 @@ class ProviderBindExistingTests(TestCase):
             "phone_num": "9876543210",
             "address": "Test Address",
             "certificate": test_file,
-            "confirm_existing": "true"
+            "confirm_existing": "true",
         }
-        
+
         response = self.client.post(
-            reverse("provider_verification"), 
+            reverse("provider_verification"),
             form_data,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
-        
+
         self.assertEqual(response.status_code, 400)
         response_data = json.loads(response.content.decode())
         self.assertFalse(response_data["success"])
         self.assertIn("errors", response_data)
-        
+
         self.provider_user.refresh_from_db()
         self.assertFalse(self.provider_user.is_active)
-    
+
     def test_check_provider_name_api(self):
         actual_url = reverse("check_provider_name")
         print(f"Actual URL for check_provider_name: {actual_url}")
 
         response = self.client.get(
-            reverse("check_provider_name"), 
-            {"name": self.existing_provider_name}
+            reverse("check_provider_name"), {"name": self.existing_provider_name}
         )
         self.assertEqual(response.status_code, 200)
         response_data = json.loads(response.content.decode())
         self.assertTrue(response_data["exists"])
         self.assertFalse(response_data["user"])
-        
+
         response = self.client.get(
-            reverse("check_provider_name"), 
-            {"name": f"Non Existent Provider {uuid.uuid4().hex}"}
+            reverse("check_provider_name"),
+            {"name": f"Non Existent Provider {uuid.uuid4().hex}"},
         )
         self.assertEqual(response.status_code, 200)
         response_data = json.loads(response.content.decode())
         self.assertFalse(response_data["exists"])
-        
+
         other_user_name = f"otheruser_{uuid.uuid4().hex[:8]}"
         other_user = get_user_model().objects.create_user(
             username=other_user_name,
             email=f"{other_user_name}@test.com",
-            password="testpass123"
+            password="testpass123",
         )
-        
+
         provider_with_user_name = f"Provider With User {uuid.uuid4().hex[:8]}"
-        provider_with_user = Provider.objects.create(
+        Provider.objects.create(
             name=provider_with_user_name,
             phone_num="1122334455",
             address="456 User St",
-            user=other_user
+            user=other_user,
         )
-        
+
         response = self.client.get(
-            reverse("check_provider_name"), 
-            {"name": provider_with_user_name}
+            reverse("check_provider_name"), {"name": provider_with_user_name}
         )
         self.assertEqual(response.status_code, 200)
         response_data = json.loads(response.content.decode())
