@@ -101,38 +101,12 @@
                     </div>
 
                         <div class="review-body">
-
                             <p>"{{ review.content }}"</p>
-
                             <div class="review-timestamp">
                                 {% timezone "America/New_York" %}
                                     Posted on {{ review.created_at|date:"l, F j, Y \\a\\t g:i:s A" }}
                                 {% endtimezone %}
                             </div>
-
-{#                            <div class="review-votes">#}
-{#                                <form class="vote-form" data-review-id="{{ review.pk }}">#}
-{#                                    {% csrf_token %}#}
-{##}
-{#                                    <!-- Upvote -->#}
-{#                                    <button type="button" data-action="upvote" class="vote-btn vote-up" aria-label="Upvote">#}
-{#                                        <svg class="vote-icon" viewBox="0 0 24 24" fill="currentColor">#}
-{#                                            <path d="M1 21h4V9H1v12zM23 10c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14 1 7.59 7.41C7.22 7.78 7 8.3 7 8.83V19c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1z"/>#}
-{#                                        </svg>#}
-{#                                    </button>#}
-{#                                    <span class="vote-count helpful-count">{{ review.helpful_count }}</span>#}
-{##}
-{#                                    <!-- Downvote -->#}
-{#                                    <button type="button" data-action="downvote" class="vote-btn vote-down" aria-label="Downvote">#}
-{#                                        <svg class="vote-icon" viewBox="0 0 24 24" fill="currentColor">#}
-{#                                            <path d="M15 3H6c-.83 0-1.54.5-1.84 1.22L1.14 11.27C1.05 11.5 1 11.74 1 12v1c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L10 23l6.41-6.41c.37-.37.59-.89.59-1.42V5c0-1.1-.9-2-2-2zM23 3h-4v12h4V3z"/>#}
-{#                                        </svg>#}
-{#                                    </button>#}
-{#                                    <span class="vote-count not-helpful-count">{{ review.not_helpful_count }}</span>#}
-{##}
-{#                                </form>#}
-{#                            </div>#}
-
                         </div>
 
 
@@ -149,20 +123,10 @@
                         {% endfor %}
 
 
-{#        {% if review.user == user %}#}
-{#            <div class="review-edit">#}
-{#                <button type="button" class="edit-review-button" data-review-id="{{ review.pk }}">✏️ Edit</button>#}
-{#            </div>#}
-{#        {% endif %}#}
 
-    <div class="review-body">
-        <p>"{{ review.content }}"</p>
-        <div class="review-timestamp">
-    {% timezone "America/New_York" %}
-Posted on {{ review.created_at|date:"l, F j, Y \\a\\t g:i:s A" }}    {% endtimezone %}
-</div>
 
-                                                <div class="review-votes">
+
+        <div class="review-votes">
                                 <form class="vote-form" data-review-id="{{ review.pk }}">
                                     {% csrf_token %}
 
