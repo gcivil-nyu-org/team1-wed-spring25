@@ -1,6 +1,7 @@
 from allauth.account.forms import SignupForm
 from django import forms
 from .models import Provider, CustomUser, Student
+import sys
 
 
 class CustomSignupForm(SignupForm):
@@ -93,13 +94,16 @@ class ProviderVerificationForm(forms.ModelForm):
         self.fields["website"].required = False
         self.fields["certificate"].required = True
 
-    def clean_name(self):
-        name = self.cleaned_data.get("name")
-        confirm_existing = self.cleaned_data.get("confirm_existing")
+    # def clean_name(self):
+    #     name = self.cleaned_data.get("name")
+    #     confirm_existing = self.cleaned_data.get("confirm_existing")
 
-        if Provider.objects.filter(name=name).exists() and not confirm_existing:
-            raise forms.ValidationError("A provider with this name already exists.")
-        return name
+    #     print(f"Name: {name}, Confirm Existing: {confirm_existing}")
+    #     sys.stdout.flush()
+
+    #     if Provider.objects.filter(name=name).exists() and not confirm_existing:
+    #         raise forms.ValidationError("A provider with this name already exists.")
+    #     return name
 
     def clean(self):
         cleaned_data = super().clean()
@@ -107,12 +111,31 @@ class ProviderVerificationForm(forms.ModelForm):
         confirm_existing = cleaned_data.get("confirm_existing")
 
         # if provider already exists and confirm_existing is not explicitly True, form is invalid
-        if name and Provider.objects.filter(name=name).exists():
-            if not confirm_existing:
+        if Provider.objects.filter(name=name).exists() and not confirm_existing:
                 self.add_error(
                     "name",
                     "A provider with this name already exists. Please confirm you're affiliated.",
                 )
+
+    def validate_unique(self):
+        """
+        When confirm_existing is True, ignore the unique validation error of name.
+        """
+        confirm_existing = self.cleaned_data.get('confirm_existing')
+        
+        if not confirm_existing:
+            try:
+                super().validate_unique()
+            except forms.ValidationError as e:
+                if 'name' in e.error_dict:
+                    name = self.cleaned_data.get('name')
+                    try:
+                        provider = Provider.objects.get(name=name)
+                        if provider.user is None:
+                            return
+                    except Provider.DoesNotExist:
+                        pass
+                raise
 
 
 class ProfileUpdateForm(forms.ModelForm):
