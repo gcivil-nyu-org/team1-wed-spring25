@@ -21,6 +21,20 @@ from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import redirect
+from django.http import HttpResponseRedirect
+
+
+class AdminRedirectMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        if request.user.is_authenticated and (
+            request.user.is_superuser or request.user.is_staff
+        ):
+            if not request.path.startswith("/admin/"):
+                return HttpResponseRedirect("/admin/")
+        return self.get_response(request)
 
 
 def root_redirect(request):
