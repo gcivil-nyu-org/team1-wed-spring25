@@ -65,47 +65,8 @@
 
     <div class="review-section" id="student-review-section">
 
-        <h2>💬 Ratings & Reviews</h2>
-        <div aria-label="{{ course.rating }} out of 5"
-            class="Course-Reviews-Inner-Container Course-Rating-And-Reviews kiGUEr"
-            spacing=0>
-            {% for i in "12345"|make_list %}
-                {% if forloop.counter <= course.rating_full_stars %}
-                <svg class="Course-Rating"
-                        fill=#a2ccb6
-                        stroke=#a2ccb6>
-                    <use xlink:href=#star></use>
-                </svg>
-                {% elif forloop.counter == course.rating_partial_star_position %}
-                <svg class="Course-Rating"
-                        fill=url(#course_rating)
-                        stroke=#a2ccb6>
-                    <use xlink:href=#star></use>
-                    <defs>
-                        <lineargradient
-                                id=course_rating
-                                x1=0% x2=100% y1=0% y2=0%>
-                            <stop offset=0%
-                                    stop-color=#a2ccb6></stop>
-                            <stop offset={{ course.rating_partial_percentage }}%
-                                    stop-color=#a2ccb6></stop>
-                            <stop offset={{ course.rating_partial_percentage }}%
-                                    stop-color=#ffffff></stop>
-                            <stop offset=100%
-                                    stop-color=#ffffff></stop>
-                        </lineargradient>
-                    </defs>
-                </svg>
-                {% else %}
-                <svg class="Course-Rating"
-                        fill=#ffffff
-                        stroke=#a2ccb6>
-                    <use xlink:href=#star></use>
-                </svg>
-                {% endif %}
-            {% endfor %}
-            <span class="Course-Review-Quantity Reviews">{{ reviews_count }} reviews</span>
-        </div>
+        <h2>💬 Ratings & Reviews ({{ rating }} · {{ reviews_count }} reviews)</h2>
+
 
         {% if reviews %}
             <ul class="review-list">
@@ -188,11 +149,11 @@
                         {% endfor %}
 
 
-        {% if review.user == user %}
-            <div class="review-edit">
-                <button type="button" class="edit-review-button" data-review-id="{{ review.pk }}">✏️ Edit</button>
-            </div>
-        {% endif %}
+{#        {% if review.user == user %}#}
+{#            <div class="review-edit">#}
+{#                <button type="button" class="edit-review-button" data-review-id="{{ review.pk }}">✏️ Edit</button>#}
+{#            </div>#}
+{#        {% endif %}#}
 
     <div class="review-body">
         <p>"{{ review.content }}"</p>
