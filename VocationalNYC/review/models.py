@@ -17,8 +17,8 @@ class Review(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     attachment_url = models.CharField(max_length=255, blank=True, null=True)
 
-    helpful_count = models.PositiveIntegerField(default=1)
-    not_helpful_count = models.PositiveIntegerField(default=1)
+    helpful_count = models.PositiveIntegerField(default=0)
+    not_helpful_count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"Review {self.review_id} by {self.user.username} for {self.course.name}"
