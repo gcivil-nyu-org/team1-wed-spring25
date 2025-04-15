@@ -260,6 +260,14 @@ def check_provider_name(request):
             {
                 "exists": True,
                 "user": provider.user_id is not None,
+                "details": {
+                    "name": provider.name,
+                    "address": provider.address,
+                    "phone_num": provider.phone_num,
+                    "website": provider.website or "",
+                    "contact_firstname": provider.contact_firstname or "",
+                    "contact_lastname": provider.contact_lastname or "",
+                },
             }
         )
     except Provider.DoesNotExist:

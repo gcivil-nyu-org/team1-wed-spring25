@@ -62,7 +62,7 @@ class CourseListView(generic.ListView):
                     )
 
                     # Get or create the provider
-                    provider, created = Provider.objects.get_or_create(
+                    provider, created = Provider.objects.update_or_create(
                         name=provider_name,
                         defaults={
                             "phone_num": course.get("phone1", "0000000000"),
@@ -70,6 +70,8 @@ class CourseListView(generic.ListView):
                             "open_time": course.get("open_time", ""),
                             "provider_desc": course.get("provider_description", ""),
                             "website": course.get("website", ""),
+                            "contact_firstname": course.get("contact_firstname", ""),
+                            "contact_lastname": course.get("contact_lastname", ""),
                         },
                     )
 
