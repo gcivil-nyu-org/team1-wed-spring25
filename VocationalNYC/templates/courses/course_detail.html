@@ -149,16 +149,14 @@
                                 </form>
                             </div>
 
-                     {% if user.is_authenticated and user.provider_profile and review.replies.count == 0%}
-
-                            <form method="POST" action="{% url 'review-reply-create' review.pk %}" class="provider-reply-form">
-                                {% csrf_token %}
-
+                     {% if user.is_authenticated and user.provider_profile == course.provider and review.replies.count == 0 %}
+                         <form method="POST" action="{% url 'review-reply-create' review.pk %}" class="provider-reply-form">
+                             {% csrf_token %}
                                     <label for="content" class="your-reply">Your Reply:</label>
                                     <textarea name="content" class="reply-review" id="reply-{{ review.pk }}" rows="5" required></textarea>
                                     <button type="submit" class="reply-button">↩️ Reply</button>
                             </form>
-                        {% endif %}
+                     {% endif %}
 
                         {% if user == review.user %}
                             <form method="POST" action="{% url 'review-delete' review.pk %}" class="delete-review-form">
