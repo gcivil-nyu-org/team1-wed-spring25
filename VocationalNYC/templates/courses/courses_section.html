@@ -58,12 +58,12 @@
                                                                         </svg>
                                                                         {% elif forloop.counter == course.rating_partial_star_position %}
                                                                         <svg class="Course-Rating"
-                                                                             fill=url(#course_rating)
+                                                                             fill="url(#course_rating_{{ course.pk }})"
                                                                              stroke=#a2ccb6>
                                                                             <use xlink:href=#star></use>
                                                                             <defs>
                                                                                 <lineargradient
-                                                                                        id=course_rating
+                                                                                        id="course_rating_{{ course.pk }}"
                                                                                         x1=0% x2=100% y1=0% y2=0%>
                                                                                     <stop offset=0%
                                                                                           stop-color=#a2ccb6></stop>
