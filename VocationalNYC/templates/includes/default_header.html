@@ -13,14 +13,13 @@
 
             <div class="Tabs">
                 <ul class="Tabs-Content-Outer">
-
-<li class="Tabs-Content-Inner {% if request.resolver_match.url_name == 'course_list' %}is-active{% endif %}">
-                        <a style="color: #2C3E50!important;" class="header__RootNavAnchor Tabs-Content-Middle" data-tracking-id=top_nav href="{% url 'course_list' %}">
+                    <li class="Tabs-Content-Inner {% if request.resolver_match.url_name == 'course_list' or request.resolver_match.url_name == 'search_result' %}is-active{% endif %}">
+                        <a style="color: #2C3E50!important;" class="header__RootNavAnchor Tabs-Content-Middle" data-tracking-id="top_nav" href="{% url 'course_list' %}">
                             Discover Courses
                         </a>
                     </li>
 
-<li class="Tabs-Content-Inner {% if request.resolver_match.url_name == 'course_map' %}is-active{% endif %}">
+                    <li class="Tabs-Content-Inner {% if request.resolver_match.url_name == 'course_map' %}is-active{% endif %}">
                         <a style="color: #2C3E50!important;" class="header__RootNavAnchor Tabs-Content-Middle" data-tracking-id=top_nav href="{% url 'course_map' %}">
                             Map
                         </a>
