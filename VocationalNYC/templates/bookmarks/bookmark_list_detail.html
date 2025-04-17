@@ -16,7 +16,7 @@
           <div class="bookmark-left">
                   {% timezone "America/New_York" %}
 
-            {{ bookmark.course.name }} – Added on {{ bookmark.time|date:"l, F j, Y \\a\\t g:i:s A" }}
+                      <a href="{% url 'course_detail' bookmark.course.course_id %}" target="_blank">{{ bookmark.course.name }}</a>&nbsp;– Added on {{ bookmark.time|date:"l, F j, Y \\a\\t g:i:s A" }}
             {% endtimezone %}
 
           </div>
