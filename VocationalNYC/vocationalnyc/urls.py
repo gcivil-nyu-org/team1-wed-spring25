@@ -22,6 +22,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import redirect
 
+from views import custom_404
+
 
 def root_redirect(request):
     if (
@@ -59,6 +61,7 @@ urlpatterns = [
     path("reviews/", include("review.urls")),
     path("chat/", include("message.urls")),
     path("bookmarks/", include("bookmarks.urls")),
+    path("404/", custom_404, name="fake_404_page"),
 ]
 
 if settings.DEBUG:
