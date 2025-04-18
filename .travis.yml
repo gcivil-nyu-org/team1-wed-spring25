@@ -26,6 +26,8 @@ before_install:
   - gem install bundler
   - pip install coveralls
   - echo "TRAVIS_SECURE_ENV_VARS=$TRAVIS_SECURE_ENV_VARS"
+  - echo "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}"
+  - echo "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}"
 
 install:
   - docker-compose -f docker-compose.ci.yml build
