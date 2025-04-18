@@ -14,6 +14,7 @@ from botocore.exceptions import ClientError
 
 from pathlib import Path
 import environ
+import os
 import json
 
 
@@ -37,8 +38,8 @@ def get_secret(secret_name):
     client = session.client(
         service_name='secretsmanager',
         region_name=region_name,
-        aws_access_key_id=environ['AWS_ACCESS_KEY_ID'],
-        aws_secret_access_key=environ['AWS_SECRET_ACCESS_KEY']
+        aws_access_key_id=os.environ['AWS_ACCESS_KEY_ID'],
+        aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY']
     )
 
     try:
