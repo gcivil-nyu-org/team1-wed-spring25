@@ -25,7 +25,7 @@ before_install:
   - gem update --system
   - gem install bundler
   - pip install coveralls
-  - echo TRAVIS_SECURE_ENV_VARS
+  - echo "TRAVIS_SECURE_ENV_VARS=$TRAVIS_SECURE_ENV_VARS"
 
 install:
   - docker-compose -f docker-compose.ci.yml build
