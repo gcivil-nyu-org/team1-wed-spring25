@@ -34,16 +34,16 @@ def get_secret(secret_name):
     region_name = "us-east-1"
 
     # Create a Secrets Manager client
-    session = boto3.session.Session()
+
     if not os.environ['AWS_ACCESS_KEY_ID']:
-        client = session.client(
-            service_name='secretsmanager',
+        session = boto3.session.Session(
             region_name=region_name,
             aws_access_key_id=os.environ['AWS_ACCESS_KEY_ID'],
             aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY']
         )
     else:
-        client = session.client(service_name='secretsmanager')
+        session = boto3.session.Session()
+    client = session.client(service_name='secretsmanager')
 
     try:
         get_secret_value_response = client.get_secret_value(
