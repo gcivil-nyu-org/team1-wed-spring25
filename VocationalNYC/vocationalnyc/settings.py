@@ -10,8 +10,13 @@ For the full list of settings and their values, see:
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import boto3
+from botocore.exceptions import ClientError
+
 from pathlib import Path
 import environ
+import json
+
 
 USE_TZ = True
 TIME_ZONE = "America/New_York"
@@ -24,6 +29,25 @@ env = environ.Env(DEBUG=(bool, False))
 env_file = BASE_DIR / ".env"
 if env_file.exists():
     environ.Env.read_env(env_file)
+
+
+def get_secret(secret_name):
+    region_name = "us-east-1"
+
+    # Create a Secrets Manager client
+
+    session = boto3.session.Session(region_name=region_name)
+    client = session.client(service_name="secretsmanager")
+
+    try:
+        get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+    except ClientError as e:
+        # For a list of exceptions thrown, see
+        # https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
+        raise e
+
+    secret = json.loads(get_secret_value_response["SecretString"])
+    return secret
 
 
 DEBUG = env("DEBUG", default="False")
@@ -145,14 +169,15 @@ if DJANGO_ENV == "travis":
         }
     }
 elif DJANGO_ENV == "production":
+    ebdb_creds = get_secret("ebdb_creds")
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": env("POSTGRES_DB", default="db"),
-            "USER": env("POSTGRES_USER", default="postgres"),
-            "PASSWORD": env("POSTGRES_PASSWORD", default="postgres"),
-            "HOST": env("POSTGRES_HOST", default="localhost"),
-            "PORT": env.int("POSTGRES_PORT", default=5432),
+            "NAME": env("POSTGRES_DB", default=ebdb_creds["dbname"]),
+            "USER": env("POSTGRES_USER", default=ebdb_creds["username"]),
+            "PASSWORD": env("POSTGRES_PASSWORD", default=ebdb_creds["password"]),
+            "HOST": env("POSTGRES_HOST", default=ebdb_creds["host"]),
+            "PORT": env.int("POSTGRES_PORT", default=ebdb_creds["port"]),
         }
     }
 else:

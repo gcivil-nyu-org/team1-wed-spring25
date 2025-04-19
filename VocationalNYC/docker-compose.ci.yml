@@ -27,6 +27,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+        AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
     container_name: app
     depends_on:
       - db
@@ -36,3 +39,8 @@ services:
       - 5000:5000
     environment:
       DJANGO_ENV: travis
+      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+      PYTHONPATH: /vocationalnyc
+      DJANGO_SETTINGS_MODULE: vocationalnyc.settings
+      SECRET_KEY: 2kr32wckkxtv&_r+p7!)o+1(jtupvk#z^uzp#y$h-=#3*7p5zr

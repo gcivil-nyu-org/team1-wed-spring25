@@ -17,12 +17,15 @@ env:
     - DJANGO_SETTINGS_MODULE=vocationalnyc.settings
     - PYTHONPATH=$(pwd)/VocationalNYC
 
+
 before_install:
   - cd VocationalNYC
   - docker-compose -f docker-compose.ci.yml version
   - gem update --system
   - gem install bundler
   - pip install coveralls
+  - echo "TRAVIS_SECURE_ENV_VARS=$TRAVIS_SECURE_ENV_VARS"
+  
 
 install:
   - docker-compose -f docker-compose.ci.yml build
@@ -33,6 +36,7 @@ before_script:
   - sleep 10
   # Run migrations and collect static files inside the app container (as root)
   - docker-compose -f docker-compose.ci.yml exec -T -u root app python manage.py makemigrations --noinput
+  # - docker-compose -f docker-compose.ci.yml exec -T -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
   - docker-compose -f docker-compose.ci.yml exec -T -u root app python manage.py migrate --noinput
   - docker-compose -f docker-compose.ci.yml exec -T -u root app python manage.py collectstatic --noinput
 
