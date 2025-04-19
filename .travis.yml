@@ -29,8 +29,8 @@ before_install:
   
 
 install:
-  - docker-compose -f docker-compose.ci.yml build -e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} -e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-
+  - docker-compose -f docker-compose.ci.yml build
+  
 before_script:
   # Start the CI containers in detached mode
   - docker-compose -f docker-compose.ci.yml up -d
