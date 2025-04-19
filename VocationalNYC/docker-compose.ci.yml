@@ -3,10 +3,12 @@ services:
     image: postgres:13
     container_name: db
     environment:
-      POSTGRES_DB: travis_ci_test
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: "postgres"
-      POSTGRES_HOST: db
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      POSTGRES_DB: ebdb
+      POSTGRES_USER: dbsuperuser
+      POSTGRES_PASSWORD: RQj)!jj0AVmQRVI?FR:4.q#M_ihr
+      POSTGRES_HOST: awseb-e-vtj7rkatib-stack-awsebrdsdatabase-jnh7hkwhzpgf.c8xg6uiouqs0.us-east-1.rds.amazonaws.com
     ports:
       - "5432:5432"
 
