@@ -16,8 +16,7 @@ env:
   global:
     - DJANGO_SETTINGS_MODULE=vocationalnyc.settings
     - PYTHONPATH=$(pwd)/VocationalNYC
-    - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-    - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+
 
 before_install:
   - cd VocationalNYC
@@ -30,7 +29,7 @@ before_install:
 
 install:
   - docker-compose -f docker-compose.ci.yml build
-  
+
 before_script:
   # Start the CI containers in detached mode
   - docker-compose -f docker-compose.ci.yml up -d
