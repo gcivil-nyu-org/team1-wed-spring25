@@ -12,6 +12,7 @@ from courses.models import Course
 from users.models import CustomUser, Provider
 from review.models import Review
 from requests.exceptions import RequestException
+from django.db.models import Avg, Count
 
 
 class MockResponse:
@@ -251,8 +252,11 @@ def mock_filterCourses(request):
         classroom_hours=50,
         location="789 Test Blvd, Queens, NY, 11301",
     )
-
-    return {"courses": Course.objects.all()}
+    courses = Course.objects.annotate(
+        avg_rating=Avg("reviews__score_rating"),
+        reviews_count=Count("reviews"),
+    )
+    return {"courses": courses}
 
 
 class SearchResultTest(TestCase):

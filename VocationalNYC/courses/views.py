@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib import messages
-from django.db.models import Q, Avg, Count, F, ExpressionWrapper, IntegerField
+from django.db.models import Q, Avg, Count, F, ExpressionWrapper
 from django.core.cache import cache
 from review.models import Review
 from django.db import transaction
@@ -21,7 +21,8 @@ from .models import Course
 from .forms import CourseForm
 from django.http import HttpResponseForbidden
 from bookmarks.models import BookmarkList
-
+from django.db.models import IntegerField
+from django.db.models.functions import Coalesce
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +38,9 @@ class CourseListView(generic.ListView):
         logger.info("Starting course data refresh check")
         API_URL = "https://data.cityofnewyork.us/resource/fgq8-am2v.json"
         logger.info(cache.get("courses_last_updated"))
-        if not cache.get("courses_last_updated"):
+
+        existing_courses_count = Course.objects.count()
+        if existing_courses_count == 0 and not cache.get("courses_last_updated"):
             try:
                 logger.info("Fetching courses from API")
                 response = requests.get(API_URL, timeout=10)
@@ -289,6 +292,13 @@ def filterCourses(request):
             course.rating_partial_star_position = 0
             course.rating_partial_percentage = 0
 
+        course.total_hours = (
+            course.classroom_hours
+            + course.lab_hours
+            + course.internship_hours
+            + course.practical_hours
+        )
+
     context = {
         "courses": courses,
         "keywords": keywords,
@@ -430,13 +440,40 @@ def sort_by(request):
 
     context = filterCourses(request)
     courses = context["courses"]
+
+    courses = courses.annotate(
+        total_hours=ExpressionWrapper(
+            F("classroom_hours")
+            + F("lab_hours")
+            + F("internship_hours")
+            + F("practical_hours"),
+            output_field=IntegerField(),
+        )
+    )
+
     sort = request.GET.get("sort", "blank")
     order = request.GET.get("order", "asc")
 
     if sort != "blank":
+
+        if "avg_rating" in sort:
+            courses = courses.annotate(
+                avg_rating=Coalesce(Avg("reviews__score_rating"), 0.0)
+            )
         if order == "desc":
             sort = f"-{sort}"
         courses = courses.order_by(sort)
+
+    for course in courses:
+        avg = course.avg_rating if course.avg_rating is not None else 0
+        course.rating = round(avg, 1)
+        course.rating_full_stars = int(avg)
+        if avg - int(avg) > 0:
+            course.rating_partial_star_position = course.rating_full_stars + 1
+            course.rating_partial_percentage = int((avg - int(avg)) * 100)
+        else:
+            course.rating_partial_star_position = 0
+            course.rating_partial_percentage = 0
 
     # Render full HTML for the page (not just partial updates)
     return render(request, "courses/courses_section.html", {"courses": courses})
