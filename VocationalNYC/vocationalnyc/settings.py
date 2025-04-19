@@ -10,8 +10,13 @@ For the full list of settings and their values, see:
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import boto3
+from botocore.exceptions import ClientError
+
 from pathlib import Path
 import environ
+import json
+
 
 USE_TZ = True
 TIME_ZONE = "America/New_York"
@@ -24,6 +29,25 @@ env = environ.Env(DEBUG=(bool, False))
 env_file = BASE_DIR / ".env"
 if env_file.exists():
     environ.Env.read_env(env_file)
+
+
+def get_secret(secret_name):
+    region_name = "us-east-1"
+
+    # Create a Secrets Manager client
+
+    session = boto3.session.Session(region_name=region_name)
+    client = session.client(service_name="secretsmanager")
+
+    try:
+        get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+    except ClientError as e:
+        # For a list of exceptions thrown, see
+        # https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
+        raise e
+
+    secret = json.loads(get_secret_value_response["SecretString"])
+    return secret
 
 
 DEBUG = env("DEBUG", default="False")
@@ -72,6 +96,7 @@ INSTALLED_APPS = [
     "review",
     "message",
     "bookmarks",
+    "widget_tweaks",
 ]
 
 
@@ -80,7 +105,8 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",  # Authentication middleware
+    "users.middleware.AdminRedirectMiddleware",
     "users.middleware.TrainingProviderMiddleware",  # Custom middleware for training provider verification
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -143,14 +169,15 @@ if DJANGO_ENV == "travis":
         }
     }
 elif DJANGO_ENV == "production":
+    ebdb_creds = get_secret("ebdb_creds")
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": env("POSTGRES_DB", default="db"),
-            "USER": env("POSTGRES_USER", default="postgres"),
-            "PASSWORD": env("POSTGRES_PASSWORD", default="postgres"),
-            "HOST": env("POSTGRES_HOST", default="localhost"),
-            "PORT": env.int("POSTGRES_PORT", default=5432),
+            "NAME": env("POSTGRES_DB", default=ebdb_creds["dbname"]),
+            "USER": env("POSTGRES_USER", default=ebdb_creds["username"]),
+            "PASSWORD": env("POSTGRES_PASSWORD", default=ebdb_creds["password"]),
+            "HOST": env("POSTGRES_HOST", default=ebdb_creds["host"]),
+            "PORT": env.int("POSTGRES_PORT", default=ebdb_creds["port"]),
         }
     }
 else:
@@ -200,6 +227,8 @@ ACCOUNT_FORMS = {
     "signup": "users.forms.CustomSignupForm",
 }
 
+ACCOUNT_LOGOUT_ON_GET = True
+
 # Multi-Factor Authentication (MFA)
 MFA_SUPPORTED_TYPES = ["webauthn", "totp", "recovery_codes"]
 MFA_PASSKEY_LOGIN_ENABLED = True
@@ -227,8 +256,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Favicon Handling (Ensure favicon.ico is inside static/)
 FAVICON_PATH = STATIC_URL + "favicon.ico"
 
-LOGIN_URL = "/accounts/login/"
+LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/"
+
 
 GOOGLE_MAPS_API_KEY = env("GOOGLE_MAPS_API_KEY", default="")
 

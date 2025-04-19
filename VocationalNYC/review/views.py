@@ -5,10 +5,12 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.core.serializers import serialize
 from .models import ReviewReply
-from .models import Review
+from .models import Review, ReviewVote
 from courses.models import Course
+from users.models import Provider
 
 # from django.urls import reverse
+from django.shortcuts import render
 
 
 class ReviewListView(View):
@@ -63,6 +65,10 @@ class ReviewCreateView(View):
         if not content or not score_rating:
             return JsonResponse({"error": "All fields are required."}, status=400)
 
+        # Prevent duplicate reviews by the same user on the same course
+        if Review.objects.filter(course=course, user=request.user).exists():
+            return redirect("course_detail", pk=pk)
+
         Review.objects.create(
             course=course,
             user=request.user,
@@ -70,6 +76,25 @@ class ReviewCreateView(View):
             score_rating=int(score_rating),
         )
         return redirect("course_detail", pk=pk)
+
+
+def course_detail(request, pk):
+    course = get_object_or_404(Course, pk=pk)
+    reviews = Review.objects.filter(course=course)
+
+    user_has_reviewed = False
+    if request.user.is_authenticated:
+        user_has_reviewed = reviews.filter(user=request.user).exists()
+
+    return render(
+        request,
+        "courses/course_detail.html",
+        {
+            "course": course,
+            "reviews": reviews,
+            "user_has_reviewed": user_has_reviewed,
+        },
+    )
 
 
 @method_decorator(login_required, name="dispatch")
@@ -83,6 +108,81 @@ class ReviewDeleteView(View):
                 status=403,
             )
 
-        course_id = review.course.pk  # Capture course ID before deleting
+        course_id = review.course.pk
         review.delete()
         return redirect("course_detail", pk=course_id)
+
+
+class ReviewVoteView(View):
+    def post(self, request, pk):
+        review = get_object_or_404(Review, pk=pk)
+        action = request.POST.get("action")
+        user = request.user
+
+        if action not in ["upvote", "downvote"]:
+            return JsonResponse({"error": "Invalid vote action"}, status=400)
+
+        existing_vote = ReviewVote.objects.filter(review=review, user=user).first()
+
+        if not existing_vote:
+            # No vote exists yet — create one
+            if action == "upvote":
+                review.helpful_count += 1
+            else:
+                review.not_helpful_count += 1
+            ReviewVote.objects.create(review=review, user=user, action=action)
+
+        else:
+            if existing_vote.action == action:
+                # Same vote clicked again — undo it
+                if action == "upvote":
+                    review.helpful_count -= 1
+                else:
+                    review.not_helpful_count -= 1
+                existing_vote.delete()
+
+            else:
+                # Switching vote
+                if action == "upvote":
+                    review.helpful_count += 1
+                    review.not_helpful_count -= 1
+                else:
+                    review.helpful_count -= 1
+                    review.not_helpful_count += 1
+
+                existing_vote.action = action
+                existing_vote.save()
+
+        review.save()
+
+        return JsonResponse(
+            {
+                "helpful_count": review.helpful_count,
+                "not_helpful_count": review.not_helpful_count,
+            }
+        )
+
+
+@method_decorator(login_required, name="dispatch")
+class ReviewReplyCreateView(View):
+    def post(self, request, pk):
+
+        try:
+            request.user.provider_profile
+        except Provider.DoesNotExist:
+            return JsonResponse(
+                {"error": "Only providers can reply to reviews."}, status=403
+            )
+
+        review = get_object_or_404(Review, pk=pk)
+        content = request.POST.get("content")
+
+        if not content:
+            return JsonResponse({"error": "Reply content cannot be empty."}, status=400)
+
+        ReviewReply.objects.create(
+            review=review,
+            user=request.user,
+            content=content,
+        )
+        return redirect("course_detail", pk=review.course.pk)

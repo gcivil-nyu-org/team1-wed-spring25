@@ -16,7 +16,24 @@
     "content": "Use the interactive map to visually discover vocational training programs across the city. See what’s available near you, around your workplace, or in a neighborhood you’re considering moving to — all in just a few clicks.<br>Each pin represents a real opportunity to advance your career. Hover to preview course names, click to view program details, and explore the geographic spread of high-impact learning paths. Whether you're looking for something local or just curious what’s nearby, the map brings location-based discovery to life."
   },
     "course_detail": {
-"title": "Course Overview",
-"content": "Find essential details about this program — including location, duration, cost, and reviews. Get clear on what’s offered and whether it fits your next move."
-  }
+      "title": "Course Overview",
+      "content": "Find essential details about this program — including location, duration, cost, and reviews. Get clear on what’s offered and whether it fits your next move."
+  },
+    "manage_courses": {
+    "title": "Course Management",
+    "content": "Welcome to your Provider Course Management Dashboard. This is your central hub for posting new vocational courses, editing existing listings, and removing outdated programs. As a training provider, you can keep your course information up to date, track total hours, and ensure your offerings are visible to career changers and students exploring chemistry-related training in Manhattan. Use this dashboard to maintain a professional and accurate presence on VocationalNYC."
+  },
+    "provider_detail": {
+    "title": "Provider Overview",
+  "content": "Explore detailed information about this training provider, including their contact details, course offerings, and verified status. Learn about their specialties and program types, and discover how they support students through practical, career-oriented education."
+  },
+      "profile": {
+  "title": "Your Profile",
+  "content": "View and update your personal or provider details, including your name, role, and contact information. Career changers can manage bookmarks and reviews, while providers can edit business info and certificates."
+},
+      "course_comparison": {
+  "title": "Course Comparison",
+  "content": "Easily compare multiple vocational courses side-by-side to find the best fit for your goals. Review key details like location, cost, duration, and reviews—all in one place."
+}
+
 }

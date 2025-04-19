@@ -1,31 +1,111 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Provider Details{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    {% if error_message %}
-        <p class="error">{{ error_message }}</p>
-    {% elif provider %}
-        <h2>{{ provider.name }}</h2>
-        <p class="info"><strong>Phone:</strong> {{ provider.phone_num }}</p>
-        <p class="info"><strong>Address:</strong> {{ provider.address }}</p>
-        {% if provider.website %}
-            <p class="info"><strong>Website:</strong> <a href="{{ provider.website }}" target="_blank">{{ provider.website }}</a></p>
-            <p class="info"><strong>Courses:</strong></p>
-            <ul>
-                {% for course in courses %}
-                    <li>
-                        <a href="{% url 'course_detail' course.course_id %}">
-                            {{ course.name }}
+<link rel="stylesheet" href="{% static 'css/provider_details.css' %}">
+
+<div class="provider-details-container">
+
+  <h1 class="provider-details-header">{{ provider.name }}
+      {% if provider.verification_status %}
+          <span class="VerificationIcon" data-tooltip="Verified Provider">
+              <img src="{% static 'images/verified.png' %}" srcset alt="Verified">
+          </span>
+      {% endif %}
+  </h1>
+
+  {% if error_message %}
+    <div class="alert alert-danger">{{ error_message }}</div>
+  {% elif provider %}
+
+      <div class="provider-meta">
+
+
+                  <p>
+                👤 <strong>Contact Person:</strong>
+                <a href="javascript:void(0)">
+                    {{ provider.contact_firstname }} {{ provider.contact_lastname }}
+                </a>
+            </p>
+
+      <p>
+                📧 <strong>Email:</strong>
+                <a href="mailto:{{ provider.user.email }}">{{ provider.user.email }}</a>
+            </p>
+
+            <p>
+                📆 <strong>Joined:</strong>
+                <a href="javascript:void(0)">{{ provider.user.date_joined|date:"F j, Y" }}</a>
+            </p>
+
+
+            <div class="provider-details-section">
+
+                      <h2>📄 Provider Details</h2>
+
+
+
+          <p>
+            📍 <strong>Business Address:</strong>
+            <a href="javascript:void(0)">{{ provider.address }}</a>
+          </p>
+
+          {% if provider.website %}
+              <p>
+                  <strong>🌐 Business Website:</strong>
+                  <a href="{{ provider.website }}" target="_blank">{{ provider.website }}</a>
+              </p>
+          {% endif %}
+
+      </div>
+
+      {% if provider.provider_desc %}
+          <div class="provider-description">
+              <h2>📝 Description</h2>
+              <p>{{ provider.provider_desc }}</p>
+          </div>
+      {% endif %}
+
+           <p>
+                        📞 <strong>Contact Number:</strong>
+                        <a href="tel:{{ provider.phone_num }}">
+                            {{ provider.phone_num }}
                         </a>
-                    </li>
-                {% empty %}
-                    <li>No courses yet</li>
-                {% endfor %}
-        {% endif %}
-    {% else %}
-        <p class="error">Provider not found.</p>
-    {% endif %}
+                    </p>
+
+                    {% if provider.open_time %}
+                        <p>
+                            ⏰ <strong>Business Hours:</strong>
+                            <a href="javascript:void(0)">
+                                {{ provider.open_time }}
+                            </a>
+                        </p>
+                    {% endif %}
+
+      </div>
+
+    <div class="provider-details-meta" style="margin-top: 5rem;">
+      <h2>📚 Courses</h2>
+      {% if courses %}
+        <ul>
+          {% for course in courses %}
+            <li class="provider-details-entry">
+              <div class="provider-details-content">
+                <a class="provider-details-left" href="{% url 'course_detail' course.course_id %}">
+                  {{ course.name }}
+                </a>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-gray-500 italic">No courses available for this provider.</p>
+      {% endif %}
+    </div>
+  {% else %}
+    <p class="text-gray-500 italic">Provider not found.</p>
+  {% endif %}
 </div>
 {% endblock %}

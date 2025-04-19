@@ -13,6 +13,5 @@ class TrainingProviderVerificationBackend(ModelBackend):
             request, username=username, password=password, **kwargs
         )
         if user and not user.is_active and user.role == "training_provider":
-            # 使用一个特殊标记来表示这是有效的非活跃提供者
             setattr(user, "_verified_inactive_provider", True)
         return user
