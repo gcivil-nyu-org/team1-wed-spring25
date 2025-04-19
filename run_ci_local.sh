@@ -17,8 +17,8 @@ python manage.py migrate --noinput
 python manage.py collectstatic --noinput
 
 echo "▶ Running tests and linters"
-#python manage.py test
-black --check .
+python manage.py test
+black .
 flake8 . --exclude=venv
 coverage run --source=. manage.py test
 

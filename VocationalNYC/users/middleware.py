@@ -18,7 +18,10 @@ class AdminRedirectMiddleware:
                 or request.user.is_staff
             )
         ):
-            if not request.path.startswith("/admin/"):
+            # Allow access to media files
+            if not (
+                request.path.startswith("/media/") or request.path.startswith("/admin/")
+            ):
                 return HttpResponseRedirect("/admin/")
         return self.get_response(request)
 
