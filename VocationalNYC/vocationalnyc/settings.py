@@ -40,7 +40,7 @@ def get_secret(secret_name):
     client = session.client(service_name="secretsmanager")
 
     get_secret_value_response = client.get_secret_value(SecretId=secret_name)
-    
+
     secret = json.loads(get_secret_value_response["SecretString"])
     return secret
 
@@ -166,8 +166,8 @@ if DJANGO_ENV == "travis":
 elif DJANGO_ENV == "production":
     try:
         ebdb_creds = get_secret("ebdb_creds")
-    except:
-        print('Secrets not fetched via boto')
+    except ClientError:
+        print("Secrets not fetched via boto")
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
