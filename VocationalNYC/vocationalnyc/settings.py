@@ -172,7 +172,7 @@ elif DJANGO_ENV == "production":
             "dbname": "db",
             "username": "postgres",
             "password": "postgres",
-            "host": "localhost"
+            "host": "localhost",
         }
     DATABASES = {
         "default": {
