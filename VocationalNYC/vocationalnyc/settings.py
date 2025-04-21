@@ -168,6 +168,12 @@ elif DJANGO_ENV == "production":
         ebdb_creds = get_secret("ebdb_creds")
     except ClientError:
         print("Secrets not fetched via boto")
+        ebdb_creds = {
+            "dbname": "db",
+            "username": "postgres",
+            "password": "postgres",
+            "host": "localhost",
+        }
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
