@@ -39,12 +39,7 @@ def get_secret(secret_name):
     session = boto3.session.Session(region_name=region_name)
     client = session.client(service_name="secretsmanager")
 
-    try:
-        get_secret_value_response = client.get_secret_value(SecretId=secret_name)
-    except ClientError as e:
-        # For a list of exceptions thrown, see
-        # https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
-        raise e
+    get_secret_value_response = client.get_secret_value(SecretId=secret_name)
 
     secret = json.loads(get_secret_value_response["SecretString"])
     return secret
@@ -169,7 +164,10 @@ if DJANGO_ENV == "travis":
         }
     }
 elif DJANGO_ENV == "production":
-    ebdb_creds = get_secret("ebdb_creds")
+    try:
+        ebdb_creds = get_secret("ebdb_creds")
+    except ClientError:
+        print("Secrets not fetched via boto")
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
