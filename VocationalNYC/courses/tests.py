@@ -372,7 +372,7 @@ class SearchResultTest(TestCase):
     def test_sort_by_function_default_order(self, mock_filter_courses):
         # Create a request without sorting parameters (default behavior)
         request = self.factory.get("/courses/sort/")
-        request.session = {} 
+        request.session = {}
 
         # Call the sort_by function
         response = sort_by(request)
@@ -460,7 +460,7 @@ class FilterCoursesTest(TestCase):
     def test_filter_by_keywords_keywords(self):
         request = self.factory.get("/search/", {"keywords": "web"})
         request.user = self.user
-        request.session = {} 
+        request.session = {}
         context = filterCourses(request)
         request.session = {}
         self.assertEqual(len(context["courses"]), 2)
@@ -712,7 +712,7 @@ class SortByFunctionTest(TestCase):
     def test_sort_by_name_ascending(self):
         request = self.factory.get("/courses/sort/", {"sort": "name", "order": "asc"})
         request.user = self.user
-        request.session = {} 
+        request.session = {}
         response = sort_by(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
@@ -729,7 +729,7 @@ class SortByFunctionTest(TestCase):
     def test_sort_by_name_descending(self):
         request = self.factory.get("/courses/sort/", {"sort": "name", "order": "desc"})
         request.user = self.user
-        request.session = {} 
+        request.session = {}
         response = sort_by(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
@@ -746,7 +746,7 @@ class SortByFunctionTest(TestCase):
     def test_sort_by_cost_ascending(self):
         request = self.factory.get("/courses/sort/", {"sort": "cost", "order": "asc"})
         request.user = self.user
-        request.session = {} 
+        request.session = {}
         response = sort_by(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
@@ -763,7 +763,7 @@ class SortByFunctionTest(TestCase):
     def test_sort_by_cost_descending(self):
         request = self.factory.get("/courses/sort/", {"sort": "cost", "order": "desc"})
         request.user = self.user
-        request.session = {} 
+        request.session = {}
         response = sort_by(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
@@ -782,7 +782,7 @@ class SortByFunctionTest(TestCase):
             "/courses/sort/", {"sort": "classroom_hours", "order": "asc"}
         )
         request.user = self.user
-        request.session = {} 
+        request.session = {}
         response = sort_by(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
@@ -801,7 +801,7 @@ class SortByFunctionTest(TestCase):
             "/courses/sort/", {"sort": "classroom_hours", "order": "desc"}
         )
         request.user = self.user
-        request.session = {} 
+        request.session = {}
         response = sort_by(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
