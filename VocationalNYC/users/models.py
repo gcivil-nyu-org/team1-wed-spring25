@@ -1,6 +1,7 @@
 from django.db import models
 from .managers import CustomUserManager
 from django.contrib.auth.models import AbstractUser
+import uuid
 
 
 class CustomUser(AbstractUser):
@@ -76,10 +77,9 @@ class Student(models.Model):
 
 
 def certificate_file_path(instance, filename):
-    # Get the file extension
+    # Generate a unique filename using UUID
     ext = filename.split(".")[-1]
-    # Create new filename using user id
-    filename = f"certificate_user{instance.user.id}.{ext}"
+    filename = f"certificate_{uuid.uuid4().hex}.{ext}"
     return f"provider_certificates/{filename}"
 
 
