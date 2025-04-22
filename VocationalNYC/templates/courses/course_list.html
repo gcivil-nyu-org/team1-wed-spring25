@@ -1022,20 +1022,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // Add event listeners 
-        document.addEventListener('DOMContentLoaded', function () { 
-            const panel = document.querySelector('.VocationalCourseAndProviderContainerFour');
-            if (panel) {
-                const anyChecked = document.querySelectorAll('.Hidden-Input:checked').length > 0;
-                if (!anyChecked) {
-                panel.innerHTML = `
-                    <div class="empty-comparison-message" style="text-align:center; padding:20px;">
-                    <p>No courses added to comparison yet.</p>
-                    </div>`;
-                hideComparisonPanel();
-                }
-            }
-        });
-
         // checkbox change event listener
         document.querySelectorAll('.Hidden-Input').forEach(function(checkbox) {
             checkbox.addEventListener('change', handleCheckboxChange);
