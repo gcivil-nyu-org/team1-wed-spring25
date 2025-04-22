@@ -235,7 +235,7 @@ form div.help ul {
 /* MONOSPACE TEXTAREAS */
 
 fieldset.monospace textarea {
-            font-family: system-ui;
+    font-family: var(--font-family-monospace);
 }
 
 /* SUBMIT ROW */
