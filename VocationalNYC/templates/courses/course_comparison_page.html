@@ -50,40 +50,43 @@
                     <td>
                         <div class="review-stars">
                             {% for i in "12345"|make_list %}
-                                {% if forloop.counter <= course.rating|floatformat:"0"|add:"0" %}
-                                    <!-- Full star -->
-                                    <svg class="Course-Rating" fill="#a2ccb6" stroke="#a2ccb6"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        xmlns:xlink="http://www.w3.org/1999/xlink">
-                                        <use xlink:href="#star"></use>
-                                    </svg>
-                                {% elif forloop.counter == course.rating|floatformat:"0"|add:"0"|add:"1" and course.rating|floatformat:"1"|slice:"-1:" != "0" %}
-                                    <!-- Half star -->
-                                    <svg class="Course-Rating" fill="url(#course_rating)" stroke="#a2ccb6"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        xmlns:xlink="http://www.w3.org/1999/xlink">
-                                        <use xlink:href="#star"></use>
-                                        <defs>
-                                            <linearGradient id="course_rating_{{ forloop.parentloop.counter }}" x1="0%" x2="100%" y1="0%" y2="0%">
-                                                <stop offset="0%" stop-color="#a2ccb6"></stop>
-                                                <stop offset="50%" stop-color="#a2ccb6"></stop>
-                                                <stop offset="50%" stop-color="#ffffff"></stop>
-                                                <stop offset="100%" stop-color="#ffffff"></stop>
-                                            </linearGradient>
-                                        </defs>
-                                    </svg>
+                                {% if forloop.counter <= course.rating_full_stars %}
+                                <svg class="Course-Rating"
+                                        fill=#a2ccb6
+                                        stroke=#a2ccb6>
+                                    <use xlink:href=#star></use>
+                                </svg>
+                                {% elif forloop.counter == course.rating_partial_star_position %}
+                                <svg class="Course-Rating"
+                                        fill="url(#course_rating_{{ course.pk }})"
+                                        stroke=#a2ccb6>
+                                    <use xlink:href=#star></use>
+                                    <defs>
+                                        <lineargradient
+                                                id="course_rating_{{ course.pk }}"
+                                                x1=0% x2=100% y1=0% y2=0%>
+                                            <stop offset=0%
+                                                    stop-color=#a2ccb6></stop>
+                                            <stop offset={{ course.rating_partial_percentage }}%
+                                                    stop-color=#a2ccb6></stop>
+                                            <stop offset={{ course.rating_partial_percentage }}%
+                                                    stop-color=#ffffff></stop>
+                                            <stop offset=100%
+                                                    stop-color=#ffffff></stop>
+                                        </lineargradient>
+                                    </defs>
+                                </svg>
                                 {% else %}
-                                    <!-- Empty star -->
-                                    <svg class="Course-Rating" fill="#ffffff" stroke="#a2ccb6"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        xmlns:xlink="http://www.w3.org/1999/xlink">
-                                        <use xlink:href="#star"></use>
-                                    </svg>
+                                <svg class="Course-Rating"
+                                        fill=#ffffff
+                                        stroke=#a2ccb6>
+                                    <use xlink:href=#star></use>
+                                </svg>
                                 {% endif %}
-                            {% endfor %}
+                                {% endfor %}
                             <span class="review-score">({{ course.rating }}/5)</span>
                         </div>
-                        <span class="review-timestamp">{{ course.review_count }} reviews</span>
+                        <span class="review-timestamp">{{ course.reviews_count }} reviews</span>
                     </td>
                 {% endfor %}
                 </tr>

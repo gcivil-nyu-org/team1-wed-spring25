@@ -248,9 +248,9 @@
         <div id="comparisonList" class="VocationalCourseAndProviderContainer VocationalCourseAndProviderContainerFour">
             {% if comparison_courses %}
                 {% for course in comparison_courses %}
-                    <div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderClassTwo" data-course-id="{{ course.id }}">
+                    <div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderClassTwo" data-course-id="{{ course.course_id }}">
                         <svg class="VocationalCourseAndProviderSVGThree VocationalCourseAndProviderSVGFour remove-from-comparison" 
-                            data-course-id="{{ course.id }}" fill=gray50 height=0.625rem role=img width=0.625rem>
+                            data-course-id="{{ course.course_id }}" fill=gray50 height=0.625rem role=img width=0.625rem>
                             <use filter=0 xlink:href=#x-close></use>
                         </svg>
                         <p class="VocationalCourseNameClassOne VocationalCourseNameClassTwo">{{ course.name }}</p>

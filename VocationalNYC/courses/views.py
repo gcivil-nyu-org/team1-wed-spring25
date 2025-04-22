@@ -601,7 +601,6 @@ def course_comparison(request):
     View to compare multiple courses
     """
     # Get course IDs from session or query parameters
-    course_ids = request.session.get("comparison_courses", [])
     if request.GET.getlist("course_ids"):
         course_ids = [int(i) for i in request.GET.getlist("course_ids") if i.strip()]
         request.session["comparison_courses"] = course_ids
@@ -609,8 +608,20 @@ def course_comparison(request):
         course_ids = request.session.get("comparison_courses", [])
 
     # Get courses to compare
-    courses = Course.objects.filter(course_id__in=course_ids) if course_ids else []
+    courses = Course.objects.filter(course_id__in=course_ids)
+    courses = courses.annotate(
+        avg_rating=Avg("reviews__score_rating"), reviews_count=Count("reviews")
+    )
     for course in courses:
+        avg = course.avg_rating if course.avg_rating is not None else 0
+        course.rating = round(avg, 1)
+        course.rating_full_stars = int(avg)
+        if avg - int(avg) > 0:
+            course.rating_partial_star_position = course.rating_full_stars + 1
+            course.rating_partial_percentage = int((avg - int(avg)) * 100)
+        else:
+            course.rating_partial_star_position = 0
+            course.rating_partial_percentage = 0
         course.total_hours = (
             course.classroom_hours
             + course.lab_hours
@@ -646,15 +657,12 @@ def add_to_comparison(request):
             return JsonResponse(
                 {"success": False, "message": "Missing course_id"}, status=400
             )
-        print(course_id)
 
         # Get current comparison courses
         comparison_courses = request.session.get("comparison_courses", [])
-        print("comparison_courses", comparison_courses)
 
         # Add course if not already in the list and limit to maximum 9 courses
         if course_id in comparison_courses:
-            print("Already in comparison")
             return JsonResponse({"success": True, "count": len(comparison_courses)})
 
         if len(comparison_courses) >= 9:
@@ -706,7 +714,6 @@ def remove_from_comparison(request):
             return JsonResponse(
                 {"success": False, "message": "Missing course_id"}, status=400
             )
-        print(course_id)
 
         # Get current comparison courses
         comparison_courses = request.session.get("comparison_courses", [])
