@@ -39,12 +39,7 @@ def get_secret(secret_name):
     session = boto3.session.Session(region_name=region_name)
     client = session.client(service_name="secretsmanager")
 
-    try:
-        get_secret_value_response = client.get_secret_value(SecretId=secret_name)
-    except ClientError as e:
-        # For a list of exceptions thrown, see
-        # https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
-        raise e
+    get_secret_value_response = client.get_secret_value(SecretId=secret_name)
 
     secret = json.loads(get_secret_value_response["SecretString"])
     return secret
@@ -59,6 +54,7 @@ SECRET_KEY = env("SECRET_KEY", default="insecure" if DEBUG else environ.Env.NOTS
 
 ALLOWED_HOSTS = env.list(
     "ALLOWED_HOSTS",
+
     default=[
         "localhost",
         "127.0.0.1",
@@ -68,6 +64,7 @@ ALLOWED_HOSTS = env.list(
         "vocationalnyc-env.eba-uurzafst.us-east-1.elasticbeanstalk.com",
         "vocationalnyc-test.us-east-1.elasticbeanstalk.com",
     ],
+
 )
 # ALLOWED_HOSTS = env.list(
 #     "ALLOWED_HOSTS",
@@ -182,7 +179,17 @@ if DJANGO_ENV == "travis":
         }
     }
 elif DJANGO_ENV == "production":
-    ebdb_creds = get_secret("ebdb_creds")
+    try:
+        ebdb_creds = get_secret("ebdb_creds")
+    except ClientError:
+        print("Secrets not fetched via boto")
+        ebdb_creds = {
+            "dbname": "db",
+            "username": "postgres",
+            "password": "postgres",
+            "host": "localhost",
+            "port": 5432,
+        }
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
