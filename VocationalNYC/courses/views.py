@@ -730,4 +730,3 @@ def clear_comparison(request):
         return JsonResponse({"success": True})
 
     return JsonResponse({"success": False, "message": "Invalid request"})
-
