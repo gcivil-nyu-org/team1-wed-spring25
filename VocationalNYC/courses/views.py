@@ -659,7 +659,11 @@ def add_to_comparison(request):
 
         if len(comparison_courses) >= 9:
             return JsonResponse(
-                {"success": False, "message": "Maximum courses reached"}, status=400
+                {
+                    "success": False,
+                    "message": "You’ve reached the limit of 9 courses to compare.\n\nTo add another, remove one from your current comparison list.",
+                },
+                status=400,
             )
 
         comparison_courses.append(int(course_id))
