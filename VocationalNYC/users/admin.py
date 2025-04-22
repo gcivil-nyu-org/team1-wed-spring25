@@ -10,13 +10,13 @@ class CustomUserAdmin(UserAdmin):
     list_filter = ("role", "is_superuser", "is_active")
     search_fields = ("username", "email", "first_name", "last_name")
 
-    def get_queryset(self, request):
-        # Filter out provider and student users from main user list
-        return (
-            super()
-            .get_queryset(request)
-            .exclude(role__in=["training_provider", "career_changer"])
-        )
+    # def get_queryset(self, request):
+    #     # Filter out provider and student users from main user list
+    #     return (
+    #         super()
+    #         .get_queryset(request)
+    #         .exclude(role__in=["training_provider", "career_changer"])
+    #     )
 
 
 @admin.register(Provider)

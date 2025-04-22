@@ -68,12 +68,16 @@ ALLOWED_HOSTS = env.list(
 ADMINS = env.list("ADMINS", default=[("admin", "admin@example.com")] if DEBUG else [])
 MANAGERS = ADMINS
 
-EMAIL_BACKEND = (
-    "django.core.mail.backends.filebased.EmailBackend"
-    if DEBUG
-    else "django.core.mail.backends.console.EmailBackend"
-)
-EMAIL_FILE_PATH = BASE_DIR / "logs" / "emails"
+# Email Configuration
+EMAIL_BACKEND = env('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = env('EMAIL_HOST', default='smtp.mailgun.org')
+EMAIL_PORT = env.int('EMAIL_PORT', default=587)
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
+MAILGUN_API_KEY = env('MAILGUN_API_KEY')
+DOMAIN_NAME = env('DOMAIN_NAME')
 
 # Application definition
 INSTALLED_APPS = [
@@ -215,18 +219,16 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Django Allauth Config
 ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "optional"
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "VocationalNYC - "
+ACCOUNT_PASSWORD_RESET_TIMEOUT = 259200  # 3 days in seconds
 ACCOUNT_LOGIN_BY_CODE_ENABLED = True
-ACCOUNT_EMAIL_VERIFICATION = "none" if DEBUG else "mandatory"
 ACCOUNT_EMAIL_VERIFICATION_BY_CODE_ENABLED = False
 ACCOUNT_LOGIN_METHODS = {"username", "email"}
 ACCOUNT_PASSWORD_RESET_BY_CODE_ENABLED = True
-ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
-ACCOUNT_USERNAME_REQUIRED = True
-ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
-ACCOUNT_SESSION_REMEMBER = True
-ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_ADAPTER = "users.adapters.MyAccountAdapter"
-
 AUTH_USER_MODEL = "users.CustomUser"
 ACCOUNT_FORMS = {
     "signup": "users.forms.CustomSignupForm",
