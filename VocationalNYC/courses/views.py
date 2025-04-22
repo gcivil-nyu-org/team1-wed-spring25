@@ -586,3 +586,8 @@ def edit_course(request, course_id):
         return redirect("manage_courses")
 
     return redirect("manage_courses")
+
+
+def provider_detail(request, pk):
+    provider = get_object_or_404(Provider, pk=pk)
+    return render(request, "providers/provider_detail.html", {"provider": provider})
