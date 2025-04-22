@@ -55,8 +55,11 @@ ALLOWED_HOSTS = env.list(
     "ALLOWED_HOSTS",
     default=(
         [
-            "127.0.0.1",
             "localhost",
+            "127.0.0.1",
+            "172.31.10.24",  # add all relevant internal IPs seen in logs
+            "172.31.34.113",
+            "172.31.3.17",
             "vocationalnyc-env.eba-uurzafst.us-east-1.elasticbeanstalk.com",
             "vocationalnyc-test.us-east-1.elasticbeanstalk.com",
         ]
