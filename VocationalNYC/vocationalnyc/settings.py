@@ -72,17 +72,15 @@ ADMINS = env.list("ADMINS", default=[("admin", "admin@example.com")] if DEBUG el
 MANAGERS = ADMINS
 
 # Email Configuration
-EMAIL_BACKEND = env(
-    "EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend"
-)
-EMAIL_HOST = env("EMAIL_HOST", default="smtp.mailgun.org")
+EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
+EMAIL_HOST = env("EMAIL_HOST", default="localhost")
 EMAIL_PORT = env.int("EMAIL_PORT", default=587)
-EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
-EMAIL_HOST_USER = env("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
-DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
-MAILGUN_API_KEY = env("MAILGUN_API_KEY")
-DOMAIN_NAME = env("DOMAIN_NAME")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=False)
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="test@example.com")
+MAILGUN_API_KEY = env("MAILGUN_API_KEY", default="test-key")
+DOMAIN_NAME = env("DOMAIN_NAME", default="example.com")
 
 # Application definition
 INSTALLED_APPS = [
