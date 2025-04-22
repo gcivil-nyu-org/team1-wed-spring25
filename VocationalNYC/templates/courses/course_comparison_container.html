@@ -16,7 +16,7 @@
         box-shadow: rgba(17, 17, 17, 0.3) 0px 0px 3px
     }
     .VocationalCourseAndProviderUniversalHeight {
-        height: 267px!important;
+        height: 283px!important;
     }
     .MagicButton {
         display: flex;
@@ -66,10 +66,12 @@
     }
     .VocationalCourseAndProviderContainerFour {
         height: 200px;
-        width: 330px;
+        width: 339.5px;
         padding-top: 0.25rem;
         margin: 0rem 0.5rem 0.5rem;
-        overflow-y: auto
+        overflow-y: auto;
+        overscroll-behavior-y: none!important;
+
     }
     .VocationalCourseAndProviderClassTwo {
         display: flex;
@@ -265,21 +267,21 @@
 
         <div class="BorderLines" color=#D3D7DC spacing=0></div>
 
-        <form method="GET" action="{% url 'course_comparison' %}" id="comparison-form">
+        <form method="GET" action="{% url 'course_comparison' %}" id="comparison-form" style="margin: 16px!important;">
             <div class="comparison-buttons-container" style="display: flex; gap: 10px;">
-                <button type="button" id="clear-comparison-btn" 
+                <button type="button" id="clear-comparison-btn"
                         class="VocationalCourseAndProviderButtonBorderOne"
-                        style="background-color: #e0e0e0; color: #333; margin-right: 10px;">
-                    <div class="button-content">Clear All Courses</div>
+                        style="background-color: #e0e0e0; color: #333; margin-right: 6px; border-color: #e0e0e0;">
+                    <div class="button-content">Clear All</div>
                 </button>
 
-                <button type="submit" id="compare-courses-btn" border=#9297A1 
-                        class="VocationalCourseAndProviderButtonBorderOne VocationalCourseAndProviderButtonBorderTwo"
+                <button type="submit" id="compare-courses-btn" border=#9297A1
+                        class="VocationalCourseAndProviderButtonBorderOne"
                         {% if comparison_courses|length < 2 %}disabled{% endif %}>
                     <div class="VocationalCourseAndProviderButtonOne VocationalCourseAndProviderButtonTwo">
                         {{ comparison_courses|length|default:"0" }}
                     </div>
-                    <div class="button-content">Compare Courses Now</div>
+                    <div class="button-content">Compare Courses</div>
                 </button>
             </div>
         </form>
