@@ -669,7 +669,7 @@ def add_to_comparison(request):
             return JsonResponse(
                 {
                     "success": False,
-                    "message": "You’ve reached the limit of 9 courses to compare.\n\nTo add another, remove one from your current comparison list.",
+                    "message": "You've reached the limit of 9 courses to compare.\n\nTo add another, remove one from your current comparison list.",
                 },
                 status=400,
             )
