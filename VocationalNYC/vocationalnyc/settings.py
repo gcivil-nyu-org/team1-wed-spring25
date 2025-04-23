@@ -54,7 +54,6 @@ SECRET_KEY = env("SECRET_KEY", default="insecure" if DEBUG else environ.Env.NOTS
 
 ALLOWED_HOSTS = env.list(
     "ALLOWED_HOSTS",
-
     default=[
         "localhost",
         "127.0.0.1",
@@ -64,7 +63,6 @@ ALLOWED_HOSTS = env.list(
         "vocationalnyc-env.eba-uurzafst.us-east-1.elasticbeanstalk.com",
         "vocationalnyc-test.us-east-1.elasticbeanstalk.com",
     ],
-
 )
 # ALLOWED_HOSTS = env.list(
 #     "ALLOWED_HOSTS",
