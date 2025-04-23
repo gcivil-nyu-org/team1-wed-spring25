@@ -23,7 +23,8 @@ from django.conf.urls.static import static
 from django.shortcuts import redirect
 from views import custom_404
 from django.shortcuts import render
-
+from django.views.static import serve
+from django.urls import re_path
 
 def custom_404_view(request, exception):
     return render(request, "404.html", status=404)
@@ -69,7 +70,10 @@ urlpatterns = [
     path("404/", custom_404),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {
+        'document_root': settings.MEDIA_ROOT,
+        'show_indexes': True
+    }),
+]
 handler404 = "vocationalnyc.urls.custom_404_view"
