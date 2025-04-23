@@ -932,8 +932,9 @@ document.addEventListener("DOMContentLoaded", function () {
             courseElement.setAttribute('data-course-id', data.course.id);
             
             courseElement.innerHTML = `
-                <svg class="VocationalCourseAndProviderSVGThree VocationalCourseAndProviderSVGFour remove-from-comparison" 
-                    data-course-id="${data.course.id}" fill="gray50" height="0.625rem" role="img" width="0.625rem">
+                <svg class="VocationalCourseAndProviderSVGThree VocationalCourseAndProviderSVGFour remove-from-comparison" style="  color: #e0e0e0;
+"
+                    data-course-id="${data.course.id}" fill="e0e0e0" height="1rem" role="img" width="1rem">
                     <use filter="0" xlink:href="#x-close"></use>
                 </svg>
                 <p class="VocationalCourseNameClassOne VocationalCourseNameClassTwo">${data.course.name}</p>
