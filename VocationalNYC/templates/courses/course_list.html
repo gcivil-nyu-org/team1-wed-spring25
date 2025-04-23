@@ -747,5 +747,348 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>  </div>
     </main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get CSRF token from cookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrfToken = getCookie('csrftoken');
+
+        // show comparison panel function
+        function showComparisonPanel() {
+            const collapsedPanel = document.getElementById('CollapsedCompareCoursesTab');
+            const expandedPanel = document.getElementById('ExpandedCompareCoursesPanel');
+            
+            if (collapsedPanel && expandedPanel) {
+                collapsedPanel.style.display = 'none';
+                expandedPanel.style.display = '';
+            }
+        }
+        
+        // hide comparison panel function
+        function hideComparisonPanel() {
+            const collapsedPanel = document.getElementById('CollapsedCompareCoursesTab');
+            const expandedPanel = document.getElementById('ExpandedCompareCoursesPanel');
+            
+            if (collapsedPanel && expandedPanel) {
+                collapsedPanel.style.display = '';
+                expandedPanel.style.display = 'none';
+            }
+        }
+
+        function addToComparison(courseId, checkboxElement) {
+            fetch('{% url "add_to_comparison" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ course_id: courseId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    updateComparisonPanel(data);
+                    showComparisonPanel();
+                } else {
+                    alert(data.message);
+                    if (checkboxElement) checkboxElement.checked = false;
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Network error, unable to add course to comparison');
+                if (checkboxElement) checkboxElement.checked = false;
+            });
+        }
+
+        function removeFromComparison(courseId) {
+            fetch('{% url "remove_from_comparison" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ course_id: courseId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const courseElement = document.querySelector(`.VocationalCourseAndProviderClassTwo[data-course-id="${courseId}"]`);
+                    if (courseElement) {
+                        courseElement.remove();
+                    }
+                    
+                    // update counter
+                    const counterElement = document.querySelector('.VocationalCourseAndProviderButtonOne');
+                    if (counterElement) {
+                        counterElement.textContent = data.count;
+                    }
+                    
+                    // update compare button state
+                    const compareButton = document.getElementById('compare-courses-btn');
+                    if (compareButton) {
+                        compareButton.disabled = data.count < 2;
+                    }
+                    
+                    // If the comparison list is empty, show the empty message
+                    if (data.count === 0) {
+                        const comparisonList = document.querySelector('.VocationalCourseAndProviderContainerFour');
+                        if (comparisonList) {
+                            comparisonList.innerHTML = `
+                                <div class="empty-comparison-message" style="text-align: center; padding: 20px;">
+                                    <p>No courses added to comparison yet.</p>
+                                </div>
+                            `;
+                        }
+                    }
+                } else {
+                    console.error('Error:', data.message);
+                    alert(data.message || 'Failed to remove course from comparison');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Network error, unable to remove course from comparison');
+            });
+        }
+        
+        function clearAllCourses() {
+            fetch('{% url "clear_comparison" %}', {
+                method: 'POST',  
+                headers: {
+                    'Content-Type': 'application/json', 
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({})
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Network response error');
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Remove all course elements
+                    document.querySelectorAll('.VocationalCourseAndProviderClassTwo').forEach(el => el.remove());
+                    updateCounterAndButton(0);
+                    
+                    document.querySelectorAll('.Hidden-Input:checked').forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+                    
+                    const comparisonList = document.querySelector('.VocationalCourseAndProviderContainerFour');
+                    if (comparisonList) {
+                        comparisonList.innerHTML = `
+                            <div class="empty-comparison-message" style="text-align: center; padding: 20px;">
+                                <p>No courses added to comparison yet.</p>
+                            </div>
+                        `;
+                    }
+
+                    hideComparisonPanel();
+                } else {
+                    console.error('Error:', data.message);
+                    alert('Failed to clear comparison list');
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Network error, unable to clear comparison list');
+            });
+        }
+
+        function updateComparisonPanel(data) {
+            const comparisonList = document.querySelector('.VocationalCourseAndProviderContainerFour');
+            if (!comparisonList) return;
+            
+            const existingCourse = document.querySelector(`.VocationalCourseAndProviderClassTwo[data-course-id="${data.course.id}"]`);
+            if (existingCourse) return;
+            
+            const emptyMessage = comparisonList.querySelector('.empty-comparison-message');
+            if (emptyMessage) {
+                emptyMessage.remove();
+            }
+
+            const courseElement = document.createElement('div');
+            courseElement.className = 'VocationalCourseAndProviderContainer VocationalCourseAndProviderClassTwo';
+            courseElement.setAttribute('data-course-id', data.course.id);
+            
+            courseElement.innerHTML = `
+                <svg class="VocationalCourseAndProviderSVGThree VocationalCourseAndProviderSVGFour remove-from-comparison" style="  color: #e0e0e0;
+"
+                    data-course-id="${data.course.id}" fill="e0e0e0" height="1rem" role="img" width="1rem">
+                    <use filter="0" xlink:href="#x-close"></use>
+                </svg>
+                <p class="VocationalCourseNameClassOne VocationalCourseNameClassTwo">${data.course.name}</p>
+                <p class="VocationalCourseProviderNameClassOne VocationalCourseProviderNameClassTwo">${data.course.provider_name}</p>
+            `;
+            
+            comparisonList.appendChild(courseElement);
+
+            updateCounterAndButton(data.count);
+        }
+
+        function updateCounterAndButton(count) {
+            // update counter
+            const counterElement = document.querySelector('.VocationalCourseAndProviderButtonOne');
+            if (counterElement) {
+                counterElement.textContent = count;
+            }
+            
+            // update compare button state
+            const compareButton = document.getElementById('compare-courses-btn');
+            if (compareButton) {
+                compareButton.disabled = count < 2;
+            }
+        }
+        
+        function handleCheckboxChange(e){
+            e.stopPropagation();
+                
+            const courseId = this.value;
+            console.log('Change:', this.checked ? 'Yes' : 'Cancel', 'Course ID:', courseId);
+
+            if (this.checked) {
+                addToComparison(courseId, this);
+            } else {
+                removeFromComparison(courseId, this);
+            }
+
+        }
+
+        function handleRemoveButtonClick(e){
+            e.stopPropagation();
+            const courseId = this.getAttribute('data-course-id');
+            
+            const checkbox = document.querySelector(`.Hidden-Input[data-course-id="${courseId}"]`);
+            if (checkbox) {
+                checkbox.checked = false;
+                const event = new Event('change');
+                checkbox.dispatchEvent(event);
+            } else {
+                removeFromComparison(courseId);
+            }
+        }
+
+        function handleClearButtonClick() {
+            console.log('Clear all courses');
+            clearAllCourses();
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const courseIds = [];
+            document.querySelectorAll('.VocationalCourseAndProviderClassTwo[data-course-id]').forEach(function(el) {
+                courseIds.push(el.getAttribute('data-course-id'));
+            });
+            
+            if (courseIds.length < 2) {
+                alert('Choose at least 2 courses to compare!');
+                return;
+            }
+            
+
+            this.querySelectorAll('input[name="course_ids"]').forEach(input => input.remove());
+            
+            courseIds.forEach(id => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'course_ids';
+                input.value = id;
+                this.appendChild(input);
+            });
+            
+            console.log('Form includes:', this.querySelectorAll('input[name="course_ids"]').length, 'courses');
+
+            this.submit();
+        }
+
+        // Add event listeners 
+        // checkbox change event listener
+        document.querySelectorAll('.Hidden-Input').forEach(function(checkbox) {
+            checkbox.addEventListener('change', handleCheckboxChange);
+        });
+
+        document.querySelectorAll('.remove-from-comparison').forEach(function(button) {
+            button.addEventListener('click', handleRemoveButtonClick);
+        });
+
+        const expandButton = document.getElementById('ExpandButton');
+        if (expandButton) {
+            expandButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                showComparisonPanel();
+            });
+        }
+        
+        const collapseButton = document.getElementById('CollapseButton');
+        if (collapseButton) {
+            collapseButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                hideComparisonPanel();
+            });
+        }
+        
+        const clearBtn = document.getElementById('clear-comparison-btn');
+        if (clearBtn) {  
+            clearBtn.addEventListener('click', handleClearButtonClick);
+        } else {
+            console.warn('Clear button not found.');
+        }
+
+        const comparisonForm = document.querySelector('form[action*="course_comparison"]');
+        if (comparisonForm) {
+            comparisonForm.addEventListener('submit', handleFormSubmit);
+        } else {
+            console.warn('Form not found');
+        }
+
+        const comparisonList = document.getElementById('comparisonList');
+        comparisonList.addEventListener('click', e => {
+            const btn = e.target.closest('.remove-from-comparison');
+            if (!btn) return;
+            e.stopPropagation();
+            handleRemoveButtonClick.call(btn, e);
+        });
+
+
+        // Initially check the checkboxes for courses already in the comparison list
+        const comparisonCourses = document.querySelectorAll('.VocationalCourseAndProviderClassTwo[data-course-id]');
+        comparisonCourses.forEach(function(courseElement) {
+            const courseId = courseElement.getAttribute('data-course-id');
+            const checkbox = document.querySelector(`.Hidden-Input[data-course-id="${courseId}"]`);
+            if (checkbox) {
+                checkbox.checked = true;
+            }
+        });
+        
+        // If there are any courses in the comparison list, show the comparison panel
+        if (comparisonCourses.length > 0) {
+            showComparisonPanel();
+        }
+    });
+
+</script>
+
+
 </body>
 </html>
