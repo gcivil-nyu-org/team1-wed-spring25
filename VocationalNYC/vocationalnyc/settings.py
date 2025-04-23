@@ -45,7 +45,8 @@ def get_secret(secret_name):
     return secret
 
 
-DEBUG = env("DEBUG", default="False")
+# DEBUG = env("DEBUG", default="False")
+DEBUG = False
 
 DJANGO_ENV = env("DJANGO_ENV", default="production")
 
@@ -53,30 +54,45 @@ SECRET_KEY = env("SECRET_KEY", default="insecure" if DEBUG else environ.Env.NOTS
 
 ALLOWED_HOSTS = env.list(
     "ALLOWED_HOSTS",
-    default=(
-        [
-            "localhost",
-            "127.0.0.1",
-            "172.31.10.24",  # add all relevant internal IPs seen in logs
-            "172.31.34.113",
-            "172.31.3.17",
-            "vocationalnyc-env.eba-uurzafst.us-east-1.elasticbeanstalk.com",
-            "vocationalnyc-test.us-east-1.elasticbeanstalk.com",
-        ]
-        if DEBUG
-        else []
-    ),
+    default=[
+        "localhost",
+        "127.0.0.1",
+        "172.31.10.24",  # add all relevant internal IPs seen in logs
+        "172.31.34.113",
+        "172.31.3.17",
+        "vocationalnyc-env.eba-uurzafst.us-east-1.elasticbeanstalk.com",
+        "vocationalnyc-test.us-east-1.elasticbeanstalk.com",
+    ],
 )
+# ALLOWED_HOSTS = env.list(
+#     "ALLOWED_HOSTS",
+#     default=(
+#         [
+#             "127.0.0.1",
+#             "localhost",
+#             "vocationalnyc-env.eba-uurzafst.us-east-1.elasticbeanstalk.com",
+#             "vocationalnyc-test.us-east-1.elasticbeanstalk.com",
+#         ]
+#         if DEBUG
+#         else []
+#     ),
+# )
 
 ADMINS = env.list("ADMINS", default=[("admin", "admin@example.com")] if DEBUG else [])
 MANAGERS = ADMINS
 
-EMAIL_BACKEND = (
-    "django.core.mail.backends.filebased.EmailBackend"
-    if DEBUG
-    else "django.core.mail.backends.console.EmailBackend"
+# Email Configuration
+EMAIL_BACKEND = env(
+    "EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend"
 )
-EMAIL_FILE_PATH = BASE_DIR / "logs" / "emails"
+EMAIL_HOST = env("EMAIL_HOST", default="localhost")
+EMAIL_PORT = env.int("EMAIL_PORT", default=587)
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=False)
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="test@example.com")
+MAILGUN_API_KEY = env("MAILGUN_API_KEY", default="test-key")
+DOMAIN_NAME = env("DOMAIN_NAME", default="example.com")
 
 # Application definition
 INSTALLED_APPS = [
@@ -218,18 +234,16 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Django Allauth Config
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_LOGIN_BY_CODE_ENABLED = True
-ACCOUNT_EMAIL_VERIFICATION = "none" if DEBUG else "mandatory"
+ACCOUNT_EMAIL_VERIFICATION = "optional"
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
+ACCOUNT_CONFIRM_EMAIL_ON_GET = False
+ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "VocationalNYC - "
+ACCOUNT_PASSWORD_RESET_TIMEOUT = 259200  # 3 days in seconds
+ACCOUNT_LOGIN_BY_CODE_ENABLED = False
 ACCOUNT_EMAIL_VERIFICATION_BY_CODE_ENABLED = False
 ACCOUNT_LOGIN_METHODS = {"username", "email"}
 ACCOUNT_PASSWORD_RESET_BY_CODE_ENABLED = True
-ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
-ACCOUNT_USERNAME_REQUIRED = True
-ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
-ACCOUNT_SESSION_REMEMBER = True
-ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_ADAPTER = "users.adapters.MyAccountAdapter"
-
 AUTH_USER_MODEL = "users.CustomUser"
 ACCOUNT_FORMS = {
     "signup": "users.forms.CustomSignupForm",

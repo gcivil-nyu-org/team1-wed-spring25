@@ -23,7 +23,7 @@ echo "▶ Running tests and linters"
 #python manage.py test --noinput
 black .
 flake8 . --exclude=venv
-coverage run --source=. manage.py test
+coverage run --source=. manage.py test --noinput
 
 echo "▶ Sending coverage to coveralls"
 

@@ -19,7 +19,7 @@ import hashlib
 from users.models import Provider
 from .models import Course
 from .forms import CourseForm
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 from bookmarks.models import BookmarkList
 from django.db.models import IntegerField
 from django.db.models.functions import Coalesce
@@ -174,6 +174,10 @@ class CourseListView(generic.ListView):
 
         context["bookmark_lists"] = bookmark_lists
         context["default_bookmark_list"] = default_list
+
+        comp_ids = self.request.session.get("comparison_courses", [])
+        context["comparison_courses"] = Course.objects.filter(course_id__in=comp_ids)
+
         return context
 
 
@@ -321,6 +325,9 @@ def filterCourses(request):
     context["bookmark_lists"] = bookmark_lists
     context["default_bookmark_list"] = default_bookmark_list
 
+    comp_ids = request.session.get("comparison_courses", [])
+    context["comparison_courses"] = Course.objects.filter(course_id__in=comp_ids)
+
     return context
 
 
@@ -358,11 +365,6 @@ def get_coordinates(address):
         logger.error("Geocoding API error: %s", e)
 
     return None, None
-
-
-def course_comparison(request):
-    """Render the course comparison page"""
-    return render(request, "courses/course_comparison_page.html")
 
 
 def course_data(request):
@@ -476,7 +478,13 @@ def sort_by(request):
             course.rating_partial_percentage = 0
 
     # Render full HTML for the page (not just partial updates)
-    return render(request, "courses/courses_section.html", {"courses": courses})
+    comp_ids = request.session.get("comparison_courses", [])
+    comparison_courses = Course.objects.filter(course_id__in=comp_ids)
+    return render(
+        request,
+        "courses/courses_section.html",
+        {"courses": courses, "comparison_courses": comparison_courses},
+    )
 
 
 @login_required
@@ -588,6 +596,148 @@ def edit_course(request, course_id):
     return redirect("manage_courses")
 
 
-def provider_detail(request, pk):
-    provider = get_object_or_404(Provider, pk=pk)
-    return render(request, "providers/provider_detail.html", {"provider": provider})
+def course_comparison(request):
+    """
+    View to compare multiple courses
+    """
+    # Get course IDs from session or query parameters
+    if request.GET.getlist("course_ids"):
+        course_ids = [int(i) for i in request.GET.getlist("course_ids") if i.strip()]
+        request.session["comparison_courses"] = course_ids
+    else:
+        course_ids = request.session.get("comparison_courses", [])
+
+    # Get courses to compare
+    courses = Course.objects.filter(course_id__in=course_ids)
+    courses = courses.annotate(
+        avg_rating=Avg("reviews__score_rating"), reviews_count=Count("reviews")
+    )
+    for course in courses:
+        avg = course.avg_rating if course.avg_rating is not None else 0
+        course.rating = round(avg, 1)
+        course.rating_full_stars = int(avg)
+        if avg - int(avg) > 0:
+            course.rating_partial_star_position = course.rating_full_stars + 1
+            course.rating_partial_percentage = int((avg - int(avg)) * 100)
+        else:
+            course.rating_partial_star_position = 0
+            course.rating_partial_percentage = 0
+        course.total_hours = (
+            course.classroom_hours
+            + course.lab_hours
+            + course.internship_hours
+            + course.practical_hours
+        )
+
+    context = {
+        "courses": courses,
+    }
+
+    return render(request, "courses/course_comparison_page.html", context)
+
+
+@login_required
+def add_to_comparison(request):
+    """
+    Add a course to the comparison list (AJAX)
+    """
+    if (
+        request.method == "POST"
+        and request.headers.get("X-Requested-With") == "XMLHttpRequest"
+    ):
+        try:
+            data = json.loads(request.body)
+            course_id = data.get("course_id")
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"success": False, "message": "Invalid JSON"}, status=400
+            )
+
+        if not course_id:
+            return JsonResponse(
+                {"success": False, "message": "Missing course_id"}, status=400
+            )
+
+        # Get current comparison courses
+        comparison_courses = request.session.get("comparison_courses", [])
+
+        # Add course if not already in the list and limit to maximum 9 courses
+        if course_id in comparison_courses:
+            return JsonResponse({"success": True, "count": len(comparison_courses)})
+
+        if len(comparison_courses) >= 9:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "message": "You've reached the limit of 9 courses to compare.\n\nTo add another, remove one from your current comparison list.",
+                },
+                status=400,
+            )
+
+        comparison_courses.append(int(course_id))
+        request.session["comparison_courses"] = comparison_courses
+
+        # Get course details for response
+        course = get_object_or_404(Course, course_id=course_id)
+        return JsonResponse(
+            {
+                "success": True,
+                "course": {
+                    "id": course.course_id,
+                    "name": course.name,
+                    "provider_name": course.provider.name,
+                },
+                "count": len(comparison_courses),
+            }
+        )
+
+    return JsonResponse({"success": False, "message": "Invalid request"})
+
+
+def remove_from_comparison(request):
+    """
+    Remove a course from the comparison list (AJAX)
+    """
+    if (
+        request.method == "POST"
+        and request.headers.get("X-Requested-With") == "XMLHttpRequest"
+    ):
+        try:
+            data = json.loads(request.body)
+            course_id = data.get("course_id")
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"success": False, "message": "Invalid JSON"}, status=400
+            )
+
+        if not course_id:
+            return JsonResponse(
+                {"success": False, "message": "Missing course_id"}, status=400
+            )
+
+        # Get current comparison courses
+        comparison_courses = request.session.get("comparison_courses", [])
+
+        # Remove course if in the list
+        if course_id and int(course_id) in comparison_courses:
+            comparison_courses.remove(int(course_id))
+            request.session["comparison_courses"] = comparison_courses
+
+            return JsonResponse({"success": True, "count": len(comparison_courses)})
+
+        return JsonResponse({"success": False, "message": "Course not in comparison"})
+
+    return JsonResponse({"success": False, "message": "Invalid request"})
+
+
+def clear_comparison(request):
+    """
+    Clear all courses from comparison
+    """
+    if request.method == "POST":
+        if "comparison_courses" in request.session:
+            del request.session["comparison_courses"]
+
+        return JsonResponse({"success": True})
+
+    return JsonResponse({"success": False, "message": "Invalid request"})
