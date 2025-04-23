@@ -11,16 +11,19 @@ cd VocationalNYC
 python3.12 -m venv venv
 source venv/bin/activate
 
+pip install --upgrade pip
+pip install -r requirements.txt
+
 echo "▶ Running migrations and collecting static files"
 python manage.py makemigrations --noinput
 python manage.py migrate --noinput
 python manage.py collectstatic --noinput
 
 echo "▶ Running tests and linters"
-python manage.py test
+#python manage.py test --noinput
 black .
 flake8 . --exclude=venv
-coverage run --source=. manage.py test
+coverage run --source=. manage.py test --noinput
 
 echo "▶ Sending coverage to coveralls"
 

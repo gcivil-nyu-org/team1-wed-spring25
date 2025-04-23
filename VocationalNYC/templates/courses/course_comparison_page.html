@@ -14,24 +14,24 @@
 
     <div class="course-container">
 
-        <h1 class="page-intro">Course Comparison</h1>
+{#        <h1 class="page-intro">Course Comparison</h1>#}
+        <h1 class="page-intro">← Scroll horizontally to see all course details →</h1>
 
         <div class="course-table-wrapper">
             <table class="course-table">
 
                 <thead>
                 <tr>
-                    <th class="label-cell sticky-corner">📊 Comparing ??? Courses</th>
-                    {% for i in "123456789" %}
+                    <th class="label-cell sticky-corner">📊 Comparing {{courses.count}} Courses</th>
+                    {% for course in courses %}
                         <th>
                             <div class="course-course-col">
-                                <p class="vocational-course-name" style="margin-bottom: 0!important;">Vocational Course
-                                    Name {{ i }}</p>
-                                <p class="course-subtext" style="margin-bottom: 0!important;">Course Provider
-                                    Name {{ i }}</p>
+                                <a href="{% url 'course_detail' course.course_id %}" target="_blank" class="vocational-course-name" style="margin-bottom: 0!important;">{{ course.name }}</a>
+                                <a href="{% url 'provider_detail' course.provider_id %}" target="_blank" class="course-subtext" style="margin-bottom: 0!important;">{{ course.provider.name }}</a>
                             </div>
                         </th>
                     {% endfor %}
+
                 </tr>
                 </thead>
 
@@ -39,102 +39,123 @@
 
                 <tr>
                     <td class="label-cell">📍 Location</td>
-                    {% for i in "123456789" %}
-                        <td>Location {{ i }}</td>
+                    {% for course in courses %}
+                        <td>
+                            <a href="/courses/course_map/?course_id={{ course.pk }}" target="_blank">
+                                {{ course.location }}
+                            </a>
+                        </td>
                     {% endfor %}
                 </tr>
 
                 <tr>
                     <td class="label-cell">💬 Ratings & Reviews</td>
-                    {% for i in "123456789" %}
-                        <td>
+                    {% for course in courses %}
+                    <td>
+                        <a href="{% url 'course_detail' course.pk %}#student-review-section" target="_blank">
                             <div class="review-stars">
-                                {% for i in "12345"|make_list %}
-                                    {% if forloop.counter <= 3 %}
-                                        <!-- Full star -->
-                                        <svg class="Course-Rating" fill="#a2ccb6" stroke="#a2ccb6"
-                                             xmlns="http://www.w3.org/2000/svg"
-                                             xmlns:xlink="http://www.w3.org/1999/xlink">
-                                            <use xlink:href="#star"></use>
-                                        </svg>
-                                    {% elif forloop.counter == 4 %}
-                                        <!-- Half star -->
-                                        <svg class="Course-Rating" fill="url(#course_rating)" stroke="#a2ccb6"
-                                             xmlns="http://www.w3.org/2000/svg"
-                                             xmlns:xlink="http://www.w3.org/1999/xlink">
-                                            <use xlink:href="#star"></use>
-                                            <defs>
-                                                <linearGradient id="course_rating" x1="0%" x2="100%" y1="0%" y2="0%">
-                                                    <stop offset="0%" stop-color="#a2ccb6"></stop>
-                                                    <stop offset="50%" stop-color="#a2ccb6"></stop>
-                                                    <stop offset="50%" stop-color="#ffffff"></stop>
-                                                    <stop offset="100%" stop-color="#ffffff"></stop>
-                                                </linearGradient>
-                                            </defs>
-                                        </svg>
-                                    {% else %}
-                                        <!-- Empty star -->
-                                        <svg class="Course-Rating" fill="#ffffff" stroke="#a2ccb6"
-                                             xmlns="http://www.w3.org/2000/svg"
-                                             xmlns:xlink="http://www.w3.org/1999/xlink">
-                                            <use xlink:href="#star"></use>
-                                        </svg>
-                                    {% endif %}
+                            {% for i in "12345"|make_list %}
+                                {% if forloop.counter <= course.rating_full_stars %}
+                                <svg class="Course-Rating"
+                                        fill=#a2ccb6
+                                        stroke=#a2ccb6>
+                                    <use xlink:href=#star></use>
+                                </svg>
+                                {% elif forloop.counter == course.rating_partial_star_position %}
+                                <svg class="Course-Rating"
+                                        fill="url(#course_rating_{{ course.pk }})"
+                                        stroke=#a2ccb6>
+                                    <use xlink:href=#star></use>
+                                    <defs>
+                                        <lineargradient
+                                                id="course_rating_{{ course.pk }}"
+                                                x1=0% x2=100% y1=0% y2=0%>
+                                            <stop offset=0%
+                                                    stop-color=#a2ccb6></stop>
+                                            <stop offset={{ course.rating_partial_percentage }}%
+                                                    stop-color=#a2ccb6></stop>
+                                            <stop offset={{ course.rating_partial_percentage }}%
+                                                    stop-color=#ffffff></stop>
+                                            <stop offset=100%
+                                                    stop-color=#ffffff></stop>
+                                        </lineargradient>
+                                    </defs>
+                                </svg>
+                                {% else %}
+                                <svg class="Course-Rating"
+                                        fill=#ffffff
+                                        stroke=#a2ccb6>
+                                    <use xlink:href=#star></use>
+                                </svg>
+                                {% endif %}
                                 {% endfor %}
-                                <span class="review-score">(3.5/5)</span>
-                            </div>
-                            <span class="review-timestamp">?? reviews</span>
-                        </td>
-                    {% endfor %}
+                            <span class="review-score">({{ course.rating }}/5)</span>
+                        </div>
+                            <span class="review-timestamp">{{ course.reviews_count }} reviews</span>
+                        </a>
+                    </td>
+                {% endfor %}
                 </tr>
 
                 <tr>
                     <td class="label-cell">📝 Description</td>
-                    {% for i in "123456789" %}
-                        <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus
-                            tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices
-                            diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Nullam dapibus
-                            tincidunt mattis. Curabitur eget ultrices ligula, at ultrices nisi. Etiam vel orci lacinia,
-                            lobortis lacus non, fermentum nulla. Sed rhoncus. Integer vitae justo eget magna fermentum
-                            iaculis.
-                        </td>
+                    {% for course in courses %}
+                        <td>{{ course.course_desc }}</td>
                     {% endfor %}
                 </tr>
 
                 <tr>
                     <td class="label-cell">💰 Cost</td>
-                    <td>$64,543</td>
-                    <td>$105,360</td>
-                    <td>$74,919</td>
-                    <td>$88,535</td>
-                    <td>$102,887</td>
-                    <td>$131,633</td>
-                    <td>$98,232</td>
-                    <td>$112,700</td>
-                    <td>$120,445</td>
+                    {% for course in courses %}
+                        <td>{{ course.cost }}</td>
+                    {% endfor %}
                 </tr>
 
                 <tr>
                     <td class="label-cell">⏱️ Total Hours</td>
-                    <td>543</td>
-                    <td>360</td>
-                    <td>919</td>
-                    <td>535</td>
-                    <td>887</td>
-                    <td>633</td>
-                    <td>720</td>
-                    <td>610</td>
-                    <td>850</td>
+                    {% for course in courses %}
+                        <td>{{ course.total_hours }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td class="label-cell">📘 Classroom Hours</td>
+                    {% for course in courses %}
+                        <td>{{ course.classroom_hours }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td class="label-cell">🧪 Lab Hours</td>
+                    {% for course in courses %}
+                        <td>{{ course.lab_hours }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td class="label-cell">🏢 Internship Hours</td>
+                    {% for course in courses %}
+                        <td>{{ course.internship_hours }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td class="label-cell">🔧 Practical Hours</td>
+                    {% for course in courses %}
+                        <td>{{ course.practical_hours }}</td>
+                    {% endfor %}
                 </tr>
 
                 <tr>
                     <td class="label-cell">🏷️ Keywords</td>
-                    {% for i in "123456789" %}
-                        <td>Design, Typography, UX/UI, Branding, Marketing Strategy, Digital Tools, Portfolio, Client
-                            Brief, User-Centered Design, Accessibility, Interaction Design, Visual Hierarchy, Grid
-                            Systems, Motion Graphics, Figma, Webflow, Prototyping, User Testing, Responsive Layouts,
-                            Product Design.
-                        </td>
+                    {% for course in courses %}
+                        <td>
+                         {% if course.keywords %}
+        {{ course.keywords }}
+    {% else %}
+        <em style="color: #999;">No keywords provided.</em>
+    {% endif %}
+                    </td>
                     {% endfor %}
                 </tr>
 
@@ -142,4 +163,5 @@
             </table>
         </div>
     </div>
+
 {% endblock %}

@@ -22,6 +22,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import redirect
 from views import custom_404
+from django.shortcuts import render
+
+
+def custom_404_view(request, exception):
+    return render(request, "404.html", status=404)
 
 
 def root_redirect(request):
@@ -43,6 +48,7 @@ urlpatterns = [
     # Root URL now uses our custom redirect view
     path("", root_redirect, name="home"),
     # Account-related URLs
+    path("accounts/", include("allauth.urls")),
     path("accounts/", include("users.urls")),
     path("", include("users.urls")),
     # Admin URLs
@@ -65,3 +71,5 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+handler404 = "vocationalnyc.urls.custom_404_view"
