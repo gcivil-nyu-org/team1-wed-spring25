@@ -16,6 +16,7 @@ env:
   global:
     - DJANGO_SETTINGS_MODULE=vocationalnyc.settings
     - PYTHONPATH=$(pwd)/VocationalNYC
+    - SECRET_KEY=$SECRET_KEY
 
 
 before_install:
