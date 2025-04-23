@@ -26,8 +26,8 @@
                     {% for course in courses %}
                         <th>
                             <div class="course-course-col">
-                                <p class="vocational-course-name" style="margin-bottom: 0!important;">{{ course.name }}</p>
-                                <p class="course-subtext" style="margin-bottom: 0!important;">{{ course.provider.name }}</p>
+                                <a href="{% url 'course_detail' course.course_id %}" target="_blank" class="vocational-course-name" style="margin-bottom: 0!important;">{{ course.name }}</a>
+                                <a href="{% url 'provider_detail' course.provider_id %}" target="_blank" class="course-subtext" style="margin-bottom: 0!important;">{{ course.provider.name }}</a>
                             </div>
                         </th>
                     {% endfor %}
@@ -40,7 +40,11 @@
                 <tr>
                     <td class="label-cell">📍 Location</td>
                     {% for course in courses %}
-                        <td>{{ course.location }}</td>
+                        <td>
+                            <a href="/courses/course_map/?course_id={{ course.pk }}" target="_blank">
+                                {{ course.location }}
+                            </a>
+                        </td>
                     {% endfor %}
                 </tr>
 
@@ -48,7 +52,8 @@
                     <td class="label-cell">💬 Ratings & Reviews</td>
                     {% for course in courses %}
                     <td>
-                        <div class="review-stars">
+                        <a href="{% url 'course_detail' course.pk %}#student-review-section" target="_blank">
+                            <div class="review-stars">
                             {% for i in "12345"|make_list %}
                                 {% if forloop.counter <= course.rating_full_stars %}
                                 <svg class="Course-Rating"
@@ -86,7 +91,8 @@
                                 {% endfor %}
                             <span class="review-score">({{ course.rating }}/5)</span>
                         </div>
-                        <span class="review-timestamp">{{ course.reviews_count }} reviews</span>
+                            <span class="review-timestamp">{{ course.reviews_count }} reviews</span>
+                        </a>
                     </td>
                 {% endfor %}
                 </tr>
@@ -143,7 +149,13 @@
                 <tr>
                     <td class="label-cell">🏷️ Keywords</td>
                     {% for course in courses %}
-                        <td>{{ course.keywords }}</td>
+                        <td>
+                         {% if course.keywords %}
+        {{ course.keywords }}
+    {% else %}
+        <em style="color: #999;">No keywords provided.</em>
+    {% endif %}
+                    </td>
                     {% endfor %}
                 </tr>
 

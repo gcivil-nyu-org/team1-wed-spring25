@@ -256,3 +256,13 @@ margin-left: auto;
         filter: blur(120px);
         z-index: 0;
     }
+
+        table a {
+        color: var(--primary-dark);
+        text-decoration: none;
+    }
+
+    table a:hover {
+        text-decoration: underline;
+        color: var(--primary);
+    }
