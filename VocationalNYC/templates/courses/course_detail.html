@@ -32,9 +32,11 @@
                       {{ course.name }}
                   </h1>
               </div>
-            <button type="button" class="Chat-With-Provider">
-                💬 Chat with Provider
-            </button>
+            {% if user.role == "career_changer" %}
+                <button type="button" class="Chat-With-Provider">
+                    💬 Chat with Provider
+                </button>
+            {% endif %}
         </div>
 
     <div class="course-meta">
