@@ -1,6 +1,6 @@
     # ---- Stage 1: Build ----
     FROM python:3.12.9-slim AS builder
-
+    
     ARG AWS_ACCESS_KEY_ID
     ARG AWS_SECRET_ACCESS_KEY
     ENV AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
