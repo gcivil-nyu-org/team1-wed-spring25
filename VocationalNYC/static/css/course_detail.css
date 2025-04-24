@@ -47,6 +47,14 @@ margin-left: auto;
         z-index: 0;
     }
 
+    .course-header-row {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
     h1.course-header {
         font-size: 3.5rem;
         font-weight: 900;
@@ -54,10 +62,40 @@ margin-left: auto;
         background: linear-gradient(to right, var(--primary-dark), var(--primary));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 2rem;
+        /*margin-bottom: 2rem;*/
+        display: flex;
+        align-items: center;
         position: relative;
         z-index: 2;
     }
+
+.course-title-wrapper {
+  flex: 1; /* take all available space */
+  min-width: 0; /* allow shrinking */
+}
+
+
+.Chat-With-Provider {
+  font-size: 1rem;
+  padding: 0.6rem 1.2rem;
+    margin: 0!important;
+  font-weight: 700;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+background-color: #ede9fe; /* soft lavender */
+color: #6b21a8;            /* deep violet text */
+  background-size: 500%;
+
+  transition: all 0.3s ease;
+
+}
+
+.Chat-With-Provider:hover {
+background-color: #ddd6fe; /* richer lavender on hover */
+}
 
     .course-meta,
     .course-stats,

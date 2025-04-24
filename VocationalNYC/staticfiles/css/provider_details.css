@@ -78,17 +78,6 @@ margin-left: auto;        padding: 4rem;
         z-index: 0;
     }
 
-    h1.provider-details-header {
-        font-size: 3.5rem;
-        font-weight: 900;
-        line-height: 1.1;
-        background: linear-gradient(to right, var(--primary-dark), var(--primary));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 2rem;
-        position: relative;
-        z-index: 2;
-    }
 
     .provider-details-meta {
         position: relative;
@@ -499,10 +488,37 @@ margin-left: 0!important;
     }
 
 
+
+    .provider-details-meta h2 {
+        font-size: 2.25rem;
+        font-weight: 900;
+        color: #0f172a;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+        .provider-details-section {
+        margin-top: 5rem;
+    }
+
+    .provider-details-section h2 {
+        font-size: 2.25rem;
+        font-weight: 900;
+        color: #0f172a;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+
+
+
+
     .VerificationIcon {
-  position: relative;
   display: inline-block;
   height: 2rem!important;
+position: relative;
 }
 
 .VerificationIcon img {
@@ -550,24 +566,54 @@ box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08), inset 0 0 4px #fff;
   opacity: 1;
 }
 
-    .provider-details-meta h2 {
-        font-size: 2.25rem;
+
+    .provider-header-row {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
+    h1.provider-details-header {
+        font-size: 3.5rem;
         font-weight: 900;
-        color: #0f172a;
-        margin-bottom: 2rem;
+        line-height: 1.1;
+        background: linear-gradient(to right, var(--primary-dark), var(--primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        /*margin-bottom: 2rem;*/
+        align-items: center;
         position: relative;
         z-index: 2;
     }
 
-        .provider-details-section {
-        margin-top: 5rem;
-    }
+    .provider-title-wrapper {
+  flex: 1; /* take all available space */
+  min-width: 0; /* allow shrinking */
+}
 
-    .provider-details-section h2 {
-        font-size: 2.25rem;
-        font-weight: 900;
-        color: #0f172a;
-        margin-bottom: 2rem;
-        position: relative;
-        z-index: 2;
-    }
+
+.Chat-With-Provider {
+  font-size: 1rem;
+  padding: 0.6rem 1.2rem;
+    margin: 0!important;
+  font-weight: 700;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+background-color: #ede9fe; /* soft lavender */
+color: #6b21a8;            /* deep violet text */
+  background-size: 500%;
+
+  transition: all 0.3s ease;
+
+}
+
+.Chat-With-Provider:hover {
+background-color: #ddd6fe; /* richer lavender on hover */
+}
+
+
