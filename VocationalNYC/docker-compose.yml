@@ -21,7 +21,7 @@ services:
     env_file: .env
     environment:
     #   - DJANGO_ENV=development_w/channel # Uncomment this line to test the websocket
-      - DJANGO_ENV=development
+      - DJANGO_ENV=test
     container_name: app
     depends_on:
       - redis
