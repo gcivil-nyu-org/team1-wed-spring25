@@ -35,20 +35,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def save_message(self, message_content, sender_username):
-        try:
-            chat = Chat.objects.get(chat_hash=self.chat_hash)
-            sender = User.objects.get(username=sender_username)
-            recipient = chat.user2 if sender == chat.user1 else chat.user1
+        chat = Chat.objects.get(chat_hash=self.chat_hash)
+        sender = User.objects.get(username=sender_username)
+        recipient = chat.user2 if sender == chat.user1 else chat.user1
 
-            Message.objects.create(
-                chat=chat, sender=sender, recipient=recipient, content=message_content
-            )
-        except Chat.DoesNotExist:
-            print(f"Chat with hash {self.chat_hash} does not exist.")
-        except User.DoesNotExist:
-            print(f"User with username {sender_username} does not exist.")
-        except Exception as e:
-            print(f"An error occurred while saving the message: {e}")
+        Message.objects.create(
+            chat=chat, sender=sender, recipient=recipient, content=message_content
+        )
 
     async def chat_message(self, event):
         await self.send(
