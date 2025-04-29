@@ -4,7 +4,7 @@ import os
 
 from django.shortcuts import render, redirect
 from django.views import generic
-from allauth.account.views import SignupView, LoginView
+from allauth.account.views import SignupView, LoginView, PasswordResetFromKeyView
 from .forms import (
     CustomSignupForm,
     ProviderVerificationForm,
@@ -386,3 +386,16 @@ class CustomPasswordResetView(PasswordResetView):
 
         # Always respond with empty JSON — handled entirely in JS
         return JsonResponse({"success": True})
+
+
+class CustomPasswordResetFromKeyView(PasswordResetFromKeyView):
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["reset_user"] = getattr(self, "reset_user", None)
+        return ctx
+
+    def get_form_kwargs(self):
+        kw = super().get_form_kwargs()
+        kw["user"] = getattr(self, "reset_user", None)
+        return kw
