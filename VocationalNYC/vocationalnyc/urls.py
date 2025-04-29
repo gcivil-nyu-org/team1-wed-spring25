@@ -25,6 +25,7 @@ from views import custom_404
 from django.shortcuts import render
 from django.views.static import serve
 from django.urls import re_path
+from users.views import CustomPasswordResetFromKeyView
 
 
 def custom_404_view(request, exception):
@@ -53,6 +54,11 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     path("accounts/", include("users.urls")),
     path("", include("users.urls")),
+    path(
+        "accounts/password/reset/key/<uidb36>-<key>/",
+        CustomPasswordResetFromKeyView.as_view(),
+        name="account_reset_password_from_key",
+    ),
     # Admin URLs
     path(
         "admin/login/",
