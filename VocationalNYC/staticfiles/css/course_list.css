@@ -1301,21 +1301,13 @@ visibility: hidden !important;
         }
 
         .Course-Location-Outer-Icon.has-badge::before {
-
-background-image: url("/static/images/Google_Maps.png");
-
-
-
-              content: "";
-  display: block;
-
-  margin-right: 3px;
-
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-
-
+            background-image: url("/static/images/Google_Maps.png");
+            content: "";
+            display: block;
+            margin-right: 3px;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
         }
 
         .Course-Location-Inner {

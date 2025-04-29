@@ -6,15 +6,28 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/provider_details.css' %}">
 
-<div class="provider-details-container">
+    <div class="provider-details-container">
 
-  <h1 class="provider-details-header">{{ provider.name }}
-      {% if provider.verification_status %}
-          <span class="VerificationIcon" data-tooltip="Verified Provider">
-              <img src="{% static 'images/verified.png' %}" srcset alt="Verified">
-          </span>
-      {% endif %}
-  </h1>
+    <div class="provider-header-row">
+        <div class="provider-title-wrapper">
+            <h1 class="provider-details-header">
+                {{ provider.name }}
+                     {% if provider.verification_status %}
+                         <span class="VerificationIcon" data-tooltip="Verified Provider">
+                             <img src="{% static 'images/verified.png' %}" srcset alt="Verified">
+                         </span>
+                     {% endif %}
+            </h1>
+        </div>
+        {% if user.role == "career_changer" %}
+          <button type="button" class="Chat-With-Provider">
+              💬 Chat with Provider
+          </button>
+        {% endif %}
+    </div>
+
+
+
 
   {% if error_message %}
     <div class="alert alert-danger">{{ error_message }}</div>
