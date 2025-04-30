@@ -17,7 +17,7 @@ services:
     depends_on:
       - redis
     ports:
-      - "5000:5000"
+      - "8000:8000"
     environment:
       DJANGO_ENV: production
       AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
