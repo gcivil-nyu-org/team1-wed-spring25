@@ -23,11 +23,76 @@
           <button type="button" class="Chat-With-Provider">
               💬 Chat with Provider
           </button>
+
+          <form id="csrf-form" style="display:none">
+            {% csrf_token %}
+          </form>
+
+          <script>
+            // Add this JavaScript code to the provider_detail.html template
+      
+            document.addEventListener('DOMContentLoaded', function() {
+              const chatButton = document.querySelector('.Chat-With-Provider');
+              
+              if (chatButton) {
+                chatButton.addEventListener('click', function() {
+                  const providerId = "{{ provider.provider_id }}";
+                  const providerUserId = "{{ provider.user.id|default:'None' }}";
+
+                  // console.log("Provider User ID:", providerUserId);
+                  
+                  if (providerUserId === 'None') {
+                    // Provider has not registered yet
+                    alert("This provider has not registered on the platform yet. You cannot chat with them at this time.");
+                    return;
+                  }
+                
+                  try {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = "{% url 'select_chat_partner' %}";
+                    form.style.display = 'none';
+                    
+                    // Add the CSRF token and partner_id to the form
+                    const csrfToken = document.querySelector('#csrf-form [name=csrfmiddlewaretoken]').value;
+                    if (!csrfToken) {
+                      console.error("Cannot find CSRF token in the form.");
+                      alert("Error: CSRF token not found. Please refresh the page and try again.");
+                      return;
+                    }
+                    
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = 'csrfmiddlewaretoken';
+                    csrfInput.value = csrfToken;
+                    
+                    const partnerInput = document.createElement('input');
+                    partnerInput.type = 'hidden';
+                    partnerInput.name = 'partner_id';
+                    partnerInput.value = providerUserId;
+                    
+                    form.appendChild(csrfInput);
+                    form.appendChild(partnerInput);
+                    document.body.appendChild(form);
+                    
+                    console.log("Submit form", {
+                      action: form.action,
+                      partner_id: providerUserId,
+                      csrfToken: csrfToken ? "Found" : "Not found"
+                    });
+                    
+                    form.submit();
+                  } catch (error) {
+                    console.error("An error occurred:", error);
+                    alert("An error occurred while trying to chat with the provider. Please try again later.");
+                  }
+                });
+              }
+            });
+          </script>
         {% endif %}
     </div>
-
-
-
+    
 
   {% if error_message %}
     <div class="alert alert-danger">{{ error_message }}</div>
