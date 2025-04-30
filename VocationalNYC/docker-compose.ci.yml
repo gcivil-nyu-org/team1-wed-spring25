@@ -36,7 +36,7 @@ services:
       - redis
       - nginx
     ports:
-      - 5000:5000
+      - "8000:8000"
     environment:
       DJANGO_ENV: travis
       AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
