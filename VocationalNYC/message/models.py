@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 import hashlib
 from django.core.exceptions import ValidationError
 
@@ -61,6 +62,9 @@ class Message(models.Model):
 
     def save(self, *args, **kwargs):
         self.full_clean()
+        if not self.pk and not self.send_time:
+            local_time = timezone.localtime(timezone.now())
+            self.send_time = local_time
         super().save(*args, **kwargs)
 
     def __str__(self):
