@@ -21,6 +21,7 @@ docker-compose.override.yml
 docker-compose.prod.yml
 docker-compose.yml
 Dockerfile
+/nginx/
 
 .DS_Store
 Thumbs.db
