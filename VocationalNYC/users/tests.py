@@ -973,7 +973,7 @@ class ViewsTests(TestCase):
             reverse("provider_detail", kwargs={"pk": provider.pk})
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "profile/provider_detail.html")
+        self.assertTemplateUsed(response, "provider/provider_detail.html")
 
     def test_add_tag_unauthenticated(self):
         self.client.logout()
@@ -1110,7 +1110,7 @@ class ViewsIntegrationTests(TestCase):
         mock_get.return_value.json.return_value = []
         response = self.client.get(reverse("provider_list"))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "profile/provider_list.html")
+        self.assertTemplateUsed(response, "provider/provider_list.html")
         self.assertEqual(Provider.objects.count(), 0)
 
     @patch("users.views.requests.get")
@@ -1123,7 +1123,7 @@ class ViewsIntegrationTests(TestCase):
         mock_get.return_value.json.return_value = [{"organization_name": ""}]
         response = self.client.get(reverse("provider_list"))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "profile/provider_list.html")
+        self.assertTemplateUsed(response, "provider/provider_list.html")
         self.assertEqual(Provider.objects.count(), 0)
 
     def test_profile_view_new_student(self):

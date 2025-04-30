@@ -38,6 +38,8 @@
                 chatButton.addEventListener('click', function() {
                   const providerId = "{{ provider.provider_id }}";
                   const providerUserId = "{{ provider.user.id|default:'None' }}";
+
+                  // console.log("Provider User ID:", providerUserId);
                   
                   if (providerUserId === 'None') {
                     // Provider has not registered yet

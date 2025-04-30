@@ -290,7 +290,7 @@ def check_provider_name(request):
 
 class ProviderDetailView(generic.DetailView):
     model = Provider
-    template_name = "profile/provider_detail.html"
+    template_name = "provider/provider_detail.html"
     context_object_name = "provider"
 
     def get_context_data(self, **kwargs):
@@ -301,7 +301,7 @@ class ProviderDetailView(generic.DetailView):
 
 class ProviderListView(generic.ListView):
     model = Provider
-    template_name = "profile/provider_list.html"
+    template_name = "provider/provider_list.html"
     context_object_name = "all_provider"
 
     def get_queryset(self):
