@@ -397,6 +397,18 @@
           window.location.host + 
           '/ws/chat/{{ current_chat.chat_hash }}/'
         );
+
+        chatSocket.onopen = function(e) {
+          console.log("WebSocket connection established");
+        };
+        
+        chatSocket.onerror = function(e) {
+          console.error("WebSocket error:", e);
+        };
+        
+        chatSocket.onclose = function(e) {
+          console.log("WebSocket closed:", e.code, e.reason);
+        };
         
         chatSocket.onmessage = function(e) {
           const data = JSON.parse(e.data);
@@ -433,15 +445,12 @@
           e.preventDefault();
           const messageInput = document.querySelector('[name="content"]');
           const message = messageInput.value.trim();
-          
+
           if (message) {
             chatSocket.send(JSON.stringify({
               'message': message,
               'sender': "{{ request.user.username }}"
             }));
-            
-            // Also submit the form to save the message
-            // this.submit();
           }
           
           messageInput.value = '';
