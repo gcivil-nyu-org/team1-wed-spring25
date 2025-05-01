@@ -22,3 +22,15 @@ services:
       DJANGO_ENV: production
       AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    image: kxiao02/vocationalnyc-production-nginx:latest
+    container_name: nginx
+    depends_on:
+      - app
+      - redis
+    ports:
+      - "80:80"
