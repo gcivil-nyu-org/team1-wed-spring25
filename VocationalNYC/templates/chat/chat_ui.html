@@ -423,6 +423,7 @@
                 </div>
             </div>
             <div class="chat-info-details">
+              {% comment %}
               <div class="chat-last-message">
                 {% if chat.messages.last %}
                   {{ chat.messages.last.content|truncatechars:30 }}
@@ -430,6 +431,7 @@
                   No messages yet
                 {% endif %}
               </div>
+              {% endcomment %}
               <div class="chat-time">{{ chat.last_time|date:"M d" }}</div>
               
             </div>
