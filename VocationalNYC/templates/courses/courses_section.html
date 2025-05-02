@@ -183,12 +183,12 @@
                                     {% if user.is_authenticated %}
   <button class="BookmarkButton size-small"
           onclick="openBookmarkModal({{ course.pk }}, '{{ course.name|escapejs }}')">
-    Add Bookmark
+    🔖 Add to Bookmarks
   </button>
 {% else %}
   <button class="BookmarkButton size-small"
           onclick="window.location.href='/accounts/login/'">
-    Add Bookmark
+    🔖 Add to Bookmarks
   </button>
 {% endif %}
 
