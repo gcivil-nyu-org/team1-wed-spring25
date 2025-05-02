@@ -51,8 +51,8 @@ urlpatterns = [
     # Root URL now uses our custom redirect view
     path("", root_redirect, name="home"),
     # Account-related URLs
-    path("accounts/", include("users.urls")),
     path("", include("users.urls")),
+    path("accounts/", include("users.urls")),
     path("accounts/", include("allauth.urls")),
     path(
         "accounts/password/reset/key/<uidb36>-<key>/",
