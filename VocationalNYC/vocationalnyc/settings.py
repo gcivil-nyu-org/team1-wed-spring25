@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import boto3
-from botocore.exceptions import ClientError
+from botocore.exceptions import NoCredentialsError, ClientError
 
 from pathlib import Path
 import environ
@@ -181,8 +181,9 @@ if DJANGO_ENV == "travis":
     }
 elif DJANGO_ENV == "production":
     try:
+        print("Fetching secrets from AWS Secrets Manager")
         ebdb_creds = get_secret("ebdb_creds")
-    except ClientError:
+    except (NoCredentialsError, ClientError):
         print("Secrets not fetched via boto")
         ebdb_creds = {
             "dbname": "db",
