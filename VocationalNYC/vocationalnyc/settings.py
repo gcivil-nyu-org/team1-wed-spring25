@@ -255,7 +255,7 @@ MFA_PASSKEY_SIGNUP_ENABLED = True
 
 # Localization
 LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"
+TIME_ZONE = "America/New_York"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
@@ -277,6 +277,7 @@ FAVICON_PATH = STATIC_URL + "favicon.ico"
 
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/"
+ACCOUNT_ADAPTER = "users.adapters.MyAccountAdapter"
 
 
 GOOGLE_MAPS_API_KEY = env("GOOGLE_MAPS_API_KEY", default="")
@@ -297,6 +298,3 @@ LOGGING = {
         },
     },
 }
-
-USE_TZ = True
-TIME_ZONE = "America/New_York"
