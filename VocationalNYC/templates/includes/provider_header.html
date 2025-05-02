@@ -32,7 +32,7 @@
     </a>
 </li>
 
-<li class="Tabs-Content-Inner {% if request.resolver_match.url_name == 'chat_home' %}is-active{% endif %}">
+<li class="Tabs-Content-Inner {% if 'chat' in request.path %}is-active{% endif %}">
     <a style="color: #2C3E50!important;" class="header__RootNavAnchor Tabs-Content-Middle" data-tracking-id=top_nav href="{% url 'chat_home' %}">
         Chat
     </a>
