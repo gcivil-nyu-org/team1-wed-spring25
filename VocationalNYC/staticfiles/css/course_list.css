@@ -100,49 +100,35 @@
             align-items: center;
             white-space: nowrap;
             appearance: none;
-            color: var(--color);
-            background: var(--bg-color);
-
             box-sizing: border-box;
             margin: 0px;
             padding: 0 var(--horizontal-spacing);
             font-size: 0.875rem;
-            font-weight: 700;
             line-height: 1.4;
             text-decoration: none;
             outline: none;
-            border-width: initial;
-            border-style: none;
-            border-image: initial;
-            border-color: var(--border-color);
+            font-weight: 700;
+            border: none;
             border-radius: 0.25rem;
-            box-shadow: var(--bs);
-            transition-property: background, color, box-shadow, border;
-            transition-duration: 0.6s;
-            transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            background-color: #fef9c3;  /* soft yellow */
+            color: #92400e;              /* warm amber/dark orange */
+            background-size: 500%;
+            transition: all 0.3s ease;
         }
 
-        .BookmarkButton:focus-visible {
-            background: var(--bg-color-hover);
-            box-shadow: var(--bs-hover)
-        }
+.BookmarkButton:hover {
+background-color: #fef08a;  /* slightly deeper yellow */
+}
 
-        .BookmarkButton:active {
-            background: var(--bg-color-hover);
-            box-shadow: var(--bs-active)
-        }
 
         .BookmarkButton.size-small {
             --horizontal-spacing: 0.75rem;
             height: 30px
         }
 
-        .BookmarkButton:disabled {
-            background: rgba(170, 170, 170, 0.9);
-            color: var(--gray-50);
-            border-color: var(--gray-30);
-            box-shadow: none;
-        }
+
 
         .Filters {
             padding: 0.4rem 1rem;

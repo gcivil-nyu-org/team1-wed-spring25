@@ -194,6 +194,16 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
         course = self.get_object()  # This gets the course object
         user = self.request.user  # This gets the logged-in user
 
+        if user.is_authenticated:
+            bookmark_lists = BookmarkList.objects.filter(user=user)
+            default_list = bookmark_lists.first()
+        else:
+            bookmark_lists = []
+            default_list = None
+
+        context["bookmark_lists"] = bookmark_lists
+        context["default_bookmark_list"] = default_list
+
         reviews = (
             Review.objects.filter(course=self.object)
             .order_by("-created_at")
