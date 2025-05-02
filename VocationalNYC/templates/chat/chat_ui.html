@@ -276,6 +276,7 @@
     min-height: 24px;
     background-color: #dcf8c6;
     align-self: flex-end;
+    position: relative;
   }
   
   .message-time {
@@ -331,62 +332,62 @@
   }
 
   .message-options {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.2s;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background-color: rgba(0, 0, 0, 0.05);
-  font-size: 16px; 
-  line-height: 1;
-}
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.05);
+    font-size: 16px; 
+    line-height: 1;
+  }
 
-.message:hover .message-options {
-  opacity: 1;
-}
+  .message:hover .message-options {
+    opacity: 1;
+  }
 
-.message-options-menu {
-  position: absolute;
-  right: 30px;
-  top: 0;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  width: 150px;
-  z-index: 100;
-  display: none;
-}
+  .message-options-menu {
+    position: absolute;
+    right: 30px;
+    top: 0;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 150px;
+    z-index: 100;
+    display: none;
+  }
 
-.message-options-menu.active {
-  display: block;
-}
+  .message-options-menu.active {
+    display: block;
+  }
 
-.message-options-menu ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
+  .message-options-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
 
-.message-options-menu li {
-  padding: 10px 15px;
-  cursor: pointer;
-}
+  .message-options-menu li {
+    padding: 10px 15px;
+    cursor: pointer;
+  }
 
-.message-options-menu li:hover {
-  background-color: #f8f8f8;
-}
+  .message-options-menu li:hover {
+    background-color: #f8f8f8;
+  }
 
-.message-options-menu li.delete {
-  color: #ff6b6b;
-}
+  .message-options-menu li.delete {
+    color: #ff6b6b;
+  }
 </style>
 
 <div class="chat-container">
@@ -528,6 +529,7 @@
         chatSocket.onmessage = function(e) {
           const data = JSON.parse(e.data);
           const isCurrentUser = data.sender === "{{ request.user.username }}";
+          const messageId = data.message_id || '';
           
           const messageDiv = document.createElement('div');
           messageDiv.className = `message ${isCurrentUser ? 'sent' : ''}`;
