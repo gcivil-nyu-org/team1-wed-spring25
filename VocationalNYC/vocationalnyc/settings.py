@@ -18,9 +18,6 @@ import environ
 import json
 
 
-USE_TZ = True
-TIME_ZONE = "America/New_York"
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -259,7 +256,7 @@ MFA_PASSKEY_SIGNUP_ENABLED = True
 
 # Localization
 LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"
+TIME_ZONE = "America/New_York"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
@@ -281,6 +278,7 @@ FAVICON_PATH = STATIC_URL + "favicon.ico"
 
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/"
+ACCOUNT_ADAPTER = "users.adapters.MyAccountAdapter"
 
 
 GOOGLE_MAPS_API_KEY = env("GOOGLE_MAPS_API_KEY", default="")

@@ -23,13 +23,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
         sender_username = data.get("sender", "")
         if not message_content or not sender_username:
             return
-        await self.save_message(message_content, sender_username)
+        message_id = await self.save_message(message_content, sender_username)
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 "type": "chat_message",
                 "message": message_content,
                 "sender": sender_username,
+                "message_id": message_id,
             },
         )
 
@@ -39,9 +40,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         sender = User.objects.get(username=sender_username)
         recipient = chat.user2 if sender == chat.user1 else chat.user1
 
-        Message.objects.create(
+        message = Message.objects.create(
             chat=chat, sender=sender, recipient=recipient, content=message_content
         )
+        return message.pk
 
     async def chat_message(self, event):
         await self.send(
@@ -49,6 +51,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 {
                     "message": event["message"],
                     "sender": event["sender"],
+                    "message_id": event.get("message_id"),
                 }
             )
         )
