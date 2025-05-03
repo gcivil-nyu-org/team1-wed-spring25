@@ -30,9 +30,15 @@ def chat_home(request):
         else:
             return u.username
 
+    def get_student_full_name(u):
+        if u.role == "career_changer":
+            # If the user is a student or any other role, return their full name
+            return u.get_full_name()
+
     for c in chats:
         other = c.user2 if c.user1 == user else c.user1
         c.display_name = get_display_name(other)
+        c.student_full_name = get_student_full_name(other)
 
     context = {"chats": chats, "welcome_message": True}
 
@@ -82,14 +88,22 @@ def chat_detail(request, chat_hash):
             # If the user is a student or any other role, return their username
             return u.username
 
+    def get_student_full_name(u):
+        if u.role == "career_changer":
+            # If the user is a student or any other role, return their full name
+            return u.get_full_name()
+
     for c in chats:
         other = c.user2 if c.user1 == user else c.user1
         c.display_name = get_display_name(other)
+        c.student_full_name = get_student_full_name(other)
 
     other_user = (
         current_chat.user2 if user == current_chat.user1 else current_chat.user1
     )
     current_chat.display_name = get_display_name(other_user)
+
+    current_chat.student_full_name = get_student_full_name(other_user)
 
     # send message
     if request.method == "POST":
