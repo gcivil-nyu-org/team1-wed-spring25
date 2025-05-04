@@ -17,6 +17,9 @@ from pathlib import Path
 import environ
 import json
 
+import os
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -51,31 +54,8 @@ SECRET_KEY = env("SECRET_KEY", default="insecure" if DEBUG else environ.Env.NOTS
 
 
 
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    "172.31.10.24",  # add all relevant internal IPs seen in logs
-    "172.31.34.113",
-    "172.31.3.17",
-    "vocationalnyc-env.eba-uurzafst.us-east-1.elasticbeanstalk.com",
-    "vocationalnyc-test.us-east-1.elasticbeanstalk.com",
-    "vocationalnyc-wandering-silence-627.fly.dev",
-]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
-
-# ALLOWED_HOSTS = env.list(
-#     "ALLOWED_HOSTS",
-#     default=(
-#         [
-#             "127.0.0.1",
-#             "localhost",
-#             "vocationalnyc-env.eba-uurzafst.us-east-1.elasticbeanstalk.com",
-#             "vocationalnyc-test.us-east-1.elasticbeanstalk.com",
-#         ]
-#         if DEBUG
-#         else []
-#     ),
-# )
 
 ADMINS = env.list("ADMINS", default=[("admin", "admin@example.com")] if DEBUG else [])
 MANAGERS = ADMINS

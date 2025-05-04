@@ -18,7 +18,7 @@ services:
       - 8.8.8.8
       - 1.1.1.1
     extra_hosts:
-      - "fly-vocationalnyc-redis.upstash.io:143.244.207.74"
+      - "${DOCKER_EXTRA_HOSTS}"
     networks:
       - backend
 
