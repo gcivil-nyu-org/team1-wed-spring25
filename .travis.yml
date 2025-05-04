@@ -16,7 +16,6 @@ env:
   global:
     - DJANGO_SETTINGS_MODULE=vocationalnyc.settings
     - PYTHONPATH=$(pwd)/VocationalNYC
-    - REDIS_URL=redis://localhost:6379/0
 
 
 before_install:
