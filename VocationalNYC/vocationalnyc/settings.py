@@ -20,7 +20,6 @@ import json
 import os
 
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -51,7 +50,6 @@ DEBUG = False
 DJANGO_ENV = env("DJANGO_ENV", default="production")
 
 SECRET_KEY = env("SECRET_KEY", default="insecure" if DEBUG else environ.Env.NOTSET)
-
 
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
