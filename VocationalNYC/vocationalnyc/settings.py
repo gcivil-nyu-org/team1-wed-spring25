@@ -45,8 +45,8 @@ def get_secret(secret_name):
     return secret
 
 
-DEBUG = env("DEBUG", default="False")
-# DEBUG = False
+# DEBUG = env("DEBUG", default="False")
+DEBUG = False
 
 DJANGO_ENV = env("DJANGO_ENV", default="production")
 
