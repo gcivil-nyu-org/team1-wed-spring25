@@ -144,7 +144,8 @@ if USE_REDIS:
         "default": {
             "BACKEND": "channels_redis.core.RedisChannelLayer",
             "CONFIG": {
-                "hosts": [env("REDIS_URL", default="redis://localhost:6379/0")],            },
+                "hosts": [env("REDIS_URL", default="redis://localhost:6379/0")],
+            },
         },
     }
 else:
