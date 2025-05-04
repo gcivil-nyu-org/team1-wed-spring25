@@ -148,6 +148,7 @@ if USE_REDIS:
             },
         },
     }
+
 else:
     CHANNEL_LAYERS = {
         "default": {
