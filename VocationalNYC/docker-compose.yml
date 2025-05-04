@@ -1,12 +1,6 @@
 # This file is used to override the docker-compose.yml file for local development and testing purposes.
 services:
 
-  redis:
-    image: redis:latest
-    container_name: redis
-    ports:
-      - "6379:6379"
-
   app:
     build:
       context: .
@@ -14,13 +8,20 @@ services:
     env_file: .env
     environment:
       - DJANGO_ENV=${DJANGO_ENV}
+      - USE_REDIS=False
     container_name: app
-    depends_on:
-      - redis
     volumes:
     - .:/vocationalnyc
     ports:
       - "8000:8000"
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    extra_hosts:
+      - "fly-vocationalnyc-redis.upstash.io:143.244.207.74"
+    networks:
+      - backend
+
 
   nginx:
     build:
@@ -29,6 +30,11 @@ services:
     container_name: nginx
     depends_on:
       - app
-      - redis
     ports:
       - "80:80"
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge

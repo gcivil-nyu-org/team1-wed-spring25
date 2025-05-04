@@ -42,25 +42,27 @@ def get_secret(secret_name):
     return secret
 
 
-# DEBUG = env("DEBUG", default="False")
-DEBUG = False
+DEBUG = env("DEBUG", default="False")
+# DEBUG = False
 
 DJANGO_ENV = env("DJANGO_ENV", default="production")
 
 SECRET_KEY = env("SECRET_KEY", default="insecure" if DEBUG else environ.Env.NOTSET)
 
-ALLOWED_HOSTS = env.list(
-    "ALLOWED_HOSTS",
-    default=[
-        "localhost",
-        "127.0.0.1",
-        "172.31.10.24",  # add all relevant internal IPs seen in logs
-        "172.31.34.113",
-        "172.31.3.17",
-        "vocationalnyc-env.eba-uurzafst.us-east-1.elasticbeanstalk.com",
-        "vocationalnyc-test.us-east-1.elasticbeanstalk.com",
-    ],
-)
+
+
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "172.31.10.24",  # add all relevant internal IPs seen in logs
+    "172.31.34.113",
+    "172.31.3.17",
+    "vocationalnyc-env.eba-uurzafst.us-east-1.elasticbeanstalk.com",
+    "vocationalnyc-test.us-east-1.elasticbeanstalk.com",
+    "vocationalnyc-wandering-silence-627.fly.dev",
+]
+
+
 # ALLOWED_HOSTS = env.list(
 #     "ALLOWED_HOSTS",
 #     default=(
@@ -157,15 +159,23 @@ TEMPLATES = [
 WSGI_APPLICATION = "vocationalnyc.wsgi.application"
 ASGI_APPLICATION = "vocationalnyc.asgi.application"
 
-# Redis Configuration
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("redis", 6379)],
+USE_REDIS = env.bool("USE_REDIS", default=True)
+
+if USE_REDIS:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [env("REDIS_URL")],
+            },
         },
-    },
-}
+    }
+else:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels.layers.InMemoryChannelLayer",
+        },
+    }
 
 # Database Configuration
 if DJANGO_ENV == "travis":
