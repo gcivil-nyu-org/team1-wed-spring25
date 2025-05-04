@@ -179,7 +179,7 @@
 
 
 
-
+                                    {% if user.role != "training_provider"%}
                                     {% if user.is_authenticated %}
   <button class="BookmarkButton size-small"
           onclick="openBookmarkModal({{ course.pk }}, '{{ course.name|escapejs }}')">
@@ -190,6 +190,7 @@
           onclick="window.location.href='/accounts/login/'">
     🔖 Add to Bookmarks
   </button>
+{% endif %}
 {% endif %}
 
 
