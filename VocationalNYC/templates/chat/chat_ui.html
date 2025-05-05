@@ -212,6 +212,26 @@
         chatSocket.onmessage = function(e) {
           const data = JSON.parse(e.data);
 
+          const currentChatHash = "{{ current_chat.chat_hash }}";
+const chatItem = document.querySelector(`.chat-item[onclick*="${currentChatHash}"]`);
+if (chatItem) {
+  const timeDiv = chatItem.querySelector('.chat-time');
+  if (timeDiv) {
+    const now = new Date();
+    const formatted = now.toLocaleString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+    });
+    timeDiv.textContent = formatted;
+  }
+}
+
             const noChat = document.querySelector('.no-chat-wrapper');
 if (noChat && noChat.parentNode) {
   noChat.parentNode.removeChild(noChat);
