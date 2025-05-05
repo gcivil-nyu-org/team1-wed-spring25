@@ -10,6 +10,7 @@
 
              <link rel="stylesheet" href="{% static 'css/chat_ui.css' %}">
 
+<style></style>
 
     <div class="chat-container">
   <!-- Chat List (Left Side) -->
@@ -52,8 +53,9 @@
             </div>
             </div>
             <div class="chat-info-details">
-              <div class="chat-time">{{ chat.last_time|date:"l, F j, Y \\a\\t g:i:s A" }}</div>
+                <div class="chat-preview">{{ chat.last_message|default_if_none:"" }}</div>
 
+              <div class="chat-time">{{ chat.last_time|date:"l, F j, Y \\a\\t g:i:s A" }}</div>
             </div>
           </div>
         </div>
@@ -455,33 +457,72 @@ document.querySelectorAll('.chat-options').forEach(option => {
     '/ws/chat_list/'
   );
 
-  chatListSocket.onmessage = function (e) {
-   const data = JSON.parse(e.data);
-const chatHash = data.chat_hash;
-
-const chatItem = document.querySelector(`.chat-item[onclick*="${chatHash}"]`);
-if (chatItem) {
-  const timeDiv = chatItem.querySelector('.chat-time');
-  if (timeDiv) {
-    const now = new Date(data.timestamp);
-    const formatted = now.toLocaleString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true,
-    });
-    timeDiv.textContent = formatted;
-  }
-
+chatListSocket.onmessage = function (e) {
+  const data = JSON.parse(e.data);
+  const chatHash = data.chat_hash;
   const chatListContainer = document.querySelector('.chat-items');
-  if (chatListContainer) {
+
+  let chatItem = document.querySelector(`.chat-item[onclick*="${chatHash}"]`);
+
+  const formattedTime = new Date(data.timestamp).toLocaleString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  });
+
+  if (chatItem) {
+    // Update preview and time
+    const timeDiv = chatItem.querySelector('.chat-time');
+    const previewDiv = chatItem.querySelector('.chat-preview');
+    if (timeDiv) timeDiv.textContent = formattedTime;
+    if (previewDiv) previewDiv.textContent = data.last_message;
+
+    chatListContainer.insertBefore(chatItem, chatListContainer.firstChild);
+  } else {
+    // Create new chat item
+    chatItem = document.createElement('div');
+    chatItem.className = 'chat-item';
+    chatItem.setAttribute('onclick', `window.location.href='/chat/${chatHash}/'`);
+
+    chatItem.innerHTML = `
+      <div class="chat-avatar">
+        <svg height="28" viewBox="0 0 64 64" width="28" xmlns="http://www.w3.org/2000/svg">
+          <path d="M29.9475268,59.5867724 C46.1333288,59.5867724 59.534715,46.15661 59.534715,29.9998218 C59.534715,13.8140198 46.1043387,0.412871288 29.9185367,0.412871288 C13.7617248,0.412871288 0.36059406,13.8140198 0.36059406,29.9998218 C0.36059406,46.15661 13.7907743,59.5867724 29.9475268,59.5867724 Z M29.9475268,39.8621585 C21.2165169,39.8621585 14.5159426,42.9948714 11.5572297,46.4756852 C7.67029902,42.0956436 5.32073466,36.3523367 5.32073466,29.9998218 C5.32073466,16.3085941 16.2273089,5.34403961 29.9185367,5.34403961 C43.6097644,5.34403961 54.5743189,16.3085941 54.6039513,29.9998218 C54.6325367,36.3523367 52.253804,42.1246337 48.3378832,46.4756852 C45.4081605,42.9948714 38.6785961,39.8621585 29.9475268,39.8621585 Z M29.9475268,34.9309902 C35.5458832,34.9889704 39.8968931,30.2318614 39.8968931,23.9954258 C39.8968931,18.1360396 35.5168337,13.291901 29.9475268,13.291901 C24.3782198,13.291901 19.9691703,18.1360396 19.9979358,23.9954258 C20.0272099,30.2318614 24.3782198,34.8729506 29.9475268,34.9309902 Z" transform="translate(2 2)"></path>
+        </svg>
+      </div>
+      <div class="chat-info">
+        <div class="chat-header">
+          <div class="chat-name">
+            ${data.sender_full_name || data.sender_display_name || data.sender_username}
+          </div>
+          <div class="message-options-wrapper">
+            <div class="chat-options">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect width="24" height="24" rx="8" fill="#f2f2f2"/>
+                <path d="M8 10l4 4 4-4" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="chat-options-menu">
+              <ul>
+                <li class="delete-chat" data-chat-hash="${chatHash}">Delete Chat</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="chat-info-details">
+          <div class="chat-preview">${data.last_message}</div>
+          <div class="chat-time">${formattedTime}</div>
+        </div>
+      </div>
+    `;
+
     chatListContainer.insertBefore(chatItem, chatListContainer.firstChild);
   }
-}
-  };
+};
 </script>
 {% endblock %}
