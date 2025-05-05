@@ -1,5 +1,6 @@
 
 
+
     :root {
  --primary: #a2ccb6;
         --primary-light: #eaf4ef;
@@ -144,6 +145,8 @@ margin-left: auto;
 .chat-info {
   flex: 1;
   margin-left: 0.75rem;
+      min-width: 0; /* 🔥 This enables ellipsis for children */
+
 }
 
 .chat-header {
@@ -561,3 +564,15 @@ display: inline-block;
 
 
 
+.chat-preview {
+  display: block;
+  font-size: 14px;
+  color: #4b5563;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 0;
+  max-width: 100%;
+  height: 1.2em; /* 🔐 locks it to one line */
+  line-height: 1.2em;
+}

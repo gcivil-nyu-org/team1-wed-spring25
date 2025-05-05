@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
-from django.db.models import Q, Max
+from django.db.models import Q
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.conf import settings
@@ -15,9 +15,22 @@ timezone.activate(settings.TIME_ZONE)
 @login_required
 def chat_home(request):
     user = request.user
+    from django.db.models import OuterRef, Subquery, DateTimeField, TextField
+
+    visible_messages = Message.objects.filter(
+        chat=OuterRef("pk"), visibilities__user=user, visibilities__is_visible=True
+    ).order_by("-send_time")
+
     chats = (
         Chat.objects.filter(Q(user1=user) | Q(user2=user))
-        .annotate(last_time=Max("messages__send_time"))
+        .annotate(
+            last_time=Subquery(
+                visible_messages.values("send_time")[:1], output_field=DateTimeField()
+            ),
+            last_message=Subquery(
+                visible_messages.values("content")[:1], output_field=TextField()
+            ),
+        )
         .order_by("-last_time", "-id")
     )
 
@@ -63,9 +76,22 @@ def chat_list(request):
 def chat_detail(request, chat_hash):
     # Get the current user's chats and annotate with the last message time
     user = request.user
+    from django.db.models import OuterRef, Subquery, DateTimeField, TextField
+
+    visible_messages = Message.objects.filter(
+        chat=OuterRef("pk"), visibilities__user=user, visibilities__is_visible=True
+    ).order_by("-send_time")
+
     chats = (
         Chat.objects.filter(Q(user1=user) | Q(user2=user))
-        .annotate(last_time=Max("messages__send_time"))
+        .annotate(
+            last_time=Subquery(
+                visible_messages.values("send_time")[:1], output_field=DateTimeField()
+            ),
+            last_message=Subquery(
+                visible_messages.values("content")[:1], output_field=TextField()
+            ),
+        )
         .order_by("-last_time", "-id")
     )
 
