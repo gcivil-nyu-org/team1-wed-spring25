@@ -73,7 +73,8 @@ margin-left: auto;
    Sidebar - Chat List
 ======================== */
 .chat-list {
-  width: 340px;
+    min-width: 340px;
+  max-width: 400px;
   background: #ffffff;
   padding: 1.25rem;
   display: flex;
