@@ -56,20 +56,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 {
                     "type": "chat_list_update",
                     "data": {
-    "chat_hash": chat.chat_hash,
-    "timestamp": timestamp,
-    "last_message": message.content,
-    "sender_username": sender.username,
-    "sender_full_name": sender.get_full_name(),
-    "sender_role": sender.role,
-    "sender_display_name": (
-        sender.provider_profile.name
-        if sender.role == "training_provider" and hasattr(sender, "provider_profile")
-        else sender.username
-    )
-}
-
-                }
+                        "chat_hash": chat.chat_hash,
+                        "timestamp": timestamp,
+                        "last_message": message.content,
+                        "sender_username": sender.username,
+                        "sender_full_name": sender.get_full_name(),
+                        "sender_role": sender.role,
+                        "sender_display_name": (
+                            sender.provider_profile.name
+                            if sender.role == "training_provider"
+                            and hasattr(sender, "provider_profile")
+                            else sender.username
+                        ),
+                    },
+                },
             )
 
         return message.pk
@@ -84,6 +84,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 }
             )
         )
+
 
 class ChatListConsumer(AsyncWebsocketConsumer):
     async def connect(self):
