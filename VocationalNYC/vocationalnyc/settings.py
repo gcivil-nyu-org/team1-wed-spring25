@@ -17,7 +17,7 @@ from pathlib import Path
 import environ
 import json
 
-import os
+# import os
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
