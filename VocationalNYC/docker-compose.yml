@@ -17,8 +17,6 @@ services:
     dns:
       - 8.8.8.8
       - 1.1.1.1
-    extra_hosts:
-      - "${DOCKER_EXTRA_HOSTS}"
     networks:
       - backend
 
