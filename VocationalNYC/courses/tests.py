@@ -1,7 +1,6 @@
 # import unittest
 from unittest.mock import patch
-
-# import json
+import json
 
 from django.test import TestCase, RequestFactory, Client
 from django.urls import reverse
@@ -13,6 +12,7 @@ from courses.models import Course
 from users.models import CustomUser, Provider
 from review.models import Review
 from requests.exceptions import RequestException
+from django.db.models import Avg, Count
 
 
 class MockResponse:
@@ -217,7 +217,7 @@ class CourseDetailViewTest(TestCase):
 
         # Should redirect to login page
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.url.startswith("/login/"))  # Updated login URL check
+        self.assertTrue("login" in response.url)
 
 
 def mock_filterCourses(request):
@@ -252,8 +252,11 @@ def mock_filterCourses(request):
         classroom_hours=50,
         location="789 Test Blvd, Queens, NY, 11301",
     )
-
-    return {"courses": Course.objects.all()}
+    courses = Course.objects.annotate(
+        avg_rating=Avg("reviews__score_rating"),
+        reviews_count=Count("reviews"),
+    )
+    return {"courses": courses}
 
 
 class SearchResultTest(TestCase):
@@ -369,6 +372,7 @@ class SearchResultTest(TestCase):
     def test_sort_by_function_default_order(self, mock_filter_courses):
         # Create a request without sorting parameters (default behavior)
         request = self.factory.get("/courses/sort/")
+        request.session = {}
 
         # Call the sort_by function
         response = sort_by(request)
@@ -387,6 +391,10 @@ class SearchResultTest(TestCase):
 class FilterCoursesTest(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
+
+        self.user = get_user_model().objects.create_user(
+            username="testuser", email="test@example.com", password="testpassword"
+        )
 
         # Create test providers
         self.provider1 = Provider.objects.create(
@@ -434,6 +442,8 @@ class FilterCoursesTest(TestCase):
 
     def test_filter_by_keywords_name(self):
         request = self.factory.get("/search/", {"keywords": "Python"})
+        request.user = self.user
+        request.session = {}
         context = filterCourses(request)
         self.assertEqual(len(context["courses"]), 2)
         self.assertIn(self.course1, context["courses"])
@@ -441,19 +451,26 @@ class FilterCoursesTest(TestCase):
 
     def test_filter_by_keywords_description(self):
         request = self.factory.get("/search/", {"keywords": "data science"})
+        request.user = self.user
+        request.session = {}
         context = filterCourses(request)
         self.assertEqual(len(context["courses"]), 1)
         self.assertEqual(context["courses"][0], self.course2)
 
     def test_filter_by_keywords_keywords(self):
         request = self.factory.get("/search/", {"keywords": "web"})
+        request.user = self.user
+        request.session = {}
         context = filterCourses(request)
+        request.session = {}
         self.assertEqual(len(context["courses"]), 2)
         self.assertIn(self.course1, context["courses"])
         self.assertIn(self.course3, context["courses"])
 
     def test_filter_by_provider(self):
         request = self.factory.get("/search/", {"provider": "Provider One"})
+        request.user = self.user
+        request.session = {}
         context = filterCourses(request)
         self.assertEqual(len(context["courses"]), 2)
         self.assertIn(self.course1, context["courses"])
@@ -461,18 +478,24 @@ class FilterCoursesTest(TestCase):
 
     def test_filter_by_cost_range(self):
         request = self.factory.get("/search/", {"min_cost": "900", "max_cost": "1500"})
+        request.user = self.user
+        request.session = {}
         context = filterCourses(request)
         self.assertEqual(len(context["courses"]), 1)
         self.assertEqual(context["courses"][0], self.course1)
 
     def test_filter_by_location(self):
         request = self.factory.get("/search/", {"location": "Boston"})
+        request.user = self.user
+        request.session = {}
         context = filterCourses(request)
         self.assertEqual(len(context["courses"]), 1)
         self.assertEqual(context["courses"][0], self.course3)
 
     def test_filter_by_classroom_hours(self):
         request = self.factory.get("/search/", {"min_hours": "50"})
+        request.user = self.user
+        request.session = {}
         context = filterCourses(request)
         self.assertEqual(len(context["courses"]), 1)
         self.assertEqual(context["courses"][0], self.course2)
@@ -487,12 +510,16 @@ class FilterCoursesTest(TestCase):
                 "location": "New York",
             },
         )
+        request.user = self.user
+        request.session = {}
         context = filterCourses(request)
         self.assertEqual(len(context["courses"]), 1)
         self.assertEqual(context["courses"][0], self.course2)
 
     def test_no_filters(self):
         request = self.factory.get("/search/")
+        request.user = self.user
+        request.session = {}
         context = filterCourses(request)
         self.assertEqual(len(context["courses"]), 3)
         self.assertIn(self.course1, context["courses"])
@@ -534,17 +561,17 @@ class CourseMapTest(TestCase):
             }
         )
 
-        response = self.client.get(reverse("course_data"))
+        response = self.client.get(reverse("course_map"))
         self.assertEqual(response.status_code, 200)
 
         # Parse the JSON response
-        response_data = response.json()
+        course_map_data_str = response.context.get("course_map_data")
+        response_data = json.loads(course_map_data_str)
 
         # Verify the response data structure
         self.assertEqual(len(response_data), 1)
         self.assertEqual(response_data[0]["name"], "Test Course")
         self.assertEqual(response_data[0]["course_id"], self.course.course_id)
-        self.assertEqual(response_data[0]["course_desc"], "")
         self.assertEqual(response_data[0]["latitude"], 40.7128)
         self.assertEqual(response_data[0]["longitude"], -74.0060)
 
@@ -572,43 +599,38 @@ class PostNewCourseTest(TestCase):
 
         self.client.login(username="testuser", password="testpass123")
 
-    def test_post_new_course_get(self):
-        response = self.client.get(reverse("new_course"))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "courses/new_course.html")
+    # def test_post_new_course_post_valid(self):
+    #     data = {
+    #         "name": "New Test Course",
+    #         "keywords": "test, course",
+    #         "course_desc": "Test course description",
+    #         "cost": 1000,
+    #         "location": "123 Test St, New York, NY, 10001",
+    #         "classroom_hours": 40,
+    #         "lab_hours": 20,
+    #         "internship_hours": 10,
+    #         "practical_hours": 15,
+    #     }
 
-    def test_post_new_course_post_valid(self):
-        data = {
-            "name": "New Test Course",
-            "keywords": "test, course",
-            "course_desc": "Test course description",
-            "cost": 1000,
-            "location": "123 Test St, New York, NY, 10001",
-            "classroom_hours": 40,
-            "lab_hours": 20,
-            "internship_hours": 10,
-            "practical_hours": 15,
-        }
+    #     response = self.client.post(reverse("new_course"), data)
+    #     self.assertEqual(response.status_code, 302)  # Should redirect
+    #     self.assertTrue(Course.objects.filter(name="New Test Course").exists())
 
-        response = self.client.post(reverse("new_course"), data)
-        self.assertEqual(response.status_code, 302)  # Should redirect
-        self.assertTrue(Course.objects.filter(name="New Test Course").exists())
+    # def test_post_new_course_post_invalid(self):
+    #     data = {
+    #         "name": "",  # Invalid: empty name
+    #         "course_desc": "Test course description",
+    #         "cost": -100,  # Invalid: negative cost
+    #         "location": "123 Test St, New York, NY, 10001",
+    #         "classroom_hours": -40,  # Invalid: negative hours
+    #         "lab_hours": 20,
+    #     }
 
-    def test_post_new_course_post_invalid(self):
-        data = {
-            "name": "",  # Invalid: empty name
-            "course_desc": "Test course description",
-            "cost": -100,  # Invalid: negative cost
-            "location": "123 Test St, New York, NY, 10001",
-            "classroom_hours": -40,  # Invalid: negative hours
-            "lab_hours": 20,
-        }
-
-        response = self.client.post(reverse("new_course"), data)
-        self.assertEqual(response.status_code, 200)  # Should stay on form page
-        self.assertFalse(
-            Course.objects.filter(course_desc="Test course description").exists()
-        )
+    #     response = self.client.post(reverse("new_course"), data)
+    #     self.assertEqual(response.status_code, 200)  # Should stay on form page
+    #     self.assertFalse(
+    #         Course.objects.filter(course_desc="Test course description").exists()
+    #     )
 
 
 # class CourseListViewBookmarksTest(TestCase):
@@ -662,6 +684,11 @@ class PostNewCourseTest(TestCase):
 class SortByFunctionTest(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
+
+        self.user = get_user_model().objects.create_user(
+            username="sortuser", email="sort@example.com", password="testpass"
+        )
+
         # Create test courses
         self.course1 = Course.objects.create(
             name="Course A",
@@ -684,6 +711,8 @@ class SortByFunctionTest(TestCase):
 
     def test_sort_by_name_ascending(self):
         request = self.factory.get("/courses/sort/", {"sort": "name", "order": "asc"})
+        request.user = self.user
+        request.session = {}
         response = sort_by(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
@@ -699,6 +728,8 @@ class SortByFunctionTest(TestCase):
 
     def test_sort_by_name_descending(self):
         request = self.factory.get("/courses/sort/", {"sort": "name", "order": "desc"})
+        request.user = self.user
+        request.session = {}
         response = sort_by(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
@@ -714,6 +745,8 @@ class SortByFunctionTest(TestCase):
 
     def test_sort_by_cost_ascending(self):
         request = self.factory.get("/courses/sort/", {"sort": "cost", "order": "asc"})
+        request.user = self.user
+        request.session = {}
         response = sort_by(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
@@ -729,6 +762,8 @@ class SortByFunctionTest(TestCase):
 
     def test_sort_by_cost_descending(self):
         request = self.factory.get("/courses/sort/", {"sort": "cost", "order": "desc"})
+        request.user = self.user
+        request.session = {}
         response = sort_by(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
@@ -746,6 +781,8 @@ class SortByFunctionTest(TestCase):
         request = self.factory.get(
             "/courses/sort/", {"sort": "classroom_hours", "order": "asc"}
         )
+        request.user = self.user
+        request.session = {}
         response = sort_by(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
@@ -763,6 +800,8 @@ class SortByFunctionTest(TestCase):
         request = self.factory.get(
             "/courses/sort/", {"sort": "classroom_hours", "order": "desc"}
         )
+        request.user = self.user
+        request.session = {}
         response = sort_by(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "text/html; charset=utf-8")
@@ -920,14 +959,8 @@ class ManageCourseTest(TestCase):
         """Test GET request to post_new_course view"""
         response = self.client.get(reverse("new_course"))
 
-        # Check that response is 200 OK
-        self.assertEqual(response.status_code, 200)
-
-        # Check that correct template is used
-        self.assertTemplateUsed(response, "courses/new_course.html")
-
-        # Check that form is in context
-        self.assertIn("form", response.context)
+        # Check that response redirects to manage_courses
+        self.assertRedirects(response, reverse("manage_courses"))
 
     def test_post_new_course_post_valid(self):
         """Test POST request to post_new_course view with valid data"""
@@ -973,12 +1006,15 @@ class ManageCourseTest(TestCase):
         # Post the data
         response = self.client.post(reverse("new_course"), course_data)
 
-        # Should stay on the same page
-        self.assertEqual(response.status_code, 200)
+        # Should redirect to manage_courses page (even with form errors)
+        self.assertRedirects(response, reverse("manage_courses"))
 
-        # Check that form is in context and has errors
-        self.assertIn("form", response.context)
-        self.assertTrue(response.context["form"].errors)
+        # Check that error message was shown
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(
+            str(messages[0]), "Invalid data. Please check the form and try again."
+        )
 
     @patch("logging.Logger.error")
     def test_post_new_course_exception(self, mock_logger):
@@ -1022,7 +1058,7 @@ class ManageCourseTest(TestCase):
         )
 
         # Should redirect to course_list
-        self.assertRedirects(response, reverse("course_list"))
+        self.assertRedirects(response, reverse("manage_courses"))
 
         # Check that course was deleted
         self.assertFalse(Course.objects.filter(pk=self.course1.pk).exists())

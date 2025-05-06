@@ -1,3 +1,5 @@
+{% load static %}
+
 <style>
     .VocationalCourseAndProviderContainer {
         box-sizing: border-box;
@@ -14,7 +16,7 @@
         box-shadow: rgba(17, 17, 17, 0.3) 0px 0px 3px
     }
     .VocationalCourseAndProviderUniversalHeight {
-        height: 267px!important;
+        height: 307px!important;
     }
     .MagicButton {
         display: flex;
@@ -64,31 +66,57 @@
     }
     .VocationalCourseAndProviderContainerFour {
         height: 200px;
-        width: 330px;
-        padding-top: 0.25rem;
-        margin: 0rem 0.5rem 0.5rem;
-        overflow-y: auto
+        width: 341.5px;
+        {#padding-top: 0.25rem;#}
+        margin-top: 16px;
+        margin-bottom: 16px;
+        margin-left: 16px;
+        margin-right: 16px;
+        {#overflow-y: hidden;#}
+        overscroll-behavior-y: none!important;
+
     }
+    .VocationalCourseAndProviderContainerFour{
+         overflow-y: auto;
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
+
+
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.VocationalCourseAndProviderContainerFour::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
     .VocationalCourseAndProviderClassTwo {
         display: flex;
         align-items: flex-start;
         flex-direction: column;
         height: auto;
-        margin: 0rem 0.5rem
+        margin: 0;
+            position: relative;
+
     }
     .VocationalCourseAndProviderSVGThree {
         vertical-align: initial;
         display: inline-block
     }
     .VocationalCourseAndProviderSVGFour {
-        position: relative;
-        align-self: flex-end;
-        top: 15px;
-        cursor: pointer
+           position: absolute;
+    top: 0rem;
+    right: 0rem;
+    cursor: pointer;
+          width: 1rem;
+  height: 1rem;
     }
     .VocationalCourseAndProviderSVGFour:hover {
-        fill: rgb(26, 29, 38);
+        fill: rgb(26, 29, 38)!important;
         transition: 0.5s
+    }
+       .VocationalCourseAndProviderSVGFour {
+        fill: #e0e0e0!important;
     }
     .VocationalCourseNameClassOne {
         margin: 0px 0px 0rem;
@@ -98,7 +126,7 @@
         font-size: 0.875rem;
         color: rgb(26, 29, 38);
         margin-bottom: 0.125rem;
-        line-height: 1.4;
+        line-height: 1;
         text-align: left;
         width: 95%
     }
@@ -109,9 +137,17 @@
     .VocationalCourseProviderNameClassTwo {
         font-size: 0.625rem;
         color: rgb(81, 87, 103);
-        margin-bottom: 0.5rem;
         line-height: 1.2
     }
+
+    #comparisonList > .VocationalCourseAndProviderClassTwo:not(:first-child) {
+  margin-top: 1rem;
+}
+
+#comparisonList > .VocationalCourseAndProviderClassTwo:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
     .BorderLines {
         margin-bottom: 0rem;
         border-top: 1px solid rgb(211, 215, 220)
@@ -209,6 +245,18 @@
         text-size-adjust: none;
         opacity: 1
     }
+    .empty-comparison-message {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    text-align: center;
+}
+        .empty-comparison-message p{
+            margin: 0;
+        }
+
 </style>
 
 <svg aria-hidden=true style=position:absolute;width:0;height:0>
@@ -216,7 +264,7 @@
         <path d="M54.476 25.672a1.803 1.803 0 000-2.54l-4.635-4.608a1.77 1.77 0 00-2.513 0L32.5 33.35 17.672 18.524a1.77 1.77 0 00-2.513 0l-4.635 4.607a1.803 1.803 0 000 2.541l20.72 20.692a1.77 1.77 0 002.513 0l20.72-20.692z"></path>
     </symbol>
     <symbol id=x-close viewBox="0 0 38 38">
-        <path d="M33.4 0L19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38l4.6-4.601-14.4-14.4L38 4.6z" fill-rule=evenodd></path>
+        <path d="M33.4 0L19 14.4 4.601 0 0 4.6 14.4 19 0 33.4 4.6 38 19 23.6 33.4 38l4.6-4.601-14.4-14.4L38 4.6z" fill="e0e0e0" fill-rule="evenodd"></path>
     </symbol>
 </svg>
 
@@ -230,81 +278,58 @@
     </div>
 </div>
 
-    <div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderContainerTwo VocationalCourseAndProviderUniversalHeight" id="ExpandedCompareCoursesPanel" style="display: none;">
+<div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderContainerTwo VocationalCourseAndProviderUniversalHeight" id="ExpandedCompareCoursesPanel" style="display: none;">
 
-        <div class="MagicButton" id="CollapseButton">
-            <svg class="VocationalCourseAndProviderSVGTwo VocationalCourseAndProviderSVG" fill=#ffffff height=1.5rem iconhovercolor=#ffffff role=img width=1.5rem>
-                <use filter=0 xlink:href=#chevron></use>
-            </svg>
-            <div class="sf-hidden">Compare Courses</div>
+    <div class="MagicButton" id="CollapseButton">
+        <svg class="VocationalCourseAndProviderSVGTwo VocationalCourseAndProviderSVG" fill=#ffffff height=1.5rem iconhovercolor=#ffffff role=img width=1.5rem>
+            <use filter=0 xlink:href=#chevron></use>
+        </svg>
+        <div class="sf-hidden">Compare Courses</div>
+    </div>
+
+    <div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderContainerThree">
+
+        <div id="comparisonList" class="VocationalCourseAndProviderContainer VocationalCourseAndProviderContainerFour">
+            {% if comparison_courses %}
+                {% for course in comparison_courses %}
+                    <div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderClassTwo" data-course-id="{{ course.course_id }}">
+                        <svg class="VocationalCourseAndProviderSVGThree VocationalCourseAndProviderSVGFour"
+                            data-course-id="{{ course.course_id }}" fill=#e0e0e0 height=1rem role=img width=1rem>
+                            <use filter=0 xlink:href=#x-close></use>
+                        </svg>
+                        <p class="VocationalCourseNameClassOne VocationalCourseNameClassTwo">{{ course.name }}</p>
+                        <p class="VocationalCourseProviderNameClassOne VocationalCourseProviderNameClassTwo">{{ course.provider.name }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-comparison-message" style="text-align: center; padding: 20px;">
+                    <em style="color: #999;">You haven’t added any courses yet.</em>
+                </div>
+            {% endif %}
+
         </div>
 
-        <div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderContainerThree">
+        <div class="BorderLines" color=#D3D7DC spacing=0></div>
 
-            <div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderContainerFour">
+        <form method="GET" action="{% url 'course_comparison' %}" id="comparison-form" style="margin: 16px!important;">
+            <div class="comparison-buttons-container" style="display: flex; gap: 10px;">
+                <button type="button" id="clear-comparison-btn"
+                        class="VocationalCourseAndProviderButtonBorderOne"
+                        style="background-color: #e0e0e0; color: #333; margin-right: 6px; border-color: #e0e0e0;">
+                    <div class="button-content">Clear All</div>
+                </button>
 
-
-
-                <div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderClassTwo">
-                    <svg class="VocationalCourseAndProviderSVGThree VocationalCourseAndProviderSVGFour" fill=gray50 height=0.625rem role=img width=0.625rem><use filter=0 xlink:href=#x-close></use></svg>
-                    <p class="VocationalCourseNameClassOne VocationalCourseNameClassTwo">Vocational Course Name 1</p>
-                    <p class="VocationalCourseProviderNameClassOne VocationalCourseProviderNameClassTwo">Course Provider Name 1</p>
-                </div>
-
-                <div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderClassTwo">
-                    <svg class="VocationalCourseAndProviderSVGThree VocationalCourseAndProviderSVGFour" fill=gray50 height=0.625rem role=img width=0.625rem><use filter=0 xlink:href=#x-close></use></svg>
-                    <p class="VocationalCourseNameClassOne VocationalCourseNameClassTwo">Vocational Course Name 2</p>
-                    <p class="VocationalCourseProviderNameClassOne VocationalCourseProviderNameClassTwo">Course Provider Name 2</p>
-                </div>
-
-                <div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderClassTwo">
-                    <svg class="VocationalCourseAndProviderSVGThree VocationalCourseAndProviderSVGFour" fill=gray50 height=0.625rem role=img width=0.625rem><use filter=0 xlink:href=#x-close></use></svg>
-                    <p class="VocationalCourseNameClassOne VocationalCourseNameClassTwo">Vocational Course Name 3</p>
-                    <p class="VocationalCourseProviderNameClassOne VocationalCourseProviderNameClassTwo">Course Provider Name 3</p>
-                </div>
-
-                <div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderClassTwo">
-                    <svg class="VocationalCourseAndProviderSVGThree VocationalCourseAndProviderSVGFour" fill=gray50 height=0.625rem role=img width=0.625rem><use filter=0 xlink:href=#x-close></use></svg>
-                    <p class="VocationalCourseNameClassOne VocationalCourseNameClassTwo">Vocational Course Name 4</p>
-                    <p class="VocationalCourseProviderNameClassOne VocationalCourseProviderNameClassTwo">Course Provider Name 4</p>
-                </div>
-
-                <div class="VocationalCourseAndProviderContainer VocationalCourseAndProviderClassTwo">
-                    <svg class="VocationalCourseAndProviderSVGThree VocationalCourseAndProviderSVGFour" fill=gray50 height=0.625rem role=img width=0.625rem><use filter=0 xlink:href=#x-close></use></svg>
-                    <p class="VocationalCourseNameClassOne VocationalCourseNameClassTwo">Vocational Course Name 5</p>
-                    <p class="VocationalCourseProviderNameClassOne VocationalCourseProviderNameClassTwo">Course Provider Name 5</p>
-                </div>
-
-
-
+                <button type="submit" id="compare-courses-btn" style="width: 226.5px;"
+                        class="VocationalCourseAndProviderButtonBorderOne"
+                        {% if comparison_courses|length < 2 %}disabled{% endif %}>
+                    <div class="VocationalCourseAndProviderButtonOne VocationalCourseAndProviderButtonTwo">
+                        {{ comparison_courses|length|default:"0" }}
+                    </div>
+                    <div class="button-content">Compare Courses</div>
+                </button>
             </div>
-
-            <div class="BorderLines" color=#D3D7DC spacing=0></div>
-
-            <button border=#9297A1 class="VocationalCourseAndProviderButtonBorderOne VocationalCourseAndProviderButtonBorderTwo">
-                <div class="VocationalCourseAndProviderButtonOne VocationalCourseAndProviderButtonTwo">6</div>
-                <div class=button-content>Compare Courses Now</div>
-            </button>
-
-        </div>
+        </form>
 
     </div>
 
-<script>
-    const collapsed_compare_courses_tab = document.getElementById("CollapsedCompareCoursesTab");
-    const expanded_compare_courses_panel = document.getElementById("ExpandedCompareCoursesPanel");
-
-    document.getElementById("ExpandButton").addEventListener("click", function () {
-        if (collapsed_compare_courses_tab.style.display !== "none" && expanded_compare_courses_panel.style.display === "none") {
-            collapsed_compare_courses_tab.style.display = "none";
-            expanded_compare_courses_panel.style.display = "";
-        }
-    });
-
-    document.getElementById("CollapseButton").addEventListener("click", function () {
-        if (collapsed_compare_courses_tab.style.display === "none" && expanded_compare_courses_panel.style.display !== "none") {
-            collapsed_compare_courses_tab.style.display = "";
-            expanded_compare_courses_panel.style.display = "none";
-        }
-    });
-</script>
+    </div>

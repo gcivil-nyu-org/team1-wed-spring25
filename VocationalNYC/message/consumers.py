@@ -1,16 +1,17 @@
-from channels.generic.websocket import AsyncWebsocketConsumer
 import json
+from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.db import database_sync_to_async
+from .models import Chat, Message
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.chat_hash = self.scope["url_route"]["kwargs"]["chat_hash"]
         self.room_group_name = f"chat_{self.chat_hash}"
-
-        # Accept the WebSocket connection
         await self.accept()
-
-        # Optionally join a group
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
     async def disconnect(self, close_code):
@@ -18,17 +19,31 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         data = json.loads(text_data)
-        message = data.get("message", "")
-        sender = data.get("sender", "")
-
+        message_content = data.get("message", "")
+        sender_username = data.get("sender", "")
+        if not message_content or not sender_username:
+            return
+        message_id = await self.save_message(message_content, sender_username)
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 "type": "chat_message",
-                "message": message,
-                "sender": sender,
+                "message": message_content,
+                "sender": sender_username,
+                "message_id": message_id,
             },
         )
+
+    @database_sync_to_async
+    def save_message(self, message_content, sender_username):
+        chat = Chat.objects.get(chat_hash=self.chat_hash)
+        sender = User.objects.get(username=sender_username)
+        recipient = chat.user2 if sender == chat.user1 else chat.user1
+
+        message = Message.objects.create(
+            chat=chat, sender=sender, recipient=recipient, content=message_content
+        )
+        return message.pk
 
     async def chat_message(self, event):
         await self.send(
@@ -36,6 +51,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 {
                     "message": event["message"],
                     "sender": event["sender"],
+                    "message_id": event.get("message_id"),
                 }
             )
         )

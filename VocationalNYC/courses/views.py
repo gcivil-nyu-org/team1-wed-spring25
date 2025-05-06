@@ -1,6 +1,7 @@
 import requests
 import logging
 import re
+import json
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -8,18 +9,20 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib import messages
-from django.db.models import Q, Avg, Count, F, ExpressionWrapper, IntegerField
+from django.db.models import Q, Avg, Count, F, ExpressionWrapper
 from django.core.cache import cache
 from review.models import Review
 from django.db import transaction
 import hashlib
 
+
 from users.models import Provider
 from .models import Course
 from .forms import CourseForm
-from django.http import JsonResponse, HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 from bookmarks.models import BookmarkList
-
+from django.db.models import IntegerField
+from django.db.models.functions import Coalesce
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +38,9 @@ class CourseListView(generic.ListView):
         logger.info("Starting course data refresh check")
         API_URL = "https://data.cityofnewyork.us/resource/fgq8-am2v.json"
         logger.info(cache.get("courses_last_updated"))
-        if not cache.get("courses_last_updated"):
+
+        existing_courses_count = Course.objects.count()
+        if existing_courses_count == 0 and not cache.get("courses_last_updated"):
             try:
                 logger.info("Fetching courses from API")
                 response = requests.get(API_URL, timeout=10)
@@ -60,7 +65,7 @@ class CourseListView(generic.ListView):
                     )
 
                     # Get or create the provider
-                    provider, created = Provider.objects.get_or_create(
+                    provider, created = Provider.objects.update_or_create(
                         name=provider_name,
                         defaults={
                             "phone_num": course.get("phone1", "0000000000"),
@@ -68,6 +73,8 @@ class CourseListView(generic.ListView):
                             "open_time": course.get("open_time", ""),
                             "provider_desc": course.get("provider_description", ""),
                             "website": course.get("website", ""),
+                            "contact_firstname": course.get("contact_firstname", ""),
+                            "contact_lastname": course.get("contact_lastname", ""),
                         },
                     )
 
@@ -116,25 +123,6 @@ class CourseListView(generic.ListView):
                     # logger.info(
                     #     f"Course {'created' if created else 'updated'}: {course_name}"
                     # )
-                    # course_obj, created = Course.objects.get_or_create(
-                    #     name=course_name,
-                    #     provider=provider,
-                    #     defaults=course_defaults
-                    # )
-
-                    # if created:
-                    #     logger.info(f"Course created: {course_name}")
-                    # else:
-                    #     has_changed = False
-                    #     for field, new_value in course_defaults.items():
-                    #         old_value = getattr(course_obj, field)
-                    #         if old_value != new_value:
-                    #             has_changed = True
-                    #             setattr(course_obj, field, new_value)
-
-                    #     if has_changed:
-                    #         course_obj.save()
-                    #         logger.info(f"Course updated: {course_name}")
 
                     # Convert keywords to tags
                     # if course_defaults["keywords"]:
@@ -186,6 +174,10 @@ class CourseListView(generic.ListView):
 
         context["bookmark_lists"] = bookmark_lists
         context["default_bookmark_list"] = default_list
+
+        comp_ids = self.request.session.get("comparison_courses", [])
+        context["comparison_courses"] = Course.objects.filter(course_id__in=comp_ids)
+
         return context
 
 
@@ -198,15 +190,60 @@ class CourseDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        reviews = Review.objects.filter(course=self.object).order_by("-created_at")
+
+        course = self.get_object()  # This gets the course object
+        user = self.request.user  # This gets the logged-in user
+
+        if user.is_authenticated:
+            bookmark_lists = BookmarkList.objects.filter(user=user)
+            default_list = bookmark_lists.first()
+        else:
+            bookmark_lists = []
+            default_list = None
+
+        context["bookmark_lists"] = bookmark_lists
+        context["default_bookmark_list"] = default_list
+
+        reviews = (
+            Review.objects.filter(course=self.object)
+            .order_by("-created_at")
+            .prefetch_related("replies")  # prefetches replies efficiently
+        )
+
         context["reviews"] = reviews
+
+        reviews_count = reviews.count()
+        context["reviews_count"] = reviews_count
+
+        avg_score = reviews.aggregate(Avg("score_rating"))["score_rating__avg"]
+        if avg_score is None:
+            avg_score = 0
+        rating = round(avg_score, 1)
+        rating_full_stars = int(avg_score)
+        if avg_score - int(avg_score) > 0:
+            rating_partial_star_position = rating_full_stars + 1
+            rating_partial_percentage = int((avg_score - int(avg_score)) * 100)
+        else:
+            rating_partial_star_position = 0
+            rating_partial_percentage = 0
+
+        context["rating"] = rating
+        context["rating_full_stars"] = rating_full_stars
+        context["rating_partial_star_position"] = rating_partial_star_position
+        context["rating_partial_percentage"] = rating_partial_percentage
+
+        if user.is_authenticated:
+            context["user_has_reviewed"] = Review.objects.filter(
+                course=course, user=user
+            ).exists()
+        else:
+            context["user_has_reviewed"] = False
+
         return context
 
 
 def filterCourses(request):
-    # query = request.GET.get("query", "").strip()
     keywords = request.GET.get("keywords", "").strip()
-
     provider_name = request.GET.get("provider", "")
     min_rating = request.GET.get("min_rating", None)
     min_cost = request.GET.get("min_cost", None)
@@ -269,16 +306,38 @@ def filterCourses(request):
             course.rating_partial_star_position = 0
             course.rating_partial_percentage = 0
 
+        course.total_hours = (
+            course.classroom_hours
+            + course.lab_hours
+            + course.internship_hours
+            + course.practical_hours
+        )
+
     context = {
         "courses": courses,
         "keywords": keywords,
-        "provider_name": provider_name,
+        "provider": provider_name,
         "min_rating": min_rating,
         "min_cost": min_cost,
         "max_cost": max_cost,
         "location": location,
         "min_hours": min_hours,
     }
+
+    # Inject bookmark lists
+    if request.user.is_authenticated:
+        bookmark_lists = BookmarkList.objects.filter(user=request.user)
+        default_bookmark_list = bookmark_lists.first()
+    else:
+        bookmark_lists = []
+        default_bookmark_list = None
+
+    context["bookmark_lists"] = bookmark_lists
+    context["default_bookmark_list"] = default_bookmark_list
+
+    comp_ids = request.session.get("comparison_courses", [])
+    context["comparison_courses"] = Course.objects.filter(course_id__in=comp_ids)
+
     return context
 
 
@@ -318,11 +377,6 @@ def get_coordinates(address):
     return None, None
 
 
-def course_map(request):
-    """Render the course map page"""
-    return render(request, "courses/course_map.html")
-
-
 def course_data(request):
     """Fetch course data and get lat/lng dynamically"""
     courses = Course.objects.all()
@@ -331,13 +385,13 @@ def course_data(request):
     if course_id and course_id.isdigit():
         courses = courses.filter(course_id=course_id)
 
-    keywords = request.GET.get("keywords")
-    min_cost = request.GET.get("min_cost")
-    max_cost = request.GET.get("max_cost")
-    min_rating = request.GET.get("min_rating")
-    provider = request.GET.get("provider")
-    location = request.GET.get("location")
-    min_hours = request.GET.get("min_hours")
+    keywords = request.GET.get("keywords", "")
+    provider = request.GET.get("provider", "")
+    min_rating = request.GET.get("min_rating", None)
+    min_cost = request.GET.get("min_cost", None)
+    max_cost = request.GET.get("max_cost", None)
+    location = request.GET.get("location", "")
+    min_hours = request.GET.get("min_hours", None)
 
     if keywords:
         courses = courses.filter(Q(name__icontains=keywords))
@@ -359,37 +413,88 @@ def course_data(request):
         except ValueError:
             pass
 
-    data = []
+    course_map_data = []
     for course in courses:
         lat, lng = get_coordinates(course.location)
         if lat and lng:
-            data.append(
+            course_map_data.append(
                 {
                     "course_id": course.course_id,
                     "name": course.name,
-                    "course_desc": course.course_desc,
                     "latitude": lat,
                     "longitude": lng,
                 }
             )
 
-    return JsonResponse(data, safe=False)
+    context = {
+        "courses": courses,
+        "courses": courses,
+        "keywords": keywords,
+        "provider": provider,
+        "min_rating": min_rating,
+        "min_cost": min_cost,
+        "max_cost": max_cost,
+        "location": location,
+        "min_hours": min_hours,
+        "course_map_data": json.dumps(course_map_data),
+    }
+
+    return context
+
+
+def course_map(request):
+    """Render the course map page"""
+    context = course_data(request)
+    return render(request, "courses/course_map.html", context)
 
 
 def sort_by(request):
 
     context = filterCourses(request)
     courses = context["courses"]
+
+    courses = courses.annotate(
+        total_hours=ExpressionWrapper(
+            F("classroom_hours")
+            + F("lab_hours")
+            + F("internship_hours")
+            + F("practical_hours"),
+            output_field=IntegerField(),
+        )
+    )
+
     sort = request.GET.get("sort", "blank")
     order = request.GET.get("order", "asc")
 
     if sort != "blank":
+
+        if "avg_rating" in sort:
+            courses = courses.annotate(
+                avg_rating=Coalesce(Avg("reviews__score_rating"), 0.0)
+            )
         if order == "desc":
             sort = f"-{sort}"
         courses = courses.order_by(sort)
 
+    for course in courses:
+        avg = course.avg_rating if course.avg_rating is not None else 0
+        course.rating = round(avg, 1)
+        course.rating_full_stars = int(avg)
+        if avg - int(avg) > 0:
+            course.rating_partial_star_position = course.rating_full_stars + 1
+            course.rating_partial_percentage = int((avg - int(avg)) * 100)
+        else:
+            course.rating_partial_star_position = 0
+            course.rating_partial_percentage = 0
+
     # Render full HTML for the page (not just partial updates)
-    return render(request, "courses/courses_section.html", {"courses": courses})
+    comp_ids = request.session.get("comparison_courses", [])
+    comparison_courses = Course.objects.filter(course_id__in=comp_ids)
+    return render(
+        request,
+        "courses/courses_section.html",
+        {"courses": courses, "comparison_courses": comparison_courses},
+    )
 
 
 @login_required
@@ -431,6 +536,7 @@ def post_new_course(request):
     except Provider.DoesNotExist:
         messages.error(request, "You do not have a training provider profile.")
         return redirect("home")
+
     if request.method == "POST":
         form = CourseForm(request.POST)
         if form.is_valid():
@@ -442,21 +548,21 @@ def post_new_course(request):
                         course.location = course.provider.address
                     course.save()
 
-                    # get tags from keywords
-                    # if 'keywords' in form.cleaned_data and form.cleaned_data['keywords']:
-                    #     course.set_keywords_as_tags(form.cleaned_data['keywords'])
-
                     messages.success(
                         request, f"Course '{course.name}' has been successfully posted."
                     )
-                    return redirect("manage_courses")
             except Exception as e:
                 logger.error(f"Error creating course: {str(e)}")
                 messages.error(request, "An error occurred while creating the course.")
-                return redirect("manage_courses")
-    else:
-        form = CourseForm()
-    return render(request, "courses/new_course.html", {"form": form})
+        else:
+            messages.error(
+                request, "Invalid data. Please check the form and try again."
+            )
+
+        return redirect("manage_courses")
+
+    # block GET access to this view, since modal handles it
+    return redirect("manage_courses")
 
 
 @login_required
@@ -466,7 +572,7 @@ def delete_course(request, course_id):
         if course.provider != request.user.provider_profile:
             return HttpResponseForbidden("You can't delete this course.")
         course.delete()
-    return redirect("course_list")
+    return redirect("manage_courses")
 
 
 @login_required
@@ -498,3 +604,150 @@ def edit_course(request, course_id):
         return redirect("manage_courses")
 
     return redirect("manage_courses")
+
+
+def course_comparison(request):
+    """
+    View to compare multiple courses
+    """
+    # Get course IDs from session or query parameters
+    if request.GET.getlist("course_ids"):
+        course_ids = [int(i) for i in request.GET.getlist("course_ids") if i.strip()]
+        request.session["comparison_courses"] = course_ids
+    else:
+        course_ids = request.session.get("comparison_courses", [])
+
+    # Get courses to compare
+    courses = Course.objects.filter(course_id__in=course_ids)
+    courses = courses.annotate(
+        avg_rating=Avg("reviews__score_rating"), reviews_count=Count("reviews")
+    )
+    for course in courses:
+        avg = course.avg_rating if course.avg_rating is not None else 0
+        course.rating = round(avg, 1)
+        course.rating_full_stars = int(avg)
+        if avg - int(avg) > 0:
+            course.rating_partial_star_position = course.rating_full_stars + 1
+            course.rating_partial_percentage = int((avg - int(avg)) * 100)
+        else:
+            course.rating_partial_star_position = 0
+            course.rating_partial_percentage = 0
+        course.total_hours = (
+            course.classroom_hours
+            + course.lab_hours
+            + course.internship_hours
+            + course.practical_hours
+        )
+
+    context = {
+        "courses": courses,
+    }
+
+    return render(request, "courses/course_comparison_page.html", context)
+
+
+@login_required
+def add_to_comparison(request):
+    """
+    Add a course to the comparison list (AJAX)
+    """
+    if (
+        request.method == "POST"
+        and request.headers.get("X-Requested-With") == "XMLHttpRequest"
+    ):
+        try:
+            data = json.loads(request.body)
+            course_id = data.get("course_id")
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"success": False, "message": "Invalid JSON"}, status=400
+            )
+
+        if not course_id:
+            return JsonResponse(
+                {"success": False, "message": "Missing course_id"}, status=400
+            )
+
+        # Get current comparison courses
+        comparison_courses = request.session.get("comparison_courses", [])
+
+        # Add course if not already in the list and limit to maximum 9 courses
+        if course_id in comparison_courses:
+            return JsonResponse({"success": True, "count": len(comparison_courses)})
+
+        if len(comparison_courses) >= 9:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "message": "You've reached the limit of 9 courses to compare.\n\nTo add another, remove one from your current comparison list.",
+                },
+                status=400,
+            )
+
+        comparison_courses.append(int(course_id))
+        request.session["comparison_courses"] = comparison_courses
+
+        # Get course details for response
+        course = get_object_or_404(Course, course_id=course_id)
+        return JsonResponse(
+            {
+                "success": True,
+                "course": {
+                    "id": course.course_id,
+                    "name": course.name,
+                    "provider_name": course.provider.name,
+                },
+                "count": len(comparison_courses),
+            }
+        )
+
+    return JsonResponse({"success": False, "message": "Invalid request"})
+
+
+def remove_from_comparison(request):
+    """
+    Remove a course from the comparison list (AJAX)
+    """
+    if (
+        request.method == "POST"
+        and request.headers.get("X-Requested-With") == "XMLHttpRequest"
+    ):
+        try:
+            data = json.loads(request.body)
+            course_id = data.get("course_id")
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"success": False, "message": "Invalid JSON"}, status=400
+            )
+
+        if not course_id:
+            return JsonResponse(
+                {"success": False, "message": "Missing course_id"}, status=400
+            )
+
+        # Get current comparison courses
+        comparison_courses = request.session.get("comparison_courses", [])
+
+        # Remove course if in the list
+        if course_id and int(course_id) in comparison_courses:
+            comparison_courses.remove(int(course_id))
+            request.session["comparison_courses"] = comparison_courses
+
+            return JsonResponse({"success": True, "count": len(comparison_courses)})
+
+        return JsonResponse({"success": False, "message": "Course not in comparison"})
+
+    return JsonResponse({"success": False, "message": "Invalid request"})
+
+
+def clear_comparison(request):
+    """
+    Clear all courses from comparison
+    """
+    if request.method == "POST":
+        if "comparison_courses" in request.session:
+            del request.session["comparison_courses"]
+
+        return JsonResponse({"success": True})
+
+    return JsonResponse({"success": False, "message": "Invalid request"})

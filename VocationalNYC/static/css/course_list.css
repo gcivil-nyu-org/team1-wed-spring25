@@ -1,8 +1,21 @@
+ :root {
 
+    }
 
         :root {
 
             font-family: system-ui;
+
+        --primary: #a2ccb6;
+        --primary-light: #eaf4ef;
+        --primary-dark: #5b9b82;
+        --glass-bg: rgba(255, 255, 255, 0.4);
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --neon-glow: 0 0 12px rgba(162, 204, 182, 0.65);
+        --green: #74b49b;
+        --peach: #fbc7a7;
+        --light-peach: #ffecd9;
+        --sand: #f4e1d2;
 
             --color1: #ffecd9;
             --color2: #ffecd9;
@@ -38,10 +51,6 @@
             --blue-05: #EFF8FF;
             --blue-01: #F8FCFF;
 
-            --green: #a2ccb6;
-                --light-peach: #ffecd9;
-                --peach: #ee786e;
-                --sand: #fceeb5;
 
             -webkit-font-smoothing: antialiased;
             text-rendering: optimizelegibility;
@@ -91,49 +100,35 @@
             align-items: center;
             white-space: nowrap;
             appearance: none;
-            color: var(--color);
-            background: var(--bg-color);
-
             box-sizing: border-box;
             margin: 0px;
             padding: 0 var(--horizontal-spacing);
             font-size: 0.875rem;
-            font-weight: 700;
             line-height: 1.4;
             text-decoration: none;
             outline: none;
-            border-width: initial;
-            border-style: none;
-            border-image: initial;
-            border-color: var(--border-color);
+            font-weight: 700;
+            border: none;
             border-radius: 0.25rem;
-            box-shadow: var(--bs);
-            transition-property: background, color, box-shadow, border;
-            transition-duration: 0.6s;
-            transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            background-color: #fef9c3;  /* soft yellow */
+            color: #92400e;              /* warm amber/dark orange */
+            background-size: 500%;
+            transition: all 0.3s ease;
         }
 
-        .BookmarkButton:focus-visible {
-            background: var(--bg-color-hover);
-            box-shadow: var(--bs-hover)
-        }
+.BookmarkButton:hover {
+background-color: #fef08a;  /* slightly deeper yellow */
+}
 
-        .BookmarkButton:active {
-            background: var(--bg-color-hover);
-            box-shadow: var(--bs-active)
-        }
 
         .BookmarkButton.size-small {
             --horizontal-spacing: 0.75rem;
             height: 30px
         }
 
-        .BookmarkButton:disabled {
-            background: rgba(170, 170, 170, 0.9);
-            color: var(--gray-50);
-            border-color: var(--gray-30);
-            box-shadow: none;
-        }
+
 
         .Filters {
             padding: 0.4rem 1rem;
@@ -748,7 +743,7 @@ margin-top: 0rem;  /* Negative margin to counteract padding */
 
         .Filter-Section-Action-Outer {
             margin: 1rem 0px 0px;
-            transition: max-height 300ms ease-in-out
+            transition: max-height 300ms ease-in-out;
             max-height:none;
             overflow:visible;
         }
@@ -1292,21 +1287,13 @@ visibility: hidden !important;
         }
 
         .Course-Location-Outer-Icon.has-badge::before {
-
-      background-image: url("https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/Google_Maps.png");
-
-
-
-              content: "";
-  display: block;
-
-  margin-right: 3px;
-
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-
-
+            background-image: url("/static/images/Google_Maps.png");
+            content: "";
+            display: block;
+            margin-right: 3px;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
         }
 
         .Course-Location-Inner {
@@ -1363,15 +1350,27 @@ visibility: hidden !important;
     padding: 1rem;
     margin-bottom: 1.5rem;
     border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-    background-color: var(--white-00);
 
-}
+    transition: all 0.3s ease;
+
+
+
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08), inset 0 0 2px #fff;}
 
 .Course-Cards:hover {
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--primary);
+  box-shadow: 0 0 12px var(--primary), inset 0 0 4px #fff;
 }
+
+
+
+    .provider-details-container {
+
+        /*overflow: hidden;*/
+    }
 
         .ReadMore {
 

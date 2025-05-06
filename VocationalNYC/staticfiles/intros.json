@@ -1,14 +1,46 @@
 {
-  "course_list": {
-    "title": "Discover Courses to Advance Your Career",
-    "content": "Explore a wide range of vocational programs designed to boost your skills and expand your career opportunities. Whether you're aiming to enhance your current expertise or embark on a new career path, you'll find flexible and affordable options that suit your needs.<br>Use the filters to refine your search by cost, location, and duration to identify the perfect course for you. Each listing includes detailed descriptions, costs, and learning outcomes to ensure you make an informed decision. Start discovering today and unlock new opportunities for growth and success."
-  },
   "bookmark_list": {
+    "title": "Your Saved Courses",
+    "content": "This is your personalized hub for all the courses you've bookmarked. Quickly return to programs that caught your interest and compare them side-by-side to narrow down your top choices. Whether you’re actively enrolling or just exploring options, this space keeps everything organized for easy access.<br>Use this list to manage your learning journey. Edit your saved programs, remove ones that no longer fit your goals, and revisit detailed course information to make confident, informed decisions about your next steps."
+  },
+  "bookmark_list_detail": {
+    "title": "Your Saved Courses",
+    "content": "This is your personalized hub for all the courses you've bookmarked. Quickly return to programs that caught your interest and compare them side-by-side to narrow down your top choices. Whether you’re actively enrolling or just exploring options, this space keeps everything organized for easy access.<br>Use this list to manage your learning journey. Edit your saved programs, remove ones that no longer fit your goals, and revisit detailed course information to make confident, informed decisions about your next steps."
+  },
+  "add_bookmark": {
     "title": "Your Saved Courses",
     "content": "This is your personalized hub for all the courses you've bookmarked. Quickly return to programs that caught your interest and compare them side-by-side to narrow down your top choices. Whether you’re actively enrolling or just exploring options, this space keeps everything organized for easy access.<br>Use this list to manage your learning journey. Edit your saved programs, remove ones that no longer fit your goals, and revisit detailed course information to make confident, informed decisions about your next steps."
   },
   "course_map": {
     "title": "Explore Courses on a Map",
     "content": "Use the interactive map to visually discover vocational training programs across the city. See what’s available near you, around your workplace, or in a neighborhood you’re considering moving to — all in just a few clicks.<br>Each pin represents a real opportunity to advance your career. Hover to preview course names, click to view program details, and explore the geographic spread of high-impact learning paths. Whether you're looking for something local or just curious what’s nearby, the map brings location-based discovery to life."
+  },
+  "course_detail": {
+    "title": "Course Overview",
+    "content": "Find essential details about this program — including location, duration, cost, and reviews. Get clear on what’s offered and whether it fits your next move."
+  },
+  "manage_courses": {
+    "title": "Course Management",
+    "content": "Welcome to your Provider Course Management Dashboard. This is your central hub for posting new vocational courses, editing existing listings, and removing outdated programs. As a training provider, you can keep your course information up to date, track total hours, and ensure your offerings are visible to career changers and students exploring chemistry-related training in Manhattan. Use this dashboard to maintain a professional and accurate presence on VocationalNYC."
+  },
+  "provider_detail": {
+    "title": "Provider Overview",
+    "content": "Explore detailed information about this training provider, including their contact details, course offerings, and verified status. Learn about their specialties and program types, and discover how they support students through practical, career-oriented education."
+  },
+  "profile": {
+    "title": "Your Profile",
+    "content": "View and update your personal or provider details, including your name, role, and contact information. Career changers can manage bookmarks and reviews, while providers can edit business info and certificates."
+  },
+  "course_comparison": {
+    "title": "Course Comparison",
+    "content": "Easily compare multiple vocational courses side-by-side to find the best fit for your goals. Review key details like location, cost, duration, and reviews—all in one place."
+  },
+  "chat_home": {
+    "title": "Chat",
+    "content": "Whether you're a career changer or a training provider, you can chat directly to learn more or clarify any information."
+  },
+  "chat_detail": {
+    "title": "Chat",
+    "content": "Whether you're a career changer or a training provider, you can chat directly to learn more or clarify any information."
   }
 }

@@ -8,8 +8,8 @@
         "memory": 512,
         "portMappings": [
           {
-            "hostPort": 5000,
-            "containerPort": 5000
+            "hostPort": 8000,
+            "containerPort": 8000
           }
         ],
         "environment": [
@@ -36,6 +36,9 @@
             "hostPort": 80,
             "containerPort": 80
           }
+        ],
+        "links": [
+          "app"
         ]
       },
       {

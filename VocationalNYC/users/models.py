@@ -1,6 +1,7 @@
 from django.db import models
 from .managers import CustomUserManager
 from django.contrib.auth.models import AbstractUser
+import uuid
 
 
 class CustomUser(AbstractUser):
@@ -75,11 +76,18 @@ class Student(models.Model):
         return f"Student: {self.user.username}"
 
 
+def certificate_file_path(instance, filename):
+    # Generate a unique filename using UUID
+    ext = filename.split(".")[-1]
+    filename = f"certificate_{uuid.uuid4().hex}.{ext}"
+    return f"provider_certificates/{filename}"
+
+
 class Provider(models.Model):
     provider_id = models.AutoField(primary_key=True)
     user = models.OneToOneField(
         CustomUser,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name="provider_profile",
@@ -94,10 +102,10 @@ class Provider(models.Model):
     website = models.URLField(blank=True, null=True)
     verification_status = models.BooleanField(default=False)
     certificate = models.FileField(
-        upload_to="provider_certificates/",
+        upload_to=certificate_file_path,
         null=True,
         blank=True,
-        help_text="Upload your business certificate (PDF, JPG, PNG)",
+        help_text="Upload your business certificate (PDF, JPG, PNG). Size limit: 5MB",
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

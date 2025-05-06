@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 import hashlib
 from django.core.exceptions import ValidationError
 
@@ -44,7 +45,7 @@ class Message(models.Model):
         User, on_delete=models.CASCADE, related_name="received_messages"
     )
     content = models.TextField()
-    send_time = models.DateTimeField(auto_now_add=True)
+    send_time = models.DateTimeField(null=True, blank=True)
     read_time = models.DateTimeField(null=True, blank=True)
 
     def clean(self):
@@ -60,8 +61,32 @@ class Message(models.Model):
             )
 
     def save(self, *args, **kwargs):
+        is_new = self.pk is None
         self.full_clean()
+
+        if is_new and not self.send_time:
+            self.send_time = timezone.now()
+
         super().save(*args, **kwargs)
+
+        if is_new:
+            for user in (self.sender, self.recipient):
+                MessageVisibility.objects.get_or_create(
+                    user=user,
+                    message=self,
+                    defaults={"is_visible": True},
+                )
 
     def __str__(self):
         return f"Message {self.pk} from {self.sender.username} in Chat {self.chat.pk}"
+
+
+class MessageVisibility(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.ForeignKey(
+        Message, on_delete=models.CASCADE, related_name="visibilities"
+    )
+    is_visible = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ("user", "message")

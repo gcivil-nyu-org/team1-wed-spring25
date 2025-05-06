@@ -16,23 +16,34 @@ services:
     ports:
       - "6379:6379"
 
-  nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
-    ports:
-      - 80:80
-
   app:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+        AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
     container_name: app
     depends_on:
       - db
       - redis
-      - nginx
     ports:
-      - 5000:5000
+      - "8000:8000"
     environment:
       DJANGO_ENV: travis
+      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+      PYTHONPATH: /vocationalnyc
+      DJANGO_SETTINGS_MODULE: vocationalnyc.settings
+      SECRET_KEY: 2kr32wckkxtv&_r+p7!)o+1(jtupvk#z^uzp#y$h-=#3*7p5zr
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: nginx
+    depends_on:
+      - app
+      - redis
+    ports:
+      - "80:80"

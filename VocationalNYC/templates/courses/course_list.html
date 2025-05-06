@@ -6,9 +6,9 @@
 
     <meta charset="UTF-8">
     <title>Discover Courses</title>
-      <link rel="icon"
-        href="https://raw.githubusercontent.com/gcivil-nyu-org/team1-wed-spring25/refs/heads/main/images/favicon.png"
-        type="image/png">
+
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+
      <link rel="stylesheet" href="{% static 'css/course_list.css' %}">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -61,8 +61,13 @@ body::-webkit-scrollbar {
 
 
         <!--top horizontal header-->
-        {% include 'includes/header.html' %}
-
+        {% if user.role == "career_changer" %}
+            {% include 'includes/student_header.html' %}
+        {% elif user.role == "training_provider" %}
+            {% include 'includes/provider_header.html' %}
+        {% else %}
+            {% include 'includes/default_header.html' %}
+        {% endif %}
 
         <!--main content-->
         <article compass="[object Object]">
@@ -120,6 +125,7 @@ body::-webkit-scrollbar {
                                                         class="Filters"><span
                                                         class="Filters-Inside">Clear Filters</span>
                                                 </button>
+                                                
                                             {% if keywords %}
                                             <li class="Applied-Filters-Outline">
                                                 <button aria-label="Remove Keywords filter" class="chip__ButtonStyled-sc-mc0uv4-2 Filters Applied-Filters">
@@ -219,8 +225,79 @@ body::-webkit-scrollbar {
                                             </li>
                                             {% endif %}
 
-                                            
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function() {
+                                                const clearFiltersBtn = document.querySelector('button.Filters span.Filters-Inside').closest('button');
+                                                if (clearFiltersBtn) {
+                                                  clearFiltersBtn.addEventListener('click', function() {
+                                                    window.location.href = window.location.pathname;
+                                                  });
+                                                }
+                                                
+                                              
+                                                // deal with single filter
+                                                const appliedFilters = document.querySelectorAll('button.Applied-Filters');
+                                                appliedFilters.forEach(filter => {
+                                                  filter.addEventListener('click', function() {
+                                                    // get the current URL and its parameters
+                                                    const url = new URL(window.location.href);
+                                                    const params = url.searchParams;
+                                                    const paramNames = Array.from(params.keys());
+                                                    
+                                                    // get the filter text and split it to get the parameter name
+                                                    const filterText = this.querySelector('.Filters-Inside').textContent;
+                                                    const filterParts = filterText.split(':');
+                                                    
+                                                    if (filterParts.length >= 2) {
+                                                        const filterType = filterParts[0].trim().toLowerCase();
+                                                        
+                                                        // add the filter type to the URL parameters
+                                                        let paramName;
+                                                        switch (filterType) {
+                                                            case 'keywords':
+                                                            paramName = 'keywords';
+                                                            break;
+                                                            case 'provider':
+                                                            paramName = 'provider';
+                                                            break;
+                                                            case 'min rating':
+                                                            paramName = 'min_rating';
+                                                            break;
+                                                            case 'min cost':
+                                                            paramName = 'min_cost';
+                                                            break;
+                                                            case 'max cost':
+                                                            paramName = 'max_cost';
+                                                            break;
+                                                            case 'location':
+                                                            paramName = 'location';
+                                                            break;
+                                                            case 'min hours':
+                                                            paramName = 'min_hours';
+                                                            break;
+                                                            default:
+                                                            paramName = filterType;
+                                                        }
+                                                        
+                                                        // set the parameter as "" from the URL
+                                                        params.set(paramName, '');
 
+                                                        window.location.href = url.toString();
+                                                      
+                                                    }
+                                                  });
+                                                });
+                                                
+                                                const filterIcons = document.querySelectorAll('.Applied-Filters-Icon');
+                                                filterIcons.forEach(icon => {
+                                                  icon.addEventListener('click', function(event) {
+                                                    event.stopPropagation();
+                                                    
+                                                    this.closest('.Applied-Filters').click();
+                                                  });
+                                                });
+                                              });
+                                            </script>
                                         </ul>
                                     </div>
                                 </div>
@@ -237,12 +314,13 @@ body::-webkit-scrollbar {
     <option selected disabled value="blank">Select a sorting option</option>
     <option value="name-asc">Name (A–Z)</option>
     <option value="name-desc">Name (Z–A)</option>
-    <option value="cost-asc">Cost (Low to High)</option>
-    <option value="cost-desc">Cost (High to Low)</option>
-    <option value="classroom_hours-asc">Classroom Hours (Low to High)</option>
-    <option value="classroom_hours-desc">Classroom Hours (High to Low)</option>
     <option value="avg_rating-asc">Rating (Low to High)</option>
     <option value="avg_rating-desc">Rating (High to Low)</option>
+    <option value="cost-asc">Cost (Low to High)</option>
+    <option value="cost-desc">Cost (High to Low)</option>
+    <option value="total_hours-asc">Total Hours (Low to High)</option>
+    <option value="total_hours-desc">Total Hours (High to Low)</option>
+
 </select>
 
 
@@ -283,7 +361,7 @@ body::-webkit-scrollbar {
                                     
                                     <fieldset
                                         class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
-                                        name="schoolName">
+                                        name="keywords">
                                         <legend class=" Filter-Section-Title-Outer">
                                             <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
                                                 Keywords
@@ -312,9 +390,9 @@ body::-webkit-scrollbar {
                                         </div>
                                     </fieldset>
 
-                                                                                                            <fieldset
+                                    <fieldset
                                         class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
-                                        name="Provider">
+                                        name="provider">
                                         <legend class=" Filter-Section-Title-Outer">
                                             <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
                                                 Provider
@@ -342,7 +420,7 @@ body::-webkit-scrollbar {
                                         </div>
                                     </fieldset>
 
-                                                                        <fieldset
+                                    <fieldset
                                         class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
                                         name="min rating">
                                         <legend class=" Filter-Section-Title-Outer">
@@ -362,7 +440,7 @@ body::-webkit-scrollbar {
                                                             class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
                                                             placeholder="Min Rating"
                                                             name="min_rating"
-                                                            type="number" step="0.1"  min="0" max="5"
+                                                            type="number" step="0.1" min="0" max="5"
                                                             value="{{ min_rating }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 role=listbox></div>
@@ -393,7 +471,7 @@ body::-webkit-scrollbar {
                                                             class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
                                                             name="min_cost"
                                                             placeholder="Min Cost"
-                                                            type="number"
+                                                            type="number"  min="0"
                                                             step="1"
                                                             value="{{ min_cost }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
@@ -424,7 +502,7 @@ body::-webkit-scrollbar {
                                                             class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
                                                             name="max_cost"
                                                             placeholder="Max Cost"
-                                                            type="number"
+                                                            type="number"  min="0"
                                                             step="1"
                                                             value="{{ max_cost }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
@@ -437,7 +515,7 @@ body::-webkit-scrollbar {
                                     
                                     <fieldset
                                         class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
-                                        name='location'>
+                                        name="location">
                                         <legend class=" Filter-Section-Title-Outer">
                                             <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
                                                 Location
@@ -459,25 +537,11 @@ body::-webkit-scrollbar {
                                                             value="{{ location }}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
                                                                 id=location-input
-                                                                role=listbox></div>
+                                                                role=listbox>
+                                                            </div>
                                                     </div>
                                                 </div>
                                                 <div style="margin-bottom: 0.5rem !important;"></div>
-                                                <span class="select__Container-sc-i9bbt3-3 All-Distances-Outer-Frame"
-                                                    style="--width:100%">
-                                                    <label class="select__LabelStyled-sc-i9bbt3-0 All-Distances-Inner-Frame">
-                                                        <select class="select__SelectStyled-sc-i9bbt3-1 All-Distances-Content-Box" name="distance">
-                                                            <option selected value>(Not Working) All Distances
-                                                            <option value=25>Within 25 miles
-                                                            <option value=50>Within 50 miles
-                                                            <option value=100>Within 100 miles
-                                                            <option value=250>Within 250 miles
-                                                        </select>
-                                                    <svg class="Small-Icon Dropdown-Icon" fill=var(--gray-30) viewBox="0 0 64 64">
-                                                        <path d="M33.3,39.8l13.1-13.1c0.4-0.4,0.6-0.8,0.6-1.3c0-1-0.9-1.9-1.9-1.9H18.8c-1,0-1.9,0.8-1.9,1.9  c0,0.5,0.2,1,0.6,1.3l13.1,13.1c0.4,0.4,0.8,0.6,1.3,0.6S33,40.2,33.3,39.8"></path>
-                                                    </svg>
-                                                </label>
-                                                </span>
                                             </div>
                                         </div>
                                         <script>
@@ -497,76 +561,6 @@ body::-webkit-scrollbar {
 
                                         </script>
                                     </fieldset>
-                                    
-                                    {% comment %}
-                                    <fieldset
-                                        class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
-                                        name=area-of-study>
-                                        <legend class=" Filter-Section-Title-Outer">
-                                            <div class="field-set__LegendContent-sc-b2ie46-2 Filter-Section-Title-Inner">
-                                                Area of Study
-                                            </div>
-                                        </legend>
-                                        <div class="field-set__CollapsibleContainer-sc-b2ie46-4 Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
-                                            <div class="field-set__ContentContainer-sc-b2ie46-5 Filter-Section-Action-Inner">
-                                                <span class="select__Container-sc-i9bbt3-3 All-Distances-Outer-Frame"
-                                                    style=--width:100%><label
-                                                        class="select__LabelStyled-sc-i9bbt3-0 All-Distances-Inner-Frame"><select
-                                                            class="select__SelectStyled-sc-i9bbt3-1 All-Distances-Content-Box"
-                                                            name=study><option
-                                                                selected value>All Areas of Study<option
-                                                                    value="Agriculture, Agriculture Operations, and Related Sciences">Agriculture<option
-                                                                        value="Architecture and Related Services">Architecture<option
-                                                                            value="Basic Skills and Developmental/Remedial Education">Basic Skills and Developmental/Remedial Education<option
-                                                                                value="Biological and Biomedical Sciences">Biological and Biomedical Sciences<option
-                                                                                    value="Business, Management, Marketing, and Related Support Services">Business, Management and Marketing<option
-                                                                                        value="Citizenship Activities">Citizenship Activities<option
-                                                                                            value="Communication, Journalism, and Related Programs">Communication / Journalism<option
-                                                                                                value="Communications Technologies/Technicians and Support Services">Communications Technologies/Technicians<option
-                                                                                                    value="Computer and Information Sciences and Support Services">Computer and Information Sciences<option
-                                                                                                        value="Construction Trades">Construction Trades<option
-                                                                                                            value=Education>Education<option value=Engineering>Engineering<option
-                                                                                                                value="Engineering Technologies and Engineering-Related Fields">Engineering Technologies and Related Fields<option
-                                                                                                                    value="English Language and Literature/Letters">English Language and Literature<option
-                                                                                                                        value="Area, Ethnic, Cultural, Gender, and Group Studies">Ethnic, Cultural, Gender, and Group Studies<option
-                                                                                                                            value="Family and Consumer Sciences/Human Sciences">Family, Consumer and Human Sciences<option
-                                                                                                                                value="Foreign Languages, Literatures, and Linguistics">Foreign Languages, Literatures, and Linguistics<option
-                                                                                                                                    value="Health Professions and Related Programs">Health Professions<option
-                                                                                                                                        value="Health-Related Knowledge and Skills">Health-Related Knowledge and Skills<option
-                                                                                                                                            value="High School/Secondary Diplomas and Certificates">High School/Secondary Diplomas and Certificates<option
-                                                                                                                                                value=History>History<option
-                                                                                                                                                    value="Homeland Security, Law Enforcement, Firefighting and Related Protective Services">Homeland Security, Law Enforcement, Firefighting and Related Services<option
-                                                                                                                                                        value="Interpersonal and Social Skills">Interpersonal and Social Skills<option
-                                                                                                                                                            value="Legal Professions and Studies">Legal Professions and Studies<option
-                                                                                                                                                                value="Leisure and Recreational Activities">Leisure and Recreational Activities<option
-                                                                                                                                                                    value="Liberal Arts and Sciences, General Studies and Humanities">Liberal Arts and Humanities<option
-                                                                                                                                                                        value="Library Science">Library Science<option
-                                                                                                                                                                            value="Mathematics and Statistics">Mathematics and Statistics<option
-                                                                                                                                                                                value="Mechanic and Repair Technologies/Technicians">Mechanic and Repair Technologies/Technicians<option
-                                                                                                                                                                                    value="Military Science, Leadership and Operational Art">Military Science, Leadership and Operations<option
-                                                                                                                                                                                        value="Military Technologies and Applied Sciences">Military Technologies and Applied Sciences<option
-                                                                                                                                                                                            value="Multi/Interdisciplinary Studies">Multi/Interdisciplinary Studies<option
-                                                                                                                                                                                            value="Natural Resources and Conservation">Natural Resources and Conservation<option
-                                                                                                                                                                                            value="Parks, Recreation, Leisure, and Fitness Studies">Parks, Recreation, Leisure, and Fitness Studies<option
-                                                                                                                                                                                            value="Personal and Culinary Services">Personal and Culinary Services<option
-                                                                                                                                                                                            value="Philosophy and Religious Studies">Philosophy and Religious Studies<option
-                                                                                                                                                                                            value="Physical Sciences">Physical Sciences<option
-                                                                                                                                                                                            value="Precision Production">Precision Production<option
-                                                                                                                                                                                            value=Psychology>Psychology<option
-                                                                                                                                                                                            value="Public Administration and Social Service Professions">Public Administration and Social Service Professions<option
-                                                                                                                                                                                            value="Residency Programs">Residency Programs<option
-                                                                                                                                                                                            value="Science Technologies/Technicians">Science Technologies/Technicians<option
-                                                                                                                                                                                            value="Social Sciences">Social Sciences<option
-                                                                                                                                                                                            value="Theology and Religious Vocations">Theology and Religious Vocations<option
-                                                                                                                                                                                            value="Transportation and Materials Moving">Transportation and Materials Moving</select><svg
-                                                                                                                                                                                                class="Small-Icon Dropdown-Icon"
-                                                                                                                                                                                                fill=var(--gray-30)
-                                                                                                                                                                                                viewBox="0 0 64 64"><path
-                                                                                                                                                                                                    d="M33.3,39.8l13.1-13.1c0.4-0.4,0.6-0.8,0.6-1.3c0-1-0.9-1.9-1.9-1.9H18.8c-1,0-1.9,0.8-1.9,1.9  c0,0.5,0.2,1,0.6,1.3l13.1,13.1c0.4,0.4,0.8,0.6,1.3,0.6S33,40.2,33.3,39.8"></path></svg></label></span>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                    {% endcomment %}
                                     
                                     <fieldset
                                         class="field-set__FieldSetStyled-sc-b2ie46-0 Filter-Section form__ConnectedFieldSetStyled-sr2rn8-1 Filter-Section-Outline"
@@ -588,7 +582,7 @@ body::-webkit-scrollbar {
                                                             class="TextInput__TextInputDeprecated-ob7d2g-2 Input-Field form__TextInputStyled-sr2rn8-2 Filter-Section-Outline-Input react-autosuggest__input"
                                                             name="min_hours"
                                                             placeholder="Min Hours"
-                                                            type="number"
+                                                            type="number"  min="0"
                                                             step="1"
                                                             value="{{min_hours}}">
                                                             <div class="react-autosuggest__suggestions-container sf-hidden"
@@ -607,7 +601,7 @@ body::-webkit-scrollbar {
                                             </div>
                                         </legend>
                                         
-                                        <div class="Filter-Section-Action-Outer">
+                                        <div class="Filter-Section-Action-Outer" style="margin-top: 2rem!important;">
                                             <div class="Filter-Section-Action-Inner">
                                                 <button type="submit" class="Apply-Filters-Button">
                                                     Filter Your Search
@@ -753,5 +747,358 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>  </div>
     </main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<div id="userAuthStatus" data-is-authenticated="{% if user.is_authenticated %}true{% else %}false{% endif %}" style="display:none;"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get CSRF token from cookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrfToken = getCookie('csrftoken');
+
+        // show comparison panel function
+        function showComparisonPanel() {
+            const collapsedPanel = document.getElementById('CollapsedCompareCoursesTab');
+            const expandedPanel = document.getElementById('ExpandedCompareCoursesPanel');
+            
+            if (collapsedPanel && expandedPanel) {
+                collapsedPanel.style.display = 'none';
+                expandedPanel.style.display = '';
+            }
+        }
+        
+        // hide comparison panel function
+        function hideComparisonPanel() {
+            const collapsedPanel = document.getElementById('CollapsedCompareCoursesTab');
+            const expandedPanel = document.getElementById('ExpandedCompareCoursesPanel');
+            
+            if (collapsedPanel && expandedPanel) {
+                collapsedPanel.style.display = '';
+                expandedPanel.style.display = 'none';
+            }
+        }
+
+        function addToComparison(courseId, checkboxElement) {
+            const userAuthElement = document.getElementById('userAuthStatus');
+            const isLoggedIn = userAuthElement && userAuthElement.dataset.isAuthenticated === 'true';
+    
+            if (!isLoggedIn) {
+                window.location.href = '{% url "account_login" %}?next=' + encodeURIComponent(window.location.pathname);
+                return;
+            }
+
+            fetch('{% url "add_to_comparison" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ course_id: courseId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    updateComparisonPanel(data);
+                    showComparisonPanel();
+                } else {
+                    alert(data.message);
+                    if (checkboxElement) checkboxElement.checked = false;
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Network error, unable to add course to comparison');
+                if (checkboxElement) checkboxElement.checked = false;
+            });
+        }
+
+        function removeFromComparison(courseId) {
+            fetch('{% url "remove_from_comparison" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ course_id: courseId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const courseElement = document.querySelector(`.VocationalCourseAndProviderClassTwo[data-course-id="${courseId}"]`);
+                    if (courseElement) {
+                        courseElement.remove();
+                    }
+                    
+                    // update counter
+                    const counterElement = document.querySelector('.VocationalCourseAndProviderButtonOne');
+                    if (counterElement) {
+                        counterElement.textContent = data.count;
+                    }
+                    
+                    // update compare button state
+                    const compareButton = document.getElementById('compare-courses-btn');
+                    if (compareButton) {
+                        compareButton.disabled = data.count < 2;
+                    }
+                    
+                    // If the comparison list is empty, show the empty message
+                    if (data.count === 0) {
+                        const comparisonList = document.querySelector('.VocationalCourseAndProviderContainerFour');
+                        if (comparisonList) {
+                            comparisonList.innerHTML = `
+                                <div class="empty-comparison-message" style="text-align: center; padding: 20px;">
+                                    <p>No courses added to comparison yet.</p>
+                                </div>
+                            `;
+                        }
+                    }
+                } else {
+                    console.error('Error:', data.message);
+                    alert(data.message || 'Failed to remove course from comparison');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Network error, unable to remove course from comparison');
+            });
+        }
+        
+        function clearAllCourses() {
+            fetch('{% url "clear_comparison" %}', {
+                method: 'POST',  
+                headers: {
+                    'Content-Type': 'application/json', 
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({})
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Network response error');
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Remove all course elements
+                    document.querySelectorAll('.VocationalCourseAndProviderClassTwo').forEach(el => el.remove());
+                    updateCounterAndButton(0);
+                    
+                    document.querySelectorAll('.Hidden-Input:checked').forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+                    
+                    const comparisonList = document.querySelector('.VocationalCourseAndProviderContainerFour');
+                    if (comparisonList) {
+                        comparisonList.innerHTML = `
+                            <div class="empty-comparison-message" style="text-align: center; padding: 20px;">
+                                <p>No courses added to comparison yet.</p>
+                            </div>
+                        `;
+                    }
+
+                    hideComparisonPanel();
+                } else {
+                    console.error('Error:', data.message);
+                    alert('Failed to clear comparison list');
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Network error, unable to clear comparison list');
+            });
+        }
+
+        function updateComparisonPanel(data) {
+            const comparisonList = document.querySelector('.VocationalCourseAndProviderContainerFour');
+            if (!comparisonList) return;
+            
+            const existingCourse = document.querySelector(`.VocationalCourseAndProviderClassTwo[data-course-id="${data.course.id}"]`);
+            if (existingCourse) return;
+            
+            const emptyMessage = comparisonList.querySelector('.empty-comparison-message');
+            if (emptyMessage) {
+                emptyMessage.remove();
+            }
+
+            const courseElement = document.createElement('div');
+            courseElement.className = 'VocationalCourseAndProviderContainer VocationalCourseAndProviderClassTwo';
+            courseElement.setAttribute('data-course-id', data.course.id);
+            
+            courseElement.innerHTML = `
+                <svg class="VocationalCourseAndProviderSVGThree VocationalCourseAndProviderSVGFour remove-from-comparison" style="  color: #e0e0e0;
+"
+                    data-course-id="${data.course.id}" fill="e0e0e0" height="1rem" role="img" width="1rem">
+                    <use filter="0" xlink:href="#x-close"></use>
+                </svg>
+                <p class="VocationalCourseNameClassOne VocationalCourseNameClassTwo">${data.course.name}</p>
+                <p class="VocationalCourseProviderNameClassOne VocationalCourseProviderNameClassTwo">${data.course.provider_name}</p>
+            `;
+            
+            comparisonList.appendChild(courseElement);
+
+            updateCounterAndButton(data.count);
+        }
+
+        function updateCounterAndButton(count) {
+            // update counter
+            const counterElement = document.querySelector('.VocationalCourseAndProviderButtonOne');
+            if (counterElement) {
+                counterElement.textContent = count;
+            }
+            
+            // update compare button state
+            const compareButton = document.getElementById('compare-courses-btn');
+            if (compareButton) {
+                compareButton.disabled = count < 2;
+            }
+        }
+        
+        function handleCheckboxChange(e){
+            e.stopPropagation();
+                
+            const courseId = this.value;
+            console.log('Change:', this.checked ? 'Yes' : 'Cancel', 'Course ID:', courseId);
+
+            if (this.checked) {
+                addToComparison(courseId, this);
+            } else {
+                removeFromComparison(courseId, this);
+            }
+
+        }
+
+        function handleRemoveButtonClick(e){
+            e.stopPropagation();
+            const courseId = this.getAttribute('data-course-id');
+            
+            const checkbox = document.querySelector(`.Hidden-Input[data-course-id="${courseId}"]`);
+            if (checkbox) {
+                checkbox.checked = false;
+                const event = new Event('change');
+                checkbox.dispatchEvent(event);
+            } else {
+                removeFromComparison(courseId);
+            }
+        }
+
+        function handleClearButtonClick() {
+            console.log('Clear all courses');
+            clearAllCourses();
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const courseIds = [];
+            document.querySelectorAll('.VocationalCourseAndProviderClassTwo[data-course-id]').forEach(function(el) {
+                courseIds.push(el.getAttribute('data-course-id'));
+            });
+            
+            if (courseIds.length < 2) {
+                alert('Choose at least 2 courses to compare!');
+                return;
+            }
+            
+
+            this.querySelectorAll('input[name="course_ids"]').forEach(input => input.remove());
+            
+            courseIds.forEach(id => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'course_ids';
+                input.value = id;
+                this.appendChild(input);
+            });
+            
+            console.log('Form includes:', this.querySelectorAll('input[name="course_ids"]').length, 'courses');
+
+            this.submit();
+        }
+
+        // Add event listeners 
+        // checkbox change event listener
+        document.querySelectorAll('.Hidden-Input').forEach(function(checkbox) {
+            checkbox.addEventListener('change', handleCheckboxChange);
+        });
+
+        document.querySelectorAll('.remove-from-comparison').forEach(function(button) {
+            button.addEventListener('click', handleRemoveButtonClick);
+        });
+
+        const expandButton = document.getElementById('ExpandButton');
+        if (expandButton) {
+            expandButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                showComparisonPanel();
+            });
+        }
+        
+        const collapseButton = document.getElementById('CollapseButton');
+        if (collapseButton) {
+            collapseButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                hideComparisonPanel();
+            });
+        }
+        
+        const clearBtn = document.getElementById('clear-comparison-btn');
+        if (clearBtn) {  
+            clearBtn.addEventListener('click', handleClearButtonClick);
+        } else {
+            console.warn('Clear button not found.');
+        }
+
+        const comparisonForm = document.querySelector('form[action*="course_comparison"]');
+        if (comparisonForm) {
+            comparisonForm.addEventListener('submit', handleFormSubmit);
+        } else {
+            console.warn('Form not found');
+        }
+
+        const comparisonList = document.getElementById('comparisonList');
+        comparisonList.addEventListener('click', e => {
+            const btn = e.target.closest('.remove-from-comparison');
+            if (!btn) return;
+            e.stopPropagation();
+            handleRemoveButtonClick.call(btn, e);
+        });
+
+
+        // Initially check the checkboxes for courses already in the comparison list
+        const comparisonCourses = document.querySelectorAll('.VocationalCourseAndProviderClassTwo[data-course-id]');
+        comparisonCourses.forEach(function(courseElement) {
+            const courseId = courseElement.getAttribute('data-course-id');
+            const checkbox = document.querySelector(`.Hidden-Input[data-course-id="${courseId}"]`);
+            if (checkbox) {
+                checkbox.checked = true;
+            }
+        });
+        
+        // If there are any courses in the comparison list, show the comparison panel
+        if (comparisonCourses.length > 0) {
+            showComparisonPanel();
+        }
+    });
+
+</script>
+
+
 </body>
 </html>

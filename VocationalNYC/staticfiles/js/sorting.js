@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("All-Course-Container").innerHTML = html;
             initializeListeners(); // rebind dropdown
             reinitializePagination();
+
         })
         .catch(error => console.error("Sorting error:", error));
     }
