@@ -288,3 +288,5 @@ LOGGING = {
         },
     },
 }
+
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None
