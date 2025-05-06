@@ -2,7 +2,11 @@
 <footer class="Entire-Footer">
                 <div class=" Introduction content" style="display: flex; justify-content: center;">
                     <div class="Main-Footer">
-                        <a href="{% url 'home' %}">
+                        {% if user.role == "training_provider" %}
+                            <a href="{% url 'manage_courses' %}">
+                        {% else %}
+                            <a href="{% url 'course_list' %}">
+                        {% endif %}
                             <img style="margin-bottom: 1rem !important;" height=40px
                             src="{% static 'images/favicon.png' %}"
                             width=40px>
@@ -14,19 +18,19 @@
                                 <div class="Main-Footer-Content-Links" spacing=3>
                                     <div class="Main-Footer-Content-Link">
                                         <a class="Anchor-byh49a-0"
-                                           href="#">
+                                           data-bs-toggle="modal" data-bs-target="#AboutUs" style="cursor: pointer;">
                                             About Us
                                         </a>
                                     </div>
                                     <div class="Main-Footer-Content-Link">
                                         <a class="Anchor-byh49a-0"
-                                           href="#">
+                                           href="tel:2123700828">
                                             Contact
                                         </a>
                                     </div>
                                     <div class="Main-Footer-Content-Link">
                                         <a class="Anchor-byh49a-0"
-                                           href="#">
+                                           href="mailto:vocationalnyc@outlook.com">
                                             Advertise
                                         </a>
                                     </div>
@@ -43,3 +47,21 @@
                     </div>
                 </div>
             </footer>
+
+    <div class="modal fade" id="AboutUs" tabindex="-1" aria-labelledby="AboutUs" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-modal">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title modal-header-text">
+                        About Us
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="listName" class="modal-label" id="providerDetailsBody" style="line-height: 2; white-space: normal;">
+                        VocationalNYC helps New Yorkers find and compare vocational training programs across the city. Whether you're exploring new career paths or ready to enroll, we make it easy to discover practical, hands-on courses that match your goals.<br>We partner with local training providers to keep program details accurate and up to date. With tools like course comparison, bookmarking, and interactive maps, VocationalNYC gives you the clarity and confidence to take your next step.
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
