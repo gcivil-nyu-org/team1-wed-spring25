@@ -17,6 +17,8 @@ from pathlib import Path
 import environ
 import json
 
+import os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -49,31 +51,9 @@ DJANGO_ENV = env("DJANGO_ENV", default="production")
 
 SECRET_KEY = env("SECRET_KEY", default="insecure" if DEBUG else environ.Env.NOTSET)
 
-ALLOWED_HOSTS = env.list(
-    "ALLOWED_HOSTS",
-    default=[
-        "localhost",
-        "127.0.0.1",
-        "172.31.10.24",  # add all relevant internal IPs seen in logs
-        "172.31.34.113",
-        "172.31.3.17",
-        "vocationalnyc-env.eba-uurzafst.us-east-1.elasticbeanstalk.com",
-        "vocationalnyc-test.us-east-1.elasticbeanstalk.com",
-    ],
-)
-# ALLOWED_HOSTS = env.list(
-#     "ALLOWED_HOSTS",
-#     default=(
-#         [
-#             "127.0.0.1",
-#             "localhost",
-#             "vocationalnyc-env.eba-uurzafst.us-east-1.elasticbeanstalk.com",
-#             "vocationalnyc-test.us-east-1.elasticbeanstalk.com",
-#         ]
-#         if DEBUG
-#         else []
-#     ),
-# )
+
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+
 
 ADMINS = env.list("ADMINS", default=[("admin", "admin@example.com")] if DEBUG else [])
 MANAGERS = ADMINS
@@ -157,15 +137,24 @@ TEMPLATES = [
 WSGI_APPLICATION = "vocationalnyc.wsgi.application"
 ASGI_APPLICATION = "vocationalnyc.asgi.application"
 
-# Redis Configuration
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("redis", 6379)],
+USE_REDIS = env.bool("USE_REDIS", default=True)
+
+if USE_REDIS:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [env("REDIS_URL", default="redis://localhost:6379/0")],
+            },
         },
-    },
-}
+    }
+
+else:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels.layers.InMemoryChannelLayer",
+        },
+    }
 
 # Database Configuration
 if DJANGO_ENV == "travis":
@@ -299,3 +288,5 @@ LOGGING = {
         },
     },
 }
+
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None
