@@ -52,7 +52,20 @@ DJANGO_ENV = env("DJANGO_ENV", default="production")
 SECRET_KEY = env("SECRET_KEY", default="insecure" if DEBUG else environ.Env.NOTSET)
 
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+# ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS = env.list(
+    "ALLOWED_HOSTS",
+    default=[
+        "localhost",
+        "127.0.0.1",
+        "172.31.10.24",  # add all relevant internal IPs seen in logs
+        "172.31.34.113",
+        "172.31.3.17",
+        "vocationalnyc-env.eba-uurzafst.us-east-1.elasticbeanstalk.com",
+        "vocationalnyc-test.us-east-1.elasticbeanstalk.com",
+        "vocationalnyc.xyz",
+    ],
+)
 
 
 ADMINS = env.list("ADMINS", default=[("admin", "admin@example.com")] if DEBUG else [])
