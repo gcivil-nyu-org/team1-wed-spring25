@@ -17,7 +17,7 @@ from pathlib import Path
 import environ
 import json
 
-# import os
+import os
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -157,7 +157,11 @@ if USE_REDIS:
         "default": {
             "BACKEND": "channels_redis.core.RedisChannelLayer",
             "CONFIG": {
-                "hosts": [("redis", 6379)],
+                # "hosts": [("redis", 6379)],
+                "hosts": [
+                (os.environ.get('REDIS_HOST', 'localhost'),
+                 int(os.environ.get('REDIS_PORT', 6379)))
+            ],
             },
         },
     }
