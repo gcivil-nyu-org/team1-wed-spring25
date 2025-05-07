@@ -8,7 +8,8 @@ from asgiref.sync import async_to_sync
 from .models import Chat, Message, MessageVisibility
 from users.models import Provider
 from django.utils import timezone
-from unittest.mock import patch, Mock
+from unittest.mock import patch, Mock, MagicMock
+from message.views import create_message_with_visibility
 
 import socket
 
@@ -341,3 +342,128 @@ class ChatViewsTest(TestCase):
             reverse("delete_chat", kwargs={"chat_hash": self.chat.chat_hash})
         )
         self.assertEqual(response.status_code, 403)  # should return forbidden
+
+
+class CreateMessageWithVisibilityTests(TestCase):
+    def setUp(self):
+        # Create test users
+        self.user1 = User.objects.create_user(username="user1", password="pass123")
+        self.user2 = User.objects.create_user(username="user2", password="pass123")
+
+        # Create a test chat
+        self.chat = Chat.objects.create(user1=self.user1, user2=self.user2)
+
+    @patch("message.views.Message.objects.create")
+    @patch("message.views.MessageVisibility.objects.create")
+    def test_create_message_with_visibility(
+        self, mock_visibility_create, mock_message_create
+    ):
+        """Test that create_message_with_visibility creates a message and visibility records"""
+        # setup mock for Message.objects.create
+        mock_message = MagicMock()
+        mock_message.chat = self.chat
+        mock_message.sender = self.user1
+        mock_message.recipient = self.user2
+        mock_message.content = "Test message"
+        mock_message_create.return_value = mock_message
+
+        before_call = timezone.now()
+        # call the function to test
+        create_message_with_visibility(
+            self.chat, self.user1, self.user2, "Test message"
+        )
+        after_call = timezone.now()
+
+        # verify Message.objects.create was called
+        mock_message_create.assert_called_once()
+        args, kwargs = mock_message_create.call_args
+
+        self.assertEqual(kwargs["chat"], self.chat)
+        self.assertEqual(kwargs["sender"], self.user1)
+        self.assertEqual(kwargs["recipient"], self.user2)
+        self.assertEqual(kwargs["content"], "Test message")
+
+        # verify send_time is within the expected range
+        self.assertTrue(hasattr(kwargs["send_time"], "year"))
+        self.assertTrue(before_call <= kwargs["send_time"] <= after_call)
+
+        # verify MessageVisibility.objects.create was called twice (once for each user)
+        self.assertEqual(mock_visibility_create.call_count, 2)
+
+        # verify fjrst call (for sender)
+        mock_visibility_create.assert_any_call(
+            user=self.user1, message=mock_message, is_visible=True
+        )
+
+        # verify second call (for recipient)
+        mock_visibility_create.assert_any_call(
+            user=self.user2, message=mock_message, is_visible=True
+        )
+
+    @patch("message.views.Message.objects.create")
+    @patch("message.views.MessageVisibility.objects.create")
+    def test_create_message_with_visibility_reverse_users(
+        self, mock_visibility_create, mock_message_create
+    ):
+        """Test with user2 as sender and user1 as recipient"""
+        # setup mock for Message.objects.create
+        mock_message = MagicMock()
+        mock_message.chat = self.chat
+        mock_message.sender = self.user2
+        mock_message.recipient = self.user1
+        mock_message.content = "Reply message"
+        mock_message_create.return_value = mock_message
+
+        before_call = timezone.now()
+        # call the function to test
+        create_message_with_visibility(
+            self.chat, self.user2, self.user1, "Reply message"
+        )
+        after_call = timezone.now()
+
+        # verify Message.objects.create was called
+        mock_message_create.assert_called_once()
+        args, kwargs = mock_message_create.call_args
+
+        self.assertEqual(kwargs["chat"], self.chat)
+        self.assertEqual(kwargs["sender"], self.user2)
+        self.assertEqual(kwargs["recipient"], self.user1)
+        self.assertEqual(kwargs["content"], "Reply message")
+
+        # verify send_time is within the expected range
+        self.assertTrue(hasattr(kwargs["send_time"], "year"))
+        self.assertTrue(before_call <= kwargs["send_time"] <= after_call)
+
+        # verify MessageVisibility.objects.create was called twice (once for each user)
+        self.assertEqual(mock_visibility_create.call_count, 2)
+
+        # verify first call (for sender)
+        mock_visibility_create.assert_any_call(
+            user=self.user2, message=mock_message, is_visible=True
+        )
+
+        # verify second call (for recipient)
+        mock_visibility_create.assert_any_call(
+            user=self.user1, message=mock_message, is_visible=True
+        )
+
+    @patch("message.views.Message.objects.create")
+    @patch("message.views.MessageVisibility.objects.create")
+    def test_message_count_after_create(
+        self, mock_visibility_create, mock_message_create
+    ):
+        """test the message count after creating messages"""
+        # setup mock for Message.objects.create
+        mock_message = MagicMock()
+        mock_message_create.return_value = mock_message
+
+        # create a message visibility record
+        create_message_with_visibility(
+            self.chat, self.user1, self.user2, "Test message for counting"
+        )
+
+        # verify Message.objects.create was called once
+        self.assertEqual(mock_message_create.call_count, 1)
+
+        # verify MessageVisibility.objects.create was called twice (once for each user)
+        self.assertEqual(mock_visibility_create.call_count, 2)
