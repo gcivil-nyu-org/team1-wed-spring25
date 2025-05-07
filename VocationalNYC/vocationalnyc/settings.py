@@ -159,9 +159,11 @@ if USE_REDIS:
             "CONFIG": {
                 # "hosts": [("redis", 6379)],
                 "hosts": [
-                (os.environ.get('REDIS_HOST', 'localhost'),
-                 int(os.environ.get('REDIS_PORT', 6379)))
-            ],
+                    (
+                        os.environ.get("REDIS_HOST", "localhost"),
+                        int(os.environ.get("REDIS_PORT", 6379)),
+                    )
+                ],
             },
         },
     }
