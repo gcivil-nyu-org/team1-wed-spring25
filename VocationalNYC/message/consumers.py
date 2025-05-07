@@ -17,12 +17,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.accept()
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
-        await self.send(
-            text_data=json.dumps(
-                {"type": "debug", "message": f"Connect to {self.room_group_name}"}
-            )
-        )
-
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
@@ -32,26 +26,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             message_content = data.get("message", "")
             sender_username = data.get("sender", "")
             if not message_content or not sender_username:
-                await self.send(
-                    text_data=json.dumps({"error": "Missing message or sender"})
-                )
                 return
-            await self.send(
-                text_data=json.dumps(
-                    {
-                        "type": "debug",
-                        "message": f"ECHO: {message_content}",
-                    }
-                )
-            )
-            # await self.send(
-            #     text_data=json.dumps(
-            #         {
-            #             "message": f"ECHO: {message_content}",
-            #             "sender": sender_username,
-            #         }
-            #     )
-            # )
+
             message_id = await self.save_message(message_content, sender_username)
             await self.channel_layer.group_send(
                 self.room_group_name,
@@ -63,10 +39,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 },
             )
         except Exception as e:
-            import traceback
-
-            print(f"Error in receive method: {str(e)}")
-            print(traceback.format_exc())
             await self.send(text_data=json.dumps({"error": f"Server error: {str(e)}"}))
 
     @database_sync_to_async
