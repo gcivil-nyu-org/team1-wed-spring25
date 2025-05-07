@@ -191,22 +191,6 @@ def select_chat_partner(request):
     return render(request, "chat/select_chat_partner.html", {"users": users})
 
 
-# @login_required
-# def delete_chat(request, chat_hash):
-#     chat = get_object_or_404(Chat, chat_hash=chat_hash)
-#     if request.user not in [chat.user1, chat.user2]:
-#         return HttpResponseForbidden("You do not have permission to delete this chat.")
-
-#     other_user = chat.user2 if request.user == chat.user1 else chat.user1
-
-#     if request.method == "POST":
-#         chat.delete()
-#         return redirect("chat_list")
-#     return render(
-#         request, "chat/delete_chat.html", {"chat": chat, "other_user": other_user}
-#     )
-
-
 def create_message_with_visibility(chat, sender, recipient, content):
     message = Message.objects.create(
         chat=chat,

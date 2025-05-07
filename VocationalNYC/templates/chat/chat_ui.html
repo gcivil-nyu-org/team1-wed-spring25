@@ -214,11 +214,6 @@
         chatSocket.onmessage = function(e) {
           const data = JSON.parse(e.data);
 
-          if (data.type === "debug") {
-            console.debug("[WS DEBUG]", data.message);
-            return;
-          }
-
           const currentChatHash = "{{ current_chat.chat_hash }}";
           const chatItem = document.querySelector(`.chat-item[onclick*="${currentChatHash}"]`);
           if (chatItem) {
