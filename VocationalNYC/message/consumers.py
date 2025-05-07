@@ -17,10 +17,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.accept()
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
-        await self.send(text_data=json.dumps({
-            "type": "debug",
-            "message": f"Connect to {self.room_group_name}"
-        }))
+        await self.send(
+            text_data=json.dumps(
+                {"type": "debug", "message": f"Connect to {self.room_group_name}"}
+            )
+        )
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
@@ -35,10 +36,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     text_data=json.dumps({"error": "Missing message or sender"})
                 )
                 return
-            await self.send(text_data=json.dumps({
-                "type": "debug",
-                "message": f"ECHO: {message_content}",
-            }))
+            await self.send(
+                text_data=json.dumps(
+                    {
+                        "type": "debug",
+                        "message": f"ECHO: {message_content}",
+                    }
+                )
+            )
             # await self.send(
             #     text_data=json.dumps(
             #         {
