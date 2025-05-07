@@ -162,7 +162,7 @@ class ChatViewsTest(TestCase):
     def test_chat_detail_authenticated_but_unauthorized(self):
         """test logged in user access to chat detail without permission"""
         # create a new user and login
-        user3 = User.objects.create_user(
+        User.objects.create_user(
             username="testuser3", email="test3@example.com", password="password123"
         )
         self.client.login(username="testuser3", password="password123")
@@ -317,7 +317,7 @@ class ChatViewsTest(TestCase):
     def test_unauthorized_delete_message(self):
         """test unauthorized user deleting a message"""
         # create a new user and login
-        user3 = User.objects.create_user(
+        User.objects.create_user(
             username="testuser3", email="test3@example.com", password="password123"
         )
         self.client.login(username="testuser3", password="password123")
@@ -331,7 +331,7 @@ class ChatViewsTest(TestCase):
     def test_unauthorized_delete_chat(self):
         """test unauthorized user deleting a chat"""
         # create a new user and login
-        user3 = User.objects.create_user(
+        User.objects.create_user(
             username="testuser3", email="test3@example.com", password="password123"
         )
         self.client.login(username="testuser3", password="password123")
